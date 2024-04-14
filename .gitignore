@@ -1,0 +1,5 @@
+pycrypt.code-workspace
+/gitignore
+/**/__pycache__
+/tests/resources
+/tests/test.ini
