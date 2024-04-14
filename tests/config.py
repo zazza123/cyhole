@@ -15,12 +15,21 @@
 import configparser
 from pydantic import BaseModel
 
+class BirdeyeConfiguration(BaseModel):
+    """
+        Model in charge to manage the birdeye APIs.
+    """
+    mock_response: bool = True
+    mock_folder: str = "birdeye"
+    api_key: str = ""
+
 class TestConfiguration(BaseModel):
     """
         Model in charge to manage the tests' configuration.
     """
     mock_response: bool = True
     mock_folder: str = "tests/resources/mock"
+    birdeye: BirdeyeConfiguration = BirdeyeConfiguration()
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -49,5 +58,10 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     # global
     test_config.mock_response = config.getboolean("global", "mock_response", fallback = test_config.mock_response)
     test_config.mock_folder = config.get("global", "mock_folder", fallback = test_config.mock_folder)
+
+    # birdeye
+    test_config.birdeye.mock_response = config.getboolean("birdeye", "mock_response", fallback = test_config.birdeye.mock_response)
+    test_config.birdeye.mock_folder = config.get("birdeye", "mock_folder", fallback = test_config.birdeye.mock_folder)
+    test_config.birdeye.api_key = config.get("birdeye", "api_key", fallback = test_config.birdeye.api_key)
 
     return test_config
