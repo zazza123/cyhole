@@ -13,3 +13,6 @@ class RequestTypeNotSupported(PycryptException):
 
 class AuthorizationAPIKeyError(PycryptException):
     pass
+
+class MissingAPIKeyError(PycryptException):
+    pass

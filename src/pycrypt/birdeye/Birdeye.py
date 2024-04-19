@@ -3,6 +3,7 @@ from datetime import datetime
 
 from ..core.api import APICaller
 from ..core.param import RequestType
+from ..core.exception import MissingAPIKeyError
 from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort
 from ..birdeye.exception import TimeRangeError
 from ..birdeye.schema import (
@@ -35,10 +36,10 @@ class Birdeye(APICaller):
     def __init__(self, api_key: str | None = None) -> None:
 
         # set API
-        self.api_key = api_key
-        if api_key is None:
-            self.api_key = os.environ.get("BIRDEYE_API_KEY")
-        
+        self.api_key = api_key if api_key is not None else os.environ.get("BIRDEYE_API_KEY")
+        if self.api_key is None:
+            raise MissingAPIKeyError("no API key is provided during object's creation.")
+
         # header
         self.header = {
             "X-API-KEY": self.api_key
