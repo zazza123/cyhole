@@ -21,6 +21,16 @@ class Birdeye(APICaller):
 
         If the API key is not provided during the object creation, then it is automatically 
         retrieved from ENV variable BIRDEYE_API_KEY.
+
+        Example
+
+        ```python
+        from pycrypt.birdeye import Birdeye
+
+        # get current token list on Solana
+        birdeye = Birdeye()
+        token_list = Birdeye().get_token_list()
+        ```
     """
     def __init__(self, api_key: str | None = None) -> None:
 
