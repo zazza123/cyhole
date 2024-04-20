@@ -170,7 +170,7 @@ class Birdeye(APICaller):
         url = self.url_api_public + "multi_price"
         params = {
             "x-chain" : chain,
-            "address" : list_address
+            "list_address" : ",".join(list_address)
         }
 
         # execute request
