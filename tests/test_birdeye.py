@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import pytest
@@ -13,7 +13,7 @@ from pycrypt.birdeye.schema import (
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse
 )
-from pycrypt.core.exception import AuthorizationAPIKeyError
+from pycrypt.core.exception import MissingAPIKeyError
 
 # load test config
 from tests.config import load_config
@@ -28,9 +28,8 @@ def test_missing_api_key() -> None:
     """
         Unit Test to correcty identify a missing/wrong API Key
     """
-    with pytest.raises(AuthorizationAPIKeyError):
+    with pytest.raises(MissingAPIKeyError):
         client = Birdeye()
-        client.get_token_list()
 
 def test_get_token_list(mocker: MockerFixture) -> None:
     """
@@ -175,7 +174,8 @@ def test_get_price_historical(mocker: MockerFixture) -> None:
         address = "So11111111111111111111111111111111111111112",
         address_type = BirdeyeAddressType.TOKEN.value,
         timeframe = BirdeyeTimeFrame.MIN15.value,
-        dt_from = datetime.now()
+        dt_from = datetime.now() - timedelta(hours = 1),
+        dt_to = datetime.now()
     )
 
     # actual test
