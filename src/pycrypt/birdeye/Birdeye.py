@@ -39,11 +39,12 @@ class Birdeye(APICaller):
         self.api_key = api_key if api_key is not None else os.environ.get("BIRDEYE_API_KEY")
         if self.api_key is None:
             raise MissingAPIKeyError("no API key is provided during object's creation.")
-
-        # header
-        self.header = {
+        
+        # header setup
+        header = {
             "X-API-KEY": self.api_key
         }
+        super().__init__(header)
 
         self.url_api_public = "https://public-api.birdeye.so/defi/"
         return
