@@ -10,7 +10,8 @@ from ..birdeye.schema import (
     GetTokenListResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
-    GetPriceHistoricalResponse
+    GetPriceHistoricalResponse,
+    GetHistoryResponse
 )
 
 class Birdeye(APICaller):
@@ -253,5 +254,34 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetPriceHistoricalResponse(**content_raw.json())
+        
+        return content
+    
+    def get_history(self, chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse:
+        """
+            This function refers to the PUBLIC endpoint 'History' and is used 
+            to get the history of prices of a token according on a specific chain on Birdeye.
+
+            Args:
+            
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+
+            Return:
+
+            - (birdeye.schema.GetHistoryResponse) : list of prices returned by birdeye.so
+        """
+        
+        # set params
+        url = self.url_api_public + "history_price"
+        params = {
+            "x-chain" : chain
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetHistoryResponse(**content_raw.json())
         
         return content

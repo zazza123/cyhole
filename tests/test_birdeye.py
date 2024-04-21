@@ -11,7 +11,8 @@ from pycrypt.birdeye.schema import (
     GetTokenListResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
-    GetPriceHistoricalResponse
+    GetPriceHistoricalResponse,
+    GetHistoryResponse
 )
 from pycrypt.core.exception import MissingAPIKeyError
 
@@ -180,6 +181,43 @@ def test_get_price_historical(mocker: MockerFixture) -> None:
 
     # actual test
     assert isinstance(response, GetPriceHistoricalResponse)
+
+    # store request (only not mock)
+    if not config.birdeye.mock_response:
+        with open(mock_path_file, "w") as file:
+            file.write(response.model_dump_json(indent = 4, by_alias = True))
+
+def test_get_history(mocker: MockerFixture) -> None:
+    """
+        Unit Test used to check the response schema of endpoint "History".
+
+        If the test configuration enables mock requests, then the test loads the response 
+        from 'get_history.json' file from the 'resources' folder.
+
+        Note: file 'get_history.json' is created every time a test is executed using 
+        mock response option disabled.
+    """
+    client = Birdeye(api_key = config.birdeye.api_key)
+
+    # load mock response
+    mock_file = "get_history.json"
+    mock_path_file = mock_path / mock_file
+    if config.birdeye.mock_response:
+
+        if not mock_path_file.exists():
+            raise Exception("mock file for 'History' does not exist.")
+        
+        with open(mock_path_file, "r") as file:
+            data = json.loads(file.read())
+            mock_response = GetHistoryResponse(**data)
+        
+        mocker.patch.object(client, "get_history", return_value = mock_response)
+        
+    # execute request
+    response = client.get_history()
+
+    # actual test
+    assert isinstance(response, GetHistoryResponse)
 
     # store request (only not mock)
     if not config.birdeye.mock_response:

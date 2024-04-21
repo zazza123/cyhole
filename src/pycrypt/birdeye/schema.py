@@ -81,3 +81,15 @@ class GetPriceHistoricalResponse(BaseModel):
     """
     data: GetPriceHistoricalData
     success: bool
+
+# classes used on GET 'History' endpoint
+class GetHistoryData(BaseModel):
+    items: list[str]
+    reset_in_seconds: int = Field(alias = "resetInSeconds")
+
+class GetHistoryResponse(BaseModel):
+    """
+        Model used to represent the 'History' endpoint from birdeye API.
+    """
+    data: GetHistoryData
+    success: bool
