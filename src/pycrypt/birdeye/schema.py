@@ -38,6 +38,7 @@ class GetTokenListResponse(BaseModel):
 # classes used on GET 'Price' endpoint
 class GetPriceData(BaseModel):
     value: float
+    liquidity: float | None = None
     update_human_time: datetime = Field(alias = "updateHumanTime")
     update_unix_time: int = Field(alias = "updateUnixTime")
 

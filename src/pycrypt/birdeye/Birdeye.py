@@ -110,6 +110,8 @@ class Birdeye(APICaller):
     def get_price(
         self,
         address: str,
+        include_liquidity: bool | None = None,
+        check_liquidity: float | None = None,
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetPriceResponse:
         """
@@ -119,6 +121,9 @@ class Birdeye(APICaller):
             Args:
 
             - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - include_liquidity (bool) [mandatory] : include the current liquidity of the token. \\
+                Default Value: None (False)
 
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
@@ -134,7 +139,9 @@ class Birdeye(APICaller):
         url = self.url_api_public + "price"
         params = {
             "x-chain" : chain,
-            "address" : address
+            "address" : address,
+            "include_liquidity" : str(include_liquidity).lower() if include_liquidity else None,
+            "check_liquidity" : check_liquidity
         }
 
         # execute request
