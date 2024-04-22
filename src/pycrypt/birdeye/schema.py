@@ -27,13 +27,28 @@ class GetTokenListData(BaseModel):
             return datetime.strptime(update_time_raw, "%Y-%m-%dT%H:%M:%S")
         return update_time_raw
 
-
 class GetTokenListResponse(BaseModel):
     """
         Model used to represent the 'Token - List' endpoint from birdeye API.
     """
     data: GetTokenListData
     success: bool
+
+# classes used on GET 'Token - Creation Token Info' endpoint
+class GetTokenCreationInfoData(BaseModel):
+    transaction_hash: str = Field(alias = "txHash")
+    slot: int
+    token_address: str = Field(alias = "tokenAddress")
+    decimals: int
+    owner: str
+
+class GetTokenCreationInfoResponse(BaseModel):
+    """
+        Model used to represent the 'Token - Creation Token Info' endpoint from birdeye API.
+    """
+    data: GetTokenCreationInfoData
+    success: bool
+
 
 # classes used on GET 'Price' endpoint
 class GetPriceData(BaseModel):

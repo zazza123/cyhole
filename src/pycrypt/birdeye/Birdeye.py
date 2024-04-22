@@ -8,6 +8,7 @@ from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort
 from ..birdeye.exception import TimeRangeError
 from ..birdeye.schema import (
     GetTokenListResponse,
+    GetTokenCreationInfoResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
@@ -105,6 +106,42 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTokenListResponse(**content_raw.json())
+        
+        return content
+    
+    def get_token_creation_info(
+        self,
+        address: str,
+        chain: str = BirdeyeChain.SOLANA.value
+    ) -> GetTokenCreationInfoResponse:
+        """
+            This function refers to the PRIVATE endpoint 'Token - Creation Token Info' and is used 
+            to get the current price of a token according on a specific chain on Birdeye.
+
+            Args:
+
+            - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+            
+            Return:
+
+            - (birdeye.schema.GetTokenCreationInfoResponse) : token's creation information.
+        """
+        
+        # set params
+        url = self.url_api_public + "token_creation_info"
+        params = {
+            "x-chain" : chain,
+            "address" : address
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetTokenCreationInfoResponse(**content_raw.json())
         
         return content
 

@@ -9,6 +9,7 @@ from pycrypt.birdeye import Birdeye
 from pycrypt.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame
 from pycrypt.birdeye.schema import (
     GetTokenListResponse,
+    GetTokenCreationInfoResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
@@ -218,6 +219,43 @@ def test_get_history(mocker: MockerFixture) -> None:
 
     # actual test
     assert isinstance(response, GetHistoryResponse)
+
+    # store request (only not mock)
+    if not config.birdeye.mock_response:
+        with open(mock_path_file, "w") as file:
+            file.write(response.model_dump_json(indent = 4, by_alias = True))
+
+def test_get_token_creation_info(mocker: MockerFixture) -> None:
+    """
+        Unit Test used to check the response schema of endpoint "Token - Creation Token Info".
+
+        If the test configuration enables mock requests, then the test loads the response 
+        from 'get_token_creation_info.json' file from the 'resources' folder.
+
+        Note: file 'get_token_creation_info.json' is created every time a test is executed using 
+        mock response option disabled.
+    """
+    client = Birdeye(api_key = config.birdeye.api_key)
+
+    # load mock response
+    mock_file = "get_token_creation_info.json"
+    mock_path_file = mock_path / mock_file
+    if config.birdeye.mock_response:
+
+        if not mock_path_file.exists():
+            raise Exception("mock file for 'Token - Creation Token Info' does not exist.")
+        
+        with open(mock_path_file, "r") as file:
+            data = json.loads(file.read())
+            mock_response = GetTokenCreationInfoResponse(**data)
+        
+        mocker.patch.object(client, "get_token_creation_info", return_value = mock_response)
+        
+    # execute request
+    response = client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
+
+    # actual test
+    assert isinstance(response, GetTokenCreationInfoResponse)
 
     # store request (only not mock)
     if not config.birdeye.mock_response:

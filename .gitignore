@@ -3,3 +3,4 @@ pycrypt.code-workspace
 /**/__pycache__
 /tests/resources
 /tests/test.ini
+/.vscode
