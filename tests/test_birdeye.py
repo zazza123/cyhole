@@ -31,7 +31,7 @@ def test_missing_api_key() -> None:
         Unit Test to correcty identify a missing/wrong API Key
     """
     with pytest.raises(MissingAPIKeyError):
-        client = Birdeye()
+        Birdeye()
 
 def test_get_token_list(mocker: MockerFixture) -> None:
     """
