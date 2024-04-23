@@ -6,14 +6,27 @@
     is subjected to costs, a proper configuration for the tests was required.
 
     The configuration is managed by a 'test.ini' file loaded during the 
-    execution of the tests. By usin this file will be possible to:
+    execution of the tests. By using this file will be possible to:
         - manage API Keys externally
         - enable/disable mock responses
 
     Check the default 'test.ini' file for a complete list of available configurations.
+
+    Mock Responses
+    If the mock response functionality is enabled, then the tests try to load a JSON file 
+    with the response stored from a previous extration from the API.
+    Moreover, every time the tests are executed with the mock response functionality 
+    disabled, the process automatically stores the response in a JSON file into the 
+    proper resources folder.
+
 """
+import json
 import configparser
+from pathlib import Path
+from typing import TypeVar, Type
 from pydantic import BaseModel
+
+ResponseModel = TypeVar('ResponseModel', bound = BaseModel)
 
 class BirdeyeConfiguration(BaseModel):
     """
@@ -65,3 +78,57 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.birdeye.api_key = config.get("birdeye", "api_key", fallback = test_config.birdeye.api_key)
 
     return test_config
+
+class TestMocker:
+    """
+        Class used to manage the mock responses.
+    """
+
+    def __init__(self, mock_path: Path) -> None:
+        # set/create resources folder
+        self.mock_path = mock_path
+        mock_path.mkdir(parents = True, exist_ok = True)
+    
+    def load_mock_response(self, file_name: str, response_model: Type[ResponseModel]) -> ResponseModel:
+        """
+            Use this function to load mock response model from a file.
+
+            Args:
+
+            - file_name (str) [mandatory] : file name containing the response to load.
+                By assumption, the file must be a JSON file and the file name should not contain the extension.
+
+            - response_model (Type[ResponseModel]) [mandatory] : objects that inherit from 
+                    pydantic.BaseModel and describe the response object element.
+        """
+        mock_file = f"{file_name}.json"
+        mock_path_file = self.mock_path / mock_file
+
+        if not mock_path_file.exists():
+            raise Exception(f"mock file '{mock_file}' does not exist in '{self.mock_path}'.")
+        
+        with open(mock_path_file, "r") as file:
+            data = json.loads(file.read())
+            mock_response = response_model(**data)
+        
+        return mock_response
+
+    def store_mock_response(self, file_name: str, response: BaseModel) -> None:
+        """
+            Use this function to store the mock response model into a file.
+
+            Args:
+
+            - file_name (str) [mandatory] : file name containing the response to load.
+                By assumption, the file must be a JSON file and the file name should not contain the extension.
+
+            - response (ResponseModel) [mandatory] : objects that inherit from 
+                    pydantic.BaseModel and describe the response object element.
+        """
+        mock_file = f"{file_name}.json"
+        mock_path_file = self.mock_path / mock_file
+
+        with open(mock_path_file, "w") as file:
+            file.write(response.model_dump_json(indent = 4, by_alias = True))
+        
+        return
