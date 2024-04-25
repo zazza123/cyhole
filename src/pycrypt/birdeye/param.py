@@ -86,3 +86,16 @@ class BirdeyeAddressType(Enum):
     """The address is refering to a token on the chain."""
     PAIR = "pair"
     """The address is refering to a token pair on the chain. (e.g. SOL/USDT)"""
+
+class BirdeyeTradeType(Enum):
+    """
+        Enum class to get the supported Birdeye's transactions' types.
+    """
+    SWAP = "swap"
+    """A classic exchange between two currencies."""
+    ADD = "add"
+    """Transactions that add liquidity."""
+    REMOVE = "remove"
+    """Transactions that remove liquidity."""
+    ALL = "all"
+    """All type of transactions (swap, add, remove)."""

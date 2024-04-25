@@ -4,7 +4,7 @@ from datetime import datetime
 from ..core.api import APICaller
 from ..core.param import RequestType
 from ..core.exception import MissingAPIKeyError
-from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort
+from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort, BirdeyeTradeType
 from ..birdeye.exception import TimeRangeError
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -12,7 +12,8 @@ from ..birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
-    GetHistoryResponse
+    GetHistoryResponse,
+    GetTradesTokenResponse
 )
 
 class Birdeye(APICaller):
@@ -49,6 +50,7 @@ class Birdeye(APICaller):
         super().__init__(header)
 
         self.url_api_public = "https://public-api.birdeye.so/defi/"
+        self.url_api_private = "https://public-api.birdeye.so/defi/"
         return
 
     def get_token_list(
@@ -320,5 +322,58 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetHistoryResponse(**content_raw.json())
+        
+        return content
+    
+    def get_trades_token(
+            self,
+            address: str,
+            trade_type: str = BirdeyeTradeType.SWAP.value,
+            chain: str = BirdeyeChain.SOLANA.value,
+            offset: int | None = None,
+            limit: int | None = None
+    ) -> GetTradesTokenResponse:
+        """
+            This function refers to the PRIVATE endpoint 'Trades - Token' and is used 
+            to get the associated trades of a token according on a specific chain on Birdeye.
+
+            Args:
+
+            - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - trade_type (str) [optional] : the type of transactions to extract. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTradeType'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Swap.
+            
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+            
+            - offset (int) [optional] : offset to apply in the extraction. \\
+                Default Value: None
+            
+            - limit (int) [optional] : limit the number of returned records in the extraction. \\
+                Default Value: None
+
+            Return:
+
+            - (birdeye.schema.GetTradesTokenResponse) : list of prices returned by birdeye.so
+        """
+        
+        # set params
+        url = self.url_api_private + "txs/token"
+        params = {
+            "address" : address,
+            "tx_type" : trade_type,
+            "x-chain" : chain,
+            "offset" : offset,
+            "limit": limit
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetTradesTokenResponse(**content_raw.json())
         
         return content

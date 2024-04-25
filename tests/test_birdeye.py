@@ -13,7 +13,8 @@ from pycrypt.birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
-    GetHistoryResponse
+    GetHistoryResponse,
+    GetTradesTokenResponse
 )
 from pycrypt.core.exception import MissingAPIKeyError
 
@@ -194,6 +195,30 @@ class TestBirdeyePrivate:
 
         # actual test
         assert isinstance(response, GetTokenCreationInfoResponse)
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_trades_token(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Trades - Token".
+
+            Mock Response File: get_trades_token.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+
+        # load mock response
+        mock_file_name = "get_trades_token"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesTokenResponse)
+            mocker.patch.object(client, "get_trades_token", return_value = mock_response)
+            
+        # execute request
+        response = client.get_trades_token(address = "SMMzJzseLTFb6pxacL8r5mZMEqjTTGWjNPk4q3JQHTu")
+
+        # actual test
+        assert isinstance(response, GetTradesTokenResponse)
 
         # store request (only not mock)
         if not config.birdeye.mock_response:
