@@ -109,7 +109,7 @@ class GetHistoryResponse(BaseModel):
     data: GetHistoryData
     success: bool
 
-# classes used on GET 'History' endpoint
+# classes used on GET 'Trades - Token' endpoint
 class GetTradesTokenTradeToken(BaseModel):
     symbol: str
     decimals: int
@@ -123,7 +123,6 @@ class GetTradesTokenTradeToken(BaseModel):
     change_amount: float = Field(alias = "changeAmount")
     ui_change_amount: float = Field(alias = "uiChangeAmount")
     icon: str
-                
 
 class GetTradesTokenTrade(BaseModel):
     volume: float
@@ -169,4 +168,38 @@ class GetTradesTokenResponse(BaseModel):
         Model used to represent the 'Trades - Token' endpoint from birdeye API.
     """
     data: GetTradesTokenData
+    success: bool
+
+# classes used on GET 'Trades - Pair' endpoint
+class GetTradesPairTradeToken(BaseModel):
+    symbol: str
+    decimals: int
+    address: str
+    amount: int
+    type: str
+    type_swap: str = Field(alias = "typeSwap")
+    ui_amount: float = Field(alias = "uiAmount")
+    price: float | None = None
+    nearest_price: float = Field(alias = "nearestPrice")
+    change_amount: float = Field(alias = "changeAmount")
+    ui_change_amount: float = Field(alias = "uiChangeAmount")
+
+class GetTradesPairTrade(BaseModel):
+    trade_hash: str = Field(alias = "txHash")
+    source: str
+    block_unix_time: int = Field(alias = "blockUnixTime")
+    address: str
+    owner: str
+    trade_from: GetTradesPairTradeToken = Field(alias = "from")
+    trade_to: GetTradesPairTradeToken = Field(alias = "to")
+
+class GetTradesPairData(BaseModel):
+    items: list[GetTradesPairTrade]
+    has_next: bool = Field(alias = "hasNext")
+
+class GetTradesPairResponse(BaseModel):
+    """
+        Model used to represent the 'Trades - Pair' endpoint from birdeye API.
+    """
+    data: GetTradesPairData
     success: bool

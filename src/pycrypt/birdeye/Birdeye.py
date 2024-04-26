@@ -13,7 +13,8 @@ from ..birdeye.schema import (
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
     GetHistoryResponse,
-    GetTradesTokenResponse
+    GetTradesTokenResponse,
+    GetTradesPairResponse
 )
 
 class Birdeye(APICaller):
@@ -375,5 +376,67 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTradesTokenResponse(**content_raw.json())
+        
+        return content
+
+    def get_trades_pair(
+            self,
+            address: str,
+            trade_type: str = BirdeyeTradeType.SWAP.value,
+            chain: str = BirdeyeChain.SOLANA.value,
+            order_by: str = BirdeyeOrder.DESCENDING.value,
+            offset: int | None = None,
+            limit: int | None = None
+    ) -> GetTradesPairResponse:
+        """
+            This function refers to the PRIVATE endpoint 'Trades - Pair' and is used 
+            to get the associated trades of a tokens pari according on a specific chain on Birdeye. \\
+            Use the 'Trades - Token' endpoint to retrieve the trades associated to a specific token.
+
+            Args:
+
+            - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - trade_type (str) [optional] : the type of transactions to extract. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTradeType'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Swap.
+            
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+            
+            - order_by (str) [optional] : define the type of ordering to apply in the 
+                extraction; e.g. ascending or descending. \\
+                The sorting types are available on 'pycrypt.birdeye.param.BirdeyeOrder'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: descending.
+            
+            - offset (int) [optional] : offset to apply in the extraction. \\
+                Default Value: None
+            
+            - limit (int) [optional] : limit the number of returned records in the extraction. \\
+                Default Value: None
+
+            Return:
+
+            - (birdeye.schema.GetTradesPairResponse) : list of prices returned by birdeye.so
+        """
+        
+        # set params
+        url = self.url_api_private + "txs/pair"
+        params = {
+            "address" : address,
+            "tx_type" : trade_type,
+            "x-chain" : chain,
+            "sort_type": order_by,
+            "offset" : offset,
+            "limit": limit
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetTradesPairResponse(**content_raw.json())
         
         return content
