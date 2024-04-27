@@ -14,7 +14,8 @@ from ..birdeye.schema import (
     GetPriceHistoricalResponse,
     GetHistoryResponse,
     GetTradesTokenResponse,
-    GetTradesPairResponse
+    GetTradesPairResponse,
+    GetOHLCVTokenResponse
 )
 
 class Birdeye(APICaller):
@@ -390,7 +391,7 @@ class Birdeye(APICaller):
     ) -> GetTradesPairResponse:
         """
             This function refers to the PRIVATE endpoint 'Trades - Pair' and is used 
-            to get the associated trades of a tokens pari according on a specific chain on Birdeye. \\
+            to get the associated trades of a tokens pair according on a specific chain on Birdeye. \\
             Use the 'Trades - Token' endpoint to retrieve the trades associated to a specific token.
 
             Args:
@@ -438,5 +439,67 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTradesPairResponse(**content_raw.json())
+        
+        return content
+
+    def get_ohlcv_token(
+            self,
+            address: str,
+            timeframe: str,
+            dt_from: datetime,
+            dt_to: datetime | None = None,
+            chain: str = BirdeyeChain.SOLANA.value
+    ) -> GetOHLCVTokenResponse:
+        """
+            This function refers to the PRIVATE endpoint 'OHLCV - Token' and is used to get the 
+            Open, High, Low, Close, and Volume (OHLCV) data for a specific token on a chain on Birdeye. \\
+            Use the 'OHLCV - Pair' endpoint to retrieve the trades associated to a specific pair.
+
+            Args:
+
+            - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - timeframe (str) [mandatory] : the type of timeframe involved in the extraction. \\
+                The timeframe is used to define intervall between a measure and the next one. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTimeFrame'. \\
+                Import them from the library to use the correct identifier.
+
+            - dt_from (datetime) [optional] : beginning time to take take price data.
+            
+            - dt_to (datetime) [optional] : end time to take take price data. \\
+                It should be 'dt_from' < 'dt_to'. \\
+                If not ptovided (None), the current time is used.
+            
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+
+            Return:
+
+            - (birdeye.schema.GetOHLCVTokenResponse) : list of prices returned by birdeye.so
+        """
+
+        # set default
+        if dt_to is None:
+            dt_to = datetime.now()
+
+        # check consistency
+        if dt_from > dt_to:
+            raise TimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
+        
+        # set params
+        url = self.url_api_public + "ohlcv"
+        params = {
+            "x-chain" : chain,
+            "address" : address,
+            "type" : timeframe,
+            "time_from" : int(dt_from.timestamp()),
+            "time_to" : int(dt_to.timestamp())
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetOHLCVTokenResponse(**content_raw.json())
         
         return content
