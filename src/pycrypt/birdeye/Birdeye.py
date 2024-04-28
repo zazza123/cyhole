@@ -4,8 +4,8 @@ from datetime import datetime
 from ..core.api import APICaller
 from ..core.param import RequestType
 from ..core.exception import MissingAPIKeyError
-from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort, BirdeyeTradeType
-from ..birdeye.exception import TimeRangeError
+from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort, BirdeyeTradeType, BirdeyeAddressType
+from ..birdeye.exception import TimeRangeError, BirdeyeAddressTypeUnknownError
 from ..birdeye.schema import (
     GetTokenListResponse,
     GetTokenCreationInfoResponse,
@@ -15,7 +15,7 @@ from ..birdeye.schema import (
     GetHistoryResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
-    GetOHLCVTokenResponse
+    GetOHLCVResponse
 )
 
 class Birdeye(APICaller):
@@ -442,22 +442,26 @@ class Birdeye(APICaller):
         
         return content
 
-    def get_ohlcv_token(
+    def get_ohlcv(
             self,
             address: str,
+            address_type: str,
             timeframe: str,
             dt_from: datetime,
             dt_to: datetime | None = None,
             chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetOHLCVTokenResponse:
+    ) -> GetOHLCVResponse:
         """
-            This function refers to the PRIVATE endpoint 'OHLCV - Token' and is used to get the 
-            Open, High, Low, Close, and Volume (OHLCV) data for a specific token on a chain on Birdeye. \\
-            Use the 'OHLCV - Pair' endpoint to retrieve the trades associated to a specific pair.
+            This function refers to the PRIVATE endpoint 'OHLCV - Token/Pair' and is used to get the 
+            Open, High, Low, Close, and Volume (OHLCV) data for a specific token/pair on a chain on Birdeye.
 
             Args:
 
             - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - address_type (str) [mandatory] : the type of address involved in the extraction (token/pair). \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeAddressType'. \\
+                Import them from the library to use the correct identifier.
 
             - timeframe (str) [mandatory] : the type of timeframe involved in the extraction. \\
                 The timeframe is used to define intervall between a measure and the next one. \\
@@ -479,6 +483,9 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetOHLCVTokenResponse) : list of prices returned by birdeye.so
         """
+        # check address type
+        if address_type not in BirdeyeAddressType:
+            raise BirdeyeAddressTypeUnknownError(f"address type '{address_type}' not supported. \nAdmissible values: {list(BirdeyeAddressType.__members__)}")
 
         # set default
         if dt_to is None:
@@ -490,6 +497,8 @@ class Birdeye(APICaller):
         
         # set params
         url = self.url_api_public + "ohlcv"
+        if address_type == BirdeyeAddressType.PAIR.value:
+            url = url + "/" + BirdeyeAddressType.PAIR.value
         params = {
             "x-chain" : chain,
             "address" : address,
@@ -500,6 +509,6 @@ class Birdeye(APICaller):
 
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
-        content = GetOHLCVTokenResponse(**content_raw.json())
+        content = GetOHLCVResponse(**content_raw.json())
         
         return content
