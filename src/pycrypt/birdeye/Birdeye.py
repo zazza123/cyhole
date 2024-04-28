@@ -45,7 +45,7 @@ class Birdeye(APICaller):
         self.api_key = api_key if api_key is not None else os.environ.get("BIRDEYE_API_KEY")
         if self.api_key is None:
             raise MissingAPIKeyError("no API key is provided during object's creation.")
-        
+
         # header setup
         header = {
             "X-API-KEY": self.api_key
@@ -86,18 +86,18 @@ class Birdeye(APICaller):
                 The sorting types are available on 'pycrypt.birdeye.param.BirdeyeOrder'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: descending.
-            
+
             - offset (int) [optional] : offset to apply in the extraction. \\
                 Default Value: None
-            
+
             - limit (int) [optional] : limit the number of returned records in the extraction. \\
                 Default Value: None
-            
+
             Return:
 
             - (birdeye.schema.GetTokenListResponse) : list of tokens returned by birdeye.so
         """
-        
+
         # set params
         url = self.url_api_public + "tokenlist"
         params = {
@@ -111,9 +111,9 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTokenListResponse(**content_raw.json())
-        
+
         return content
-    
+
     def get_token_creation_info(
         self,
         address: str,
@@ -136,7 +136,7 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTokenCreationInfoResponse) : token's creation information.
         """
-        
+
         # set params
         url = self.url_api_public + "token_creation_info"
         params = {
@@ -147,7 +147,7 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTokenCreationInfoResponse(**content_raw.json())
-        
+
         return content
 
     def get_price(
@@ -171,12 +171,12 @@ class Birdeye(APICaller):
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
-            
+
             Return:
 
             - (birdeye.schema.GetPriceResponse) : token's price returned by birdeye.so
         """
-        
+
         # set params
         url = self.url_api_public + "price"
         params = {
@@ -188,9 +188,9 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetPriceResponse(**content_raw.json())
-        
+
         return content
-    
+
     def get_price_multiple(
         self,
         list_address: list[str],
@@ -212,12 +212,12 @@ class Birdeye(APICaller):
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
-            
+
             Return:
 
             - (birdeye.schema.GetPriceMultipleResponse) : list of tokens returned by birdeye.so
         """
-        
+
         # set params
         url = self.url_api_public + "multi_price"
         params = {
@@ -229,9 +229,9 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetPriceMultipleResponse(**content_raw.json())
-        
+
         return content
-    
+
     def get_price_historical(
         self,
         address: str,
@@ -259,11 +259,11 @@ class Birdeye(APICaller):
                 Import them from the library to use the correct identifier.
 
             - dt_from (datetime) [optional] : beginning time to take take price data.
-            
+
             - dt_to (datetime) [optional] : end time to take take price data. \\
                 It should be 'dt_from' < 'dt_to'. \\
                 If not ptovided (None), the current time is used.
-            
+
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
@@ -281,7 +281,7 @@ class Birdeye(APICaller):
         # check consistency
         if dt_from > dt_to:
             raise TimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
-        
+
         # set params
         url = self.url_api_public + "history_price"
         params = {
@@ -296,16 +296,16 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetPriceHistoricalResponse(**content_raw.json())
-        
+
         return content
-    
+
     def get_history(self, chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse:
         """
             This function refers to the PUBLIC endpoint 'History' and is used 
             to get the history of prices of a token according on a specific chain on Birdeye.
 
             Args:
-            
+
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
@@ -315,7 +315,7 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetHistoryResponse) : list of prices returned by birdeye.so
         """
-        
+
         # set params
         url = self.url_api_public + "history_price"
         params = {
@@ -325,9 +325,9 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetHistoryResponse(**content_raw.json())
-        
+
         return content
-    
+
     def get_trades_token(
             self,
             address: str,
@@ -348,15 +348,15 @@ class Birdeye(APICaller):
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTradeType'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Swap.
-            
+
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
-            
+
             - offset (int) [optional] : offset to apply in the extraction. \\
                 Default Value: None
-            
+
             - limit (int) [optional] : limit the number of returned records in the extraction. \\
                 Default Value: None
 
@@ -364,7 +364,7 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTradesTokenResponse) : list of prices returned by birdeye.so
         """
-        
+
         # set params
         url = self.url_api_private + "txs/token"
         params = {
@@ -378,7 +378,7 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTradesTokenResponse(**content_raw.json())
-        
+
         return content
 
     def get_trades_pair(
@@ -403,21 +403,21 @@ class Birdeye(APICaller):
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTradeType'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Swap.
-            
+
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
-            
+
             - order_by (str) [optional] : define the type of ordering to apply in the 
                 extraction; e.g. ascending or descending. \\
                 The sorting types are available on 'pycrypt.birdeye.param.BirdeyeOrder'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: descending.
-            
+
             - offset (int) [optional] : offset to apply in the extraction. \\
                 Default Value: None
-            
+
             - limit (int) [optional] : limit the number of returned records in the extraction. \\
                 Default Value: None
 
@@ -425,7 +425,7 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTradesPairResponse) : list of prices returned by birdeye.so
         """
-        
+
         # set params
         url = self.url_api_private + "txs/pair"
         params = {
@@ -440,7 +440,7 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetTradesPairResponse(**content_raw.json())
-        
+
         return content
 
     def get_ohlcv(
@@ -470,11 +470,11 @@ class Birdeye(APICaller):
                 Import them from the library to use the correct identifier.
 
             - dt_from (datetime) [optional] : beginning time to take take price data.
-            
+
             - dt_to (datetime) [optional] : end time to take take price data. \\
                 It should be 'dt_from' < 'dt_to'. \\
                 If not ptovided (None), the current time is used.
-            
+
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
@@ -495,7 +495,7 @@ class Birdeye(APICaller):
         # check consistency
         if dt_from > dt_to:
             raise TimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
-        
+
         # set params
         url = self.url_api_public + "ohlcv"
         if address_type == BirdeyeAddressType.PAIR.value:
@@ -511,7 +511,7 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetOHLCVTokenPairResponse(**content_raw.json())
-        
+
         return content
 
     def get_ohlcv_base_quote(
@@ -540,11 +540,11 @@ class Birdeye(APICaller):
                 Import them from the library to use the correct identifier.
 
             - dt_from (datetime) [optional] : beginning time to take take price data.
-            
+
             - dt_to (datetime) [optional] : end time to take take price data. \\
                 It should be 'dt_from' < 'dt_to'. \\
                 If not ptovided (None), the current time is used.
-            
+
             - chain (str) [optional] : identifier of the chain to check. \\
                 The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
@@ -561,7 +561,7 @@ class Birdeye(APICaller):
         # check consistency
         if dt_from > dt_to:
             raise TimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
-        
+
         # set params
         url = self.url_api_public + "ohlcv/base_quote"
         params = {
@@ -576,5 +576,5 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetOHLCVBaseQuoteResponse(**content_raw.json())
-        
+
         return content
