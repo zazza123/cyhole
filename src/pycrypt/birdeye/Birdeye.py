@@ -15,7 +15,8 @@ from ..birdeye.schema import (
     GetHistoryResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
-    GetOHLCVResponse
+    GetOHLCVTokenPairResponse,
+    GetOHLCVBaseQuoteResponse
 )
 
 class Birdeye(APICaller):
@@ -450,7 +451,7 @@ class Birdeye(APICaller):
             dt_from: datetime,
             dt_to: datetime | None = None,
             chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetOHLCVResponse:
+    ) -> GetOHLCVTokenPairResponse:
         """
             This function refers to the PRIVATE endpoint 'OHLCV - Token/Pair' and is used to get the 
             Open, High, Low, Close, and Volume (OHLCV) data for a specific token/pair on a chain on Birdeye.
@@ -481,7 +482,7 @@ class Birdeye(APICaller):
 
             Return:
 
-            - (birdeye.schema.GetOHLCVTokenResponse) : list of prices returned by birdeye.so
+            - (birdeye.schema.GetOHLCVTokenPairResponse) : list of prices returned by birdeye.so
         """
         # check address type
         if address_type not in BirdeyeAddressType:
@@ -509,6 +510,71 @@ class Birdeye(APICaller):
 
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
-        content = GetOHLCVResponse(**content_raw.json())
+        content = GetOHLCVTokenPairResponse(**content_raw.json())
+        
+        return content
+
+    def get_ohlcv_base_quote(
+            self,
+            base_address: str,
+            quote_address: str,
+            timeframe: str,
+            dt_from: datetime,
+            dt_to: datetime | None = None,
+            chain: str = BirdeyeChain.SOLANA.value
+    ) -> GetOHLCVBaseQuoteResponse:
+        """
+            This function refers to the PRIVATE endpoint 'OHLCV - Base/Quote' and is used to get the 
+            Open, High, Low, Close, and Volume (OHLCV) data for a specific base/quote combination 
+            on a chain on Birdeye.
+
+            Args:
+
+            - base_address (str) [mandatory] : CA of the token to search on the chain.
+
+            - quote_address (str) [mandatory] : CA of the token to search on the chain.
+
+            - timeframe (str) [mandatory] : the type of timeframe involved in the extraction. \\
+                The timeframe is used to define intervall between a measure and the next one. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTimeFrame'. \\
+                Import them from the library to use the correct identifier.
+
+            - dt_from (datetime) [optional] : beginning time to take take price data.
+            
+            - dt_to (datetime) [optional] : end time to take take price data. \\
+                It should be 'dt_from' < 'dt_to'. \\
+                If not ptovided (None), the current time is used.
+            
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+
+            Return:
+
+            - (birdeye.schema.GetOHLCVBaseQuoteResponse) : list of prices returned by birdeye.so
+        """
+        # set default
+        if dt_to is None:
+            dt_to = datetime.now()
+
+        # check consistency
+        if dt_from > dt_to:
+            raise TimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
+        
+        # set params
+        url = self.url_api_public + "ohlcv/base_quote"
+        params = {
+            "x-chain" : chain,
+            "base_address" : base_address,
+            "quote_address" : quote_address,
+            "type" : timeframe,
+            "time_from" : int(dt_from.timestamp()),
+            "time_to" : int(dt_to.timestamp())
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetOHLCVBaseQuoteResponse(**content_raw.json())
         
         return content

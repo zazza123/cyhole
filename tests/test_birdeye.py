@@ -16,7 +16,8 @@ from pycrypt.birdeye.schema import (
     GetHistoryResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
-    GetOHLCVResponse
+    GetOHLCVTokenPairResponse,
+    GetOHLCVBaseQuoteResponse
 )
 from pycrypt.core.exception import MissingAPIKeyError
 
@@ -261,7 +262,7 @@ class TestBirdeyePrivate:
         # load mock response
         mock_file_name = "get_ohlcv_token"
         if config.birdeye.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
             mocker.patch.object(client, "get_ohlcv", return_value = mock_response)
             
         # execute request
@@ -274,7 +275,7 @@ class TestBirdeyePrivate:
         )
 
         # actual test
-        assert isinstance(response, GetOHLCVResponse)
+        assert isinstance(response, GetOHLCVTokenPairResponse)
 
         # store request (only not mock)
         if not config.birdeye.mock_response:
@@ -291,7 +292,7 @@ class TestBirdeyePrivate:
         # load mock response
         mock_file_name = "get_ohlcv_pair"
         if config.birdeye.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
             mocker.patch.object(client, "get_ohlcv", return_value = mock_response)
             
         # execute request
@@ -304,7 +305,37 @@ class TestBirdeyePrivate:
         )
 
         # actual test
-        assert isinstance(response, GetOHLCVResponse)
+        assert isinstance(response, GetOHLCVTokenPairResponse)
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_ohlcv_base_quote(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "OHLCV - Base/Quote".
+
+            Mock Response File: get_ohlcv_base_quote.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+
+        # load mock response
+        mock_file_name = "get_ohlcv_base_quote"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVBaseQuoteResponse)
+            mocker.patch.object(client, "get_ohlcv_base_quote", return_value = mock_response)
+            
+        # execute request
+        response = client.get_ohlcv_base_quote(
+            base_address = "So11111111111111111111111111111111111111112",
+            quote_address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            timeframe = BirdeyeTimeFrame.MIN15.value,
+            dt_from = datetime.now() - timedelta(hours = 1),
+            dt_to = datetime.now()
+        )
+
+        # actual test
+        assert isinstance(response, GetOHLCVBaseQuoteResponse)
 
         # store request (only not mock)
         if not config.birdeye.mock_response:

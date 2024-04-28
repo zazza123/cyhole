@@ -204,23 +204,42 @@ class GetTradesPairResponse(BaseModel):
     data: GetTradesPairData
     success: bool
 
-# classes used on GET 'OHLCV - Token' endpoint
+# classes used on GET 'OHLCV - Token/Pair' endpoint
 class GetOHLCVInterval(BaseModel):
-    address: str
     close: float = Field(alias = "c")
     high: float  = Field(alias = "h")
     low: float  = Field(alias = "l")
     open: float  = Field(alias = "o")
     type: str
     unix_time: int  = Field(alias = "unixTime")
+
+class GetOHLCVTokenPairInterval(GetOHLCVInterval):
+    address: str
     volume: float  = Field(alias = "v")
 
-class GetOHLCVData(BaseModel):
-    items: list[GetOHLCVInterval]
+class GetOHLCVTokenPairData(BaseModel):
+    items: list[GetOHLCVTokenPairInterval]
 
-class GetOHLCVResponse(BaseModel):
+class GetOHLCVTokenPairResponse(BaseModel):
     """
         Model used to represent the 'OHLCV - Token/Pair' endpoint from birdeye API.
     """
-    data: GetOHLCVData
+    data: GetOHLCVTokenPairData
+    success: bool
+
+# classes used on GET 'OHLCV - Base/Quote' endpoint
+class GetOHLCVBaseQuoteInterval(BaseModel):
+    base_address: str = Field(alias = "baseAddress")
+    quote_address: str = Field(alias = "quoteAddress")
+    base_volume: float = Field(alias = "vBase")
+    quote_volume: float = Field(alias = "vQuote")
+
+class GetOHLCVBaseQuoteData(BaseModel):
+    items: list[GetOHLCVBaseQuoteInterval]
+
+class GetOHLCVBaseQuoteResponse(BaseModel):
+    """
+        Model used to represent the 'OHLCV - Token/Pair' endpoint from birdeye API.
+    """
+    data: GetOHLCVBaseQuoteData
     success: bool
