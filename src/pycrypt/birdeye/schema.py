@@ -205,7 +205,7 @@ class GetTradesPairResponse(BaseModel):
     success: bool
 
 # classes used on GET 'OHLCV - Token' endpoint
-class GetOHLCVTokenInterval(BaseModel):
+class GetOHLCVInterval(BaseModel):
     address: str
     close: float = Field(alias = "c")
     high: float  = Field(alias = "h")
@@ -215,12 +215,12 @@ class GetOHLCVTokenInterval(BaseModel):
     unix_time: int  = Field(alias = "unixTime")
     volume: float  = Field(alias = "v")
 
-class GetOHLCVTokenData(BaseModel):
-    items: list[GetOHLCVTokenInterval]
+class GetOHLCVData(BaseModel):
+    items: list[GetOHLCVInterval]
 
-class GetOHLCVTokenResponse(BaseModel):
+class GetOHLCVResponse(BaseModel):
     """
-        Model used to represent the 'OHLCV - Token' endpoint from birdeye API.
+        Model used to represent the 'OHLCV - Token/Pair' endpoint from birdeye API.
     """
-    data: GetOHLCVTokenData
+    data: GetOHLCVData
     success: bool

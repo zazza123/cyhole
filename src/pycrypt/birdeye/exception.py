@@ -5,3 +5,6 @@ class BirdeyeException(PycryptException):
 
 class TimeRangeError(BirdeyeException):
     pass
+
+class BirdeyeAddressTypeUnknownError(BirdeyeException):
+    pass
