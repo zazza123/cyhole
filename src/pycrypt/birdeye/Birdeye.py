@@ -16,7 +16,8 @@ from ..birdeye.schema import (
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
-    GetOHLCVBaseQuoteResponse
+    GetOHLCVBaseQuoteResponse,
+    GetWalletSupportedNetworksResponse
 )
 
 class Birdeye(APICaller):
@@ -54,6 +55,7 @@ class Birdeye(APICaller):
 
         self.url_api_public = "https://public-api.birdeye.so/defi/"
         self.url_api_private = "https://public-api.birdeye.so/defi/"
+        self.url_api_private_wallet = "https://public-api.birdeye.so/v1/wallet"
         return
 
     def get_token_list(
@@ -576,5 +578,22 @@ class Birdeye(APICaller):
         # execute request
         content_raw = self.api(RequestType.GET.value, url, params = params)
         content = GetOHLCVBaseQuoteResponse(**content_raw.json())
+
+        return content
+
+    def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
+        """
+            This function refers to the PRIVATE endpoint 'Wallet - Supported Networks' and 
+            it is used to get the list of supported chains on Birdeye.
+
+            Return:
+
+            - (birdeye.schema.GetWalletSupportedNetworksResponse) : list of chains returned by birdeye.so
+        """
+        url = self.url_api_private_wallet + "/list_supported_chain"
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url)
+        content = GetWalletSupportedNetworksResponse(**content_raw.json())
 
         return content

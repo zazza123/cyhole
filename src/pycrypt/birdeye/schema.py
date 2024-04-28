@@ -228,7 +228,7 @@ class GetOHLCVTokenPairResponse(BaseModel):
     success: bool
 
 # classes used on GET 'OHLCV - Base/Quote' endpoint
-class GetOHLCVBaseQuoteInterval(BaseModel):
+class GetOHLCVBaseQuoteInterval(GetOHLCVInterval):
     base_address: str = Field(alias = "baseAddress")
     quote_address: str = Field(alias = "quoteAddress")
     base_volume: float = Field(alias = "vBase")
@@ -242,4 +242,12 @@ class GetOHLCVBaseQuoteResponse(BaseModel):
         Model used to represent the 'OHLCV - Token/Pair' endpoint from birdeye API.
     """
     data: GetOHLCVBaseQuoteData
+    success: bool
+
+# classes used on GET 'Wallet - Supported Networks' endpoint
+class GetWalletSupportedNetworksResponse(BaseModel):
+    """
+        Model used to represent the 'Wallet - Supported Networks' endpoint from birdeye API.
+    """
+    data: list[str]
     success: bool

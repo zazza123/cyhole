@@ -17,7 +17,8 @@ from pycrypt.birdeye.schema import (
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
-    GetOHLCVBaseQuoteResponse
+    GetOHLCVBaseQuoteResponse,
+    GetWalletSupportedNetworksResponse
 )
 from pycrypt.core.exception import MissingAPIKeyError
 
@@ -336,6 +337,30 @@ class TestBirdeyePrivate:
 
         # actual test
         assert isinstance(response, GetOHLCVBaseQuoteResponse)
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_wallet_supported_networks(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Wallet - Supported Networks".
+
+            Mock Response File: get_wallet_supported_networks.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+
+        # load mock response
+        mock_file_name = "get_wallet_supported_networks"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetWalletSupportedNetworksResponse)
+            mocker.patch.object(client, "get_wallet_supported_networks", return_value = mock_response)
+            
+        # execute request
+        response = client.get_wallet_supported_networks()
+
+        # actual test
+        assert isinstance(response, GetWalletSupportedNetworksResponse)
 
         # store request (only not mock)
         if not config.birdeye.mock_response:
