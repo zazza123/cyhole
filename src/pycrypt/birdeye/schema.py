@@ -1,3 +1,4 @@
+from typing import Any
 from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
@@ -32,6 +33,51 @@ class GetTokenListResponse(BaseModel):
         Model used to represent the 'Token - List' endpoint from birdeye API.
     """
     data: GetTokenListData
+    success: bool
+
+# classes used on GET 'Token - Security' endpoint
+class GetTokenSecurityDataSolana(BaseModel):
+    """
+        Data specific only for Solana chain
+    """
+    creator_address: str | None = Field(alias = "creatorAddress", default = None)
+    owner_address: str | None = Field(alias = "ownerAddress", default = None)
+    creation_transaction: str | None = Field(alias = "creationTx", default = None)
+    creation_time_unix: int | None = Field(alias = "creationTime", default = None)
+    creation_slot: int | None = Field(alias = "creationSlot", default = None)
+    mint_transaction: str | None = Field(alias = "mintTx", default = None)
+    mint_time_unix: int | None = Field(alias = "mintTime", default = None)
+    mint_slot: int | None = Field(alias = "mintSlot", default = None)
+    mintable: bool | None = None
+    renounce: bool | None = None
+    creator_balance: float | None = Field(alias = "creatorBalance", default = None)
+    creator_percentage: float | None = Field(alias = "creatorPercentage", default = None)
+    owner_balance: float | None = Field(alias = "ownerBalance", default = None)
+    owner_percentage: float | None = Field(alias = "ownerPercentage", default = None)
+    metaplex_update_authority: str = Field(alias = "metaplexUpdateAuthority")
+    metaplex_update_balance: float = Field(alias = "metaplexUpdateAuthorityBalance")
+    metaplex_update_percentage: float = Field(alias = "metaplexUpdateAuthorityPercent")
+    mutable_metadata: bool = Field(alias = "mutableMetadata")
+    top_10_holder_balance: float = Field(alias = "top10HolderBalance")
+    top_10_holder_percentage: float = Field(alias = "top10HolderPercent")
+    top_10_user_balance: float = Field(alias = "top10UserBalance")
+    top_10_user_percentage: float = Field(alias = "top10UserPercent")
+    is_true_token: bool | None = Field(alias = "isTrueToken", default = None)
+    total_supply: float = Field(alias = "totalSupply")
+    pre_market_holder: list[str] = Field(alias = "preMarketHolder")
+    lock_info: Any | None = Field(alias = "lockInfo", default = None)
+    freezeable: bool | None = None
+    freeze_authority: str | None = Field(alias = "freezeAuthority", default = None)
+    transfer_fee_enable: bool | None = Field(alias = "transferFeeEnable", default = None)
+    transfer_fee_data: Any | None = Field(alias = "transferFeeData", default = None)
+    is_token_2022: bool = Field(alias = "isToken2022")
+    non_transferable: bool | None = Field(alias = "nonTransferable", default = None)
+
+class GetTokenSecurityResponse(BaseModel):
+    """
+        Model used to represent the 'Token - Security' endpoint from birdeye API.
+    """
+    data: GetTokenSecurityDataSolana | dict[str, Any]
     success: bool
 
 # classes used on GET 'Token - Creation Token Info' endpoint

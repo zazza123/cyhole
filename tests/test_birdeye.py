@@ -1,4 +1,3 @@
-import json
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -6,10 +5,11 @@ import pytest
 from pytest_mock import MockerFixture
 
 from pycrypt.birdeye import Birdeye
-from pycrypt.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame
+from pycrypt.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame, BirdeyeChain
 from pycrypt.birdeye.schema import (
     GetTokenListResponse,
     GetTokenCreationInfoResponse,
+    GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
@@ -199,6 +199,61 @@ class TestBirdeyePrivate:
 
         # actual test
         assert isinstance(response, GetTokenCreationInfoResponse)
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_token_security_solana(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Security" specifically for Solana chain.
+
+            Mock Response File: get_token_security_solana.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+
+        # load mock response
+        mock_file_name = "get_token_security_solana"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
+            mocker.patch.object(client, "get_token_security", return_value = mock_response)
+            
+        # execute request
+        response = client.get_token_security(
+            address = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ"
+        )
+
+        # actual test
+        assert isinstance(response, GetTokenSecurityResponse)
+        assert isinstance(response.data, GetTokenSecurityDataSolana)
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_token_security_other(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Security" specifically for other chains.
+
+            Mock Response File: get_token_security_other.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+
+        # load mock response
+        mock_file_name = "get_token_security_other"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
+            mocker.patch.object(client, "get_token_security", return_value = mock_response)
+            
+        # execute request
+        response = client.get_token_security(
+            address = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ", 
+            chain = BirdeyeChain.ETHEREUM.value
+        )
+
+        # actual test
+        assert isinstance(response, GetTokenSecurityResponse)
+        assert isinstance(response.data, dict)
 
         # store request (only not mock)
         if not config.birdeye.mock_response:

@@ -8,6 +8,7 @@ from ..birdeye.param import BirdeyeChain, BirdeyeOrder, BirdeyeSort, BirdeyeTrad
 from ..birdeye.exception import TimeRangeError, BirdeyeAddressTypeUnknownError
 from ..birdeye.schema import (
     GetTokenListResponse,
+    GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
@@ -151,6 +152,44 @@ class Birdeye(APICaller):
         content = GetTokenCreationInfoResponse(**content_raw.json())
 
         return content
+
+    def get_token_security(
+        self,
+        address: str,
+        chain: str = BirdeyeChain.SOLANA.value
+    ) -> GetTokenSecurityResponse:
+        """
+            This function refers to the PRIVATE endpoint 'Token - Security' and is used 
+            to get the useful information related to the security of a token  on a specific
+            chain calculated by Birdeye.
+
+            Args:
+
+            - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+            
+            Return:
+
+            - (birdeye.schema.GetTokenSecurityResponse) : token's security information. \\
+                Observe that the content of 'data' value depends on the selected chain.
+        """
+
+        # set params
+        url = self.url_api_public + "token_security"
+        params = {
+            "x-chain" : chain,
+            "address" : address
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetTokenSecurityResponse(**content_raw.json())
+
+        return content.data
 
     def get_price(
         self,
