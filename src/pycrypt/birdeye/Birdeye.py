@@ -607,7 +607,7 @@ class Birdeye(APICaller):
         """
         # check address type
         if address_type not in BirdeyeAddressType:
-            raise BirdeyeAddressTypeUnknownError(f"address type '{address_type}' not supported. \nAdmissible values: {list(BirdeyeAddressType.__members__)}")
+            raise BirdeyeAddressTypeUnknownError(address_type)
 
         # set default
         if dt_to is None:

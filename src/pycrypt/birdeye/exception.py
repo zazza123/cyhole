@@ -1,5 +1,9 @@
 from ..core.exception import PycryptException
 
+from ..birdeye.param import (
+    BirdeyeAddressType
+)
+
 class BirdeyeException(PycryptException):
     pass
 
@@ -11,4 +15,6 @@ class BirdeyeTimeRangeError(BirdeyeException):
     pass
 
 class BirdeyeAddressTypeUnknownError(BirdeyeException):
-    pass
+    def __init__(self, address_type: str):
+        description = f"address type '{address_type}' not supported. \nAdmissible values: {BirdeyeAddressType.__members__}"
+        super().__init__(description)
