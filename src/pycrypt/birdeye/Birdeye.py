@@ -10,6 +10,7 @@ from ..birdeye.schema import (
     GetTokenListResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
+    GetTokenOverviewResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
@@ -190,6 +191,44 @@ class Birdeye(APICaller):
         content = GetTokenSecurityResponse(**content_raw.json())
 
         return content.data
+
+    def get_token_overview(
+        self,
+        address: str,
+        chain: str = BirdeyeChain.SOLANA.value
+    ) -> GetTokenOverviewResponse:
+        """
+            This function refers to the PRIVATE endpoint 'Token - Overview' and is used 
+            to get all kind of information (token/mint/creator adresses, high level statistics, ...)
+            of a token on a specific chain calculated by Birdeye.
+
+            Args:
+
+            - address (str) [mandatory] : CA of the token to search on the chain.
+
+            - chain (str) [optional] : identifier of the chain to check. \\
+                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                Import them from the library to use the correct identifier. \\
+                Default Value: Solana.
+            
+            Return:
+
+            - (birdeye.schema.GetTokenOverviewResponse) : token's information. \\
+                Observe that the content of 'data' value depends on the selected chain.
+        """
+
+        # set params
+        url = self.url_api_public + "token_overview"
+        params = {
+            "x-chain" : chain,
+            "address" : address
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+        content = GetTokenOverviewResponse(**content_raw.json())
+
+        return content
 
     def get_price(
         self,

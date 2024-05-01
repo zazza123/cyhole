@@ -10,6 +10,7 @@ from pycrypt.birdeye.schema import (
     GetTokenListResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
+    GetTokenOverviewResponse,
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
@@ -254,6 +255,58 @@ class TestBirdeyePrivate:
         # actual test
         assert isinstance(response, GetTokenSecurityResponse)
         assert isinstance(response.data, dict)
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_token_overview_solana(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Overview" specifically for Solana chain.
+
+            Mock Response File: get_token_overview_solana.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+        token_address = "So11111111111111111111111111111111111111112"
+
+        # load mock response
+        mock_file_name = "get_token_overview_solana"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
+            mocker.patch.object(client, "get_token_overview", return_value = mock_response)
+            
+        # execute request
+        response = client.get_token_overview(token_address)
+
+        # actual test
+        assert isinstance(response, GetTokenOverviewResponse)
+        assert response.data.address == token_address
+
+        # store request (only not mock)
+        if not config.birdeye.mock_response:
+            self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_token_overview_ethereum(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Overview" specifically for Ethereum chain.
+
+            Mock Response File: get_token_overview_ethereum.json
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+        token_address = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+
+        # load mock response
+        mock_file_name = "get_token_overview_ethereum"
+        if config.birdeye.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
+            mocker.patch.object(client, "get_token_overview", return_value = mock_response)
+            
+        # execute request
+        response = client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
+
+        # actual test
+        assert isinstance(response, GetTokenOverviewResponse)
+        assert response.data.address == token_address
 
         # store request (only not mock)
         if not config.birdeye.mock_response:
