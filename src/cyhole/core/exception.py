@@ -1,9 +1,9 @@
 from typing import Type, Any
 from enum import Enum
 
-class PycryptException(Exception):
+class CyholeException(Exception):
     """
-        General exception of pycrypt library
+        General exception of Cyhole library
     """
     def __init__(self, description):
         self.description = description
@@ -11,16 +11,16 @@ class PycryptException(Exception):
     def __str__(self):
         return self.description
     
-class RequestTypeNotSupported(PycryptException):
+class RequestTypeNotSupported(CyholeException):
     pass
 
-class AuthorizationAPIKeyError(PycryptException):
+class AuthorizationAPIKeyError(CyholeException):
     pass
 
-class MissingAPIKeyError(PycryptException):
+class MissingAPIKeyError(CyholeException):
     pass
 
-class ParamUnknownError(PycryptException):
+class ParamUnknownError(CyholeException):
     """
         General error used to manage a wrong input API param.
     """

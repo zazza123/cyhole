@@ -1,7 +1,7 @@
 """
     This file is used to load and manage all the tests' configurations.
 
-    The 'pycrypt' library interacts with many external API that requires 
+    The 'cyhole' library interacts with many external API that requires 
     an API Key in order to extract data. Since the usage of these API Keys 
     is subjected to costs, a proper configuration for the tests was required.
 

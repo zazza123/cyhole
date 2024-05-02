@@ -3,7 +3,7 @@ from enum import Enum
 
 from ..core.exception import ParamUnknownError
 
-class PycryptParam(Enum):
+class CyholeParam(Enum):
     """
         Generic Enum representing a param for an API endpoint
     """
@@ -24,7 +24,7 @@ class PycryptParam(Enum):
             raise ParamUnknownError(value, cls)
         return
 
-class RequestType(PycryptParam):
+class RequestType(CyholeParam):
     """
         Enum class for RequestType
     """

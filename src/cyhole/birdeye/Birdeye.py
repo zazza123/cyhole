@@ -42,7 +42,7 @@ class Birdeye(APICaller):
         **Example**
 
         ```python
-        from pycrypt.birdeye import Birdeye
+        from cyhole.birdeye import Birdeye
 
         # get current token list on Solana
         birdeye = Birdeye()
@@ -82,19 +82,19 @@ class Birdeye(APICaller):
             Args:
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
             - sort_by (str) [optional] : define the type of sorting to apply in the 
                 extraction; e.g. USD volume in the last 24h. \\
-                The sorting types are available on 'pycrypt.birdeye.param.BirdeyeSort'. \\
+                The sorting types are available on 'cyhole.birdeye.param.BirdeyeSort'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: sort by last 24h USD volume.
 
             - order_by (str) [optional] : define the type of ordering to apply in the 
                 extraction; e.g. ascending or descending. \\
-                The sorting types are available on 'pycrypt.birdeye.param.BirdeyeOrder'. \\
+                The sorting types are available on 'cyhole.birdeye.param.BirdeyeOrder'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: descending.
 
@@ -148,7 +148,7 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
             
@@ -192,7 +192,7 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
             
@@ -237,7 +237,7 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
             
@@ -280,7 +280,7 @@ class Birdeye(APICaller):
                 Default Value: None (False)
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
@@ -328,7 +328,7 @@ class Birdeye(APICaller):
                 Default Value: None (False)
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
@@ -376,12 +376,12 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - address_type (str) [mandatory] : the type of address involved in the extraction. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeAddressType'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeAddressType'. \\
                 Import them from the library to use the correct identifier.
 
             - timeframe (str) [mandatory] : the type of timeframe involved in the extraction. \\
                 The timeframe is used to define intervall between a measure and the next one. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTimeFrame'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeTimeFrame'. \\
                 Import them from the library to use the correct identifier.
 
             - dt_from (datetime) [optional] : beginning time to take take price data.
@@ -391,7 +391,7 @@ class Birdeye(APICaller):
                 If not ptovided (None), the current time is used.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
@@ -442,7 +442,7 @@ class Birdeye(APICaller):
             Args:
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
@@ -487,12 +487,12 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - trade_type (str) [optional] : the type of transactions to extract. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTradeType'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeTradeType'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Swap.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
@@ -550,18 +550,18 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - trade_type (str) [optional] : the type of transactions to extract. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTradeType'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeTradeType'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Swap.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
             - order_by (str) [optional] : define the type of ordering to apply in the 
                 extraction; e.g. ascending or descending. \\
-                The sorting types are available on 'pycrypt.birdeye.param.BirdeyeOrder'. \\
+                The sorting types are available on 'cyhole.birdeye.param.BirdeyeOrder'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: descending.
 
@@ -620,12 +620,12 @@ class Birdeye(APICaller):
             - address (str) [mandatory] : CA of the token to search on the chain.
 
             - address_type (str) [mandatory] : the type of address involved in the extraction (token/pair). \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeAddressType'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeAddressType'. \\
                 Import them from the library to use the correct identifier.
 
             - timeframe (str) [mandatory] : the type of timeframe involved in the extraction. \\
                 The timeframe is used to define intervall between a measure and the next one. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTimeFrame'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeTimeFrame'. \\
                 Import them from the library to use the correct identifier.
 
             - dt_from (datetime) [optional] : beginning time to take take price data.
@@ -635,7 +635,7 @@ class Birdeye(APICaller):
                 If not ptovided (None), the current time is used.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 
@@ -701,7 +701,7 @@ class Birdeye(APICaller):
 
             - timeframe (str) [mandatory] : the type of timeframe involved in the extraction. \\
                 The timeframe is used to define intervall between a measure and the next one. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeTimeFrame'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeTimeFrame'. \\
                 Import them from the library to use the correct identifier.
 
             - dt_from (datetime) [optional] : beginning time to take take price data.
@@ -711,7 +711,7 @@ class Birdeye(APICaller):
                 If not ptovided (None), the current time is used.
 
             - chain (str) [optional] : identifier of the chain to check. \\
-                The supported chains are available on 'pycrypt.birdeye.param.BirdeyeChain'. \\
+                The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'. \\
                 Import them from the library to use the correct identifier. \\
                 Default Value: Solana.
 

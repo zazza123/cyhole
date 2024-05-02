@@ -1,6 +1,6 @@
-from ..core.param import PycryptParam
+from ..core.param import CyholeParam
 
-class BirdeyeChain(PycryptParam):
+class BirdeyeChain(CyholeParam):
     """
         Enum class to get the supported Birdeye's chains.
     """
@@ -23,7 +23,7 @@ class BirdeyeChain(PycryptParam):
     ZKSYNC = "zksync"
     """Identifier of the zkSync chain in Birdeye API."""
 
-class BirdeyeOrder(PycryptParam):
+class BirdeyeOrder(CyholeParam):
     """
         Enum class to get the supported Birdeye's orders.
     """
@@ -32,7 +32,7 @@ class BirdeyeOrder(PycryptParam):
     DESCENDING = "desc"
     """Descending sort order."""
 
-class BirdeyeSort(PycryptParam):
+class BirdeyeSort(CyholeParam):
     """
         Enum class to get the supported Birdeye's sorting types.
     """
@@ -43,7 +43,7 @@ class BirdeyeSort(PycryptParam):
     SORT_V24HCHANGEPERCENT = "v24hChangePercent"
     """Sort the results by percent changing in the last 24h"""
 
-class BirdeyeTimeFrame(PycryptParam):
+class BirdeyeTimeFrame(CyholeParam):
     """
         Enum class to get the supported Birdeye's timeframe sizes.
     """
@@ -78,7 +78,7 @@ class BirdeyeTimeFrame(PycryptParam):
     M1 = "1M"
     """1 month"""
 
-class BirdeyeAddressType(PycryptParam):
+class BirdeyeAddressType(CyholeParam):
     """
         Enum class to get the supported Birdeye's address' types.
     """
@@ -87,7 +87,7 @@ class BirdeyeAddressType(PycryptParam):
     PAIR = "pair"
     """The address is refering to a token pair on the chain. (e.g. SOL/USDT)"""
 
-class BirdeyeTradeType(PycryptParam):
+class BirdeyeTradeType(CyholeParam):
     """
         Enum class to get the supported Birdeye's transactions' types.
     """

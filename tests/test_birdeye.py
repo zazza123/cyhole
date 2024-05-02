@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 from pytest_mock import MockerFixture
 
-from pycrypt.birdeye import Birdeye
-from pycrypt.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame, BirdeyeChain
-from pycrypt.birdeye.schema import (
+from cyhole.birdeye import Birdeye
+from cyhole.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame, BirdeyeChain
+from cyhole.birdeye.schema import (
     GetTokenListResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
@@ -21,7 +21,7 @@ from pycrypt.birdeye.schema import (
     GetOHLCVBaseQuoteResponse,
     GetWalletSupportedNetworksResponse
 )
-from pycrypt.core.exception import MissingAPIKeyError
+from cyhole.core.exception import MissingAPIKeyError
 
 # load test config
 from tests.config import load_config, TestMocker

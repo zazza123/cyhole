@@ -1,6 +1,6 @@
-from ..core.exception import PycryptException
+from ..core.exception import CyholeException
 
-class BirdeyeException(PycryptException):
+class BirdeyeException(CyholeException):
     pass
 
 class BirdeyeAuthorisationError(BirdeyeException):
