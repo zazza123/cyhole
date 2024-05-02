@@ -1,3 +1,6 @@
+from typing import Type, Any
+from enum import Enum
+
 class PycryptException(Exception):
     """
         General exception of pycrypt library
@@ -16,3 +19,11 @@ class AuthorizationAPIKeyError(PycryptException):
 
 class MissingAPIKeyError(PycryptException):
     pass
+
+class ParamUnknownError(PycryptException):
+    """
+        General error used to manage a wrong input API param.
+    """
+    def __init__(self, param_value: Any, param_enum: Type[Enum]):
+        description = f"param '{str(param_value)}' not supported. \nAdmissible values: {param_enum.__members__}"
+        super().__init__(description)

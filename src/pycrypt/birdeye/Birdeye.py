@@ -8,12 +8,18 @@ from ..birdeye.param import (
     BirdeyeChain,
     BirdeyeOrder,
     BirdeyeSort,
+    BirdeyeTimeFrame,
     BirdeyeTradeType,
     BirdeyeAddressType
 )
 from ..birdeye.exception import (
     BirdeyeTimeRangeError,
     BirdeyeAuthorisationError,
+    BirdeyeChainUnknownError,
+    BirdeyeOrderUnknownError,
+    BirdeyeSortUnknownError,
+    BirdeyeTimeFrameUnknownError,
+    BirdeyeTradeTypeUnknownError,
     BirdeyeAddressTypeUnknownError
 )
 from ..birdeye.schema import (
@@ -42,7 +48,7 @@ class Birdeye(APICaller):
         If the API key is not provided during the object creation, then it is automatically 
         retrieved from ENV variable BIRDEYE_API_KEY.
 
-        Example
+        **Example**
 
         ```python
         from pycrypt.birdeye import Birdeye
@@ -111,6 +117,10 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTokenListResponse) : list of tokens returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        self.check_param(sort_by, BirdeyeSort, BirdeyeSortUnknownError)
+        self.check_param(order_by, BirdeyeOrder, BirdeyeOrderUnknownError)
 
         # set params
         url = self.url_api_public + "tokenlist"
@@ -155,6 +165,8 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTokenCreationInfoResponse) : token's creation information.
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
 
         # set params
         url = self.url_api_public + "token_creation_info"
@@ -198,6 +210,8 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetTokenSecurityResponse) : token's security information. \\
                 Observe that the content of 'data' value depends on the selected chain.
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
 
         # set params
         url = self.url_api_public + "token_security"
@@ -241,6 +255,8 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetTokenOverviewResponse) : token's information. \\
                 Observe that the content of 'data' value depends on the selected chain.
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
 
         # set params
         url = self.url_api_public + "token_overview"
@@ -281,6 +297,8 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetPriceResponse) : token's price returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
 
         # set params
         url = self.url_api_public + "price"
@@ -327,6 +345,8 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetPriceMultipleResponse) : list of tokens returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
 
         # set params
         url = self.url_api_public + "multi_price"
@@ -388,6 +408,10 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetPriceHistoricalResponse) : list of prices returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        self.check_param(address_type, BirdeyeAddressType, BirdeyeAddressTypeUnknownError)
+        self.check_param(timeframe, BirdeyeTimeFrame, BirdeyeTimeFrameUnknownError)
 
         # set default
         if dt_to is None:
@@ -435,6 +459,8 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetHistoryResponse) : list of prices returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
 
         # set params
         url = self.url_api_public + "history_price"
@@ -489,6 +515,9 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTradesTokenResponse) : list of prices returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        self.check_param(trade_type, BirdeyeTradeType, BirdeyeTradeTypeUnknownError)
 
         # set params
         url = self.url_api_private + "txs/token"
@@ -555,6 +584,10 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetTradesPairResponse) : list of prices returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        self.check_param(order_by, BirdeyeOrder, BirdeyeOrderUnknownError)
+        self.check_param(trade_type, BirdeyeTradeType, BirdeyeTradeTypeUnknownError)
 
         # set params
         url = self.url_api_private + "txs/pair"
@@ -619,9 +652,10 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetOHLCVTokenPairResponse) : list of prices returned by birdeye.so
         """
-        # check address type
-        if address_type not in BirdeyeAddressType:
-            raise BirdeyeAddressTypeUnknownError(address_type)
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        self.check_param(address_type, BirdeyeAddressType, BirdeyeAddressTypeUnknownError)
+        self.check_param(timeframe, BirdeyeTimeFrame, BirdeyeTimeFrameUnknownError)
 
         # set default
         if dt_to is None:
@@ -694,6 +728,10 @@ class Birdeye(APICaller):
 
             - (birdeye.schema.GetOHLCVBaseQuoteResponse) : list of prices returned by birdeye.so
         """
+        # check param consistency
+        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        self.check_param(timeframe, BirdeyeTimeFrame, BirdeyeTimeFrameUnknownError)
+
         # set default
         if dt_to is None:
             dt_to = datetime.now()
