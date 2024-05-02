@@ -25,5 +25,5 @@ class ParamUnknownError(PycryptException):
         General error used to manage a wrong input API param.
     """
     def __init__(self, param_value: Any, param_enum: Type[Enum]):
-        description = f"param '{str(param_value)}' not supported. \nAdmissible values: {param_enum.__members__}"
+        description = f"param '{str(param_value)}' not supported in {param_enum.__name__} enum class. \nAdmissible values: {[(param.name, param.value) for param in param_enum]}"
         super().__init__(description)

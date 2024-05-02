@@ -4,6 +4,7 @@ from datetime import datetime
 from ..core.api import APICaller
 from ..core.param import RequestType
 from ..core.exception import MissingAPIKeyError, AuthorizationAPIKeyError
+from ..birdeye.exception import BirdeyeTimeRangeError, BirdeyeAuthorisationError
 from ..birdeye.param import (
     BirdeyeChain,
     BirdeyeOrder,
@@ -11,16 +12,6 @@ from ..birdeye.param import (
     BirdeyeTimeFrame,
     BirdeyeTradeType,
     BirdeyeAddressType
-)
-from ..birdeye.exception import (
-    BirdeyeTimeRangeError,
-    BirdeyeAuthorisationError,
-    BirdeyeChainUnknownError,
-    BirdeyeOrderUnknownError,
-    BirdeyeSortUnknownError,
-    BirdeyeTimeFrameUnknownError,
-    BirdeyeTradeTypeUnknownError,
-    BirdeyeAddressTypeUnknownError
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -118,9 +109,9 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetTokenListResponse) : list of tokens returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
-        self.check_param(sort_by, BirdeyeSort, BirdeyeSortUnknownError)
-        self.check_param(order_by, BirdeyeOrder, BirdeyeOrderUnknownError)
+        BirdeyeChain.check(chain)
+        BirdeyeSort.check(sort_by)
+        BirdeyeOrder.check(order_by)
 
         # set params
         url = self.url_api_public + "tokenlist"
@@ -166,7 +157,7 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetTokenCreationInfoResponse) : token's creation information.
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        BirdeyeChain.check(chain)
 
         # set params
         url = self.url_api_public + "token_creation_info"
@@ -211,7 +202,7 @@ class Birdeye(APICaller):
                 Observe that the content of 'data' value depends on the selected chain.
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        BirdeyeChain.check(chain)
 
         # set params
         url = self.url_api_public + "token_security"
@@ -256,7 +247,7 @@ class Birdeye(APICaller):
                 Observe that the content of 'data' value depends on the selected chain.
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        BirdeyeChain.check(chain)
 
         # set params
         url = self.url_api_public + "token_overview"
@@ -298,7 +289,7 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetPriceResponse) : token's price returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        BirdeyeChain.check(chain)
 
         # set params
         url = self.url_api_public + "price"
@@ -346,7 +337,7 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetPriceMultipleResponse) : list of tokens returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        BirdeyeChain.check(chain)
 
         # set params
         url = self.url_api_public + "multi_price"
@@ -409,9 +400,9 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetPriceHistoricalResponse) : list of prices returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
-        self.check_param(address_type, BirdeyeAddressType, BirdeyeAddressTypeUnknownError)
-        self.check_param(timeframe, BirdeyeTimeFrame, BirdeyeTimeFrameUnknownError)
+        BirdeyeChain.check(chain)
+        BirdeyeAddressType.check(address_type)
+        BirdeyeTimeFrame.check(timeframe)
 
         # set default
         if dt_to is None:
@@ -460,7 +451,7 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetHistoryResponse) : list of prices returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
+        BirdeyeChain.check(chain)
 
         # set params
         url = self.url_api_public + "history_price"
@@ -516,8 +507,8 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetTradesTokenResponse) : list of prices returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
-        self.check_param(trade_type, BirdeyeTradeType, BirdeyeTradeTypeUnknownError)
+        BirdeyeChain.check(chain)
+        BirdeyeTradeType.check(trade_type)
 
         # set params
         url = self.url_api_private + "txs/token"
@@ -585,9 +576,9 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetTradesPairResponse) : list of prices returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
-        self.check_param(order_by, BirdeyeOrder, BirdeyeOrderUnknownError)
-        self.check_param(trade_type, BirdeyeTradeType, BirdeyeTradeTypeUnknownError)
+        BirdeyeChain.check(chain)
+        BirdeyeOrder.check(order_by)
+        BirdeyeTradeType.check(trade_type)
 
         # set params
         url = self.url_api_private + "txs/pair"
@@ -653,9 +644,9 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetOHLCVTokenPairResponse) : list of prices returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
-        self.check_param(address_type, BirdeyeAddressType, BirdeyeAddressTypeUnknownError)
-        self.check_param(timeframe, BirdeyeTimeFrame, BirdeyeTimeFrameUnknownError)
+        BirdeyeChain.check(chain)
+        BirdeyeAddressType.check(address_type)
+        BirdeyeTimeFrame.check(timeframe)
 
         # set default
         if dt_to is None:
@@ -729,8 +720,8 @@ class Birdeye(APICaller):
             - (birdeye.schema.GetOHLCVBaseQuoteResponse) : list of prices returned by birdeye.so
         """
         # check param consistency
-        self.check_param(chain, BirdeyeChain, BirdeyeChainUnknownError)
-        self.check_param(timeframe, BirdeyeTimeFrame, BirdeyeTimeFrameUnknownError)
+        BirdeyeChain.check(chain)
+        BirdeyeTimeFrame.check(timeframe)
 
         # set default
         if dt_to is None:

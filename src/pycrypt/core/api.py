@@ -1,9 +1,8 @@
 import requests
-from enum import Enum
-from typing import Any, Type
+from typing import Any
 
 from ..core.param import RequestType
-from ..core.exception import RequestTypeNotSupported, AuthorizationAPIKeyError, ParamUnknownError
+from ..core.exception import RequestTypeNotSupported, AuthorizationAPIKeyError
 
 class APICaller:
     """
@@ -50,30 +49,3 @@ class APICaller:
             case _:
                 response.raise_for_status()
                 return response
-
-    def check_param(
-        self,
-        value: Any,
-        enum_type: Type[Enum],
-        unknown_error_type: Type[ParamUnknownError] | None = None
-    ) -> None:
-        """
-            Function used to check the consistency of an input API parameter (param)
-            belonging to a value list (enum.Enum).
-
-            Args:
-
-            - value (Any) [mandatory]: value to check.
-
-            - enum_type (Type[enum.Enum]) [mandatory]: class identifying the value list.
-
-            - unknown_error_type (Type[ParamUnknownError]) [optional]: exception to raise if
-                the value is not inside the value list. \\
-                Default: ..core.exception.ParamUnknownError
-        """
-        if value not in enum_type:
-            if unknown_error_type is None:
-                raise ParamUnknownError(value, enum_type)
-            else:
-                raise unknown_error_type(value, enum_type)
-        return
