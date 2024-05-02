@@ -432,7 +432,6 @@ class GetPriceMultipleResponse(BaseModel):
 
 # classes used on GET 'Price - Historical' endpoint
 class GetPriceHistoricalMeasure(BaseModel):
-    address: str
     unix_time: int = Field(alias = "unixTime")
     value: float
 
