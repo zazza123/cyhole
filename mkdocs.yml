@@ -1,0 +1,101 @@
+site_name: cyhole
+
+repo_url: https://github.com/zazza123/cyhole
+repo_name: zazza123/cyhole
+
+theme:
+  name: material
+  custom_dir: docs/config/overrides
+  language: en
+  icon:
+    #logo: simple/circle
+    logo: material/rotate-orbit
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tabs
+    - navigation.top
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+  palette:
+    # Light Mode Palette
+    - media: "(prefers-color-scheme: light)"
+      primary: black
+      scheme: default
+      toggle:
+        icon: octicons/moon-24
+        name: Switch to Dark Mode
+    # Dark Mode Palette
+    - media: "(prefers-color-scheme: dark)"
+      primary: white
+      scheme: slate
+      toggle:
+        icon: octicons/sun-24
+        name: Switch to Light Mode
+
+plugins:
+  - search
+  - offline
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_inheritance_diagram: true
+            show_root_heading: true
+            merge_init_into_class: true
+            annotations_path: source
+            separate_signature: true
+            show_signature_annotations: true
+            #signature_crossrefs: true
+
+markdown_extensions:
+
+  # Python Markdown
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+
+  # Python Markdown Extensions
+  - pymdownx.snippets
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.mark
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Navigation
+nav:
+  - index.md
+  - Core:
+    - core/index.md
+    - Connector: core/api.md
+    - API Parameters: core/param.md
+    - Exceptions: core/exception.md
+  - Interactions:
+    - Birdeye:
+      - interactions/birdeye/index.md
+      - Connector: interactions/birdeye/api.md
+      - API Parameters: interactions/birdeye/param.md
+      - Response Schema: interactions/birdeye/schema.md
+      - Exceptions: interactions/birdeye/exception.md
+
+extra_css:
+  - config/css/mkdocstrings.css

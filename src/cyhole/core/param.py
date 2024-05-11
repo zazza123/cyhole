@@ -16,9 +16,8 @@ class CyholeParam(Enum):
             The function will raise a ParamUnknownError if the value
             does not belong to the Enum.
 
-            Args:
-
-            - value (Any) [mandatory]: value to check.
+            Parameters:
+                value: value to check.
         """
         if value not in cls:
             raise ParamUnknownError(value, cls)

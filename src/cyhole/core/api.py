@@ -11,7 +11,8 @@ class APICaller:
 
         During the creation of the object is possible to specify some global configurations:
 
-        - header (dict) [optional] : header used globally in all the API requests.
+        Parameters:
+            header: header used globally in all the API requests.
     """
     def __init__(self, header: Any | None = None) -> None:
         self.header = header
@@ -21,12 +22,13 @@ class APICaller:
         """
             Function in charge to execute a request to an API endpoint.
 
-            Args:
+            Parameters:
+                type: request's type.
+                    Admissible values: GET, POST, PUT, PATCH, DELETE.
+                url: API endpoint.
 
-            - type (str) [mandatory]: request's type. \\
-                Admissible values: GET, POST, PUT, PATCH, DELETE.
-            
-            - url (str) [mandatory]: API endpoint.
+            Returns:
+                The response object from the request.
         """
         # check for headers
         headers = self.header
