@@ -6,13 +6,14 @@ from ..core.exception import RequestTypeNotSupported, AuthorizationAPIKeyError
 
 class APICaller:
     """
-        Class used to manage all the REST calls to an external API by using 'requests' module. \\
-        Use this class as middlelayer to manage all the requests to an external API.
+        Class used to manage all the REST calls to an external API by using `requests` module. 
+        Use this class as middlelayer to manage all the requests to an external API. 
+        By default, all new connectors should inherit from this class.
 
-        During the creation of the object is possible to specify some global configurations:
+        During the creation of the object is possible to specify some global configurations.
 
         Parameters:
-            header: header used globally in all the API requests.
+            header: header used globally in all API requests.
     """
     def __init__(self, header: Any | None = None) -> None:
         self.header = header
@@ -23,12 +24,15 @@ class APICaller:
             Function in charge to execute a request to an API endpoint.
 
             Parameters:
-                type: request's type.
-                    Admissible values: GET, POST, PUT, PATCH, DELETE.
+                type: request's type ([`RequestType`][cyhole.core.param.RequestType]).
                 url: API endpoint.
 
             Returns:
-                The response object from the request.
+                The response object from `request`library.
+
+            Raises:
+                RequestTypeNotSupported: if the request type is not a valid value of [`RequestType`][cyhole.core.param.RequestType].
+                AuthorizationAPIKeyError: if the response return a 401 code.
         """
         # check for headers
         headers = self.header

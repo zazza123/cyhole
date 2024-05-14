@@ -31,13 +31,17 @@ from ..birdeye.schema import (
 
 class Birdeye(APICaller):
     """
-        Class used to connect https://birdeye.so API. \\  
+        Class used to connect [https://birdeye.so](https://birdeye.so) API.
         To have access Birdeye API (public or private) is required to have a valid API key.
 
-        Check https://docs.birdeye.so for all the details on the available endpoints.
+        Check [https://docs.birdeye.so](https://docs.birdeye.so) for all the details on the available endpoints.
 
-        If the API key is not provided during the object creation, then it is automatically 
-        retrieved from ENV variable BIRDEYE_API_KEY.
+        !!! info
+            If the API key is not provided during the object creation, then it is automatically 
+            retrieved from ENV variable **BIRDEYE_API_KEY**.
+
+        Parameters:
+            api_key: specify the API key to use for the connection.
 
         **Example**
 
@@ -48,6 +52,9 @@ class Birdeye(APICaller):
         birdeye = Birdeye()
         token_list = Birdeye().get_token_list()
         ```
+
+        Raises:
+            MissingAPIKeyError: if no API Key was available during the object creation.
     """
     def __init__(self, api_key: str | None = None) -> None:
 
@@ -76,31 +83,30 @@ class Birdeye(APICaller):
         limit: int | None = None
     ) -> GetTokenListResponse:
         """
-            This function refers to the PUBLIC endpoint 'Token - List' and is used 
+            This function refers to the PUBLIC endpoint **Token - List** and is used 
             to get the list of Birdeye tokens according on a specific chain.
 
             Parameters:
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
                 sort_by: define the type of sorting to apply in the
                     extraction; e.g. USD volume in the last 24h.
-                    The sorting types are available on 'cyhole.birdeye.param.BirdeyeSort'.
+                    The sorting types are available on [`BirdeyeSort`][cyhole.birdeye.param.BirdeyeSort].
                     Import them from the library to use the correct identifier.
-                    Default Value: sort by last 24h USD volume.
                 order_by: define the type of ordering to apply in the 
                     extraction; e.g. ascending or descending.
-                    The sorting types are available on 'cyhole.birdeye.param.BirdeyeOrder'.
+                    The sorting types are available on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
                     Import them from the library to use the correct identifier.
-                    Default Value: descending.
                 offset: offset to apply in the extraction.
-                    Default Value: None
                 limit: limit the number of returned records in the extraction.
-                    Default Value: None
 
             Returns:
                 list of tokens returned by birdeye.so
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -134,18 +140,21 @@ class Birdeye(APICaller):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetTokenCreationInfoResponse:
         """
-            This function refers to the PRIVATE endpoint 'Token - Creation Token Info' and is used 
+            This function refers to the PRIVATE endpoint **Token - Creation Token Info** and is used 
             to get the current price of a token according on a specific chain on Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
             
             Returns:
                 token's creation information.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -174,20 +183,23 @@ class Birdeye(APICaller):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetTokenSecurityResponse:
         """
-            This function refers to the PRIVATE endpoint 'Token - Security' and is used 
+            This function refers to the PRIVATE endpoint **Token - Security** and is used 
             to get the useful information related to the security of a token  on a specific
             chain calculated by Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
             
             Returns:
                 token's security information.
-                    Observe that the content of 'data' value depends on the selected chain.
+                    Observe that the content of `data` value depends on the selected chain.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -216,20 +228,23 @@ class Birdeye(APICaller):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetTokenOverviewResponse:
         """
-            This function refers to the PRIVATE endpoint 'Token - Overview' and is used 
+            This function refers to the PRIVATE endpoint **Token - Overview** and is used 
             to get all kind of information (token/mint/creator adresses, high level statistics, ...)
             of a token on a specific chain calculated by Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
             
             Returns:
                 token's information.
-                    Observe that the content of 'data' value depends on the selected chain.
+                    Observe that the content of `data` value depends on the selected chain.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -254,20 +269,23 @@ class Birdeye(APICaller):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetPriceResponse:
         """
-            This function refers to the PUBLIC endpoint 'Price' and is used 
+            This function refers to the PUBLIC endpoint **Price** and is used 
             to get the current price of a token according on a specific chain on Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 include_liquidity: include the current liquidity of the token.
-                    Default Value: None (False)
+                    Default Value: `None` (`False`)
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
 
             Returns:
-                token's price returned by birdeye.so
+                token's price returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -298,20 +316,23 @@ class Birdeye(APICaller):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetPriceMultipleResponse:
         """
-            This function refers to the PUBLIC endpoint 'Price - Multiple' and is used 
+            This function refers to the PUBLIC endpoint **Price - Multiple** and is used 
             to get the current price of multeple tokens on a specific chain on Birdeye.
 
             Parameters:
                 list_address: CA of the tokens to search on the chain.
                 include_liquidity: include the current liquidity of the token.
-                    Default Value: None (False)
+                    Default Value: `None` (`False`)
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
 
             Returns:
-                list of tokens returned by birdeye.so
+                list of tokens returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -345,29 +366,32 @@ class Birdeye(APICaller):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetPriceHistoricalResponse:
         """
-            This function refers to the PUBLIC endpoint 'Price - Historical' and is used 
+            This function refers to the PUBLIC endpoint **Price - Historical** and is used 
             to get the history of prices of a token according on a specific chain on Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 address_type: the type of address involved in the extraction.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeAddressType'.
+                    The supported chains are available on [`BirdeyeAddressType`][cyhole.birdeye.param.BirdeyeAddressType].
                     Import them from the library to use the correct identifier.
                 timeframe: the type of timeframe involved in the extraction.
                     The timeframe is used to define intervall between a measure and the next one.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeTimeFrame'.
+                    The supported chains are available on [`BirdeyeTimeFrame`][cyhole.birdeye.param.BirdeyeTimeFrame].
                     Import them from the library to use the correct identifier.
                 dt_from: beginning time to take take price data.
                 dt_to: end time to take take price data.
-                    It should be 'dt_from' < 'dt_to'.
+                    It should be `dt_from` < `dt_to`.
                     If not ptovided (None), the current time is used.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
 
             Returns:
-                list of prices returned by birdeye.so
+                list of prices returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -406,17 +430,20 @@ class Birdeye(APICaller):
 
     def get_history(self, chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse:
         """
-            This function refers to the PUBLIC endpoint 'History' and is used 
+            This function refers to the PUBLIC endpoint **History** and is used 
             to get the history of prices of a token according on a specific chain on Birdeye.
 
             Parameters:
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
 
             Returns:
-                list of prices returned by birdeye.so
+                list of prices returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -447,26 +474,26 @@ class Birdeye(APICaller):
             limit: int | None = None
     ) -> GetTradesTokenResponse:
         """
-            This function refers to the PRIVATE endpoint 'Trades - Token' and is used 
+            This function refers to the PRIVATE endpoint **Trades - Token** and is used 
             to get the associated trades of a token according on a specific chain on Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 trade_type: the type of transactions to extract.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeTradeType'.
+                    The supported chains are available on [`BirdeyeTradeType`][cyhole.birdeye.param.BirdeyeTradeType].
                     Import them from the library to use the correct identifier.
-                    Default Value: Swap.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
                 offset: offset to apply in the extraction.
-                    Default Value: None
                 limit: limit the number of returned records in the extraction.
-                    Default Value: None
 
             Returns:
-                list of prices returned by birdeye.so
+                list of prices returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -503,32 +530,31 @@ class Birdeye(APICaller):
             limit: int | None = None
     ) -> GetTradesPairResponse:
         """
-            This function refers to the PRIVATE endpoint 'Trades - Pair' and is used 
+            This function refers to the PRIVATE endpoint **Trades - Pair** and is used 
             to get the associated trades of a tokens pair according on a specific chain on Birdeye. 
             Use the 'Trades - Token' endpoint to retrieve the trades associated to a specific token.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 trade_type: the type of transactions to extract.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeTradeType'.
+                    The supported chains are available on [`BirdeyeTradeType`][cyhole.birdeye.param.BirdeyeTradeType].
                     Import them from the library to use the correct identifier.
-                    Default Value: Swap.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
                 order_by: define the type of ordering to apply in the 
                     extraction; e.g. ascending or descending.
-                    The sorting types are available on 'cyhole.birdeye.param.BirdeyeOrder'.
+                    The sorting types are available on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
                     Import them from the library to use the correct identifier.
-                    Default Value: descending.
                 offset: offset to apply in the extraction.
-                    Default Value: None
                 limit: limit the number of returned records in the extraction.
-                    Default Value: None
 
             Returns:
-                list of prices returned by birdeye.so
+                list of prices returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -567,29 +593,32 @@ class Birdeye(APICaller):
             chain: str = BirdeyeChain.SOLANA.value
     ) -> GetOHLCVTokenPairResponse:
         """
-            This function refers to the PRIVATE endpoint 'OHLCV - Token/Pair' and is used to get the 
+            This function refers to the PRIVATE endpoint **OHLCV - Token/Pair** and is used to get the 
             Open, High, Low, Close, and Volume (OHLCV) data for a specific token/pair on a chain on Birdeye.
 
             Parameters:
                 address: CA of the token to search on the chain.
                 address_type: the type of address involved in the extraction (token/pair).
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeAddressType'.
+                    The supported chains are available on [`BirdeyeAddressType`][cyhole.birdeye.param.BirdeyeAddressType].
                     Import them from the library to use the correct identifier.
                 timeframe: the type of timeframe involved in the extraction.
                     The timeframe is used to define intervall between a measure and the next one.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeTimeFrame'.
+                    The supported chains are available on [`BirdeyeTimeFrame`][cyhole.birdeye.param.BirdeyeTimeFrame].
                     Import them from the library to use the correct identifier.
                 dt_from: beginning time to take take price data.
                 dt_to: end time to take take price data.
-                    It should be 'dt_from' < 'dt_to'.
+                    It should be `dt_from` < `dt_to`.
                     If not ptovided (None), the current time is used.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
 
             Returns:
-                list of prices returned by birdeye.so
+                list of prices returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -637,7 +666,7 @@ class Birdeye(APICaller):
             chain: str = BirdeyeChain.SOLANA.value
     ) -> GetOHLCVBaseQuoteResponse:
         """
-            This function refers to the PRIVATE endpoint 'OHLCV - Base/Quote' and is used to get the 
+            This function refers to the PRIVATE endpoint **OHLCV - Base/Quote** and is used to get the 
             Open, High, Low, Close, and Volume (OHLCV) data for a specific base/quote combination 
             on a chain on Birdeye.
 
@@ -646,19 +675,21 @@ class Birdeye(APICaller):
                 quote_address: CA of the token to search on the chain.
                 timeframe: the type of timeframe involved in the extraction.
                     The timeframe is used to define intervall between a measure and the next one.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeTimeFrame'.
+                    The supported chains are available on [`BirdeyeTimeFrame`][cyhole.birdeye.param.BirdeyeTimeFrame].
                     Import them from the library to use the correct identifier.
                 dt_from: beginning time to take take price data.
                 dt_to: end time to take take price data.
-                    It should be 'dt_from' < 'dt_to'.
+                    It should be `dt_from` < `dt_to`.
                     If not ptovided (None), the current time is used.
                 chain: identifier of the chain to check.
-                    The supported chains are available on 'cyhole.birdeye.param.BirdeyeChain'.
+                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
-                    Default Value: Solana.
-
             Returns:
-                list of prices returned by birdeye.so
+                list of prices returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
         BirdeyeChain.check(chain)
@@ -696,11 +727,14 @@ class Birdeye(APICaller):
 
     def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
-            This function refers to the PRIVATE endpoint 'Wallet - Supported Networks' and 
+            This function refers to the PRIVATE endpoint **Wallet - Supported Networks** and 
             it is used to get the list of supported chains on Birdeye.
 
             Returns:
-                list of chains returned by birdeye.so
+                list of chains returned by birdeye.so.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
         """
         url = self.url_api_private_wallet + "/list_supported_chain"
 
