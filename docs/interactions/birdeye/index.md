@@ -2,11 +2,11 @@
 
 Birdeye ([https://birdeye.so](https://birdeye.so)) is a popular treading crypto platform connected to different blockchains that provides tokens data and pairs' prices in real time. The access to both their public and private APIs is managed by a valid API key requestable on their site.
 
-The API connector is identified by the class [`Birdeye`](../birdeye/api.md) imported from of `cyhole.birdeye` extension.
+The API connector is [`Birdeye`](../birdeye/api.md) class imported from `cyhole.birdeye` path.
 
 ## Quick Example
 
-This simple example provides a way to extract the latest tokens from Ethereum chain sorted in descending order by USD volume.
+Extract the latest tokens from Ethereum chain sorted in descending order by USD volume in few lines of code.
 
 ```py
 from cyhole.birdeye import Birdeye
@@ -20,11 +20,12 @@ for token in token_list:
 ```
 
 !!! note
-    In order to run this example is assumed that the user has a valid API key and stored it in `BIRDEYE_API_KEY` environment variable. If the key is not provided during the object creations, then the library will raise an exception.
+    To run this example is assumed that the user has a valid API key stored in `BIRDEYE_API_KEY` environment variable.  
+    If the key is not provided during the object creations, then the library will raise an exception.
 
 ## Content
 
-The documentation is organised like the library itself by providing all the technical details required to use it.
+The documentation follows the library's structure by providing all the technical details required to use it.
 
 <div class="grid cards" markdown>
 
@@ -32,9 +33,9 @@ The documentation is organised like the library itself by providing all the tech
 
     ---
 
-    Explore the [`Birdeye`](../birdeye/api.md) API connector and all its methods. 
+    `cyhole.birdeye` - Explore the [`Birdeye`](../birdeye/api.md) API connector and all its methods. 
 
-    [:octicons-arrow-right-24: Explore](../birdeye/api.md)
+    [:octicons-arrow-right-24: Reference](../birdeye/api.md)
 
 -   :material-list-status:{ .lg .middle } __API Parameters__
 

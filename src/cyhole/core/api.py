@@ -26,6 +26,8 @@ class APICaller:
             Parameters:
                 type: request's type ([`RequestType`][cyhole.core.param.RequestType]).
                 url: API endpoint.
+                args: additional input parameters to provided.
+                kwargs: additional input parameters to provided.
 
             Returns:
                 The response object from `request`library.

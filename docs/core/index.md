@@ -1,3 +1,3 @@
 # Core
 
-This section is dedicated to the core component of the library that could be used to created additional interactions.
+This section focuses on the description of the library's most internal tools that could be used to develop new API interactions.

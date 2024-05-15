@@ -8,8 +8,7 @@ theme:
   custom_dir: docs/config/overrides
   language: en
   icon:
-    #logo: simple/circle
-    logo: material/rotate-orbit
+    logo: material/star-four-points-outline
   features:
     - navigation.instant
     - navigation.instant.progress
@@ -20,6 +19,7 @@ theme:
     - navigation.indexes
     - toc.follow
     - search.suggest
+    - content.code.copy
   palette:
     # Light Mode Palette
     - media: "(prefers-color-scheme: light)"
@@ -88,7 +88,7 @@ markdown_extensions:
 
 # Navigation
 nav:
-  - index.md
+  - Home: index.md
   - Core:
     - core/index.md
     - Connector: core/api.md
