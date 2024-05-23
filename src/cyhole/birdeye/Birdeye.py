@@ -449,7 +449,7 @@ class Birdeye(APICaller):
         BirdeyeChain.check(chain)
 
         # set params
-        url = self.url_api_public + "history_price"
+        url = self.url_api_public + "history"
         params = {
             "x-chain" : chain
         }
