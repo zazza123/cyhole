@@ -89,11 +89,6 @@ markdown_extensions:
 # Navigation
 nav:
   - Home: index.md
-  - Core:
-    - core/index.md
-    - Connector: core/api.md
-    - API Parameters: core/param.md
-    - Exceptions: core/exception.md
   - Interactions:
     - Birdeye:
       - interactions/birdeye/index.md
@@ -101,6 +96,13 @@ nav:
       - API Parameters: interactions/birdeye/param.md
       - Response Schema: interactions/birdeye/schema.md
       - Exceptions: interactions/birdeye/exception.md
+  - Development:
+    - development/index.md
+    - Core:
+      - development/core/index.md
+      - Connector: development/core/api.md
+      - API Parameters: development/core/param.md
+      - Exceptions: development/core/exception.md
 
 extra_css:
   - config/css/mkdocstrings.css
