@@ -1,0 +1,45 @@
+name: publish-version
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    name: deploy a new version of cyhole library
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # set up environment
+      - name: set up python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+      - name: install pip
+        run: python -m pip install --upgrade pip
+      - name: install dependencies
+        run: pip install -r src/requirements.txt
+      - name: install build
+        run: python -m pip install --upgrade build
+
+      # update library version equals release
+      - name: update version in pyproject.toml
+        run: sed -i "s/{{VERSION_PLACEHOLDER}}/${{ github.event.release.tag_name }}/g" pyproject.toml
+
+      # build package
+      - name: build a binary wheel and a source tarball
+        run: python -m build --sdist --wheel --outdir dist/
+
+      # publish on pypi
+      - name: publish package
+        uses: pypa/gh-action-pypi-publish@v1.8.14
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+      # check workflow output
+      - name: dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
