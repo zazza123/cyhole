@@ -1,0 +1,38 @@
+name: publish-doc
+
+on:
+  release:
+    types: [created]
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    name: deploy a new version of cyhole library documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # set up environment
+      - name: setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+      - name: install pip
+        run: python -m pip install --upgrade pip
+      - name: install dependencies
+        run: pip install -r docs/requirements.txt
+
+      # setup git bot credentials
+      - run: git config user.name github-actions[bot]
+      - run: git config user.email github-actions[bot]@users.noreply.github.com
+
+      - name: deploy documentstion
+        run: mkdocs gh-deploy --force
+      
+      # check workflow output
+      - name: dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
