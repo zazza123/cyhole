@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/zazza123/cyhole/main/docs/config/images/logo.png" alt="cyhole" class="img-logo">
+  <a href="https://zazza123.github.io/cyhole">
+    <img src="https://raw.githubusercontent.com/zazza123/cyhole/main/docs/config/images/logo.png" alt="cyhole" height="150px" class="img-logo">
+  </a>
 </p>
 
 ---
