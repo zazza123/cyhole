@@ -25,7 +25,7 @@ jobs:
 
       # update library version equals release
       - name: update version in pyproject.toml
-        run: sed -i "s/{{VERSION_PLACEHOLDER}}/${{ github.event.release.tag_name }}/g" pyproject.toml
+        run: sed -i "s/{{PROJET_VERSION}}/${{ github.event.release.tag_name }}/g" pyproject.toml
 
       # build package
       - name: build a binary wheel and a source tarball
