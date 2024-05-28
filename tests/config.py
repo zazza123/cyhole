@@ -32,7 +32,8 @@ class BirdeyeConfiguration(BaseModel):
     """
         Model in charge to manage the birdeye APIs.
     """
-    mock_response: bool = True
+    mock_response_public: bool = False
+    mock_response_private: bool = True
     mock_folder: str = "birdeye"
     api_key: str = ""
 
@@ -73,7 +74,8 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.mock_folder = config.get("global", "mock_folder", fallback = test_config.mock_folder)
 
     # birdeye
-    test_config.birdeye.mock_response = config.getboolean("birdeye", "mock_response", fallback = test_config.birdeye.mock_response)
+    test_config.birdeye.mock_response_public = config.getboolean("birdeye", "mock_response_public", fallback = test_config.birdeye.mock_response_public)
+    test_config.birdeye.mock_response_private = config.getboolean("birdeye", "mock_response_private", fallback = test_config.birdeye.mock_response_private)
     test_config.birdeye.mock_folder = config.get("birdeye", "mock_folder", fallback = test_config.birdeye.mock_folder)
     test_config.birdeye.api_key = config.get("birdeye", "api_key", fallback = test_config.birdeye.api_key)
 
