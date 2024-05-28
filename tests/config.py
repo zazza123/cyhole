@@ -54,13 +54,12 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
         is used, then is possible to load another file by providing the 
         necesary information in the input variables.
 
-        Args:
+        Parameters:
+            path: path of the configuration file.
+            file: name of the configuration file (with extension).
 
-        - path (str) [optional] : path of the configuration file. \\
-            By default is the same test folder 'tests'.
-
-        - file (str) [optional] : name of the configuration file (with extension). \\
-            By default is 'test.ini'.
+        Returns:
+            pydantic model of the test's configuration.
     """
     config_path_file = f"{path}/{file}"
     config = configparser.ConfigParser()
@@ -95,42 +94,36 @@ class TestMocker:
         """
             Use this function to load mock response model from a file.
 
-            Args:
-
-            - file_name (str) [mandatory] : file name containing the response to load.
-                By assumption, the file must be a JSON file and the file name should not contain the extension.
-
-            - response_model (Type[ResponseModel]) [mandatory] : objects that inherit from 
-                    pydantic.BaseModel and describe the response object element.
+            Parameters:
+                file_name: file name containing the response to load.
+                    By assumption, the file must be a JSON file and the file name should not contain the extension.
+                response_model: objects that inherit from `pydantic.BaseModel` and describe the response object element.
         """
         mock_file = f"{file_name}.json"
         mock_path_file = self.mock_path / mock_file
 
         if not mock_path_file.exists():
             raise Exception(f"mock file '{mock_file}' does not exist in '{self.mock_path}'.")
-        
+
         with open(mock_path_file, "r") as file:
             data = json.loads(file.read())
             mock_response = response_model(**data)
-        
+
         return mock_response
 
     def store_mock_response(self, file_name: str, response: BaseModel) -> None:
         """
             Use this function to store the mock response model into a file.
 
-            Args:
-
-            - file_name (str) [mandatory] : file name containing the response to load.
-                By assumption, the file must be a JSON file and the file name should not contain the extension.
-
-            - response (ResponseModel) [mandatory] : objects that inherit from 
-                    pydantic.BaseModel and describe the response object element.
+            Parameters:
+                file_name: file name containing the response to load.
+                    By assumption, the file must be a JSON file and the file name should not contain the extension.
+                response: objects that inherit from `pydantic.BaseModel` and describe the response object element.
         """
         mock_file = f"{file_name}.json"
         mock_path_file = self.mock_path / mock_file
 
         with open(mock_path_file, "w") as file:
             file.write(response.model_dump_json(indent = 4, by_alias = True))
-        
+
         return
