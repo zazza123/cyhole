@@ -3,6 +3,10 @@
     <img src="https://raw.githubusercontent.com/zazza123/cyhole/main/docs/config/images/logo.png" alt="cyhole" height="150px" class="img-logo">
   </a>
 </p>
+<p align="center">
+  <a href="https://pypi.org/project/cyhole"><img src="https://img.shields.io/pypi/v/cyhole?color=%2334D058&label=pypi%20package" alt="PyPI version" height="18"></a>
+</p>
+
 
 ---
 
