@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cyhole"
-version = "{{PROJET_VERSION}}"
+version = "{{PROJECT_VERSION}}"
 description = "cyhole, designed to help python's developers to interact to the most popular external API services in crypto and create automation processes."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -28,6 +28,7 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/zazza123/cyhole"
 Repository = "https://github.com/zazza123/cyhole"
+Documentation = "https://zazza123.github.io/cyhole"
 
 [tool.pytest.ini_options]
 addopts = [
