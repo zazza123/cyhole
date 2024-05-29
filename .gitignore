@@ -1,4 +1,5 @@
 cyhole.code-workspace
+.coverage
 /gitignore
 /**/__pycache__
 /tests/resources

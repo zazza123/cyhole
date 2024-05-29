@@ -32,5 +32,14 @@ Documentation = "https://zazza123.github.io/cyhole"
 
 [tool.pytest.ini_options]
 addopts = [
-    "--import-mode=importlib",
+    "--import-mode=importlib"
+]
+
+[tool.coverage.run]
+source = [
+    "src"
+]
+context = '${CONTEXT}'
+omit = [
+    "tests/config.py"
 ]
