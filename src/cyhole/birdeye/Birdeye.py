@@ -404,7 +404,7 @@ class Birdeye(APICaller):
 
         # check consistency
         if dt_from > dt_to:
-            raise BirdeyeTimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
+            raise BirdeyeTimeRangeError("Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
 
         # set params
         url = self.url_api_public + "history_price"
@@ -631,7 +631,7 @@ class Birdeye(APICaller):
 
         # check consistency
         if dt_from > dt_to:
-            raise BirdeyeTimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
+            raise BirdeyeTimeRangeError("Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
 
         # set params
         url = self.url_api_public + "ohlcv"
@@ -701,7 +701,7 @@ class Birdeye(APICaller):
 
         # check consistency
         if dt_from > dt_to:
-            raise BirdeyeTimeRangeError(f"Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
+            raise BirdeyeTimeRangeError("Inconsistent timewindow provided: 'dt_from' > 'dt_to'")
 
         # set params
         url = self.url_api_public + "ohlcv/base_quote"
