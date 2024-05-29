@@ -24,7 +24,7 @@ from cyhole.birdeye.schema import (
 from cyhole.core.exception import MissingAPIKeyError
 
 # load test config
-from tests.config import load_config, TestMocker
+from .config import load_config, MockerManager
 config = load_config()
 
 # create resources folder
@@ -35,7 +35,7 @@ class TestBirdeyePublic:
     """
         Class grouping all unit test associate to PUBLIC endpoints
     """
-    mocker = TestMocker(
+    mocker = MockerManager(
         mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
     )
 
@@ -177,7 +177,7 @@ class TestBirdeyePrivate:
     """
         Class grouping all unit test associate to PRIVATE endpoints
     """
-    mocker = TestMocker(
+    mocker = MockerManager(
         mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
     )
 

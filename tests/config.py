@@ -80,7 +80,7 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
 
     return test_config
 
-class TestMocker:
+class MockerManager:
     """
         Class used to manage the mock responses.
     """
