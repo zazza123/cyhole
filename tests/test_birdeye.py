@@ -56,7 +56,7 @@ class TestBirdeyePublic:
 
         # load mock response
         mock_file_name = "get_token_list"
-        if config.birdeye.mock_response_public:
+        if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
             mocker.patch.object(client, "get_token_list", return_value = mock_response)
             
@@ -64,7 +64,7 @@ class TestBirdeyePublic:
         response = client.get_token_list(limit = 1)
 
         # actual test
-        assert isinstance(response, GetTokenListResponse)   
+        assert isinstance(response, GetTokenListResponse)
 
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
@@ -80,7 +80,7 @@ class TestBirdeyePublic:
 
         # load mock response
         mock_file_name = "get_price"
-        if config.birdeye.mock_response_public:
+        if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
             mocker.patch.object(client, "get_price", return_value = mock_response)
             
@@ -104,7 +104,7 @@ class TestBirdeyePublic:
 
         # load mock response
         mock_file_name = "get_price_multiple"
-        if config.birdeye.mock_response_public:
+        if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceMultipleResponse)
             mocker.patch.object(client, "get_price_multiple", return_value = mock_response)
             
@@ -129,7 +129,7 @@ class TestBirdeyePublic:
 
         # load mock response
         mock_file_name = "get_price_historical"
-        if config.birdeye.mock_response_public:
+        if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceHistoricalResponse)
             mocker.patch.object(client, "get_price_historical", return_value = mock_response)
             
@@ -159,7 +159,7 @@ class TestBirdeyePublic:
 
         # load mock response
         mock_file_name = "get_history"
-        if config.birdeye.mock_response_public:
+        if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetHistoryResponse)
             mocker.patch.object(client, "get_history", return_value = mock_response)
             
@@ -191,7 +191,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_token_creation_info"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenCreationInfoResponse)
             mocker.patch.object(client, "get_token_creation_info", return_value = mock_response)
             
@@ -215,7 +215,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_token_security_solana"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
             mocker.patch.object(client, "get_token_security", return_value = mock_response)
             
@@ -242,7 +242,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_token_security_other"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
             mocker.patch.object(client, "get_token_security", return_value = mock_response)
             
@@ -271,7 +271,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_token_overview_solana"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
             mocker.patch.object(client, "get_token_overview", return_value = mock_response)
             
@@ -297,7 +297,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_token_overview_ethereum"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
             mocker.patch.object(client, "get_token_overview", return_value = mock_response)
             
@@ -322,7 +322,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_trades_token"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesTokenResponse)
             mocker.patch.object(client, "get_trades_token", return_value = mock_response)
             
@@ -346,7 +346,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_trades_pair"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesPairResponse)
             mocker.patch.object(client, "get_trades_pair", return_value = mock_response)
             
@@ -370,7 +370,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_ohlcv_token"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
             mocker.patch.object(client, "get_ohlcv", return_value = mock_response)
             
@@ -400,7 +400,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_ohlcv_pair"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
             mocker.patch.object(client, "get_ohlcv", return_value = mock_response)
             
@@ -430,7 +430,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_ohlcv_base_quote"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVBaseQuoteResponse)
             mocker.patch.object(client, "get_ohlcv_base_quote", return_value = mock_response)
             
@@ -460,7 +460,7 @@ class TestBirdeyePrivate:
 
         # load mock response
         mock_file_name = "get_wallet_supported_networks"
-        if config.birdeye.mock_response_private:
+        if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetWalletSupportedNetworksResponse)
             mocker.patch.object(client, "get_wallet_supported_networks", return_value = mock_response)
             
