@@ -21,6 +21,7 @@ from cyhole.birdeye.schema import (
     GetOHLCVBaseQuoteResponse,
     GetWalletSupportedNetworksResponse
 )
+from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
 
 # load test config
@@ -138,8 +139,7 @@ class TestBirdeyePublic:
             address = "So11111111111111111111111111111111111111112",
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
-            dt_from = datetime.now() - timedelta(hours = 1),
-            dt_to = datetime.now()
+            dt_from = datetime.now() - timedelta(hours = 1)
         )
 
         # actual test
@@ -148,6 +148,21 @@ class TestBirdeyePublic:
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
             self.mocker.store_mock_response(mock_file_name, response)
+
+    def test_get_price_historical_incorrect_input_dates(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the incorrect dates inputs (dt_from > dt_to).
+        """
+        client = Birdeye(api_key = config.birdeye.api_key)
+
+        with pytest.raises(BirdeyeTimeRangeError):
+            # execute request
+            client.get_price_historical(
+                address = "So11111111111111111111111111111111111111112",
+                address_type = BirdeyeAddressType.TOKEN.value,
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() + timedelta(hours = 1)
+            )
 
     def test_get_history(self, mocker: MockerFixture) -> None:
         """
@@ -180,6 +195,14 @@ class TestBirdeyePrivate:
     mocker = MockerManager(
         mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
     )
+
+    def test_not_authorised_api(self) -> None:
+        """
+            Unit Test to correcty identify a not Authorised API Key
+        """
+        client = Birdeye(api_key = "xxx-xxx-xxx")
+        with pytest.raises(BirdeyeAuthorisationError):
+            client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
 
     def test_get_token_creation_info(self, mocker: MockerFixture) -> None:
         """
