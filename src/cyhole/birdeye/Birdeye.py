@@ -1,4 +1,6 @@
 import os
+import requests
+from typing import Any
 from datetime import datetime
 
 from ..core.api import APICaller
@@ -74,6 +76,13 @@ class Birdeye(APICaller):
         self.url_api_private_wallet = "https://public-api.birdeye.so/v1/wallet"
         return
 
+    def api(self, type: str, url: str, *args: tuple, **kwargs: dict[str, Any]) -> requests.Response:
+        # overide function to manage client specific exceptions
+        try:
+            return super().api(type, url, *args, **kwargs)
+        except AuthorizationAPIKeyError:
+            raise BirdeyeAuthorisationError
+
     def get_token_list(
         self,
         chain: str = BirdeyeChain.SOLANA.value,
@@ -124,10 +133,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetTokenListResponse(**content_raw.json())
@@ -167,10 +173,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetTokenCreationInfoResponse(**content_raw.json())
@@ -212,10 +215,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetTokenSecurityResponse(**content_raw.json())
@@ -299,10 +299,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetPriceResponse(**content_raw.json())
@@ -346,10 +343,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetPriceMultipleResponse(**content_raw.json())
@@ -418,10 +412,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetPriceHistoricalResponse(**content_raw.json())
@@ -455,10 +446,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetHistoryResponse(**content_raw.json())
@@ -510,10 +498,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetTradesTokenResponse(**content_raw.json())
@@ -573,10 +558,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetTradesPairResponse(**content_raw.json())
@@ -646,10 +628,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetOHLCVTokenPairResponse(**content_raw.json())
@@ -715,10 +694,7 @@ class Birdeye(APICaller):
         }
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url, params = params)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url, params = params)
 
         # parse response
         content = GetOHLCVBaseQuoteResponse(**content_raw.json())
@@ -739,10 +715,7 @@ class Birdeye(APICaller):
         url = self.url_api_private_wallet + "/list_supported_chain"
 
         # execute request
-        try:
-            content_raw = self.api(RequestType.GET.value, url)
-        except AuthorizationAPIKeyError:
-            raise BirdeyeAuthorisationError
+        content_raw = self.api(RequestType.GET.value, url)
 
         # parse response
         content = GetWalletSupportedNetworksResponse(**content_raw.json())
