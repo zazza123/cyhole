@@ -33,13 +33,16 @@ config = load_config()
 mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
 mock_path.mkdir(parents = True, exist_ok = True)
 
+# set client, mocker
+_client = Birdeye(api_key = config.birdeye.api_key)
+_mocker = MockerManager(mock_path = Path(config.mock_folder) / config.birdeye.mock_folder)
+
 class TestBirdeyePublic:
     """
         Class grouping all unit test associate to PUBLIC endpoints
     """
-    mocker = MockerManager(
-        mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
-    )
+    client = _client
+    mocker = _mocker
 
     def test_missing_api_key(self) -> None:
         """
@@ -54,8 +57,7 @@ class TestBirdeyePublic:
 
             Mock Response File: get_token_list.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
-
+    
         # load mock response
         mock_file_name = "get_token_list"
         if config.mock_response or config.birdeye.mock_response_public:
@@ -63,7 +65,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
 
         # execute request
-        response = client.get_token_list(limit = 1)
+        response = self.client.get_token_list(limit = 1)
 
         # actual test
         assert isinstance(response, GetTokenListResponse)
@@ -78,7 +80,6 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_price"
@@ -87,7 +88,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_price(address = "So11111111111111111111111111111111111111112")
+        response = self.client.get_price(address = "So11111111111111111111111111111111111111112")
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -102,7 +103,6 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price_multiple.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_price_multiple"
@@ -112,7 +112,7 @@ class TestBirdeyePublic:
             
         # execute request
         tokens_ca = ["So11111111111111111111111111111111111111112", "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"]
-        response = client.get_price_multiple(list_address = tokens_ca)
+        response = self.client.get_price_multiple(list_address = tokens_ca)
 
         # actual test
         assert isinstance(response, GetPriceMultipleResponse)
@@ -127,7 +127,6 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price_historical.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_price_historical"
@@ -136,7 +135,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_price_historical(
+        response = self.client.get_price_historical(
             address = "So11111111111111111111111111111111111111112",
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
@@ -154,11 +153,10 @@ class TestBirdeyePublic:
         """
             Unit Test used to check the incorrect dates inputs (dt_from > dt_to).
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
-            client.get_price_historical(
+            self.client.get_price_historical(
                 address = "So11111111111111111111111111111111111111112",
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
@@ -171,7 +169,6 @@ class TestBirdeyePublic:
 
             Mock Response File: get_history.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_history"
@@ -180,7 +177,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_history()
+        response = self.client.get_history()
 
         # actual test
         assert isinstance(response, GetHistoryResponse)
@@ -193,9 +190,8 @@ class TestBirdeyePrivate:
     """
         Class grouping all unit test associate to PRIVATE endpoints
     """
-    mocker = MockerManager(
-        mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
-    )
+    client = _client
+    mocker = _mocker
 
     def test_not_authorised_api(self) -> None:
         """
@@ -211,7 +207,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_creation_info.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_token_creation_info"
@@ -220,7 +215,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
+        response = self.client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
 
         # actual test
         assert isinstance(response, GetTokenCreationInfoResponse)
@@ -235,7 +230,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_security_solana.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_token_security_solana"
@@ -244,7 +238,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_token_security(
+        response = self.client.get_token_security(
             address = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ"
         )
 
@@ -262,7 +256,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_security_other.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_token_security_other"
@@ -271,7 +264,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_token_security(
+        response = self.client.get_token_security(
             address = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ", 
             chain = BirdeyeChain.ETHEREUM.value
         )
@@ -290,7 +283,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_solana.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
         token_address = "So11111111111111111111111111111111111111112"
 
         # load mock response
@@ -300,7 +292,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_token_overview(token_address)
+        response = self.client.get_token_overview(token_address)
 
         # actual test
         assert isinstance(response, GetTokenOverviewResponse)
@@ -316,7 +308,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_ethereum.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
         token_address = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 
         # load mock response
@@ -326,7 +317,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
+        response = self.client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
 
         # actual test
         assert isinstance(response, GetTokenOverviewResponse)
@@ -342,7 +333,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_trades_token.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_trades_token"
@@ -351,7 +341,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_trades_token(address = "SMMzJzseLTFb6pxacL8r5mZMEqjTTGWjNPk4q3JQHTu")
+        response = self.client.get_trades_token(address = "SMMzJzseLTFb6pxacL8r5mZMEqjTTGWjNPk4q3JQHTu")
 
         # actual test
         assert isinstance(response, GetTradesTokenResponse)
@@ -366,7 +356,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_trades_pair.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_trades_pair"
@@ -375,7 +364,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_trades_pair(address = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS")
+        response = self.client.get_trades_pair(address = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS")
 
         # actual test
         assert isinstance(response, GetTradesPairResponse)
@@ -384,13 +373,26 @@ class TestBirdeyePrivate:
         if not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    def test_get_ohlcv_incorrect_input_dates(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the incorrect dates inputs (dt_from > dt_to).
+        """
+
+        with pytest.raises(BirdeyeTimeRangeError):
+            # execute request
+            self.client.get_ohlcv(
+                address = "So11111111111111111111111111111111111111112",
+                address_type = BirdeyeAddressType.TOKEN.value,
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() + timedelta(hours = 1)
+            )
+
     def test_get_ohlcv_token(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "OHLCV - Token".
 
             Mock Response File: get_ohlcv_token.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_ohlcv_token"
@@ -399,7 +401,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_ohlcv(
+        response = self.client.get_ohlcv(
             address = "So11111111111111111111111111111111111111112",
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
@@ -420,7 +422,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_ohlcv_pair.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_ohlcv_pair"
@@ -429,7 +430,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_ohlcv(
+        response = self.client.get_ohlcv(
             address = "9wFFyRfZBsuAha4YcuxcXLKwMxJR43S7fPfQLusDBzvT",
             address_type = BirdeyeAddressType.PAIR.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
@@ -444,13 +445,26 @@ class TestBirdeyePrivate:
         if not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    def test_get_ohlcv_base_quote_incorrect_input_dates(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the incorrect dates inputs (dt_from > dt_to).
+        """
+
+        with pytest.raises(BirdeyeTimeRangeError):
+            # execute request
+            self.client.get_ohlcv_base_quote(
+                base_address = "So11111111111111111111111111111111111111112",
+                quote_address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() + timedelta(hours = 1)
+            )
+
     def test_get_ohlcv_base_quote(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "OHLCV - Base/Quote".
 
             Mock Response File: get_ohlcv_base_quote.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_ohlcv_base_quote"
@@ -459,7 +473,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_ohlcv_base_quote(
+        response = self.client.get_ohlcv_base_quote(
             base_address = "So11111111111111111111111111111111111111112",
             quote_address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             timeframe = BirdeyeTimeFrame.MIN15.value,
@@ -480,7 +494,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_wallet_supported_networks.json
         """
-        client = Birdeye(api_key = config.birdeye.api_key)
 
         # load mock response
         mock_file_name = "get_wallet_supported_networks"
@@ -489,7 +502,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = client.get_wallet_supported_networks()
+        response = self.client.get_wallet_supported_networks()
 
         # actual test
         assert isinstance(response, GetWalletSupportedNetworksResponse)
