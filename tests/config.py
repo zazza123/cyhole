@@ -23,6 +23,7 @@
 import json
 import configparser
 from pathlib import Path
+from requests import Response
 from typing import TypeVar, Type
 from pydantic import BaseModel
 
@@ -90,7 +91,7 @@ class MockerManager:
         self.mock_path = mock_path
         mock_path.mkdir(parents = True, exist_ok = True)
     
-    def load_mock_response(self, file_name: str, response_model: Type[ResponseModel]) -> ResponseModel:
+    def load_mock_model(self, file_name: str, response_model: Type[ResponseModel]) -> ResponseModel:
         """
             Use this function to load mock response model from a file.
 
@@ -111,7 +112,7 @@ class MockerManager:
 
         return mock_response
 
-    def store_mock_response(self, file_name: str, response: BaseModel) -> None:
+    def store_mock_model(self, file_name: str, response: BaseModel) -> None:
         """
             Use this function to store the mock response model into a file.
 
@@ -127,3 +128,22 @@ class MockerManager:
             file.write(response.model_dump_json(indent = 4, by_alias = True))
 
         return
+
+    def load_mock_response(self, file_name: str, response_model: Type[ResponseModel]) -> Response:
+        """
+            Use this function to load mock response model from a file and return a dummy `Response` object.
+
+            Parameters:
+                file_name: file name containing the response to load.
+                    By assumption, the file must be a JSON file and the file name should not contain the extension.
+                response_model: objects that inherit from `pydantic.BaseModel` and describe the response object element.
+        """
+        mock_model = self.load_mock_model(file_name, response_model)
+
+        # create dummy response
+        mock_response = Response()
+        mock_response._content = mock_model.model_dump_json(by_alias = True).encode()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+
+        return mock_response

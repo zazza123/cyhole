@@ -1,3 +1,4 @@
+from requests import Response
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -59,8 +60,8 @@ class TestBirdeyePublic:
         mock_file_name = "get_token_list"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
-            mocker.patch.object(client, "get_token_list", return_value = mock_response)
-            
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
         # execute request
         response = client.get_token_list(limit = 1)
 
@@ -69,7 +70,7 @@ class TestBirdeyePublic:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price(self, mocker: MockerFixture) -> None:
         """
@@ -83,7 +84,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_price"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch.object(client, "get_price", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_price(address = "So11111111111111111111111111111111111111112")
@@ -93,7 +94,7 @@ class TestBirdeyePublic:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_multiple(self, mocker: MockerFixture) -> None:
         """
@@ -107,7 +108,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_price_multiple"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceMultipleResponse)
-            mocker.patch.object(client, "get_price_multiple", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         tokens_ca = ["So11111111111111111111111111111111111111112", "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"]
@@ -118,7 +119,7 @@ class TestBirdeyePublic:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_historical(self, mocker: MockerFixture) -> None:
         """
@@ -132,7 +133,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_price_historical"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceHistoricalResponse)
-            mocker.patch.object(client, "get_price_historical", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_price_historical(
@@ -147,7 +148,7 @@ class TestBirdeyePublic:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_historical_incorrect_input_dates(self, mocker: MockerFixture) -> None:
         """
@@ -176,7 +177,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_history"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetHistoryResponse)
-            mocker.patch.object(client, "get_history", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_history()
@@ -186,7 +187,7 @@ class TestBirdeyePublic:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_public:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
 class TestBirdeyePrivate:
     """
@@ -216,7 +217,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_token_creation_info"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenCreationInfoResponse)
-            mocker.patch.object(client, "get_token_creation_info", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
@@ -226,7 +227,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_security_solana(self, mocker: MockerFixture) -> None:
         """
@@ -240,7 +241,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_token_security_solana"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
-            mocker.patch.object(client, "get_token_security", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_token_security(
@@ -253,7 +254,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_security_other(self, mocker: MockerFixture) -> None:
         """
@@ -267,7 +268,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_token_security_other"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
-            mocker.patch.object(client, "get_token_security", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_token_security(
@@ -281,7 +282,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_overview_solana(self, mocker: MockerFixture) -> None:
         """
@@ -296,7 +297,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_token_overview_solana"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
-            mocker.patch.object(client, "get_token_overview", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_token_overview(token_address)
@@ -307,7 +308,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_overview_ethereum(self, mocker: MockerFixture) -> None:
         """
@@ -322,7 +323,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_token_overview_ethereum"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
-            mocker.patch.object(client, "get_token_overview", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
@@ -333,7 +334,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_trades_token(self, mocker: MockerFixture) -> None:
         """
@@ -347,7 +348,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_trades_token"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesTokenResponse)
-            mocker.patch.object(client, "get_trades_token", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_trades_token(address = "SMMzJzseLTFb6pxacL8r5mZMEqjTTGWjNPk4q3JQHTu")
@@ -357,7 +358,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
     
     def test_get_trades_pair(self, mocker: MockerFixture) -> None:
         """
@@ -371,7 +372,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_trades_pair"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesPairResponse)
-            mocker.patch.object(client, "get_trades_pair", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_trades_pair(address = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS")
@@ -381,7 +382,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_ohlcv_token(self, mocker: MockerFixture) -> None:
         """
@@ -395,7 +396,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_ohlcv_token"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
-            mocker.patch.object(client, "get_ohlcv", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_ohlcv(
@@ -411,7 +412,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_ohlcv_pair(self, mocker: MockerFixture) -> None:
         """
@@ -425,7 +426,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_ohlcv_pair"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
-            mocker.patch.object(client, "get_ohlcv", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_ohlcv(
@@ -441,7 +442,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_ohlcv_base_quote(self, mocker: MockerFixture) -> None:
         """
@@ -455,7 +456,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_ohlcv_base_quote"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVBaseQuoteResponse)
-            mocker.patch.object(client, "get_ohlcv_base_quote", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_ohlcv_base_quote(
@@ -471,7 +472,7 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_wallet_supported_networks(self, mocker: MockerFixture) -> None:
         """
@@ -485,7 +486,7 @@ class TestBirdeyePrivate:
         mock_file_name = "get_wallet_supported_networks"
         if config.mock_response or config.birdeye.mock_response_private:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetWalletSupportedNetworksResponse)
-            mocker.patch.object(client, "get_wallet_supported_networks", return_value = mock_response)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
         response = client.get_wallet_supported_networks()
@@ -495,4 +496,4 @@ class TestBirdeyePrivate:
 
         # store request (only not mock)
         if not config.birdeye.mock_response_private:
-            self.mocker.store_mock_response(mock_file_name, response)
+            self.mocker.store_mock_model(mock_file_name, response)
