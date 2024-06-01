@@ -470,7 +470,7 @@ class GetTradesTokenTradeToken(BaseModel):
     nearest_price: float = Field(alias = "nearestPrice")
     change_amount: float = Field(alias = "changeAmount")
     ui_change_amount: float = Field(alias = "uiChangeAmount")
-    icon: str
+    icon: str | None = None
 
 class GetTradesTokenTrade(BaseModel):
     volume: float
