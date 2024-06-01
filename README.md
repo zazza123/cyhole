@@ -27,6 +27,10 @@ The installation is performed via `pip` by running:
 pip install cyhole
 ```
 
+---
+
+**Documentation**: [https://zazza123.github.io/cyhole](https://zazza123.github.io/cyhole)
+
 ## Interactions
 
 In **cyhole**, Interactions serve as the fundamental components, akin to the building blocks of a scientific model. Each interaction represents a distinct cryptocurrency API, providing developers with access to essential data and metrics.
