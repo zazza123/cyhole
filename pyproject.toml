@@ -24,6 +24,10 @@ classifiers = [
     "Intended Audience :: Information Technology",
     "Intended Audience :: Financial and Insurance Industry"
 ]
+dependencies = [
+    "requests>=2.31.0",
+    "pydantic>=2.7.0"
+]
 
 [project.urls]
 Homepage = "https://github.com/zazza123/cyhole"
