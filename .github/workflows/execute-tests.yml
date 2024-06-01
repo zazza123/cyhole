@@ -33,6 +33,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r tests/requirements.txt
+          pip install -e .
 
       # execute lint
       - name: execute lint
@@ -72,6 +73,7 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r tests/requirements.txt
+          pip install -e .
 
       # execute tests
       - name: execute pytest coverage
