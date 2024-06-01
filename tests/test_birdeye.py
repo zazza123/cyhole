@@ -1,4 +1,3 @@
-from requests import Response
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -24,6 +23,12 @@ from cyhole.birdeye.schema import (
 )
 from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
+from cyhole.core.address.solana import SOL, USDC
+from cyhole.core.address.ethereum import WETH
+
+# constant address
+TOM_SOL = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS"
+JRK = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ"
 
 # load test config
 from .config import load_config, MockerManager
@@ -88,7 +93,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_price(address = "So11111111111111111111111111111111111111112")
+        response = self.client.get_price(address = SOL)
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -111,7 +116,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        tokens_ca = ["So11111111111111111111111111111111111111112", "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"]
+        tokens_ca = [SOL, USDC]
         response = self.client.get_price_multiple(list_address = tokens_ca)
 
         # actual test
@@ -136,7 +141,7 @@ class TestBirdeyePublic:
             
         # execute request
         response = self.client.get_price_historical(
-            address = "So11111111111111111111111111111111111111112",
+            address = SOL,
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1)
@@ -157,7 +162,7 @@ class TestBirdeyePublic:
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
             self.client.get_price_historical(
-                address = "So11111111111111111111111111111111111111112",
+                address = SOL,
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
@@ -199,7 +204,7 @@ class TestBirdeyePrivate:
         """
         client = Birdeye(api_key = "xxx-xxx-xxx")
         with pytest.raises(BirdeyeAuthorisationError):
-            client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
+            client.get_token_creation_info(address = SOL)
 
     def test_get_token_creation_info(self, mocker: MockerFixture) -> None:
         """
@@ -215,7 +220,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_token_creation_info(address = "So11111111111111111111111111111111111111112")
+        response = self.client.get_token_creation_info(address = SOL)
 
         # actual test
         assert isinstance(response, GetTokenCreationInfoResponse)
@@ -238,9 +243,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_token_security(
-            address = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ"
-        )
+        response = self.client.get_token_security(JRK)
 
         # actual test
         assert isinstance(response, GetTokenSecurityResponse)
@@ -265,7 +268,7 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.client.get_token_security(
-            address = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ", 
+            address = JRK, 
             chain = BirdeyeChain.ETHEREUM.value
         )
 
@@ -283,7 +286,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_solana.json
         """
-        token_address = "So11111111111111111111111111111111111111112"
+        token_address = SOL
 
         # load mock response
         mock_file_name = "get_token_overview_solana"
@@ -308,7 +311,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_ethereum.json
         """
-        token_address = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+        token_address = WETH
 
         # load mock response
         mock_file_name = "get_token_overview_ethereum"
@@ -341,8 +344,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_trades_token(address = "SMMzJzseLTFb6pxacL8r5mZMEqjTTGWjNPk4q3JQHTu")
-
+        response = self.client.get_trades_token(SOL)
         # actual test
         assert isinstance(response, GetTradesTokenResponse)
 
@@ -356,7 +358,6 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_trades_pair.json
         """
-
         # load mock response
         mock_file_name = "get_trades_pair"
         if config.mock_response or config.birdeye.mock_response_private:
@@ -364,7 +365,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_trades_pair(address = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS")
+        response = self.client.get_trades_pair(address = TOM_SOL)
 
         # actual test
         assert isinstance(response, GetTradesPairResponse)
@@ -381,7 +382,7 @@ class TestBirdeyePrivate:
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
             self.client.get_ohlcv(
-                address = "So11111111111111111111111111111111111111112",
+                address = SOL,
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
@@ -402,7 +403,7 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.client.get_ohlcv(
-            address = "So11111111111111111111111111111111111111112",
+            address = SOL,
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1),
@@ -431,7 +432,7 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.client.get_ohlcv(
-            address = "9wFFyRfZBsuAha4YcuxcXLKwMxJR43S7fPfQLusDBzvT",
+            address = SOL,
             address_type = BirdeyeAddressType.PAIR.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1),
@@ -453,8 +454,8 @@ class TestBirdeyePrivate:
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
             self.client.get_ohlcv_base_quote(
-                base_address = "So11111111111111111111111111111111111111112",
-                quote_address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                base_address = SOL,
+                quote_address = USDC,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
             )
@@ -474,8 +475,8 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.client.get_ohlcv_base_quote(
-            base_address = "So11111111111111111111111111111111111111112",
-            quote_address = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            base_address = SOL,
+            quote_address = USDC,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1),
             dt_to = datetime.now()
