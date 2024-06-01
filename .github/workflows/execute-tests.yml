@@ -27,6 +27,10 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt') }}-test
 
+      # update library version to install it locally
+      - name: update version in pyproject.toml
+        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1-test/g" pyproject.toml
+
       # install dependencies
       - name: install pip and dependencies
         if: steps.cache.outputs.cache-hit != 'true'
@@ -52,6 +56,10 @@ jobs:
       # setup test configuration
       - name: rename file
         run: mv tests/test.default.ini tests/test.ini
+
+      # update library version to install it locally
+      - name: update version in pyproject.toml
+        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1-test/g" pyproject.toml
 
       # setup environment
       - name: setup python
