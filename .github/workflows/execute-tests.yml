@@ -50,7 +50,7 @@ jobs:
 
       # setup test configuration
       - name: rename file
-        run: mv /tests/test.default.ini /tests/test.ini
+        run: mv tests/test.default.ini tests/test.ini
 
       # setup environment
       - name: setup python
