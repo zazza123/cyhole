@@ -27,18 +27,12 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt') }}-test
 
-      # update library version to install it locally
-      - name: update version in pyproject.toml
-        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1/g" pyproject.toml
-
       # install dependencies
       - name: install pip and dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip
           pip install -r tests/requirements.txt
-          pip install -r src/requirements.txt
-          pip install -e .
 
       # execute lint
       - name: execute lint
