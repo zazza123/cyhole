@@ -29,7 +29,7 @@ jobs:
 
       # update library version to install it locally
       - name: update version in pyproject.toml
-        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1-test/g" pyproject.toml
+        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1/g" pyproject.toml
 
       # install dependencies
       - name: install pip and dependencies
@@ -59,7 +59,7 @@ jobs:
 
       # update library version to install it locally
       - name: update version in pyproject.toml
-        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1-test/g" pyproject.toml
+        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1/g" pyproject.toml
 
       # setup environment
       - name: setup python
