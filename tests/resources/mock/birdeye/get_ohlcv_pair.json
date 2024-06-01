@@ -1,0 +1,17 @@
+{
+    "data": {
+        "items": [
+            {
+                "c": 39.0,
+                "h": 39.0,
+                "l": 39.0,
+                "o": 39.0,
+                "type": "15m",
+                "unixTime": 1691998200,
+                "address": "9wFFyRfZBsuAha4YcuxcXLKwMxJR43S7fPfQLusDBzvT",
+                "v": 0.0
+            }
+        ]
+    },
+    "success": true
+}

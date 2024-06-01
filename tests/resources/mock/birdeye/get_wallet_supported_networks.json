@@ -1,0 +1,14 @@
+{
+    "data": [
+        "eth-mainnet",
+        "matic-mainnet",
+        "bsc-mainnet",
+        "avalanche-mainnet",
+        "optimism-mainnet",
+        "arbitrum-mainnet",
+        "base-mainnet",
+        "zksync-mainnet",
+        "solana-mainnet"
+    ],
+    "success": true
+}

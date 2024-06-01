@@ -1,0 +1,247 @@
+{
+    "data": {
+        "result": {
+            "status": 1,
+            "score": 100,
+            "scoreComponents": {
+                "popularScore": 99,
+                "holderScore": 93.78403295314274,
+                "liquidityScore": 99,
+                "infoScore": 100
+            },
+            "data": {
+                "anti_whale_modifiable": "0",
+                "buy_tax": "0",
+                "can_take_back_ownership": "0",
+                "cannot_buy": "0",
+                "cannot_sell_all": "0",
+                "creator_address": "0xb5b06a16621616875a6c2637948bf98ea57c58fa",
+                "creator_balance": "0",
+                "creator_percent": "0.000000",
+                "external_call": "0",
+                "hidden_owner": "0",
+                "holder_count": "502329",
+                "holders": [
+                    {
+                        "address": "0x40ec5b33f54e0e8a33a975908c5ba1c14e5bbbdf",
+                        "tag": "",
+                        "is_contract": 1,
+                        "balance": "168530851.122919191258987169",
+                        "percent": "0.051763216866061872",
+                        "is_locked": 0,
+                        "alias": {
+                            "label": {
+                                "name": "Polygon (Matic): ERC20 Bridge"
+                            }
+                        }
+                    },
+                    {
+                        "address": "0x4dedf26112b3ec8ec46e7e31ea5e123490b05b8b",
+                        "tag": "",
+                        "is_contract": 1,
+                        "balance": "76815505.357163725937281829",
+                        "percent": "0.023593411152827564",
+                        "is_locked": 0,
+                        "alias": {
+                            "label": {
+                                "name": "Spark: spDAI Token"
+                            }
+                        }
+                    },
+                    {
+                        "address": "0xa10c7ce4b876998858b1a9e12b10092229539400",
+                        "tag": "",
+                        "is_contract": 1,
+                        "balance": "75473952.473446499236213257",
+                        "percent": "0.023181361415972579",
+                        "is_locked": 0,
+                        "alias": null
+                    },
+                    {
+                        "address": "0x517f9dd285e75b599234f7221227339478d0fcc8",
+                        "tag": "",
+                        "is_contract": 1,
+                        "balance": "75428801.298236268706610529",
+                        "percent": "0.023167493509541251",
+                        "is_locked": 0,
+                        "alias": null
+                    },
+                    {
+                        "address": "0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7",
+                        "tag": "",
+                        "is_contract": 1,
+                        "balance": "64664837.368861519284498688",
+                        "percent": "0.019861408033189439",
+                        "is_locked": 0,
+                        "alias": {
+                            "label": {
+                                "name": "Curve.fi: DAI/USDC/USDT Pool"
+                            }
+                        }
+                    },
+                    {
+                        "address": "0x1715a3e4a142d8b698131108995174f37aeba10d",
+                        "tag": "",
+                        "is_contract": 1,
+                        "balance": "40250033.215626616218741485",
+                        "percent": "0.012362550739668901",
+                        "is_locked": 0,
+                        "alias": {
+                            "label": {
+                                "name": "PulseChain: Omnibridge Proxy"
+                            }
+                        }
+                    },
+                    {
+                        "address": "0xbf293d5138a2a1ba407b43672643434c43827179",
+                        "tag": "",
+                        "is_contract": 0,
+                        "balance": "39753037.511357972649789696",
+                        "percent": "0.012209901558524047",
+                        "is_locked": 0,
+                        "alias": null
+                    },
+                    {
+                        "address": "0x47ac0fb4f2d84898e4d9e7b4dab3c24507a6d503",
+                        "tag": "",
+                        "is_contract": 0,
+                        "balance": "35999972",
+                        "percent": "0.011057170514430124",
+                        "is_locked": 0,
+                        "alias": {
+                            "label": {
+                                "name": "Binance: Binance-Peg Tokens"
+                            }
+                        }
+                    },
+                    {
+                        "address": "0x5777d92f208679db4b9778590fa3cab3ac9e2168",
+                        "tag": "UniswapV3",
+                        "is_contract": 1,
+                        "balance": "35946733.228948739001201868",
+                        "percent": "0.011040818552559362",
+                        "is_locked": 0,
+                        "alias": null
+                    },
+                    {
+                        "address": "0x837c20d568dfcd35e74e5cc0b8030f9cebe10a28",
+                        "tag": "",
+                        "is_contract": 0,
+                        "balance": "34315721.198137307345514896",
+                        "percent": "0.010539863214711628",
+                        "is_locked": 0,
+                        "alias": null
+                    }
+                ],
+                "honeypot_with_same_creator": "0",
+                "is_anti_whale": "0",
+                "is_blacklisted": "0",
+                "is_honeypot": "0",
+                "is_in_dex": "1",
+                "is_mintable": "1",
+                "is_open_source": "1",
+                "is_proxy": "0",
+                "is_whitelisted": "0",
+                "lp_holder_count": "4",
+                "lp_holders": [
+                    {
+                        "address": "0x96bcc2eb087633a7d434ac332ae436335f32989e",
+                        "tag": "",
+                        "value": "18143.781598177",
+                        "is_contract": 0,
+                        "balance": "180.91298095739154189",
+                        "percent": "0.999424081878310069",
+                        "NFT_list": [
+                            {
+                                "value": "18143.781598177",
+                                "NFT_id": "160967",
+                                "amount": "180.91298095739154189",
+                                "in_effect": "0",
+                                "NFT_percentage": "0.999424081878310069"
+                            }
+                        ],
+                        "is_locked": 0
+                    },
+                    {
+                        "address": "0x8061e82e5ecf4246f1b236c765d1ad134290b5e7",
+                        "tag": "",
+                        "value": "62.655082037",
+                        "is_contract": 0,
+                        "balance": "0.104149104628278639",
+                        "percent": "0.000575354641334888",
+                        "NFT_list": [
+                            {
+                                "value": "62.655082037",
+                                "NFT_id": "192933",
+                                "amount": "0.104149104628278639",
+                                "in_effect": "0",
+                                "NFT_percentage": "0.000575354641334888"
+                            }
+                        ],
+                        "is_locked": 0
+                    },
+                    {
+                        "address": "0x1bb917950739e59becfcb8b186715f0cf7f3239b",
+                        "tag": "",
+                        "value": "102.305787364",
+                        "is_contract": 1,
+                        "balance": "0.000101999654137826",
+                        "percent": "0.000000563480354749",
+                        "NFT_list": [
+                            {
+                                "value": "51.153285855",
+                                "NFT_id": "194909",
+                                "amount": "0.000051000217821929",
+                                "in_effect": "0",
+                                "NFT_percentage": "0.000000281742336026"
+                            },
+                            {
+                                "value": "51.152501509",
+                                "NFT_id": "194230",
+                                "amount": "0.000050999436315897",
+                                "in_effect": "0",
+                                "NFT_percentage": "0.000000281738018724"
+                            }
+                        ],
+                        "is_locked": 0
+                    },
+                    {
+                        "address": "0x1578a50910f1850c046f66191818401d8be45fb5",
+                        "tag": "",
+                        "value": "0.000",
+                        "is_contract": 0,
+                        "balance": "0.000000000000053176",
+                        "percent": "0.000000000000000294",
+                        "NFT_list": [
+                            {
+                                "value": "0.000",
+                                "NFT_id": "171187",
+                                "amount": "0.000000000000053176",
+                                "in_effect": "0",
+                                "NFT_percentage": "0.000000000000000294"
+                            }
+                        ],
+                        "is_locked": 0
+                    }
+                ],
+                "lp_total_supply": "181.017232061674011531",
+                "owner_address": "",
+                "owner_balance": "0",
+                "owner_change_balance": "0",
+                "owner_percent": "0",
+                "personal_slippage_modifiable": "0",
+                "selfdestruct": "0",
+                "sell_tax": "0",
+                "slippage_modifiable": "0",
+                "token_name": "Dai Stablecoin",
+                "token_symbol": "DAI",
+                "total_supply": "3255803277.431450702202282753",
+                "trading_cooldown": "0",
+                "transfer_pausable": "0",
+                "trust_list": "1"
+            },
+            "warning": null
+        }
+    },
+    "success": true
+}

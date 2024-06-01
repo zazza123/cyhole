@@ -1,0 +1,19 @@
+{
+    "data": {
+        "items": [
+            {
+                "c": 24.41362256919705,
+                "h": 24.49053693406104,
+                "l": 24.350683512640458,
+                "o": 24.47148962093433,
+                "type": "15m",
+                "unixTime": 1691998200,
+                "baseAddress": "So11111111111111111111111111111111111111112",
+                "quoteAddress": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "vBase": 3409.157415062003,
+                "vQuote": 91515.13598700023
+            }
+        ]
+    },
+    "success": true
+}

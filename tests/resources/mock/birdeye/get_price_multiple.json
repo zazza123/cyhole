@@ -1,0 +1,19 @@
+{
+    "data": {
+        "So11111111111111111111111111111111111111112": {
+            "value": 165.73359205937447,
+            "liquidity": null,
+            "updateHumanTime": "2024-05-31T17:50:19",
+            "updateUnixTime": 1717177819,
+            "priceChange24h": -3.522316754688218
+        },
+        "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So": {
+            "value": 197.41073562979204,
+            "liquidity": null,
+            "updateHumanTime": "2024-05-31T17:50:44",
+            "updateUnixTime": 1717177844,
+            "priceChange24h": -3.516800991415396
+        }
+    },
+    "success": true
+}
