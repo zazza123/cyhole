@@ -26,13 +26,13 @@ from cyhole.core.exception import MissingAPIKeyError
 from cyhole.core.address.solana import SOL, USDC
 from cyhole.core.address.ethereum import WETH
 
-# constant address
-TOM_SOL = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS"
-JRK = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ"
-
 # load test config
 from .config import load_config, MockerManager
 config = load_config()
+
+# constant address
+TOM_SOL = "842NwDnKYcfMRWAYqsD3hoTWXKKMi28gVABtmaupFcnS"
+JRK = "JRKXwVpdyQbF3A4pvQvKYj22syubbEwfwUiobDzSPtJ"
 
 # create resources folder
 mock_path = Path(config.mock_folder) / config.birdeye.mock_folder
