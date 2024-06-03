@@ -1,10 +1,13 @@
 name: publish-doc
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
+  actions: write
   contents: write
 
 jobs:
@@ -14,17 +17,30 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: zazza123/cyhole
+          ref: gh-pages
+          token: ${{ secrets.GH_PAGES_TOKEN }}
 
       # set up environment
       - name: setup python
         uses: actions/setup-python@v3
         with:
           python-version: 3.12
-      - name: install pip
-        run: python -m pip install --upgrade pip
-      - name: install dependencies
-        run: pip install -r docs/requirements.txt
+
+      # manage caches
+      - name: create cache
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: ${{ env.pythonLocation }}
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('docs/requirements.txt') }}-doc
+
+      # install dependencies
+      - name: install pip and dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          pip install --upgrade pip
+          pip install -r docs/requirements.txt
 
       # setup git bot credentials
       - run: git config user.name github-actions[bot]
