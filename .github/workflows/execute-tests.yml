@@ -3,9 +3,9 @@ name: tests
 on:
   push:
     branches: [main]
-    #paths:
-    #  - 'src/**'
-    #  - 'tests/**'
+    paths:
+      - 'src/**'
+      - 'tests/**'
   pull_request:
     branches: [main]
     paths:
@@ -97,7 +97,7 @@ jobs:
 
       # generate/upload coverage HTML
       - name: generate coverage html
-        run: coverage html --show-contexts --title "Coverage Report - ${{ github.sha }}"
+        run: coverage html --show-contexts --title "Coverage Report - cyhole (${{ github.sha }})"
       - name: upload coverage html
         uses: actions/upload-artifact@v4
         with:

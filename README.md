@@ -7,6 +7,7 @@
   <a href="https://pypi.org/project/cyhole" target="_blank"><img src="https://img.shields.io/pypi/pyversions/cyhole.svg?color=%2334D058" alt="Supported Python Versions" height="18"></a>
   <a href="https://pypi.org/project/cyhole"><img src="https://img.shields.io/pypi/v/cyhole?color=%2334D058&label=pypi" alt="PyPI version" height="18"></a>
   <a href="https://github.com/zazza123/cyhole/actions/workflows/execute-tests.yml?query=branch%3Amain+event%3Apush"><img src="https://github.com/zazza123/cyhole/actions/workflows/execute-tests.yml/badge.svg?branch=main&action=push" alt="Tests" height="18"></a>
+  <a href="https://coverage-badge.samuelcolvin.workers.dev/redirect/zazza123/cyhole" target="_blank"><img src="https://coverage-badge.samuelcolvin.workers.dev/zazza123/cyhole.svg" alt="Coverage" height="18"></a>
   <a href="https://pepy.tech/project/cyhole" target="_blank"><img src="https://static.pepy.tech/badge/cyhole/month" alt="Statistics" height="18"></a>
   <a href="https://github.com/zazza123/cyhole/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/zazza123/cyhole.svg" alt="License" height="18"></a>
 </p>
