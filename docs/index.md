@@ -8,8 +8,8 @@ hide:
   display: none;
 }
 
-.img-logo {
-  display: none;
+.readme {
+  display: none!important;
 }
 </style>
 

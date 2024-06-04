@@ -1,14 +1,22 @@
 <p align="center">
   <a href="https://zazza123.github.io/cyhole">
-    <img src="https://raw.githubusercontent.com/zazza123/cyhole/main/docs/config/images/logo.png" alt="cyhole" height="150px" class="img-logo">
+    <img src="https://raw.githubusercontent.com/zazza123/cyhole/main/docs/config/images/logo.png" alt="cyhole" height="150px" class="readme">
   </a>
 </p>
 <p align="center">
-  <a href="https://pypi.org/project/cyhole"><img src="https://img.shields.io/pypi/v/cyhole?color=%2334D058&label=pypi%20package" alt="PyPI version" height="18"></a>
+  <a href="https://pypi.org/project/cyhole" target="_blank"><img src="https://img.shields.io/pypi/pyversions/cyhole.svg?color=%2334D058" alt="Supported Python Versions"></a>
+  <a href="https://pypi.org/project/cyhole"><img src="https://img.shields.io/pypi/v/cyhole?color=%2334D058&label=pypi" alt="PyPI version" height="18"></a>
+  <a href="https://github.com/zazza123/cyhole/actions/workflows/execute-tests.yml?query=branch%3Amain+event%3Apush"><img src="https://github.com/zazza123/cyhole/actions/workflows/execute-tests.yml/badge.svg?branch=main&action=push" alt="Tests" height="18"></a>
+  <a href="https://pepy.tech/project/cyhole" target="_blank"><img src="https://static.pepy.tech/badge/cyhole/month" alt="Statistics"></a>
+  <a href="https://github.com/zazza123/cyhole/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/zazza123/cyhole.svg" alt="License"></a>
 </p>
 
-
 ---
+
+<p class="readme">
+  <b>Documentation</b>: <a href="https://zazza123.github.io/cyhole">https://zazza123.github.io/cyhole</a>
+</p>
+<hr class="readme">
 
 **cyhole** is designed to help python's developers to interact to the most popular external API services in crypto world and create automation processes.
 
@@ -26,10 +34,6 @@ The installation is performed via `pip` by running:
 ```sh
 pip install cyhole
 ```
-
----
-
-**Documentation**: [https://zazza123.github.io/cyhole](https://zazza123.github.io/cyhole)
 
 ## Interactions
 
