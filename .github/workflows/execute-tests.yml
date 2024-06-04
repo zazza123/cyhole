@@ -3,14 +3,16 @@ name: tests
 on:
   push:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'tests/**'
+    #paths:
+    #  - 'src/**'
+    #  - 'tests/**'
   pull_request:
     branches: [main]
     paths:
       - 'src/**'
       - 'tests/**'
+  release:
+    types: [created]
 
 jobs:
   lint:
@@ -92,3 +94,12 @@ jobs:
           CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
       - name: generate coverage report
         run: coverage report -m
+
+      # generate/upload coverage HTML
+      - name: generate coverage html
+        run: coverage html --show-contexts --title "Coverage Report - ${{ github.sha }}"
+      - name: upload coverage html
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov
