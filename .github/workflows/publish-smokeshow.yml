@@ -1,0 +1,49 @@
+# This Action is used to publish Coverage report HTML using Smokeshow.
+# Github: https://github.com/samuelcolvin/smokeshow
+name: smokeshow
+
+on:
+  workflow_run:
+    workflows: [tests]
+    types: [completed]
+
+permissions:
+  statuses: write
+
+jobs:
+  smokeshow:
+    name: publish HTML coverage report using smokeshow
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      # set up environment
+      - name: setup python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.12
+
+      # install dependencies
+      - name: install pip and smokeshow
+        run: |
+          pip install --upgrade pip
+          pip install smokeshow
+
+      # load coverage HTML file
+      - name: load coverage-html file
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-html
+          path: htmlcov
+          github-token: ${{ secrets.SMOKESHOW_DOWNLOAD_ARTIFACTS }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      # upload smokeshow site
+      - run: smokeshow upload htmlcov
+        env:
+          SMOKESHOW_GITHUB_STATUS_DESCRIPTION: Coverage {coverage-percentage}
+          SMOKESHOW_GITHUB_COVERAGE_THRESHOLD: 95
+          SMOKESHOW_GITHUB_CONTEXT: coverage
+          SMOKESHOW_GITHUB_TOKEN: ${{ secrets.SMOKESHOW_UPLOAD }}
+          SMOKESHOW_GITHUB_PR_HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          SMOKESHOW_AUTH_KEY: ${{ secrets.SMOKESHOW_AUTH_KEY }}
