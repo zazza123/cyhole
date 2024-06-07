@@ -1,0 +1,19 @@
+{
+    "data": {
+        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
+            "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "mintSymbol": "JUP",
+            "vsToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "vsTokenSymbol": "USDC",
+            "price": 1.124247
+        },
+        "So11111111111111111111111111111111111111112": {
+            "id": "So11111111111111111111111111111111111111112",
+            "mintSymbol": "SOL",
+            "vsToken": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "vsTokenSymbol": "USDC",
+            "price": 171.373299231
+        }
+    },
+    "timeTaken": 0.00030733001767657697
+}

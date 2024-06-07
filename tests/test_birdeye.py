@@ -40,7 +40,7 @@ mock_path.mkdir(parents = True, exist_ok = True)
 
 # set client, mocker
 _client = Birdeye(api_key = config.birdeye.api_key)
-_mocker = MockerManager(mock_path = Path(config.mock_folder) / config.birdeye.mock_folder)
+_mocker = MockerManager(mock_path)
 
 class TestBirdeyePublic:
     """
