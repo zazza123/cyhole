@@ -29,6 +29,13 @@ from pydantic import BaseModel
 
 ResponseModel = TypeVar('ResponseModel', bound = BaseModel)
 
+class JupiterConfiguration(BaseModel):
+    """
+        Model in charge to manage the Jupiter APIs.
+    """
+    mock_response: bool = True
+    mock_folder: str = "jupiter"
+
 class BirdeyeConfiguration(BaseModel):
     """
         Model in charge to manage the birdeye APIs.
@@ -45,6 +52,7 @@ class TestConfiguration(BaseModel):
     mock_response: bool = True
     mock_folder: str = "tests/resources/mock"
     birdeye: BirdeyeConfiguration = BirdeyeConfiguration()
+    jupiter: JupiterConfiguration = JupiterConfiguration()
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -78,6 +86,10 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.birdeye.mock_response_private = config.getboolean("birdeye", "mock_response_private", fallback = test_config.birdeye.mock_response_private)
     test_config.birdeye.mock_folder = config.get("birdeye", "mock_folder", fallback = test_config.birdeye.mock_folder)
     test_config.birdeye.api_key = config.get("birdeye", "api_key", fallback = test_config.birdeye.api_key)
+
+    # jupiter
+    test_config.jupiter.mock_response = config.getboolean("jupiter", "mock_response", fallback = test_config.jupiter.mock_response)
+    test_config.jupiter.mock_folder = config.get("jupiter", "mock_folder", fallback = test_config.jupiter.mock_folder)
 
     return test_config
 
