@@ -1,6 +1,17 @@
+from requests.exceptions import HTTPError
+
 from ..core.api import APICaller
 from ..core.param import RequestType
-from ..jupiter.schema import GetPriceResponse
+from ..jupiter.schema import (
+    JupiterHTTPError,
+    GetPriceResponse,
+    GetQuoteInput,
+    GetQuoteResponse
+)
+from ..jupiter.exception import (
+    JupiterException,
+    JupiterNoRouteFoundError
+)
 
 class Jupiter(APICaller):
     """
@@ -25,6 +36,7 @@ class Jupiter(APICaller):
         super().__init__()
 
         self.url_api_price = "https://price.jup.ag/v6/price"
+        self.url_api_quote = "https://quote-api.jup.ag/v6/quote"
         return
 
     def get_price(self, address: list[str], vs_address: str | None = None) -> GetPriceResponse:
@@ -48,10 +60,6 @@ class Jupiter(APICaller):
 
             Returns:
                 tokens' prices.
-
-            Raises:
-                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
-                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # set params
         params = {
@@ -66,3 +74,55 @@ class Jupiter(APICaller):
         content = GetPriceResponse(**content_raw.json())
 
         return content
+
+    def get_quote(self, input: GetQuoteInput) -> GetQuoteResponse:
+        """
+            This function refers to the **[Get Quote](https://station.jup.ag/api-v6/get-quote)** API endpoint, 
+            and it is used to get a quote for swapping a specific amount of tokens.  
+            The function can be combined with the `post_swap` to implement a payment mechanism.
+
+            Parameters:
+                input: an input schema used to describe the request.
+                    More details in the object definition.
+
+            Returns:
+                Quote found by Jupiter API.
+        """
+        # set params
+        params = input.model_dump(
+            by_alias = True, 
+            exclude_defaults = True
+        )
+
+        # execute request
+        try:
+            content_raw = self.api(RequestType.GET.value, self.url_api_quote, params = params)
+        except HTTPError as e:
+            raise self._raise(e)
+
+        # parse response
+        content = GetQuoteResponse(**content_raw.json())
+
+        return content
+
+    def _raise(self, exception: HTTPError) -> JupiterException:
+        """
+            Internal function used to raise the correct 
+            Jupiter exception according to the error code 
+            provided by the API.
+
+            Parameters:
+                exception: the HTTP error returned from Jupiter API.
+
+            Raises:
+                JupiterNoRouteFoundError: for error code `COULD_NOT_FIND_ANY_ROUTE` 
+                    during the creation of a quote.
+                JupiterException: general exception raised when an unknown 
+                    error code is found.
+        """
+        error = JupiterHTTPError(**exception.response.json())
+        match error.code:
+            case "COULD_NOT_FIND_ANY_ROUTE":
+                return JupiterNoRouteFoundError(error.msg)
+            case _:
+                return JupiterException(error.model_dump())
