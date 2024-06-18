@@ -36,7 +36,7 @@ class Jupiter(APICaller):
         super().__init__()
 
         self.url_api_price = "https://price.jup.ag/v6/price"
-        self.url_api_quote = "https://quote-api.jup.ag/v6/quote"
+        self.url_api_quote = "https://quote-api.jup.ag/v6/"
         return
 
     def get_price(self, address: list[str], vs_address: str | None = None) -> GetPriceResponse:
@@ -89,6 +89,7 @@ class Jupiter(APICaller):
                 Quote found by Jupiter API.
         """
         # set params
+        url = self.url_api_quote + "quote"
         params = input.model_dump(
             by_alias = True, 
             exclude_defaults = True
@@ -96,12 +97,31 @@ class Jupiter(APICaller):
 
         # execute request
         try:
-            content_raw = self.api(RequestType.GET.value, self.url_api_quote, params = params)
+            content_raw = self.api(RequestType.GET.value, url, params = params)
         except HTTPError as e:
             raise self._raise(e)
 
         # parse response
         content = GetQuoteResponse(**content_raw.json())
+
+        return content
+
+    def get_quote_tokens(self) -> list[str]:
+        """
+            This function refers to the **[Get Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint, 
+            and it is used to get the list of the current supported tradable tokens. 
+
+            Returns:
+                List of tradable tokens.
+        """
+        # set params
+        url = self.url_api_quote + "tokens"
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url)
+
+        # parse response
+        content: list[str] = content_raw.json()
 
         return content
 
