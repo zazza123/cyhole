@@ -1,13 +1,19 @@
+import pytest
 from pathlib import Path
 
 from pytest_mock import MockerFixture
 
 from cyhole.jupiter import Jupiter
 from cyhole.jupiter.schema import (
-    GetPriceResponse
+    GetPriceResponse,
+    GetQuoteInput,
+    GetQuoteResponse
 )
+from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
+from cyhole.jupiter.exception import JupiterNoRouteFoundError
 from cyhole.core.address.solana import SOL, JUP
 from cyhole.core.address.ethereum import WETH
+from cyhole.core.exception import ParamUnknownError
 
 # load test config
 from .config import load_config, MockerManager
@@ -154,3 +160,115 @@ class TestJupiter:
         # store request (only not mock)
         if not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_quote(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote".
+
+            Mock Response File: get_quote_base.json
+        """
+
+        # load mock response
+        mock_file_name = "get_quote_base"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        amount = 1000
+        # execute request
+        input = GetQuoteInput(
+            input_token = SOL,
+            output_token = JUP,
+            amount = amount
+        )
+        response = self.client.get_quote(input)
+
+        # actual test
+        assert isinstance(response, GetQuoteResponse)
+        assert response.input_amount == amount
+        assert response.input_token == SOL
+        assert response.output_token == JUP
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_quote_force_route(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" 
+            forcing a route and mode.
+
+            Mock Response File: get_quote_force_rooute.json
+        """
+
+        # load mock response
+        mock_file_name = "get_quote_force_rooute"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        amount = 1000
+        # execute request
+        input = GetQuoteInput(
+            input_token = SOL,
+            output_token = JUP,
+            amount = amount,
+            dexes = [JupiterSwapDex.METEORA_DLMM.value],
+            swap_mode = JupiterSwapMode.EXACT_IN.value
+        )
+        response = self.client.get_quote(input)
+
+        # actual test
+        assert isinstance(response, GetQuoteResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_quote_error_route_not_found(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" 
+            when no route is found.
+        """
+
+        # define input
+        input = GetQuoteInput(
+            input_token = SOL,
+            output_token = JUP,
+            amount = 1
+        )
+
+        # actual test
+        with pytest.raises(JupiterNoRouteFoundError):
+            self.client.get_quote(input)
+
+
+    def test_get_quote_error_unknown_dex(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" 
+            when a not supported DEX is used.
+        """
+
+        # actual test
+        with pytest.raises(ParamUnknownError):
+            GetQuoteInput(
+                input_token = SOL,
+                output_token = JUP,
+                amount = 1000,
+                dexes = ["XXX"]
+            )
+
+    def test_get_quote_error_unknown_mode(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" 
+            when a not supported MODE is used.
+        """
+
+        # actual test
+        with pytest.raises(ParamUnknownError):
+            GetQuoteInput(
+                input_token = SOL,
+                output_token = JUP,
+                amount = 1000,
+                swap_mode = "XXX"
+            )

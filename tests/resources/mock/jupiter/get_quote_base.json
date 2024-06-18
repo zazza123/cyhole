@@ -1,0 +1,54 @@
+{
+    "inputMint": "So11111111111111111111111111111111111111112",
+    "inAmount": 1000.0,
+    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "outAmount": 188.0,
+    "otherAmountThreshold": 188.0,
+    "swapMode": "ExactIn",
+    "slippageBps": 50,
+    "platformFee": null,
+    "priceImpactPct": 0.0,
+    "routePlan": [
+        {
+            "swapInfo": {
+                "ammKey": "HLujcj6D7kdH3gLktJRXB95vRbfhp558HvsFoSLMKaSZ",
+                "label": "Meteora DLMM",
+                "inputMint": "So11111111111111111111111111111111111111112",
+                "inAmount": 1000.0,
+                "outputMint": "MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5",
+                "outAmount": 3165.0,
+                "feeMint": "So11111111111111111111111111111111111111112",
+                "feeAmount": 3.0
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "8w2caF8c3CaMZ1VXQwgdrXUKzfJNc9C8LavTX4fNyWkH",
+                "label": "Meteora DLMM",
+                "inputMint": "MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5",
+                "inAmount": 3165.0,
+                "outputMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "outAmount": 657668.0,
+                "feeMint": "MEW1gQWJ3nEXg2qgERiKu7FAFj79PHvQVREQUzScPP5",
+                "feeAmount": 32.0
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "7J5BnVMUrMAsX4nz188hYuP5iaRMiXBPdfxHLdMAVMx4",
+                "label": "Meteora DLMM",
+                "inputMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "inAmount": 657668.0,
+                "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "outAmount": 188.0,
+                "feeMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "feeAmount": 2636.0
+            },
+            "percent": 100
+        }
+    ],
+    "contextSlot": 272611400.0,
+    "timeTaken": 0.010341736
+}
