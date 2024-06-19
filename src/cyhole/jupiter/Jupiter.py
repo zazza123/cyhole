@@ -6,7 +6,8 @@ from ..jupiter.schema import (
     JupiterHTTPError,
     GetPriceResponse,
     GetQuoteInput,
-    GetQuoteResponse
+    GetQuoteResponse,
+    GetQuoteTokensResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -106,7 +107,7 @@ class Jupiter(APICaller):
 
         return content
 
-    def get_quote_tokens(self) -> list[str]:
+    def get_quote_tokens(self) -> GetQuoteTokensResponse:
         """
             This function refers to the **[Get Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint, 
             and it is used to get the list of the current supported tradable tokens. 
@@ -121,7 +122,7 @@ class Jupiter(APICaller):
         content_raw = self.api(RequestType.GET.value, url)
 
         # parse response
-        content: list[str] = content_raw.json()
+        content = GetQuoteTokensResponse(tokens = content_raw.json())
 
         return content
 

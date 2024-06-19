@@ -137,3 +137,10 @@ class GetQuoteResponse(BaseModel):
     route_plan: list[GetQuoteRoutePlan] = Field(alias = "routePlan")
     context_slot: float = Field(alias = "contextSlot")
     time_taken: float = Field(alias = "timeTaken")
+
+# classes used on GET "Quote/Token" endpoint
+class GetQuoteTokensResponse(BaseModel):
+    """
+        Model used to represent the **Quote/Token** endpoint from Jupiter API.
+    """
+    tokens: list[str]
