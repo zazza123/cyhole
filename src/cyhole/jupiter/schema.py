@@ -144,3 +144,10 @@ class GetQuoteTokensResponse(BaseModel):
         Model used to represent the **Quote/Token** endpoint from Jupiter API.
     """
     tokens: list[str]
+
+# classes used on GET "Quote/Program ID to Label" endpoint
+class GetQuoteProgramIdLabelResponse(BaseModel):
+    """
+        Model used to represent the **Quote/Program ID to Label** endpoint from Jupiter API.
+    """
+    dexes: dict[str, str]

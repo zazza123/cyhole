@@ -7,7 +7,8 @@ from ..jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
     GetQuoteResponse,
-    GetQuoteTokensResponse
+    GetQuoteTokensResponse,
+    GetQuoteProgramIdLabelResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -123,6 +124,25 @@ class Jupiter(APICaller):
 
         # parse response
         content = GetQuoteTokensResponse(tokens = content_raw.json())
+
+        return content
+
+    def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
+        """
+            This function refers to the **[Get Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint, 
+            and it is used to get the list of supported DEXes to use in quote endpoint. 
+
+            Returns:
+                List of DEXs addresses and labels.
+        """
+        # set params
+        url = self.url_api_quote + "program-id-to-label"
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url)
+
+        # parse response
+        content = GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
 
         return content
 
