@@ -8,7 +8,8 @@ from cyhole.jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
     GetQuoteResponse,
-    GetQuoteTokensResponse
+    GetQuoteTokensResponse,
+    GetQuoteProgramIdLabelResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError
@@ -297,6 +298,34 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetQuoteTokensResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_quote_program_id_label(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote/Program ID to Label".
+
+            Mock Response File: get_quote_program_id_label.json
+        """
+
+        # load mock response
+        mock_file_name = "get_quote_program_id_label"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteProgramIdLabelResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["dexes"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        response = self.client.get_quote_program_id_label()
+
+        # actual test
+        assert isinstance(response, GetQuoteProgramIdLabelResponse)
 
         # store request (only not mock)
         if not config.jupiter.mock_response:
