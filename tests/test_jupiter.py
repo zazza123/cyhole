@@ -187,7 +187,7 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetQuoteResponse)
-        assert response.input_amount == amount
+        assert response.input_amount == str(amount)
         assert response.input_token == SOL
         assert response.output_token == JUP
 

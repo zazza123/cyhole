@@ -1,41 +1,41 @@
 {
     "inputMint": "So11111111111111111111111111111111111111112",
-    "inAmount": 1000.0,
+    "inAmount": "1000",
     "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-    "outAmount": 186.0,
-    "otherAmountThreshold": 186.0,
+    "outAmount": "175",
+    "otherAmountThreshold": "175",
     "swapMode": "ExactIn",
     "slippageBps": 50,
     "platformFee": null,
-    "priceImpactPct": 0.0,
+    "priceImpactPct": "0",
     "routePlan": [
         {
             "swapInfo": {
-                "ammKey": "J8a3ZKcDZA8HSinuCyjJggU8hnDgwkZKmwH8qDZ9nUcY",
+                "ammKey": "48Nt6RDEPkW4gxBEdTZZB2AxzFMArE1nJstkDyFSgLbv",
                 "label": "Meteora DLMM",
                 "inputMint": "So11111111111111111111111111111111111111112",
-                "inAmount": 1000.0,
-                "outputMint": "jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL",
-                "outAmount": 58085.0,
+                "inAmount": "1000",
+                "outputMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
+                "outAmount": "123809",
                 "feeMint": "So11111111111111111111111111111111111111112",
-                "feeAmount": 3.0
+                "feeAmount": "2"
             },
             "percent": 100
         },
         {
             "swapInfo": {
-                "ammKey": "8DAKr79Gy7hDQzHFkKTLzSwyq1f9we4i621jkzozuYHu",
+                "ammKey": "8B3vxiUio75gKxzwB2BwZJYQLxQUC6KK2B22u8LaBjnE",
                 "label": "Meteora DLMM",
-                "inputMint": "jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL",
-                "inAmount": 58085.0,
+                "inputMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
+                "inAmount": "123809",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": 186.0,
-                "feeMint": "jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL",
-                "feeAmount": 144.0
+                "outAmount": "175",
+                "feeMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
+                "feeAmount": "496"
             },
             "percent": 100
         }
     ],
-    "contextSlot": 272612329.0,
-    "timeTaken": 0.007323851
+    "contextSlot": 273032627,
+    "timeTaken": 0.00954224
 }
