@@ -9,10 +9,12 @@ from cyhole.jupiter.schema import (
     GetQuoteInput,
     GetQuoteResponse,
     GetQuoteTokensResponse,
-    GetQuoteProgramIdLabelResponse
+    GetQuoteProgramIdLabelResponse,
+    PostSwapBody,
+    PostSwapResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
-from cyhole.jupiter.exception import JupiterNoRouteFoundError
+from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest
 from cyhole.core.address.solana import SOL, JUP
 from cyhole.core.address.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
@@ -330,3 +332,42 @@ class TestJupiter:
         # store request (only not mock)
         if not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_post_swap(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint POST "Swap".
+
+            Mock Response File: post_swap.json
+        """
+
+        # load mock response
+        mock_file_name = "post_swap"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        body = PostSwapBody(
+            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+        )
+        response = self.client.post_swap(body)
+
+        # actual test
+        assert isinstance(response, PostSwapResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_post_swap_incalid_request(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Swap" 
+            when an invalid field is provided in the body.
+        """
+        body = PostSwapBody(
+            user_public_key = "XXX",
+            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+        )
+        with pytest.raises(JupiterInvalidRequest):
+            self.client.post_swap(body)
