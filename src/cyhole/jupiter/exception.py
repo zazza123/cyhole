@@ -6,3 +6,6 @@ class JupiterException(CyholeException):
 
 class JupiterNoRouteFoundError(JupiterException):
     pass
+
+class JupiterInvalidRequest(JupiterException):
+    pass

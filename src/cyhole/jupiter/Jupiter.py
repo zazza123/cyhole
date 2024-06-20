@@ -8,11 +8,14 @@ from ..jupiter.schema import (
     GetQuoteInput,
     GetQuoteResponse,
     GetQuoteTokensResponse,
-    GetQuoteProgramIdLabelResponse
+    GetQuoteProgramIdLabelResponse,
+    PostSwapBody,
+    PostSwapResponse
 )
 from ..jupiter.exception import (
     JupiterException,
-    JupiterNoRouteFoundError
+    JupiterNoRouteFoundError,
+    JupiterInvalidRequest
 )
 
 class Jupiter(APICaller):
@@ -146,6 +149,41 @@ class Jupiter(APICaller):
 
         return content
 
+    def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
+        """
+            This function refers to the **[Post Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint, 
+            and it is used to recive the transaction to perform the swap initialised from `get_quote` 
+            endopoint for the desired pair.  
+            The function should be combined with the `get_quote` endpoint.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the swap.
+                    More details in the object definition.
+
+            Returns:
+                Transaction found by Jupiter API.
+        """
+        # set params
+        url = self.url_api_quote + "swap"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        try:
+            content_raw = self.api(
+                type = RequestType.POST.value,
+                url = url,
+                headers = headers,
+                json = body.model_dump(by_alias = True, exclude_defaults = True)
+            )
+        except HTTPError as e:
+            raise self._raise(e)
+        # parse response
+        content = PostSwapResponse(**content_raw.json())
+
+        return content
+
     def _raise(self, exception: HTTPError) -> JupiterException:
         """
             Internal function used to raise the correct 
@@ -165,5 +203,7 @@ class Jupiter(APICaller):
         match error.code:
             case "COULD_NOT_FIND_ANY_ROUTE":
                 return JupiterNoRouteFoundError(error.msg)
+            case "INVALID_REQUEST":
+                return JupiterInvalidRequest(error.msg)
             case _:
-                return JupiterException(error.model_dump())
+                return JupiterException(error.model_dump_json())

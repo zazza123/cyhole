@@ -104,18 +104,18 @@ class GetQuoteInput(BaseModel):
 
 # Output
 class GetQuotePlatformFees(BaseModel):
-    amount: float
+    amount: str
     fee_base_points: str = Field(alias = "feeBps")
 
 class GetQuoteSwapInfo(BaseModel):
     amm_key: str = Field(alias = "ammKey")
     amm_label: str | None = Field(default = None, alias = "label")
     input_token: str = Field(alias = "inputMint")
-    input_amount: float = Field(alias = "inAmount")
+    input_amount: str = Field(alias = "inAmount")
     output_token: str = Field(alias = "outputMint")
-    output_amount: float = Field(alias = "outAmount")
+    output_amount: str = Field(alias = "outAmount")
     fee_token: str = Field(alias = "feeMint")
-    fee_amount: float = Field(alias = "feeAmount")
+    fee_amount: str = Field(alias = "feeAmount")
 
 class GetQuoteRoutePlan(BaseModel):
     swap_info: GetQuoteSwapInfo = Field(alias = "swapInfo")
@@ -126,16 +126,16 @@ class GetQuoteResponse(BaseModel):
         Model used to represent the **Quote** endpoint from Jupiter API.
     """
     input_token: str = Field(alias = "inputMint")
-    input_amount: float = Field(alias = "inAmount")
+    input_amount: str = Field(alias = "inAmount")
     output_token: str = Field(alias = "outputMint")
-    output_amount: float = Field(alias = "outAmount")
-    other_amount_threshold: float = Field(alias = "otherAmountThreshold")
+    output_amount: str = Field(alias = "outAmount")
+    other_amount_threshold: str = Field(alias = "otherAmountThreshold")
     swap_mode: str = Field(alias = "swapMode")
     slippage_base_points: int = Field(alias = "slippageBps")
-    platform_fees: GetQuotePlatformFees | None = Field(alias = "platformFee")
-    price_impact_pct: float = Field(alias = "priceImpactPct")
+    platform_fees: GetQuotePlatformFees | None = Field(default = None, alias = "platformFee")
+    price_impact_pct: str = Field(alias = "priceImpactPct")
     route_plan: list[GetQuoteRoutePlan] = Field(alias = "routePlan")
-    context_slot: float = Field(alias = "contextSlot")
+    context_slot: int = Field(alias = "contextSlot")
     time_taken: float = Field(alias = "timeTaken")
 
 # classes used on GET "Quote/Token" endpoint
@@ -151,3 +151,26 @@ class GetQuoteProgramIdLabelResponse(BaseModel):
         Model used to represent the **Quote/Program ID to Label** endpoint from Jupiter API.
     """
     dexes: dict[str, str]
+
+# classes used on POST "Swap" endpoint
+# Body
+class PostSwapBody(BaseModel):
+    user_public_key: str = Field(serialization_alias = "userPublicKey")
+    wrap_unwrap_sol: bool = Field(default = None, serialization_alias = "wrapAndUnwrapSol")
+    use_shared_accounts: bool= Field(default = None, serialization_alias = "useSharedAccounts")
+    fee_account: str = Field(default = None, serialization_alias = "feeAccount")
+    tracking_account: str = Field(default = None, serialization_alias = "trackingAccount")
+    compute_unit_price_micro_lamports: int = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
+    prioritization_fee_lamports: int = Field(default = None, serialization_alias = "prioritizationFeeLamports")
+    as_legacy_transaction: bool = Field(default = None, serialization_alias = "asLegacyTransaction")
+    use_token_ledger: bool = Field(default = None, serialization_alias = "useTokenLedger")
+    destination_token_account: str = Field(default = None, serialization_alias = "destinationTokenAccount")
+    dynamic_compute_unit_limit: bool = Field(default = None, serialization_alias = "dynamicComputeUnitLimit")
+    skip_user_accounts_rpc_calls: bool = Field(default = None, serialization_alias = "skipUserAccountsRpcCalls")
+    quote_response: GetQuoteResponse = Field(serialization_alias = "quoteResponse")
+
+# Output
+class PostSwapResponse(BaseModel):
+    swap_transaction: str = Field(alias = "swapTransaction")
+    last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
+    prioritization_fee_lamports: int = Field(default = 0, alias = "prioritizationFeeLamports")
