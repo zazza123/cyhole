@@ -10,13 +10,15 @@ from ..jupiter.schema import (
     GetQuoteTokensResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
-    PostSwapResponse
+    PostSwapResponse,
+    GetTokenListResponse
 )
 from ..jupiter.exception import (
     JupiterException,
     JupiterNoRouteFoundError,
     JupiterInvalidRequest
 )
+from ..jupiter.param import JupiterTokenListType
 
 class Jupiter(APICaller):
     """
@@ -42,6 +44,7 @@ class Jupiter(APICaller):
 
         self.url_api_price = "https://price.jup.ag/v6/price"
         self.url_api_quote = "https://quote-api.jup.ag/v6/"
+        self.url_api_token = "https://token.jup.ag/"
         return
 
     def get_price(self, address: list[str], vs_address: str | None = None) -> GetPriceResponse:
@@ -181,6 +184,40 @@ class Jupiter(APICaller):
             raise self._raise(e)
         # parse response
         content = PostSwapResponse(**content_raw.json())
+
+        return content
+
+    def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
+        """
+            This function refers to the **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint, 
+            and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
+            Choose the tokens list according to `type` field.
+
+            Parameters:
+                type: Jupiter manages the tradable tokens through a set of tags in order to guarantee its 
+                    core values and provide a secure service. There are two types of lists currently available:  
+                    - Strict the most secure list that includes only the tokens with tags `old-registry`, `community`, or `wormhole`.
+                    - All all the tokens are included expect the banned ones.
+                    The supported types are available on [`JupiterTokenListType`][cyhole.jupiter.param.JupiterTokenListType].
+                banned: this flag can be used **only** on `All` type, and it enables the inclusion of banned tokens.
+
+            Returns:
+                List of Jupiter's tokens list.
+        """
+        # check param consistency
+        JupiterTokenListType.check(type)
+
+        # set params
+        url = self.url_api_token + type
+        params = {
+            "includeBanned" : banned
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+
+        # parse response
+        content = GetTokenListResponse(tokens = content_raw.json())
 
         return content
 

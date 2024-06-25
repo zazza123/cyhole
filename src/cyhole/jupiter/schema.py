@@ -174,3 +174,20 @@ class PostSwapResponse(BaseModel):
     swap_transaction: str = Field(alias = "swapTransaction")
     last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
     prioritization_fee_lamports: int = Field(default = 0, alias = "prioritizationFeeLamports")
+
+# classes used on GET "Token List" endpoint
+class GetTokenListToken(BaseModel):
+    address: str
+    chain_id: int = Field(alias = "chainId")
+    decimals: int
+    name: str
+    symbol: str
+    logo_uri: str = Field(alias = "logoURI")
+    tags: list[str]
+    extensions: dict[str, str] | None = None
+
+class GetTokenListResponse(BaseModel):
+    """
+        Model used to represent the **Token List** endpoint from Jupiter API.
+    """
+    tokens: list[GetTokenListToken]
