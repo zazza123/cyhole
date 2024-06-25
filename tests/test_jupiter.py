@@ -11,7 +11,8 @@ from cyhole.jupiter.schema import (
     GetQuoteTokensResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
-    PostSwapResponse
+    PostSwapResponse,
+    GetTokenListResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest
@@ -360,7 +361,7 @@ class TestJupiter:
         if not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_post_swap_incalid_request(self) -> None:
+    def test_post_swap_invalid_request(self) -> None:
         """
             Unit Test used to check the response schema of endpoint "Swap" 
             when an invalid field is provided in the body.
@@ -371,3 +372,32 @@ class TestJupiter:
         )
         with pytest.raises(JupiterInvalidRequest):
             self.client.post_swap(body)
+    
+    def test_get_token_list(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token List".
+
+            Mock Response File: get_token_list.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_list"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["tokens"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        response = self.client.get_token_list()
+
+        # actual test
+        assert isinstance(response, GetTokenListResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            response.tokens = response.tokens[0:10]
+            self.mocker.store_mock_model(mock_file_name, response)

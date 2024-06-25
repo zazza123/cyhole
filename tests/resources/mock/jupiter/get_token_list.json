@@ -1,0 +1,148 @@
+{
+    "tokens": [
+        {
+            "address": "So11111111111111111111111111111111111111112",
+            "chainId": 101,
+            "decimals": 9,
+            "name": "Wrapped SOL",
+            "symbol": "SOL",
+            "logoURI": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
+            "tags": [
+                "old-registry"
+            ],
+            "extensions": {
+                "coingeckoId": "wrapped-solana"
+            }
+        },
+        {
+            "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "chainId": 101,
+            "decimals": 6,
+            "name": "USD Coin",
+            "symbol": "USDC",
+            "logoURI": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
+            "tags": [
+                "old-registry",
+                "solana-fm"
+            ],
+            "extensions": {
+                "coingeckoId": "usd-coin"
+            }
+        },
+        {
+            "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+            "chainId": 101,
+            "decimals": 6,
+            "name": "USDT",
+            "symbol": "USDT",
+            "logoURI": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.svg",
+            "tags": [
+                "old-registry",
+                "solana-fm"
+            ],
+            "extensions": {
+                "coingeckoId": "tether"
+            }
+        },
+        {
+            "address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+            "chainId": 101,
+            "decimals": 6,
+            "name": "dogwifhat",
+            "symbol": "$WIF",
+            "logoURI": "https://bafkreibk3covs5ltyqxa272uodhculbr6kea6betidfwy3ajsav2vjzyum.ipfs.nftstorage.link",
+            "tags": [
+                "community",
+                "solana-fm"
+            ],
+            "extensions": {
+                "coingeckoId": "dogwifcoin"
+            }
+        },
+        {
+            "address": "7GCihgDB8fe6KNjn2MYtkzZcRjQy3t9GHdC8uHYmW2hr",
+            "chainId": 101,
+            "decimals": 9,
+            "name": "Popcat",
+            "symbol": "POPCAT",
+            "logoURI": "https://bafkreidvkvuzyslw5jh5z242lgzwzhbi2kxxnpkic5wsvyno5ikvpr7reu.ipfs.nftstorage.link",
+            "tags": [
+                "community"
+            ],
+            "extensions": {
+                "coingeckoId": "popcat"
+            }
+        },
+        {
+            "address": "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn",
+            "chainId": 101,
+            "decimals": 9,
+            "name": "Jito Staked SOL",
+            "symbol": "JitoSOL",
+            "logoURI": "https://storage.googleapis.com/token-metadata/JitoSOL-256.png",
+            "tags": [
+                "community",
+                "solana-fm"
+            ],
+            "extensions": {
+                "coingeckoId": "jito-staked-sol"
+            }
+        },
+        {
+            "address": "5mbK36SZ7J19An8jFochhQS4of8g6BwUjbeCSxBSoWdp",
+            "chainId": 101,
+            "decimals": 6,
+            "name": "michi",
+            "symbol": "$michi",
+            "logoURI": "https://i.ibb.co/GxG0314/5mb-K36-SZ7-J19-An8j-Fochh-QS4of8g6-Bw-Ujbe-CSx-BSo-Wdp.png",
+            "tags": [
+                "community"
+            ],
+            "extensions": {
+                "coingeckoId": "michicoin"
+            }
+        },
+        {
+            "address": "HRw8mqK8N3ASKFKJGMJpy4FodwR3GKvCFKPDQNqUNuEP",
+            "chainId": 101,
+            "decimals": 9,
+            "name": "TrumpCoin",
+            "symbol": "DJT",
+            "logoURI": "https://i.postimg.cc/htS9z8BK/image.png",
+            "tags": [
+                "community"
+            ],
+            "extensions": {
+                "coingeckoId": "trumpcoin"
+            }
+        },
+        {
+            "address": "Faf89929Ni9fbg4gmVZTca7eW6NFg877Jqn6MizT3Gvw",
+            "chainId": 101,
+            "decimals": 8,
+            "name": "LandWolf",
+            "symbol": "WOLF",
+            "logoURI": "https://ipfs.io/ipfs/QmSFSkXjqqoMoZTXahkn9uhNFKMnyCXqih6qwpRGBFC1AN?filename=LandWolf.jpg",
+            "tags": [
+                "community"
+            ],
+            "extensions": {
+                "coingeckoId": "the-real-landwolf"
+            }
+        },
+        {
+            "address": "jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v",
+            "chainId": 101,
+            "decimals": 9,
+            "name": "Jupiter Staked SOL",
+            "symbol": "JupSOL",
+            "logoURI": "https://static.jup.ag/jupSOL/icon.png",
+            "tags": [
+                "community"
+            ],
+            "extensions": {
+                "coingeckoId": "jupiter-staked-sol"
+            }
+        }
+    ]
+}
