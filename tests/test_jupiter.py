@@ -12,11 +12,13 @@ from cyhole.jupiter.schema import (
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
-    GetTokenListResponse
+    GetTokenListResponse,
+    PostLimitOrderCreateBody,
+    PostLimitOrderCreateResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest
-from cyhole.core.address.solana import SOL, JUP
+from cyhole.core.address.solana import SOL, JUP, USDC
 from cyhole.core.address.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
 
@@ -400,4 +402,35 @@ class TestJupiter:
         # store request (only not mock)
         if not config.jupiter.mock_response:
             response.tokens = response.tokens[0:10]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_post_limit_order_create(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint POST "Limit Order Create".
+
+            Mock Response File: limit_order_create.json
+        """
+
+        # load mock response
+        mock_file_name = "limit_order_create"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostLimitOrderCreateResponse)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        body = PostLimitOrderCreateBody(
+            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            input_token = USDC,
+            input_amount = 100_000,
+            output_token = JUP,
+            output_amount = 100_000,
+            base = "5pVyoAeURQHNMVU7DmfMHvCDNmTEYXWfEwc136GYhTKG"
+        )
+        response = self.client.post_limit_order_create(body)
+
+        # actual test
+        assert isinstance(response, PostLimitOrderCreateResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
