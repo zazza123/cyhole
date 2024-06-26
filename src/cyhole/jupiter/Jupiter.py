@@ -11,7 +11,9 @@ from ..jupiter.schema import (
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
-    GetTokenListResponse
+    GetTokenListResponse,
+    PostLimitOrderCreateBody,
+    PostLimitOrderCreateResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -45,6 +47,7 @@ class Jupiter(APICaller):
         self.url_api_price = "https://price.jup.ag/v6/price"
         self.url_api_quote = "https://quote-api.jup.ag/v6/"
         self.url_api_token = "https://token.jup.ag/"
+        self.url_api_limit = "https://jup.ag/api/limit/v1/"
         return
 
     def get_price(self, address: list[str], vs_address: str | None = None) -> GetPriceResponse:
@@ -219,6 +222,29 @@ class Jupiter(APICaller):
         # parse response
         content = GetTokenListResponse(tokens = content_raw.json())
 
+        return content
+
+    def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
+
+        # set params
+        url = self.url_api_limit + "createOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        try:
+            content_raw = self.api(
+                type = RequestType.POST.value,
+                url = url,
+                headers = headers,
+                json = body.model_dump(by_alias = True, exclude_defaults = True)
+            )
+        except HTTPError as e:
+            raise self._raise(e)
+
+        # parse response
+        content = PostLimitOrderCreateResponse(**content_raw.json())
         return content
 
     def _raise(self, exception: HTTPError) -> JupiterException:

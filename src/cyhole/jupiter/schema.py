@@ -191,3 +191,40 @@ class GetTokenListResponse(BaseModel):
         Model used to represent the **Token List** endpoint from Jupiter API.
     """
     tokens: list[GetTokenListToken]
+
+# classes used on POST "Limit Order Create" endpoint
+# Body
+class PostLimitOrderCreateBody(BaseModel):
+    user_public_key: str = Field(serialization_alias = "owner")
+    """Public Key of the Owner wallet"""
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    input_amount: int = Field(serialization_alias = "inAmount")
+    """The amount of input token to use for the limit order."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """The address of the output token on the chain that will bought."""
+
+    output_amount: int = Field(serialization_alias = "outAmount")
+    """The amount of output token to buy in the limit order."""
+
+    base: str
+    """Public Key used to initiate the Limit Order"""
+
+    expired_at_unix_time: int | None = Field(default = None, serialization_alias = "expiredAt")
+    """Expiring date for the Limit Order expressed in UNIX time"""
+
+    referral_public_key: str | None = Field(default = None, serialization_alias = "referralAccount")
+    """The address of the account used to get referral fees."""
+
+    referral_name: str | None = Field(default = None, serialization_alias = "referralName")
+
+# Output
+class PostLimitOrderCreateResponse(BaseModel):
+    """
+        Model used to represent the **Limit Order Create** endpoint from Jupiter API.
+    """
+    transaction: str = Field(alias = "tx")
+    order_public_key: str = Field(alias = "orderPubkey")
