@@ -154,7 +154,7 @@ class MockerManager:
 
         # create dummy response
         mock_response = Response()
-        mock_response._content = mock_model.model_dump_json(by_alias = True).encode()
+        mock_response._content = mock_model.model_dump_json(by_alias = True, exclude_none = True).encode()
         mock_response.status_code = 200
         mock_response.encoding = "utf-8"
 
