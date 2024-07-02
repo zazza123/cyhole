@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from pydantic import BaseModel, Field, field_validator, field_serializer
 
-from ..jupiter.param import JupiterSwapMode, JupiterSwapDex
+from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState
 
 # class used on Jupiter HTTPErrors
 class JupiterHTTPError(BaseModel):
@@ -256,3 +258,39 @@ class GetLimitOrderOpenResponse(BaseModel):
         Model used to represent the **Limit Order Opens** endpoint from Jupiter API.
     """
     orders: list[GetLimitOrderOpen]
+
+# classes used on GET "Limit Order History" endpoint
+class GetLimitOrderHistory(BaseModel):
+    id: int
+    maker: str
+    order_key: str = Field(alias = "orderKey")
+    input_token: str = Field(alias = "inputMint")
+    input_amount: str = Field(alias = "inAmount")
+    output_token: str = Field(alias = "outputMint")
+    output_amount: str = Field(alias = "outAmount")
+    ori_input_token: str = Field(alias = "oriInAmount")
+    ori_output_amount: str = Field(alias = "oriOutAmount")
+    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
+    state: str
+    create_transaction_id: str = Field(alias = "createTxid")
+    cancel_transaction_id: str | None = Field(default = None, alias = "cancelTxid")
+    updated_at: datetime = Field(alias = "updatedAt")
+    created_at: datetime = Field(alias = "createdAt")
+
+    @field_validator("created_at", "updated_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+    @field_validator("state")
+    @classmethod
+    def validator_state(cls, state: str) -> str:
+        JupiterLimitOrderState.check(state)
+        return state
+
+class GetLimitOrderHistoryResponse(BaseModel):
+    """
+        Model used to represent the **Limit Order History** endpoint from Jupiter API.
+    """
+    orders: list[GetLimitOrderHistory]

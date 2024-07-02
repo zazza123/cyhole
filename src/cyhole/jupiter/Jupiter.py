@@ -15,7 +15,7 @@ from ..jupiter.schema import (
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
     GetLimitOrderOpenResponse,
-    GetLimitOrderOpen
+    GetLimitOrderHistoryResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -295,6 +295,43 @@ class Jupiter(APICaller):
 
         # parse response
         content = GetLimitOrderOpenResponse(orders = content_raw.json())
+
+        return content
+
+    def get_limit_order_history(
+        self,
+        wallet: str,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderHistoryResponse:
+        """
+            This function refers to the **[Get Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            API endpoint, and it is used to retrieve the history of Limit Orders associated to a wallet via Jupiter API. 
+
+            Parameters:
+                wallet: address of the wallet to check.
+                cursor: specify which 'page' of orders to return.
+                skip: specify the number of order to skip (from the top).
+                take: specify the number of orders to return.
+
+            Returns:
+                Hostory of limit orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_limit + "orderHistory"
+        params = {
+            "wallet": wallet,
+            "cursor": cursor,
+            "skip": skip,
+            "take": take
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+
+        # parse response
+        content = GetLimitOrderHistoryResponse(orders = content_raw.json())
 
         return content
 

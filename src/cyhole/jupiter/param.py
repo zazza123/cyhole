@@ -58,3 +58,14 @@ class JupiterTokenListType(CyholeParam):
     """Extract only the tokens with tags `old-registry`, `community`, or `wormhole` verified"""
     ALL = "all"
     """Extract **all** non banned tokens."""
+
+class JupiterLimitOrderState(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's limit order states.
+    """
+    OPEN = "Open"
+    """The limit order is still open."""
+    COMPLETED = "Completed"
+    """The limit order is completed."""
+    CANCELLED = "Cancelled"
+    """The limit order was cancelled."""
