@@ -15,7 +15,8 @@ from ..jupiter.schema import (
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
     GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse
+    GetLimitOrderHistoryResponse,
+    GetLimitOrderTradeHistoryResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -316,7 +317,7 @@ class Jupiter(APICaller):
                 take: specify the number of orders to return.
 
             Returns:
-                Hostory of limit orders associated to the input wallet.
+                History of limit orders associated to the input wallet.
         """
         # set params
         url = self.url_api_limit + "orderHistory"
@@ -332,6 +333,50 @@ class Jupiter(APICaller):
 
         # parse response
         content = GetLimitOrderHistoryResponse(orders = content_raw.json())
+
+        return content
+
+    def get_limit_order_trade_history(
+        self,
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderTradeHistoryResponse:
+        """
+            This function refers to the **[Get Limit Order - Trade History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            API endpoint, and it is used to retrieve the trades history related to Limit Orders extracted with specific 
+            requirements via Jupiter API. 
+
+            Parameters:
+                wallet: address of the wallet to check.
+                input_token: address of the input token associated to the limit order.
+                output_token: address of the output token associated to the limit order.
+                cursor: specify which 'page' of orders to return.
+                skip: specify the number of order to skip (from the top).
+                take: specify the number of orders to return.
+
+            Returns:
+                Hostory of limit orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_limit + "tradeHistory"
+        params = {
+            "wallet": wallet,
+            "inputMint": input_token,
+            "outputMint": output_token,
+            "cursor": cursor,
+            "skip": skip,
+            "take": take
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+
+        # parse response
+        content = GetLimitOrderTradeHistoryResponse(orders = content_raw.json())
 
         return content
 

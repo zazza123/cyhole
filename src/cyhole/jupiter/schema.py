@@ -294,3 +294,31 @@ class GetLimitOrderHistoryResponse(BaseModel):
         Model used to represent the **Limit Order History** endpoint from Jupiter API.
     """
     orders: list[GetLimitOrderHistory]
+
+# classes used on GET "Limit Order Trade History" endpoint
+class GetLimitOrderTradeHistoryOrder(BaseModel):
+    id: int
+    order_key: str = Field(alias = "orderKey")
+    input_token: str = Field(alias = "inputMint")
+    output_token: str = Field(alias = "outputMint")
+
+class GetLimitOrderTradeHistory(BaseModel):
+    id: int
+    input_amount: str = Field(alias = "inAmount")
+    output_amount: str = Field(alias = "outAmount")
+    transaction_id: str = Field(alias = "txid")
+    updated_at: datetime = Field(alias = "updatedAt")
+    created_at: datetime = Field(alias = "createdAt")
+    order: GetLimitOrderTradeHistoryOrder
+
+    @field_validator("created_at", "updated_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+class GetLimitOrderTradeHistoryResponse(BaseModel):
+    """
+        Model used to represent the **Limit Order Trade History** endpoint from Jupiter API.
+    """
+    orders: list[GetLimitOrderTradeHistory]
