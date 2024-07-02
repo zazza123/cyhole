@@ -13,7 +13,9 @@ from ..jupiter.schema import (
     PostSwapResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
-    PostLimitOrderCreateResponse
+    PostLimitOrderCreateResponse,
+    GetLimitOrderOpenResponse,
+    GetLimitOrderOpen
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -225,6 +227,17 @@ class Jupiter(APICaller):
         return content
 
     def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
+        """
+            This function refers to the **[Post Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            and it is used to receive the transaction to perform the creation of a Limit Order via Jupiter API.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the swap.
+                    More details in the object definition.
+
+            Returns:
+                Transaction created by Jupiter API.
+        """
 
         # set params
         url = self.url_api_limit + "createOrder"
@@ -245,6 +258,44 @@ class Jupiter(APICaller):
 
         # parse response
         content = PostLimitOrderCreateResponse(**content_raw.json())
+        return content
+
+    def get_limit_order_open(
+        self,
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None
+    ) -> GetLimitOrderOpenResponse:
+        """
+            This function refers to the **[Get Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            API endpoint, and it is used to receive the current open limit orders related to a wallet, input token 
+            or output token via Jupiter API. 
+
+            Observe that all the input parameters are optional; if for example, only the `input_token` is provided, 
+            then **all** the limit orders having that input token address are returned (if available).
+
+            Parameters:
+                wallet: address of the wallet to check.
+                input_token: address of the input token associated to the limit order.
+                output_token: address of the output token associated to the limit order.
+
+            Returns:
+                Open limit orders created by Jupiter API.
+        """
+        # set params
+        url = self.url_api_limit + "openOrders"
+        params = {
+            "wallet": wallet,
+            "inputMint": input_token,
+            "outputMint": output_token
+        }
+
+        # execute request
+        content_raw = self.api(RequestType.GET.value, url, params = params)
+
+        # parse response
+        content = GetLimitOrderOpenResponse(orders = content_raw.json())
+
         return content
 
     def _raise(self, exception: HTTPError) -> JupiterException:

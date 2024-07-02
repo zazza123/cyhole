@@ -155,6 +155,9 @@ class GetQuoteProgramIdLabelResponse(BaseModel):
 # classes used on POST "Swap" endpoint
 # Body
 class PostSwapBody(BaseModel):
+    """
+        Model used to identify the body required by a POST **Swap** request.
+    """
     user_public_key: str = Field(serialization_alias = "userPublicKey")
     wrap_unwrap_sol: bool = Field(default = None, serialization_alias = "wrapAndUnwrapSol")
     use_shared_accounts: bool= Field(default = None, serialization_alias = "useSharedAccounts")
@@ -195,6 +198,9 @@ class GetTokenListResponse(BaseModel):
 # classes used on POST "Limit Order Create" endpoint
 # Body
 class PostLimitOrderCreateBody(BaseModel):
+    """
+        Model used to identify the body required by a POST **Limit Order Create** request.
+    """
     user_public_key: str = Field(serialization_alias = "owner")
     """Public Key of the Owner wallet"""
 
@@ -228,3 +234,25 @@ class PostLimitOrderCreateResponse(BaseModel):
     """
     transaction: str = Field(alias = "tx")
     order_public_key: str = Field(alias = "orderPubkey")
+
+# classes used on GET "Limit Order Opens" endpoint
+class GetLimitOrderOpenAccount(BaseModel):
+    maker: str
+    input_token: str = Field(alias = "inputMint")
+    input_amount: str = Field(alias = "inAmount")
+    output_token: str = Field(alias = "outputMint")
+    output_amount: str = Field(alias = "outAmount")
+    ori_input_token: str = Field(alias = "oriInAmount")
+    ori_output_amount: str = Field(alias = "oriOutAmount")
+    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
+    base: str
+
+class GetLimitOrderOpen(BaseModel):
+    public_key: str = Field(alias = "publicKey")
+    account: GetLimitOrderOpenAccount
+
+class GetLimitOrderOpenResponse(BaseModel):
+    """
+        Model used to represent the **Limit Order Opens** endpoint from Jupiter API.
+    """
+    orders: list[GetLimitOrderOpen]
