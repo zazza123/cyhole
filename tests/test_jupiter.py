@@ -14,11 +14,14 @@ from cyhole.jupiter.schema import (
     PostSwapResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
-    PostLimitOrderCreateResponse
+    PostLimitOrderCreateResponse,
+    GetLimitOrderOpenResponse,
+    GetLimitOrderHistoryResponse,
+    GetLimitOrderTradeHistoryResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest
-from cyhole.core.address.solana import SOL, JUP, USDC
+from cyhole.core.address.solana import SOL, JUP, USDC, BONK
 from cyhole.core.address.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
 
@@ -433,4 +436,97 @@ class TestJupiter:
 
         # store request (only not mock)
         if not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_limit_order_open(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Limit Order - Open".
+
+            Mock Response File: get_limit_order_open.json
+        """
+
+        # load mock response
+        mock_file_name = "get_limit_order_open"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderOpenResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        response = self.client.get_limit_order_open(input_token = JUP, output_token = BONK)
+
+        # actual test
+        assert isinstance(response, GetLimitOrderOpenResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            response.orders = response.orders[0:5]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_limit_order_history(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Limit Order - History".
+
+            Mock Response File: get_limit_order_history.json
+        """
+
+        # load mock response
+        mock_file_name = "get_limit_order_history"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderHistoryResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        response = self.client.get_limit_order_history(
+            wallet = "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
+            take = 1
+        )
+
+        # actual test
+        assert isinstance(response, GetLimitOrderHistoryResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            response.orders = [response.orders[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_get_limit_order_trade_history(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Limit Order - Trade History".
+
+            Mock Response File: get_limit_order_trade_history.json
+        """
+
+        # load mock response
+        mock_file_name = "get_limit_order_trade_history"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderTradeHistoryResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+
+        # execute request
+        response = self.client.get_limit_order_trade_history(
+            wallet = "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
+            take = 1
+        )
+
+        # actual test
+        assert isinstance(response, GetLimitOrderTradeHistoryResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            response.orders = [response.orders[0]]
             self.mocker.store_mock_model(mock_file_name, response)
