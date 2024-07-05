@@ -45,3 +45,4 @@ The current supported external/interactions APIs are:
 |Site                             |Path             |Connector                                                                      |
 |----                             |----             |---------                                                                      |
 |[birdeye.so](https://birdeye.so) |`cyhole.birdeye` |[`Birdeye`](https://zazza123.github.io/cyhole/interactions/birdeye/index.html) |
+|[jup.ag](https://jup.ag)         |`cyhole.jupiter` |[`Jupiter`](https://zazza123.github.io/cyhole/interactions/jupiter/index.html) |
