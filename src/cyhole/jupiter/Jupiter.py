@@ -392,14 +392,18 @@ class Jupiter(APICaller):
             Raises:
                 JupiterNoRouteFoundError: for error code `COULD_NOT_FIND_ANY_ROUTE` 
                     during the creation of a quote.
+                JupiterInvalidRequest: for error code `INVALID_REQUEST`.
                 JupiterException: general exception raised when an unknown 
-                    error code is found.
+                    error code is found or a different error is found.
         """
-        error = JupiterHTTPError(**exception.response.json())
-        match error.code:
-            case "COULD_NOT_FIND_ANY_ROUTE":
-                return JupiterNoRouteFoundError(error.msg)
-            case "INVALID_REQUEST":
-                return JupiterInvalidRequest(error.msg)
-            case _:
-                return JupiterException(error.model_dump_json())
+        try:
+            error = JupiterHTTPError(**exception.response.json())
+            match error.code:
+                case "COULD_NOT_FIND_ANY_ROUTE":
+                    return JupiterNoRouteFoundError(error.msg)
+                case "INVALID_REQUEST":
+                    return JupiterInvalidRequest(error.msg)
+                case _:
+                    return JupiterException(error.model_dump_json())
+        except:
+            return JupiterException(exception.response.content.decode())
