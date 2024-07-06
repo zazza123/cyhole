@@ -15,6 +15,8 @@ from cyhole.jupiter.schema import (
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
+    PostLimitOrderCancelBody,
+    PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
     GetLimitOrderTradeHistoryResponse
@@ -411,11 +413,11 @@ class TestJupiter:
         """
             Unit Test used to check the response schema of endpoint POST "Limit Order Create".
 
-            Mock Response File: limit_order_create.json
+            Mock Response File: post_limit_order_create.json
         """
 
         # load mock response
-        mock_file_name = "limit_order_create"
+        mock_file_name = "post_limit_order_create"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, PostLimitOrderCreateResponse)
             mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
@@ -433,6 +435,48 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostLimitOrderCreateResponse)
+
+        # store request (only not mock)
+        if not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_post_limit_order_cancel(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint POST "Limit Order Cancel".
+
+            Mock Response File: post_limit_order_cancel.json
+        """
+        user_public_key = ""
+        fee_payer_public_key = ""
+        orders = []
+
+        # load mock response
+        mock_file_name = "post_limit_order_cancel"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostLimitOrderCancelResponse)
+            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+        else:
+            # find open orders
+            open_orders = self.client.get_limit_order_open(input_token = JUP, output_token = BONK)
+            order = open_orders.orders[0]
+
+            # set inputs
+            user_public_key = order.account.maker
+            fee_payer_public_key = order.account.maker
+            orders = [order.public_key]
+
+        # create input
+        body = PostLimitOrderCancelBody(
+            user_public_key = user_public_key,
+            fee_payer_public_key = fee_payer_public_key,
+            orders = orders
+        )
+
+        # execute request
+        response = self.client.post_limit_order_cancel(body)
+
+        # actual test
+        assert isinstance(response, PostLimitOrderCancelResponse)
 
         # store request (only not mock)
         if not config.jupiter.mock_response:
