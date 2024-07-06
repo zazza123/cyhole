@@ -14,6 +14,8 @@ from ..jupiter.schema import (
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
+    PostLimitOrderCancelBody,
+    PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
     GetLimitOrderTradeHistoryResponse
@@ -259,6 +261,41 @@ class Jupiter(APICaller):
 
         # parse response
         content = PostLimitOrderCreateResponse(**content_raw.json())
+        return content
+
+    def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
+        """
+            This function refers to the **[Post Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            and it is used to receive the transaction to perform the cancellation of a Limit Order previously 
+            opened via Jupiter API.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the limit order to cancel.
+                    More details in the object definition.
+
+            Returns:
+                Transaction created by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_limit + "cancelOrders"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        try:
+            content_raw = self.api(
+                type = RequestType.POST.value,
+                url = url,
+                headers = headers,
+                json = body.model_dump(by_alias = True, exclude_defaults = True)
+            )
+        except HTTPError as e:
+            raise self._raise(e)
+
+        # parse response
+        content = PostLimitOrderCancelResponse(**content_raw.json())
         return content
 
     def get_limit_order_open(

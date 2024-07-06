@@ -237,6 +237,28 @@ class PostLimitOrderCreateResponse(BaseModel):
     transaction: str = Field(alias = "tx")
     order_public_key: str = Field(alias = "orderPubkey")
 
+# classes used on POST "Limit Order Cancel" endpoint
+# Body
+class PostLimitOrderCancelBody(BaseModel):
+    """
+        Model used to identify the body required by a POST **Limit Order Cancel** request.
+    """
+    user_public_key: str = Field(serialization_alias = "owner")
+    """Public Key of the Owner wallet"""
+
+    fee_payer_public_key: str = Field(serialization_alias = "feePayer")
+    """Public Key of the fee payer."""
+
+    orders: list[str]
+    """List of orders Public Keys to cancel."""
+
+# Output
+class PostLimitOrderCancelResponse(BaseModel):
+    """
+        Model used to represent the **Limit Order Cancel** endpoint from Jupiter API.
+    """
+    transaction: str = Field(alias = "tx")
+
 # classes used on GET "Limit Order Opens" endpoint
 class GetLimitOrderOpenAccount(BaseModel):
     maker: str
