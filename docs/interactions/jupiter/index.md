@@ -4,7 +4,9 @@ Jupiter ([https://jup.ag](https://jup.ag)) is one of the most popular DEX on Sol
 
 The API connector is [`Jupiter`](../jupiter/api.md) class imported from `cyhole.jupiter` path.
 
-## Quick Example
+## Quick Examples
+
+### Get Latest Token Price
 
 Extract the latest `JUP` buy price over `USDC` in few lines of code.
 
@@ -17,6 +19,38 @@ api = Jupiter()
 response = api.get_price([JUP])
 print("Current JUP/USDC:", response.data[JUP].price)
 ```
+
+### Create Limit Order Transaction
+
+Get the transaction for the creation of a new Limit Order by using [`post_limit_order_create`](../jupiter/api.md#cyhole.jupiter.Jupiter.Jupiter.post_limit_order_create).
+
+```py
+from solders.keypair import Keypair
+
+from cyhole.jupiter import Jupiter
+from cyhole.jupiter.schema import PostLimitOrderCreateBody
+from cyhole.core.address.solana import JUP, USDC
+
+api = Jupiter()
+
+# create body for the request
+key = Keypair()
+body = PostLimitOrderCreateBody(
+    user_public_key = "YOUR-WALLET-PUBLIC-KEY",
+    input_amount = 100_000,
+    output_amount = 100_000,
+    input_token = USDC,
+    output_token = JUP,
+    base = str(key.pubkey())
+)
+
+# send request
+response = api.post_limit_order_create(body)
+print("Transaction:", response.transaction)
+```
+
+!!! info
+    The transaction should be then signed and sent on RPC to be validated and executed.
 
 ## Content
 
