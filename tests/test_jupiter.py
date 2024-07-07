@@ -22,7 +22,7 @@ from cyhole.jupiter.schema import (
     GetLimitOrderTradeHistoryResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
-from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest
+from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest, JupiterException
 from cyhole.core.address.solana import SOL, JUP, USDC, BONK
 from cyhole.core.address.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
@@ -481,6 +481,19 @@ class TestJupiter:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    def test_post_limit_order_cancel_invalid_request(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Limit Order Cancel" 
+            when an invalid field is provided in the body.
+        """
+        body = PostLimitOrderCancelBody(
+            user_public_key = "",
+            fee_payer_public_key = "",
+            orders = []
+        )
+        with pytest.raises(JupiterException):
+            self.client.post_limit_order_cancel(body)
 
     def test_get_limit_order_open(self, mocker: MockerFixture) -> None:
         """
