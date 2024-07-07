@@ -68,7 +68,7 @@ class TestJupiter:
         assert JUP in response.data
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_token_symbol(self, mocker: MockerFixture) -> None:
@@ -94,7 +94,7 @@ class TestJupiter:
         assert token_symbol in response.data
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_multiple_token_address(self, mocker: MockerFixture) -> None:
@@ -119,7 +119,7 @@ class TestJupiter:
         assert (JUP in response.data) and (SOL in response.data)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_vs_address(self, mocker: MockerFixture) -> None:
@@ -145,7 +145,7 @@ class TestJupiter:
         assert response.data[SOL].vs_token == JUP
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_unknown_address(self, mocker: MockerFixture) -> None:
@@ -170,7 +170,7 @@ class TestJupiter:
         assert response.data == {}
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_quote(self, mocker: MockerFixture) -> None:
@@ -202,7 +202,7 @@ class TestJupiter:
         assert response.output_token == JUP
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_quote_force_route(self, mocker: MockerFixture) -> None:
@@ -234,7 +234,7 @@ class TestJupiter:
         assert isinstance(response, GetQuoteResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_quote_error_route_not_found(self) -> None:
@@ -310,7 +310,7 @@ class TestJupiter:
         assert isinstance(response, GetQuoteTokensResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_quote_program_id_label(self, mocker: MockerFixture) -> None:
@@ -338,7 +338,7 @@ class TestJupiter:
         assert isinstance(response, GetQuoteProgramIdLabelResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_post_swap(self, mocker: MockerFixture) -> None:
@@ -365,7 +365,7 @@ class TestJupiter:
         assert isinstance(response, PostSwapResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_post_swap_invalid_request(self) -> None:
@@ -405,7 +405,7 @@ class TestJupiter:
         assert isinstance(response, GetTokenListResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             response.tokens = response.tokens[0:10]
             self.mocker.store_mock_model(mock_file_name, response)
 
@@ -437,7 +437,7 @@ class TestJupiter:
         assert isinstance(response, PostLimitOrderCreateResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_post_limit_order_cancel(self, mocker: MockerFixture) -> None:
@@ -479,7 +479,7 @@ class TestJupiter:
         assert isinstance(response, PostLimitOrderCancelResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_limit_order_open(self, mocker: MockerFixture) -> None:
@@ -507,7 +507,7 @@ class TestJupiter:
         assert isinstance(response, GetLimitOrderOpenResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             response.orders = response.orders[0:5]
             self.mocker.store_mock_model(mock_file_name, response)
 
@@ -539,7 +539,7 @@ class TestJupiter:
         assert isinstance(response, GetLimitOrderHistoryResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             response.orders = [response.orders[0]]
             self.mocker.store_mock_model(mock_file_name, response)
 
@@ -571,6 +571,6 @@ class TestJupiter:
         assert isinstance(response, GetLimitOrderTradeHistoryResponse)
 
         # store request (only not mock)
-        if not config.jupiter.mock_response:
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
             response.orders = [response.orders[0]]
             self.mocker.store_mock_model(mock_file_name, response)

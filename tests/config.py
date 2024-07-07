@@ -51,6 +51,7 @@ class TestConfiguration(BaseModel):
     """
     mock_response: bool = True
     mock_folder: str = "tests/resources/mock"
+    mock_file_overwrite: bool = False
     birdeye: BirdeyeConfiguration = BirdeyeConfiguration()
     jupiter: JupiterConfiguration = JupiterConfiguration()
 
@@ -80,6 +81,7 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     # global
     test_config.mock_response = config.getboolean("global", "mock_response", fallback = test_config.mock_response)
     test_config.mock_folder = config.get("global", "mock_folder", fallback = test_config.mock_folder)
+    test_config.mock_file_overwrite = config.getboolean("global", "mock_file_overwrite", fallback = test_config.mock_file_overwrite)
 
     # birdeye
     test_config.birdeye.mock_response_public = config.getboolean("birdeye", "mock_response_public", fallback = test_config.birdeye.mock_response_public)
