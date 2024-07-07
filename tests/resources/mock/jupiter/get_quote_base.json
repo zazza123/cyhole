@@ -1,0 +1,41 @@
+{
+    "inputMint": "So11111111111111111111111111111111111111112",
+    "inAmount": "1000",
+    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "outAmount": "175",
+    "otherAmountThreshold": "175",
+    "swapMode": "ExactIn",
+    "slippageBps": 50,
+    "platformFee": null,
+    "priceImpactPct": "0",
+    "routePlan": [
+        {
+            "swapInfo": {
+                "ammKey": "5WGx6mE9Xww3ocYzSenGVQMJLCVVwK7ePnYV6cXcpJtK",
+                "label": "Raydium",
+                "inputMint": "So11111111111111111111111111111111111111112",
+                "inAmount": "1000",
+                "outputMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
+                "outAmount": "123975",
+                "feeMint": "So11111111111111111111111111111111111111112",
+                "feeAmount": "2"
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "8B3vxiUio75gKxzwB2BwZJYQLxQUC6KK2B22u8LaBjnE",
+                "label": "Meteora DLMM",
+                "inputMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
+                "inAmount": "123975",
+                "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "outAmount": "175",
+                "feeMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
+                "feeAmount": "496"
+            },
+            "percent": 100
+        }
+    ],
+    "contextSlot": 273032758,
+    "timeTaken": 0.011590022
+}

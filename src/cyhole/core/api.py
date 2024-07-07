@@ -40,6 +40,7 @@ class APICaller:
         headers = self.header
         if "headers" in kwargs:
             headers = kwargs["headers"]
+            kwargs.pop("headers")
 
         # execute request
         match type:

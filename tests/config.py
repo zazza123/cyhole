@@ -29,6 +29,13 @@ from pydantic import BaseModel
 
 ResponseModel = TypeVar('ResponseModel', bound = BaseModel)
 
+class JupiterConfiguration(BaseModel):
+    """
+        Model in charge to manage the Jupiter APIs.
+    """
+    mock_response: bool = True
+    mock_folder: str = "jupiter"
+
 class BirdeyeConfiguration(BaseModel):
     """
         Model in charge to manage the birdeye APIs.
@@ -44,7 +51,9 @@ class TestConfiguration(BaseModel):
     """
     mock_response: bool = True
     mock_folder: str = "tests/resources/mock"
+    mock_file_overwrite: bool = False
     birdeye: BirdeyeConfiguration = BirdeyeConfiguration()
+    jupiter: JupiterConfiguration = JupiterConfiguration()
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -72,12 +81,17 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     # global
     test_config.mock_response = config.getboolean("global", "mock_response", fallback = test_config.mock_response)
     test_config.mock_folder = config.get("global", "mock_folder", fallback = test_config.mock_folder)
+    test_config.mock_file_overwrite = config.getboolean("global", "mock_file_overwrite", fallback = test_config.mock_file_overwrite)
 
     # birdeye
     test_config.birdeye.mock_response_public = config.getboolean("birdeye", "mock_response_public", fallback = test_config.birdeye.mock_response_public)
     test_config.birdeye.mock_response_private = config.getboolean("birdeye", "mock_response_private", fallback = test_config.birdeye.mock_response_private)
     test_config.birdeye.mock_folder = config.get("birdeye", "mock_folder", fallback = test_config.birdeye.mock_folder)
     test_config.birdeye.api_key = config.get("birdeye", "api_key", fallback = test_config.birdeye.api_key)
+
+    # jupiter
+    test_config.jupiter.mock_response = config.getboolean("jupiter", "mock_response", fallback = test_config.jupiter.mock_response)
+    test_config.jupiter.mock_folder = config.get("jupiter", "mock_folder", fallback = test_config.jupiter.mock_folder)
 
     return test_config
 
@@ -142,7 +156,7 @@ class MockerManager:
 
         # create dummy response
         mock_response = Response()
-        mock_response._content = mock_model.model_dump_json(by_alias = True).encode()
+        mock_response._content = mock_model.model_dump_json(by_alias = True, exclude_none = True).encode()
         mock_response.status_code = 200
         mock_response.encoding = "utf-8"
 

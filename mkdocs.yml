@@ -14,8 +14,6 @@ theme:
     - navigation.instant.progress
     - navigation.tabs
     - navigation.top
-    - navigation.sections
-    - navigation.expand
     - navigation.indexes
     - toc.follow
     - search.suggest
@@ -96,6 +94,12 @@ nav:
       - API Parameters: interactions/birdeye/param.md
       - Response Schema: interactions/birdeye/schema.md
       - Exceptions: interactions/birdeye/exception.md
+    - Jupiter:
+      - interactions/jupiter/index.md
+      - Connector: interactions/jupiter/api.md
+      - API Parameters: interactions/jupiter/param.md
+      - Response Schema: interactions/jupiter/schema.md
+      - Exceptions: interactions/jupiter/exception.md
   - Development:
     - development/index.md
     - Core:

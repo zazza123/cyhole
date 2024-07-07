@@ -40,7 +40,7 @@ mock_path.mkdir(parents = True, exist_ok = True)
 
 # set client, mocker
 _client = Birdeye(api_key = config.birdeye.api_key)
-_mocker = MockerManager(mock_path = Path(config.mock_folder) / config.birdeye.mock_folder)
+_mocker = MockerManager(mock_path)
 
 class TestBirdeyePublic:
     """
@@ -76,7 +76,7 @@ class TestBirdeyePublic:
         assert isinstance(response, GetTokenListResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_public:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price(self, mocker: MockerFixture) -> None:
@@ -99,7 +99,7 @@ class TestBirdeyePublic:
         assert isinstance(response, GetPriceResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_public:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_multiple(self, mocker: MockerFixture) -> None:
@@ -123,7 +123,7 @@ class TestBirdeyePublic:
         assert isinstance(response, GetPriceMultipleResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_public:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_historical(self, mocker: MockerFixture) -> None:
@@ -151,7 +151,7 @@ class TestBirdeyePublic:
         assert isinstance(response, GetPriceHistoricalResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_public:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_price_historical_incorrect_input_dates(self, mocker: MockerFixture) -> None:
@@ -188,7 +188,7 @@ class TestBirdeyePublic:
         assert isinstance(response, GetHistoryResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_public:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
 class TestBirdeyePrivate:
@@ -226,7 +226,7 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetTokenCreationInfoResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_security_solana(self, mocker: MockerFixture) -> None:
@@ -250,7 +250,7 @@ class TestBirdeyePrivate:
         assert isinstance(response.data, GetTokenSecurityDataSolana)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_security_other(self, mocker: MockerFixture) -> None:
@@ -277,7 +277,7 @@ class TestBirdeyePrivate:
         assert isinstance(response.data, dict)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_overview_solana(self, mocker: MockerFixture) -> None:
@@ -302,7 +302,7 @@ class TestBirdeyePrivate:
         assert response.data.address == token_address
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_token_overview_ethereum(self, mocker: MockerFixture) -> None:
@@ -327,7 +327,7 @@ class TestBirdeyePrivate:
         assert response.data.address == token_address
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_trades_token(self, mocker: MockerFixture) -> None:
@@ -349,7 +349,7 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetTradesTokenResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
     
     def test_get_trades_pair(self, mocker: MockerFixture) -> None:
@@ -371,7 +371,7 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetTradesPairResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_ohlcv_incorrect_input_dates(self, mocker: MockerFixture) -> None:
@@ -414,7 +414,7 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetOHLCVTokenPairResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_ohlcv_pair(self, mocker: MockerFixture) -> None:
@@ -443,7 +443,7 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetOHLCVTokenPairResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_ohlcv_base_quote_incorrect_input_dates(self, mocker: MockerFixture) -> None:
@@ -486,7 +486,7 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetOHLCVBaseQuoteResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
     def test_get_wallet_supported_networks(self, mocker: MockerFixture) -> None:
@@ -509,5 +509,5 @@ class TestBirdeyePrivate:
         assert isinstance(response, GetWalletSupportedNetworksResponse)
 
         # store request (only not mock)
-        if not config.birdeye.mock_response_private:
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
