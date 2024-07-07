@@ -442,5 +442,5 @@ class Jupiter(APICaller):
                     return JupiterInvalidRequest(error.msg)
                 case _:
                     return JupiterException(error.model_dump_json())
-        except:
+        except Exception:
             return JupiterException(exception.response.content.decode())
