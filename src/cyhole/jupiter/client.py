@@ -46,6 +46,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_quote(True, input)
 
+    def get_quote_tokens(self) -> GetQuoteTokensResponse:
+        """
+            Call the Jupiter's **[Get Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_quote_tokens`][cyhole.jupiter.interaction.Jupiter._get_quote_tokens].
+        """
+        return self._interaction._get_quote_tokens(True)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -68,3 +75,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return await self._interaction._get_quote(False, input)
+
+    async def get_quote_tokens(self) -> GetQuoteTokensResponse:
+        """
+            Call the Jupiter's **[Get Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_quote_tokens`][cyhole.jupiter.interaction.Jupiter._get_quote_tokens].
+        """
+        return await self._interaction._get_quote_tokens(False)
