@@ -22,7 +22,7 @@ class Interaction:
         self.headers = headers
 
         # clients
-        self.client = APIClient(self, header = self.headers)
-        self.async_client = AsyncAPIClient(self, header = self.headers)
+        self.client = APIClient(self, headers = self.headers)
+        self.async_client = AsyncAPIClient(self, headers = self.headers)
 
         return

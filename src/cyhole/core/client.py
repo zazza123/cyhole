@@ -68,18 +68,18 @@ class APIClient(APIClientInterface):
         During the creation of the object is possible to specify some global configurations.
 
         Parameters:
-            header: header used globally in all API requests.
+            headers: headers used globally in all API requests.
     """
-    def __init__(self, interaction: Interaction, header: Any | None = None) -> None:
+    def __init__(self, interaction: Interaction, headers: Any | None = None) -> None:
         self._interaction = interaction
-        self.header = header
+        self.headers = headers
         return
 
     def api(self, type: str, url: str, *args: tuple, **kwargs: dict[str, Any]) -> requests.Response:
 
         # check for headers
-        if self.header:
-            kwargs["headers"] = self.header
+        if self.headers:
+            kwargs["headers"] = self.headers
 
         # execute request
         match type:
@@ -112,12 +112,12 @@ class AsyncAPIClient(APIClientInterface):
         During the creation of the object is possible to specify some global configurations.
 
         Parameters:
-            header: header used globally in all API requests.
+            headers: headers used globally in all API requests.
     """
-    def __init__(self, interaction: Interaction, header: Any | None = None) -> None:
+    def __init__(self, interaction: Interaction, headers: Any | None = None) -> None:
         self._session: aiohttp.ClientSession | None = None
         self._interaction = interaction
-        self.header = header
+        self.headers = headers
         return
 
     async def __aenter__(self):
@@ -160,8 +160,8 @@ class AsyncAPIClient(APIClientInterface):
             raise AsyncClientAPISessionNotAvailable("No session currently available.")
 
         # check for headers
-        if self.header:
-            kwargs["headers"] = self.header
+        if self.headers:
+            kwargs["headers"] = self.headers
 
         # clean params
         if "params" in kwargs:
