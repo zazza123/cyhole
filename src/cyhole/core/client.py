@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import requests
-from typing import Any, Coroutine
+from typing import Any, Coroutine, TYPE_CHECKING
 
 import aiohttp
 import requests.structures
@@ -13,6 +13,9 @@ from ..core.exception import (
     AuthorizationAPIKeyError, 
     AsyncClientAPISessionNotAvailable
 )
+
+if TYPE_CHECKING:
+    from ..core.interaction import Interaction
 
 class APIClientInterface(metaclass = abc.ABCMeta):
     """
@@ -67,7 +70,8 @@ class APIClient(APIClientInterface):
         Parameters:
             header: header used globally in all API requests.
     """
-    def __init__(self, header: Any | None = None) -> None:
+    def __init__(self, interaction: Interaction, header: Any | None = None) -> None:
+        self._interaction = interaction
         self.header = header
         return
 
@@ -110,8 +114,9 @@ class AsyncAPIClient(APIClientInterface):
         Parameters:
             header: header used globally in all API requests.
     """
-    def __init__(self, header: Any | None = None) -> None:
+    def __init__(self, interaction: Interaction, header: Any | None = None) -> None:
         self._session: aiohttp.ClientSession | None = None
+        self._interaction = interaction
         self.header = header
         return
 
