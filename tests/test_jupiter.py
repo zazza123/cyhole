@@ -292,9 +292,9 @@ class TestJupiter:
         assert isinstance(response, GetPriceResponse)
         assert response.data == {}
 
-    def test_get_quote(self, mocker: MockerFixture) -> None:
+    def test_get_quote_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote".
+            Unit Test used to check the response schema of endpoint "Quote" for synchronous logic.
 
             Mock Response File: get_quote_base.json
         """
@@ -303,7 +303,7 @@ class TestJupiter:
         mock_file_name = "get_quote_base"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         amount = 1000
         # execute request
@@ -312,7 +312,37 @@ class TestJupiter:
             output_token = JUP,
             amount = amount
         )
-        response = self.client.get_quote(input)
+        response = self.jupiter.client.get_quote(input)
+
+        # actual test
+        assert isinstance(response, GetQuoteResponse)
+        assert response.input_amount == str(amount)
+        assert response.input_token == SOL
+        assert response.output_token == JUP
+
+    @pytest.mark.asyncio
+    async def test_get_quote_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" for asynchronous logic.
+
+            Mock Response File: get_quote_base.json
+        """
+
+        # load mock response
+        mock_file_name = "get_quote_base"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        amount = 1000
+        # execute request
+        input = GetQuoteInput(
+            input_token = SOL,
+            output_token = JUP,
+            amount = amount
+        )
+        async with self.jupiter.async_client as client:
+            response = await client.get_quote(input)
 
         # actual test
         assert isinstance(response, GetQuoteResponse)
@@ -324,10 +354,10 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_get_quote_force_route(self, mocker: MockerFixture) -> None:
+    def test_get_quote_force_route_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Quote" 
-            forcing a route and mode.
+            forcing a route and mode for synchronous logic.
 
             Mock Response File: get_quote_force_rooute.json
         """
@@ -336,7 +366,7 @@ class TestJupiter:
         mock_file_name = "get_quote_force_rooute"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         amount = 1000
         # execute request
@@ -347,7 +377,7 @@ class TestJupiter:
             dexes = [JupiterSwapDex.METEORA_DLMM.value],
             swap_mode = JupiterSwapMode.EXACT_IN.value
         )
-        response = self.client.get_quote(input)
+        response = self.jupiter.client.get_quote(input)
 
         # actual test
         assert isinstance(response, GetQuoteResponse)
@@ -356,10 +386,41 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_get_quote_error_route_not_found(self) -> None:
+    @pytest.mark.asyncio
+    async def test_get_quote_force_route_async(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Quote" 
-            when no route is found.
+            forcing a route and mode for asynchronous logic.
+
+            Mock Response File: get_quote_force_rooute.json
+        """
+
+        # load mock response
+        mock_file_name = "get_quote_force_rooute"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        amount = 1000
+        # execute request
+        input = GetQuoteInput(
+            input_token = SOL,
+            output_token = JUP,
+            amount = amount,
+            dexes = [JupiterSwapDex.METEORA_DLMM.value],
+            swap_mode = JupiterSwapMode.EXACT_IN.value
+        )
+
+        async with self.jupiter.async_client as client:
+            response = await client.get_quote(input)
+
+        # actual test
+        assert isinstance(response, GetQuoteResponse)
+
+    def test_get_quote_error_route_not_found_sync(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" 
+            when no route is found for synchronous logic.
         """
 
         # define input
@@ -371,8 +432,26 @@ class TestJupiter:
 
         # actual test
         with pytest.raises(JupiterNoRouteFoundError):
-            self.client.get_quote(input)
+            self.jupiter.client.get_quote(input)
 
+    @pytest.mark.asyncio
+    async def test_get_quote_error_route_not_found_async(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote" 
+            when no route is found for asynchronous logic.
+        """
+
+        # define input
+        input = GetQuoteInput(
+            input_token = SOL,
+            output_token = JUP,
+            amount = 1
+        )
+
+        # actual test
+        with pytest.raises(JupiterNoRouteFoundError):
+            async with self.jupiter.async_client as client:
+                await client.get_quote(input)
 
     def test_get_quote_error_unknown_dex(self) -> None:
         """
