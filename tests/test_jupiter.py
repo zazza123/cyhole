@@ -4,6 +4,7 @@ from pathlib import Path
 from pytest_mock import MockerFixture
 
 from cyhole.jupiter import Jupiter
+from cyhole.jupiter.interaction import Jupiter as JupiterInteraction
 from cyhole.jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
@@ -44,12 +45,13 @@ class TestJupiter:
         Class grouping all unit tests.
     """
     client = _client
+    jupiter = JupiterInteraction()
     mocker = _mocker
 
-    def test_get_price_token_address(self, mocker: MockerFixture) -> None:
+    def test_get_price_token_address_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Price".  
-            Only one token address.
+            Unit Test used to check the response schema of endpoint "Price" 
+            for synchronous logic. Only one token address.
 
             Mock Response File: get_price_token_address.json
         """
@@ -58,10 +60,10 @@ class TestJupiter:
         mock_file_name = "get_price_token_address"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_price([JUP])
+        response = self.jupiter.client.get_price([JUP])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -71,10 +73,33 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_get_price_token_symbol(self, mocker: MockerFixture) -> None:
+    @pytest.mark.asyncio
+    async def test_get_price_token_address_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Price".  
-            Only one token symbol.
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic. Only one token address.
+
+            Mock Response File: get_price_token_address.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_token_address"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([JUP])
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert JUP in response.data
+
+    def test_get_price_token_symbol_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for synchronous logic. Only one token symbol.
 
             Mock Response File: get_price_token_symbol.json
         """
@@ -84,10 +109,10 @@ class TestJupiter:
         mock_file_name = "get_price_token_symbol"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_price([token_symbol])
+        response = self.jupiter.client.get_price([token_symbol])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -97,10 +122,34 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_get_price_multiple_token_address(self, mocker: MockerFixture) -> None:
+    @pytest.mark.asyncio
+    async def test_get_price_token_symbol_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Price".  
-            More then one token addresses.
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic. Only one token symbol.
+
+            Mock Response File: get_price_token_symbol.json
+        """
+
+        token_symbol = "JUP"
+        # load mock response
+        mock_file_name = "get_price_token_symbol"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([token_symbol])
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert token_symbol in response.data
+
+    def test_get_price_multiple_token_address_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for synchronous logic. More then one token addresses.
 
             Mock Response File: get_price_multiple_token_address.json
         """
@@ -109,10 +158,33 @@ class TestJupiter:
         mock_file_name = "get_price_multiple_token_address"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_price([JUP, SOL])
+        response = self.jupiter.client.get_price([JUP, SOL])
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert (JUP in response.data) and (SOL in response.data)
+
+    @pytest.mark.asyncio
+    async def test_get_price_multiple_token_address_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic. More then one token addresses.
+
+            Mock Response File: get_price_multiple_token_address.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_multiple_token_address"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([JUP, SOL])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -122,10 +194,10 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_get_price_vs_address(self, mocker: MockerFixture) -> None:
+    def test_get_price_vs_address_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Price".  
-            Provide a different comparison token.
+            Unit Test used to check the response schema of endpoint "Price" 
+            for synchronous logic. Provide a different comparison token.
 
             Mock Response File: get_price_vs_address.json
         """
@@ -134,10 +206,10 @@ class TestJupiter:
         mock_file_name = "get_price_vs_address"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_price([SOL], vs_address = JUP)
+        response = self.jupiter.client.get_price([SOL], vs_address = JUP)
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -148,10 +220,34 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_get_price_unknown_address(self, mocker: MockerFixture) -> None:
+    @pytest.mark.asyncio
+    async def test_get_price_vs_address_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Price".  
-            Provide an unknown token address.
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic. Provide a different comparison token.
+
+            Mock Response File: get_price_vs_address.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_vs_address"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([SOL], vs_address = JUP)
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert SOL in response.data
+        assert response.data[SOL].vs_token == JUP
+
+    def test_get_price_unknown_address_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for synchronous logic. Provide an unknown token address.
 
             Mock Response File: get_price_unknown_address.json
         """
@@ -160,10 +256,10 @@ class TestJupiter:
         mock_file_name = "get_price_unknown_address"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.client.get_price([WETH])
+        response = self.jupiter.client.get_price([WETH])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -172,6 +268,29 @@ class TestJupiter:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_price_unknown_address_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic. Provide an unknown token address.
+
+            Mock Response File: get_price_unknown_address.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_unknown_address"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([WETH])
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert response.data == {}
 
     def test_get_quote(self, mocker: MockerFixture) -> None:
         """
