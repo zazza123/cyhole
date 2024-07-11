@@ -1,6 +1,6 @@
 import pytest
 
-from cyhole.core import APIClient, AsyncAPIClient
+from cyhole.core.client import APIClient, AsyncAPIClient
 from cyhole.core.param import CyholeParam, RequestType
 from cyhole.core.exception import RequestTypeNotSupported, ParamUnknownError, AsyncClientAPISessionNotAvailable
 
