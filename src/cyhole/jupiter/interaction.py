@@ -193,6 +193,35 @@ class Jupiter(Interaction):
                 return GetQuoteTokensResponse(tokens = content_raw.json())
             return async_request()
 
+    @overload
+    def _get_quote_program_id_label(self, sync: Literal[True]) -> GetQuoteProgramIdLabelResponse:
+        ...
+
+    @overload
+    def _get_quote_program_id_label(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
+        ...
+
+    def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
+        """
+            This function refers to the **[Get Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint, 
+            and it is used to get the list of supported DEXes to use in quote endpoint. 
+
+            Returns:
+                List of DEXs addresses and labels.
+        """
+        # set params
+        url = self.url_api_quote + "program-id-to-label"
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
+            return async_request()
+
     def _raise(self, exception: HTTPError) -> JupiterException:
         """
             Internal function used to raise the correct 

@@ -537,9 +537,10 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetQuoteTokensResponse)
 
-    def test_get_quote_program_id_label(self, mocker: MockerFixture) -> None:
+    def test_get_quote_program_id_label_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote/Program ID to Label".
+            Unit Test used to check the response schema of endpoint "Quote/Program ID to Label" 
+            for synchronous logic.
 
             Mock Response File: get_quote_program_id_label.json
         """
@@ -553,10 +554,10 @@ class TestJupiter:
             content = str(mock_response.json()["dexes"]).replace("'", '"').encode()
             mock_response._content = content
 
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.client.get_quote_program_id_label()
+        response = self.jupiter.client.get_quote_program_id_label()
 
         # actual test
         assert isinstance(response, GetQuoteProgramIdLabelResponse)
@@ -564,6 +565,33 @@ class TestJupiter:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_quote_program_id_label_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Quote/Program ID to Label" 
+            for asynchronous logic.
+
+            Mock Response File: get_quote_program_id_label.json
+        """
+
+        # load mock response
+        mock_file_name = "get_quote_program_id_label"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteProgramIdLabelResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["dexes"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_quote_program_id_label()
+
+        # actual test
+        assert isinstance(response, GetQuoteProgramIdLabelResponse)
 
     def test_post_swap(self, mocker: MockerFixture) -> None:
         """

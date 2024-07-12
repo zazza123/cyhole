@@ -53,6 +53,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_quote_tokens(True)
 
+    def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
+        """
+            Call the Jupiter's **[Get Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+        """
+        return self._interaction._get_quote_program_id_label(True)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -82,3 +89,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_quote_tokens`][cyhole.jupiter.interaction.Jupiter._get_quote_tokens].
         """
         return await self._interaction._get_quote_tokens(False)
+
+    async def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
+        """
+            Call the Jupiter's **[Get Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+        """
+        return await self._interaction._get_quote_program_id_label(False)
