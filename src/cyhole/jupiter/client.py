@@ -19,6 +19,7 @@ from ..jupiter.schema import (
     GetLimitOrderHistoryResponse,
     GetLimitOrderTradeHistoryResponse
 )
+from ..jupiter.param import JupiterTokenListType
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -63,9 +64,70 @@ class JupiterClient(APIClient):
     def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
         """
             Call the Jupiter's **[Post Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint for synchronous logic. 
-            All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+            All the API endopint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap].
         """
         return self._interaction._post_swap(True, body)
+
+    def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
+        """
+            Call the Jupiter's **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_list`][cyhole.jupiter.interaction.Jupiter._get_token_list].
+        """
+        return self._interaction._get_token_list(True, type, banned)
+
+    def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
+        """
+            Call the Jupiter's **[Post Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._post_limit_order_create`][cyhole.jupiter.interaction.Jupiter._post_limit_order_create].
+        """
+        return self._interaction._post_limit_order_create(True, body)
+
+    def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
+        """
+            Call the Jupiter's **[Post Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._post_limit_order_cancel`][cyhole.jupiter.interaction.Jupiter._post_limit_order_cancel].
+        """
+        return self._interaction._post_limit_order_cancel(True, body)
+
+    def get_limit_order_open(
+            self,
+            wallet: str | None = None,
+            input_token: str | None = None,
+            output_token: str | None = None
+        ) -> GetLimitOrderOpenResponse:
+        """
+            Call the Jupiter's **[Get Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_limit_order_open`][cyhole.jupiter.interaction.Jupiter._get_limit_order_open].
+        """
+        return self._interaction._get_limit_order_open(True, wallet, input_token, output_token)
+
+    def get_limit_order_history(
+        self,
+        wallet: str,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderHistoryResponse:
+        """
+            Call the Jupiter's **[Get Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
+        """
+        return self._interaction._get_limit_order_history(True, wallet, cursor, skip, take)
+
+    def get_limit_order_trade_history(
+        self,
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderTradeHistoryResponse:
+        """
+            Call the Jupiter's **[Get Limit Order - Trade History](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_limit_order_trade_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_trade_history].
+        """
+        return self._interaction._get_limit_order_trade_history(True, wallet, input_token, output_token, cursor, skip, take)
 
 class JupiterAsyncClient(AsyncAPIClient):
     """
@@ -110,3 +172,64 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
         """
         return await self._interaction._post_swap(False, body)
+
+    async def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
+        """
+            Call the Jupiter's **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_list`][cyhole.jupiter.interaction.Jupiter._get_token_list].
+        """
+        return await self._interaction._get_token_list(False, type, banned)
+
+    async def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
+        """
+            Call the Jupiter's **[Post Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._post_limit_order_create`][cyhole.jupiter.interaction.Jupiter._post_limit_order_create].
+        """
+        return await self._interaction._post_limit_order_create(False, body)
+
+    async def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
+        """
+            Call the Jupiter's **[Post Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._post_limit_order_cancel`][cyhole.jupiter.interaction.Jupiter._post_limit_order_cancel].
+        """
+        return await self._interaction._post_limit_order_cancel(False, body)
+
+    async def get_limit_order_open(
+            self,
+            wallet: str | None = None,
+            input_token: str | None = None,
+            output_token: str | None = None
+        ) -> GetLimitOrderOpenResponse:
+        """
+            Call the Jupiter's **[Get Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_limit_order_open`][cyhole.jupiter.interaction.Jupiter._get_limit_order_open].
+        """
+        return await self._interaction._get_limit_order_open(False, wallet, input_token, output_token)
+
+    async def get_limit_order_history(
+        self,
+        wallet: str,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderHistoryResponse:
+        """
+            Call the Jupiter's **[Get Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
+        """
+        return await self._interaction._get_limit_order_history(False, wallet, cursor, skip, take)
+
+    async def get_limit_order_trade_history(
+        self,
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderTradeHistoryResponse:
+        """
+            Call the Jupiter's **[Get Limit Order - Trade History](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_limit_order_trade_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_trade_history].
+        """
+        return await self._interaction._get_limit_order_trade_history(False, wallet, input_token, output_token, cursor, skip, take)

@@ -276,6 +276,353 @@ class Jupiter(Interaction):
                 return PostSwapResponse(**content_raw.json())
             return async_request()
 
+    @overload
+    def _get_token_list(self, sync: Literal[True], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
+        ...
+
+    @overload
+    def _get_token_list(self, sync: Literal[False], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> Coroutine[None, None, GetTokenListResponse]:
+        ...
+
+    def _get_token_list(self, sync: bool, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
+        """
+            This function refers to the **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint, 
+            and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
+            Choose the tokens list according to `type` field.
+
+            Parameters:
+                type: Jupiter manages the tradable tokens through a set of tags in order to guarantee its 
+                    core values and provide a secure service. There are two types of lists currently available:  
+                    - Strict the most secure list that includes only the tokens with tags `old-registry`, `community`, or `wormhole`.
+                    - All all the tokens are included expect the banned ones.
+                    The supported types are available on [`JupiterTokenListType`][cyhole.jupiter.param.JupiterTokenListType].
+                banned: this flag can be used **only** on `All` type, and it enables the inclusion of banned tokens.
+
+            Returns:
+                List of Jupiter's tokens list.
+        """
+        # check param consistency
+        JupiterTokenListType.check(type)
+
+        # set params
+        url = self.url_api_token + type
+        params = {
+            "includeBanned" : banned
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetTokenListResponse(tokens = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetTokenListResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_limit_order_create(self, sync: Literal[True], body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
+        ...
+
+    @overload
+    def _post_limit_order_create(self, sync: Literal[False], body: PostLimitOrderCreateBody) -> Coroutine[None, None, PostLimitOrderCreateResponse]:
+        ...
+
+    def _post_limit_order_create(self, sync: bool, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse | Coroutine[None, None, PostLimitOrderCreateResponse]:
+        """
+            This function refers to the **[Post Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            and it is used to receive the transaction to perform the creation of a Limit Order via Jupiter API.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the swap.
+                    More details in the object definition.
+
+            Returns:
+                Transaction created by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_limit + "createOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostLimitOrderCreateResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostLimitOrderCreateResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_limit_order_cancel(self, sync: Literal[True], body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
+        ...
+
+    @overload
+    def _post_limit_order_cancel(self, sync: Literal[False], body: PostLimitOrderCancelBody) -> Coroutine[None, None, PostLimitOrderCancelResponse]:
+        ...
+
+    def _post_limit_order_cancel(self, sync: bool, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse | Coroutine[None, None, PostLimitOrderCancelResponse]:
+        """
+            This function refers to the **[Post Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            and it is used to receive the transaction to perform the cancellation of a Limit Order previously 
+            opened via Jupiter API.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the limit order to cancel.
+                    More details in the object definition.
+
+            Returns:
+                Transaction created by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_limit + "cancelOrders"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostLimitOrderCancelResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostLimitOrderCancelResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_limit_order_open(
+            self,
+            sync: Literal[True],
+            wallet: str | None = None,
+            input_token: str | None = None,
+            output_token: str | None = None
+        ) -> GetLimitOrderOpenResponse:
+        ...
+
+    @overload
+    def _get_limit_order_open(
+            self,
+            sync: Literal[False],
+            wallet: str | None = None,
+            input_token: str | None = None,
+            output_token: str | None = None
+        ) -> Coroutine[None, None, GetLimitOrderOpenResponse]:
+        ...
+
+    def _get_limit_order_open(
+        self,
+        sync: bool,
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None
+    ) -> GetLimitOrderOpenResponse | Coroutine[None, None, GetLimitOrderOpenResponse]:
+        """
+            This function refers to the **[Get Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            API endpoint, and it is used to receive the current open limit orders related to a wallet, input token 
+            or output token via Jupiter API. 
+
+            Observe that all the input parameters are optional; if for example, only the `input_token` is provided, 
+            then **all** the limit orders having that input token address are returned (if available).
+
+            Parameters:
+                wallet: address of the wallet to check.
+                input_token: address of the input token associated to the limit order.
+                output_token: address of the output token associated to the limit order.
+
+            Returns:
+                Open limit orders created by Jupiter API.
+        """
+        # set params
+        url = self.url_api_limit + "openOrders"
+        params = {
+            "wallet": wallet,
+            "inputMint": input_token,
+            "outputMint": output_token
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetLimitOrderOpenResponse(orders = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetLimitOrderOpenResponse(orders = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_limit_order_history(
+        self,
+        sync: Literal[True],
+        wallet: str,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderHistoryResponse:
+        ...
+
+    @overload
+    def _get_limit_order_history(
+        self,
+        sync: Literal[False],
+        wallet: str,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> Coroutine[None, None, GetLimitOrderHistoryResponse]:
+        ...
+
+    def _get_limit_order_history(
+        self,
+        sync: bool,
+        wallet: str,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderHistoryResponse | Coroutine[None, None, GetLimitOrderHistoryResponse]:
+        """
+            This function refers to the **[Get Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            API endpoint, and it is used to retrieve the history of Limit Orders associated to a wallet via Jupiter API. 
+
+            Parameters:
+                wallet: address of the wallet to check.
+                cursor: specify which 'page' of orders to return.
+                skip: specify the number of order to skip (from the top).
+                take: specify the number of orders to return.
+
+            Returns:
+                History of limit orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_limit + "orderHistory"
+        params = {
+            "wallet": wallet,
+            "cursor": cursor,
+            "skip": skip,
+            "take": take
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetLimitOrderHistoryResponse(orders = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetLimitOrderHistoryResponse(orders = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_limit_order_trade_history(
+        self,
+        sync: Literal[True],
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderTradeHistoryResponse:
+        ...
+
+    @overload
+    def _get_limit_order_trade_history(
+        self,
+        sync: Literal[False],
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> Coroutine[None, None, GetLimitOrderTradeHistoryResponse]:
+        ...
+
+    def _get_limit_order_trade_history(
+        self,
+        sync: bool,
+        wallet: str | None = None,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        cursor: int | None = None,
+        skip: int | None = None,
+        take: int | None = None
+    ) -> GetLimitOrderTradeHistoryResponse | Coroutine[None, None, GetLimitOrderTradeHistoryResponse]:
+        """
+            This function refers to the **[Get Limit Order - Trade History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            API endpoint, and it is used to retrieve the trades history related to Limit Orders extracted with specific 
+            requirements via Jupiter API. 
+
+            Parameters:
+                wallet: address of the wallet to check.
+                input_token: address of the input token associated to the limit order.
+                output_token: address of the output token associated to the limit order.
+                cursor: specify which 'page' of orders to return.
+                skip: specify the number of order to skip (from the top).
+                take: specify the number of orders to return.
+
+            Returns:
+                Hostory of limit orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_limit + "tradeHistory"
+        params = {
+            "wallet": wallet,
+            "inputMint": input_token,
+            "outputMint": output_token,
+            "cursor": cursor,
+            "skip": skip,
+            "take": take
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetLimitOrderTradeHistoryResponse(orders = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetLimitOrderTradeHistoryResponse(orders = content_raw.json())
+            return async_request()
+
     def _raise(self, exception: HTTPError) -> JupiterException:
         """
             Internal function used to raise the correct 
