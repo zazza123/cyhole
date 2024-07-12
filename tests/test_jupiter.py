@@ -593,9 +593,10 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetQuoteProgramIdLabelResponse)
 
-    def test_post_swap(self, mocker: MockerFixture) -> None:
+    def test_post_swap_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint POST "Swap".
+            Unit Test used to check the response schema of endpoint POST "Swap" 
+            for synchronous logic.
 
             Mock Response File: post_swap.json
         """
@@ -604,14 +605,14 @@ class TestJupiter:
         mock_file_name = "post_swap"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
-            mocker.patch("cyhole.core.api.APICaller.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
         body = PostSwapBody(
             user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
             quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
         )
-        response = self.client.post_swap(body)
+        response = self.jupiter.client.post_swap(body)
 
         # actual test
         assert isinstance(response, PostSwapResponse)
@@ -620,18 +621,58 @@ class TestJupiter:
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
-    def test_post_swap_invalid_request(self) -> None:
+    @pytest.mark.asyncio
+    async def test_post_swap_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint POST "Swap" 
+            for asynchronous logic.
+
+            Mock Response File: post_swap.json
+        """
+
+        # load mock response
+        mock_file_name = "post_swap"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostSwapBody(
+            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+        )
+        async with self.jupiter.async_client as client:
+            response = await client.post_swap(body)
+
+        # actual test
+        assert isinstance(response, PostSwapResponse)
+
+    def test_post_swap_invalid_request_sync(self) -> None:
         """
             Unit Test used to check the response schema of endpoint "Swap" 
-            when an invalid field is provided in the body.
+            when an invalid field is provided in the body for synchronous logic.
         """
         body = PostSwapBody(
             user_public_key = "XXX",
             quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
         )
         with pytest.raises(JupiterInvalidRequest):
-            self.client.post_swap(body)
-    
+            self.jupiter.client.post_swap(body)
+
+    @pytest.mark.asyncio
+    async def test_post_swap_invalid_request_async(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Swap" 
+            when an invalid field is provided in the body for asynchronous logic.
+        """
+        body = PostSwapBody(
+            user_public_key = "XXX",
+            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+        )
+        with pytest.raises(JupiterInvalidRequest):
+            async with self.jupiter.async_client as client:
+                await client.post_swap(body)
+
     def test_get_token_list(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Token List".

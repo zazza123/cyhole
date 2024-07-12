@@ -60,6 +60,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_quote_program_id_label(True)
 
+    def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
+        """
+            Call the Jupiter's **[Post Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+        """
+        return self._interaction._post_swap(True, body)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -96,3 +103,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
         """
         return await self._interaction._get_quote_program_id_label(False)
+
+    async def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
+        """
+            Call the Jupiter's **[Post Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+        """
+        return await self._interaction._post_swap(False, body)

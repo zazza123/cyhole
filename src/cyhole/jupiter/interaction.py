@@ -222,6 +222,60 @@ class Jupiter(Interaction):
                 return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
             return async_request()
 
+    @overload
+    def _post_swap(self, sync: Literal[True], body: PostSwapBody) -> PostSwapResponse:
+        ...
+
+    @overload
+    def _post_swap(self, sync: Literal[False], body: PostSwapBody) -> Coroutine[None, None, PostSwapResponse]:
+        ...
+
+    def _post_swap(self, sync: bool, body: PostSwapBody) -> PostSwapResponse | Coroutine[None, None, PostSwapResponse]:
+        """
+            This function refers to the **[Post Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint, 
+            and it is used to recive the transaction to perform the swap initialised from `get_quote` 
+            endopoint for the desired pair.  
+            The function should be combined with the `get_quote` endpoint.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the swap.
+                    More details in the object definition.
+
+            Returns:
+                Transaction found by Jupiter API.
+        """
+        # set params
+        url = self.url_api_quote + "swap"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostSwapResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostSwapResponse(**content_raw.json())
+            return async_request()
+
     def _raise(self, exception: HTTPError) -> JupiterException:
         """
             Internal function used to raise the correct 
