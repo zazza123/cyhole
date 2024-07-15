@@ -4,7 +4,6 @@ from pathlib import Path
 from pytest_mock import MockerFixture
 
 from cyhole.jupiter import Jupiter
-from cyhole.jupiter.interaction import Jupiter as JupiterInteraction
 from cyhole.jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
@@ -36,17 +35,12 @@ config = load_config()
 mock_path = Path(config.mock_folder) / config.jupiter.mock_folder
 mock_path.mkdir(parents = True, exist_ok = True)
 
-# set client, mocker
-_client = Jupiter()
-_mocker = MockerManager(mock_path)
-
 class TestJupiter:
     """
         Class grouping all unit tests.
     """
-    client = _client
-    jupiter = JupiterInteraction()
-    mocker = _mocker
+    jupiter = Jupiter()
+    mocker = MockerManager(mock_path)
 
     def test_get_price_token_address_sync(self, mocker: MockerFixture) -> None:
         """
