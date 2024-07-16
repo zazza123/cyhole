@@ -75,12 +75,10 @@ class Jupiter(Interaction):
         return
 
     @overload
-    def _get_price(self, sync: Literal[True], address: list[str], vs_address: str | None = None) -> GetPriceResponse:
-        ...
+    def _get_price(self, sync: Literal[True], address: list[str], vs_address: str | None = None) -> GetPriceResponse: ...
 
     @overload
-    def _get_price(self, sync: Literal[False], address: list[str], vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]:
-        ...
+    def _get_price(self, sync: Literal[False], address: list[str], vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]: ...
 
     def _get_price(self, sync: bool, address: list[str], vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
@@ -121,12 +119,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_quote(self, sync: Literal[True], input: GetQuoteInput) -> GetQuoteResponse:
-        ...
+    def _get_quote(self, sync: Literal[True], input: GetQuoteInput) -> GetQuoteResponse: ...
 
     @overload
-    def _get_quote(self, sync: Literal[False], input: GetQuoteInput) -> Coroutine[None, None, GetQuoteResponse]:
-        ...
+    def _get_quote(self, sync: Literal[False], input: GetQuoteInput) -> Coroutine[None, None, GetQuoteResponse]: ...
 
     def _get_quote(self, sync: bool, input: GetQuoteInput) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
         """
@@ -165,12 +161,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_quote_tokens(self, sync: Literal[True]) -> GetQuoteTokensResponse:
-        ...
+    def _get_quote_tokens(self, sync: Literal[True]) -> GetQuoteTokensResponse: ...
 
     @overload
-    def _get_quote_tokens(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteTokensResponse]:
-        ...
+    def _get_quote_tokens(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteTokensResponse]: ...
 
     def _get_quote_tokens(self, sync: bool) -> GetQuoteTokensResponse | Coroutine[None, None, GetQuoteTokensResponse]:
         """
@@ -194,12 +188,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_quote_program_id_label(self, sync: Literal[True]) -> GetQuoteProgramIdLabelResponse:
-        ...
+    def _get_quote_program_id_label(self, sync: Literal[True]) -> GetQuoteProgramIdLabelResponse: ...
 
     @overload
-    def _get_quote_program_id_label(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
-        ...
+    def _get_quote_program_id_label(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteProgramIdLabelResponse]: ...
 
     def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
         """
@@ -223,12 +215,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _post_swap(self, sync: Literal[True], body: PostSwapBody) -> PostSwapResponse:
-        ...
+    def _post_swap(self, sync: Literal[True], body: PostSwapBody) -> PostSwapResponse: ...
 
     @overload
-    def _post_swap(self, sync: Literal[False], body: PostSwapBody) -> Coroutine[None, None, PostSwapResponse]:
-        ...
+    def _post_swap(self, sync: Literal[False], body: PostSwapBody) -> Coroutine[None, None, PostSwapResponse]: ...
 
     def _post_swap(self, sync: bool, body: PostSwapBody) -> PostSwapResponse | Coroutine[None, None, PostSwapResponse]:
         """
@@ -277,12 +267,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_token_list(self, sync: Literal[True], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
-        ...
+    def _get_token_list(self, sync: Literal[True], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse: ...
 
     @overload
-    def _get_token_list(self, sync: Literal[False], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> Coroutine[None, None, GetTokenListResponse]:
-        ...
+    def _get_token_list(self, sync: Literal[False], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> Coroutine[None, None, GetTokenListResponse]: ...
 
     def _get_token_list(self, sync: bool, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
         """
@@ -321,12 +309,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _post_limit_order_create(self, sync: Literal[True], body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
-        ...
+    def _post_limit_order_create(self, sync: Literal[True], body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse: ...
 
     @overload
-    def _post_limit_order_create(self, sync: Literal[False], body: PostLimitOrderCreateBody) -> Coroutine[None, None, PostLimitOrderCreateResponse]:
-        ...
+    def _post_limit_order_create(self, sync: Literal[False], body: PostLimitOrderCreateBody) -> Coroutine[None, None, PostLimitOrderCreateResponse]: ...
 
     def _post_limit_order_create(self, sync: bool, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse | Coroutine[None, None, PostLimitOrderCreateResponse]:
         """
@@ -374,12 +360,10 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _post_limit_order_cancel(self, sync: Literal[True], body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
-        ...
+    def _post_limit_order_cancel(self, sync: Literal[True], body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse: ...
 
     @overload
-    def _post_limit_order_cancel(self, sync: Literal[False], body: PostLimitOrderCancelBody) -> Coroutine[None, None, PostLimitOrderCancelResponse]:
-        ...
+    def _post_limit_order_cancel(self, sync: Literal[False], body: PostLimitOrderCancelBody) -> Coroutine[None, None, PostLimitOrderCancelResponse]: ...
 
     def _post_limit_order_cancel(self, sync: bool, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse | Coroutine[None, None, PostLimitOrderCancelResponse]:
         """
@@ -434,8 +418,7 @@ class Jupiter(Interaction):
             wallet: str | None = None,
             input_token: str | None = None,
             output_token: str | None = None
-        ) -> GetLimitOrderOpenResponse:
-        ...
+        ) -> GetLimitOrderOpenResponse: ...
 
     @overload
     def _get_limit_order_open(
@@ -444,8 +427,7 @@ class Jupiter(Interaction):
             wallet: str | None = None,
             input_token: str | None = None,
             output_token: str | None = None
-        ) -> Coroutine[None, None, GetLimitOrderOpenResponse]:
-        ...
+        ) -> Coroutine[None, None, GetLimitOrderOpenResponse]: ...
 
     def _get_limit_order_open(
         self,
@@ -496,8 +478,7 @@ class Jupiter(Interaction):
         cursor: int | None = None,
         skip: int | None = None,
         take: int | None = None
-    ) -> GetLimitOrderHistoryResponse:
-        ...
+    ) -> GetLimitOrderHistoryResponse: ...
 
     @overload
     def _get_limit_order_history(
@@ -507,8 +488,7 @@ class Jupiter(Interaction):
         cursor: int | None = None,
         skip: int | None = None,
         take: int | None = None
-    ) -> Coroutine[None, None, GetLimitOrderHistoryResponse]:
-        ...
+    ) -> Coroutine[None, None, GetLimitOrderHistoryResponse]: ...
 
     def _get_limit_order_history(
         self,
@@ -560,8 +540,7 @@ class Jupiter(Interaction):
         cursor: int | None = None,
         skip: int | None = None,
         take: int | None = None
-    ) -> GetLimitOrderTradeHistoryResponse:
-        ...
+    ) -> GetLimitOrderTradeHistoryResponse: ...
 
     @overload
     def _get_limit_order_trade_history(
@@ -573,8 +552,7 @@ class Jupiter(Interaction):
         cursor: int | None = None,
         skip: int | None = None,
         take: int | None = None
-    ) -> Coroutine[None, None, GetLimitOrderTradeHistoryResponse]:
-        ...
+    ) -> Coroutine[None, None, GetLimitOrderTradeHistoryResponse]: ...
 
     def _get_limit_order_trade_history(
         self,

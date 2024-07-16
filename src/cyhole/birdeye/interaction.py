@@ -90,8 +90,7 @@ class Birdeye(Interaction):
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
         limit: int | None = None
-    ) -> GetTokenListResponse:
-        ...
+    ) -> GetTokenListResponse: ...
 
     @overload
     def _get_token_list(
@@ -102,8 +101,7 @@ class Birdeye(Interaction):
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
         limit: int | None = None
-    ) -> Coroutine[None, None, GetTokenListResponse]:
-        ...
+    ) -> Coroutine[None, None, GetTokenListResponse]: ...
 
     def _get_token_list(
         self,
@@ -171,8 +169,7 @@ class Birdeye(Interaction):
         sync: Literal[True],
         address: str,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetTokenCreationInfoResponse:
-        ...
+    ) -> GetTokenCreationInfoResponse: ...
 
     @overload
     def _get_token_creation_info(
@@ -180,8 +177,7 @@ class Birdeye(Interaction):
         sync: Literal[False],
         address: str,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetTokenCreationInfoResponse]:
-        ...
+    ) -> Coroutine[None, None, GetTokenCreationInfoResponse]: ...
 
     def _get_token_creation_info(
         self,
@@ -232,8 +228,7 @@ class Birdeye(Interaction):
         sync: Literal[True],
         address: str,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetTokenSecurityResponse:
-        ...
+    ) -> GetTokenSecurityResponse: ...
 
     @overload
     def _get_token_security(
@@ -241,8 +236,7 @@ class Birdeye(Interaction):
         sync: Literal[False],
         address: str,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetTokenSecurityResponse]:
-        ...
+    ) -> Coroutine[None, None, GetTokenSecurityResponse]: ...
 
     def _get_token_security(
         self,
@@ -295,8 +289,7 @@ class Birdeye(Interaction):
         sync: Literal[True],
         address: str,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetTokenOverviewResponse:
-        ...
+    ) -> GetTokenOverviewResponse: ...
 
     @overload
     def _get_token_overview(
@@ -304,8 +297,7 @@ class Birdeye(Interaction):
         sync: Literal[False],
         address: str,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetTokenOverviewResponse]:
-        ...
+    ) -> Coroutine[None, None, GetTokenOverviewResponse]: ...
 
     def _get_token_overview(
         self,
@@ -359,8 +351,7 @@ class Birdeye(Interaction):
         address: str,
         include_liquidity: bool | None = None,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetPriceResponse:
-        ...
+    ) -> GetPriceResponse: ...
 
     @overload
     def _get_price(
@@ -369,8 +360,7 @@ class Birdeye(Interaction):
         address: str,
         include_liquidity: bool | None = None,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetPriceResponse]:
-        ...
+    ) -> Coroutine[None, None, GetPriceResponse]: ...
 
     def _get_price(
         self,
@@ -426,8 +416,7 @@ class Birdeye(Interaction):
         list_address: list[str],
         include_liquidity: bool | None = None,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetPriceMultipleResponse:
-        ...
+    ) -> GetPriceMultipleResponse: ...
 
     @overload
     def _get_price_multiple(
@@ -436,8 +425,7 @@ class Birdeye(Interaction):
         list_address: list[str],
         include_liquidity: bool | None = None,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetPriceMultipleResponse]:
-        ...
+    ) -> Coroutine[None, None, GetPriceMultipleResponse]: ...
 
     def _get_price_multiple(
         self,
@@ -496,8 +484,7 @@ class Birdeye(Interaction):
         dt_from: datetime,
         dt_to: datetime | None = None,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetPriceHistoricalResponse:
-        ...
+    ) -> GetPriceHistoricalResponse: ...
 
     @overload
     def _get_price_historical(
@@ -509,8 +496,7 @@ class Birdeye(Interaction):
         dt_from: datetime,
         dt_to: datetime | None = None,
         chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetPriceHistoricalResponse]:
-        ...
+    ) -> Coroutine[None, None, GetPriceHistoricalResponse]: ...
 
     def _get_price_historical(
         self,
@@ -585,12 +571,10 @@ class Birdeye(Interaction):
             return async_request()
 
     @overload
-    def _get_history(self, sync: Literal[True], chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse:
-        ...
+    def _get_history(self, sync: Literal[True], chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse: ...
 
     @overload
-    def _get_history(self, sync: Literal[False], chain: str = BirdeyeChain.SOLANA.value) -> Coroutine[None, None, GetHistoryResponse]:
-        ...
+    def _get_history(self, sync: Literal[False], chain: str = BirdeyeChain.SOLANA.value) -> Coroutine[None, None, GetHistoryResponse]: ...
 
     def _get_history(self, sync: bool, chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse | Coroutine[None, None, GetHistoryResponse]:
         """
@@ -637,8 +621,7 @@ class Birdeye(Interaction):
             chain: str = BirdeyeChain.SOLANA.value,
             offset: int | None = None,
             limit: int | None = None
-    ) -> GetTradesTokenResponse:
-        ...
+    ) -> GetTradesTokenResponse: ...
 
     @overload
     def _get_trades_token(
@@ -649,8 +632,7 @@ class Birdeye(Interaction):
             chain: str = BirdeyeChain.SOLANA.value,
             offset: int | None = None,
             limit: int | None = None
-    ) -> Coroutine[None, None, GetTradesTokenResponse]:
-        ...
+    ) -> Coroutine[None, None, GetTradesTokenResponse]: ...
 
     def _get_trades_token(
             self,
@@ -717,8 +699,7 @@ class Birdeye(Interaction):
             order_by: str = BirdeyeOrder.DESCENDING.value,
             offset: int | None = None,
             limit: int | None = None
-    ) -> GetTradesPairResponse:
-        ...
+    ) -> GetTradesPairResponse: ...
 
     @overload
     def _get_trades_pair(
@@ -730,8 +711,7 @@ class Birdeye(Interaction):
             order_by: str = BirdeyeOrder.DESCENDING.value,
             offset: int | None = None,
             limit: int | None = None
-    ) -> Coroutine[None, None, GetTradesPairResponse]:
-        ...
+    ) -> Coroutine[None, None, GetTradesPairResponse]: ...
 
     def _get_trades_pair(
             self,
@@ -806,8 +786,7 @@ class Birdeye(Interaction):
             dt_from: datetime,
             dt_to: datetime | None = None,
             chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetOHLCVTokenPairResponse:
-        ...
+    ) -> GetOHLCVTokenPairResponse: ...
 
     @overload
     def _get_ohlcv(
@@ -819,8 +798,7 @@ class Birdeye(Interaction):
             dt_from: datetime,
             dt_to: datetime | None = None,
             chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetOHLCVTokenPairResponse]:
-        ...
+    ) -> Coroutine[None, None, GetOHLCVTokenPairResponse]: ...
 
     def _get_ohlcv(
             self,
@@ -905,8 +883,7 @@ class Birdeye(Interaction):
             dt_from: datetime,
             dt_to: datetime | None = None,
             chain: str = BirdeyeChain.SOLANA.value
-    ) -> GetOHLCVBaseQuoteResponse:
-        ...
+    ) -> GetOHLCVBaseQuoteResponse: ...
 
     @overload
     def _get_ohlcv_base_quote(
@@ -918,8 +895,7 @@ class Birdeye(Interaction):
             dt_from: datetime,
             dt_to: datetime | None = None,
             chain: str = BirdeyeChain.SOLANA.value
-    ) -> Coroutine[None, None, GetOHLCVBaseQuoteResponse]:
-        ...
+    ) -> Coroutine[None, None, GetOHLCVBaseQuoteResponse]: ...
 
     def _get_ohlcv_base_quote(
             self,
@@ -991,12 +967,10 @@ class Birdeye(Interaction):
             return async_request()
 
     @overload
-    def _get_wallet_supported_networks(self, sync: Literal[True]) -> GetWalletSupportedNetworksResponse:
-        ...
+    def _get_wallet_supported_networks(self, sync: Literal[True]) -> GetWalletSupportedNetworksResponse: ...
 
     @overload
-    def _get_wallet_supported_networks(self, sync: Literal[False]) -> Coroutine[None, None, GetWalletSupportedNetworksResponse]:
-        ...
+    def _get_wallet_supported_networks(self, sync: Literal[False]) -> Coroutine[None, None, GetWalletSupportedNetworksResponse]: ...
 
     def _get_wallet_supported_networks(self, sync: bool) -> GetWalletSupportedNetworksResponse | Coroutine[None, None, GetWalletSupportedNetworksResponse]:
         """
