@@ -59,7 +59,7 @@ async def test_async_client_init() -> None:
     async_client = AsyncAPIClient(interaction)
 
     assert async_client._session is None
-    assert async_client.is_connected() == False
+    assert not async_client.is_connected()
 
 @pytest.mark.asyncio
 async def test_async_client_connect() -> None:
@@ -70,7 +70,7 @@ async def test_async_client_connect() -> None:
     async_client.connect()
 
     assert async_client._session is not None
-    assert async_client.is_connected() == True
+    assert async_client.is_connected()
 
 @pytest.mark.asyncio
 async def test_async_client_close_connetion() -> None:
@@ -82,7 +82,7 @@ async def test_async_client_close_connetion() -> None:
     await async_client.close()
 
     assert async_client._session is None
-    assert async_client.is_connected() == False
+    assert not async_client.is_connected()
 
 @pytest.mark.asyncio
 async def test_async_client_close_connetion_error() -> None:
@@ -101,7 +101,7 @@ async def test_async_client_context_manager() -> None:
     """
     async with AsyncAPIClient(interaction) as client:
         assert client._session is not None
-        assert client.is_connected() == True
+        assert client.is_connected()
 
 @pytest.mark.asyncio
 async def test_async_client_api_request_no_session() -> None:
