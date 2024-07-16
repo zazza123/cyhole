@@ -447,7 +447,7 @@ class Birdeye(Interaction):
         chain: str = BirdeyeChain.SOLANA.value
     ) -> GetPriceMultipleResponse | Coroutine[None, None, GetPriceMultipleResponse]:
         """
-            This function refers to the **PUBLIC** API endpoint **[Price - Multiple](https://docs.birdeye.so/reference/get_defi-multi-price)** and is used 
+            This function refers to the **PRIVATE** API endpoint **[Price - Multiple](https://docs.birdeye.so/reference/get_defi-multi-price)** and is used 
             to get the current price of multeple tokens on a specific chain on Birdeye.
 
             Parameters:
