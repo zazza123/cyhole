@@ -89,7 +89,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_token_list"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
         # execute request
         async with self.birdeye.async_client as client:
@@ -135,7 +135,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_price"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             
         # execute request
         async with self.birdeye.async_client as client:
@@ -186,7 +186,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_price_historical"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceHistoricalResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             
         # execute request
         async with self.birdeye.async_client as client:
@@ -269,7 +269,7 @@ class TestBirdeyePublic:
         mock_file_name = "get_history"
         if config.mock_response or config.birdeye.mock_response_public:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetHistoryResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             
         # execute request
         async with self.birdeye.async_client as client:
@@ -293,6 +293,17 @@ class TestBirdeyePrivate:
         birdeye = Birdeye(api_key = "xxx-xxx-xxx")
         with pytest.raises(BirdeyeAuthorisationError):
             birdeye.client.get_token_creation_info(address = SOL)
+
+    @pytest.mark.asyncio
+    async def test_not_authorised_api_async(self) -> None:
+        """
+            Unit Test to correcty identify a not Authorised API Key 
+            for asynchronous logic.
+        """
+        birdeye = Birdeye(api_key = "xxx-xxx-xxx")
+        with pytest.raises(BirdeyeAuthorisationError):
+            async with birdeye.async_client as client:
+                await client.get_token_creation_info(address = SOL)
 
     def test_get_price_multiple_sync(self, mocker: MockerFixture) -> None:
         """
@@ -319,6 +330,29 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_price_multiple_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price - Multiple" 
+            for asynchronous logic.
+
+            Mock Response File: get_price_multiple.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_multiple"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceMultipleResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        tokens_ca = [SOL, USDC]
+        async with self.birdeye.async_client as client:
+            response = await client.get_price_multiple(list_address = tokens_ca)
+
+        # actual test
+        assert isinstance(response, GetPriceMultipleResponse)
+
     def test_get_token_creation_info_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Token - Creation Token Info" 
@@ -342,6 +376,28 @@ class TestBirdeyePrivate:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_creation_info_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Creation Token Info" 
+            for asynchronous logic.
+
+            Mock Response File: get_token_creation_info.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_creation_info"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenCreationInfoResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_creation_info(address = SOL)
+
+        # actual test
+        assert isinstance(response, GetTokenCreationInfoResponse)
 
     def test_get_token_security_solana_sync(self, mocker: MockerFixture) -> None:
         """
@@ -367,6 +423,29 @@ class TestBirdeyePrivate:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_security_solana_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Security" 
+            specifically for Solana chain for asynchronous logic.
+
+            Mock Response File: get_token_security_solana.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_security_solana"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_security(JRK)
+
+        # actual test
+        assert isinstance(response, GetTokenSecurityResponse)
+        assert isinstance(response.data, GetTokenSecurityDataSolana)
 
     def test_get_token_security_other_sync(self, mocker: MockerFixture) -> None:
         """
@@ -396,6 +475,32 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_token_security_other_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Security" 
+            specifically for other chains for asynchronous logic.
+
+            Mock Response File: get_token_security_other.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_security_other"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSecurityResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_security(
+                address = JRK, 
+                chain = BirdeyeChain.ETHEREUM.value
+            )
+
+        # actual test
+        assert isinstance(response, GetTokenSecurityResponse)
+        assert isinstance(response.data, dict)
+
     def test_get_token_overview_solana_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Token - Overview" 
@@ -421,6 +526,30 @@ class TestBirdeyePrivate:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_overview_solana_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Overview" 
+            specifically for Solana chain for asynchronous logic.
+
+            Mock Response File: get_token_overview_solana.json
+        """
+        token_address = SOL
+
+        # load mock response
+        mock_file_name = "get_token_overview_solana"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_overview(token_address)
+
+        # actual test
+        assert isinstance(response, GetTokenOverviewResponse)
+        assert response.data.address == token_address
 
     def test_get_token_overview_ethereum_sync(self, mocker: MockerFixture) -> None:
         """
@@ -448,6 +577,30 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_token_overview_ethereum_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Overview" 
+            specifically for Ethereum chain for asynchronous logic.
+
+            Mock Response File: get_token_overview_ethereum.json
+        """
+        token_address = WETH
+
+        # load mock response
+        mock_file_name = "get_token_overview_ethereum"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenOverviewResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
+
+        # actual test
+        assert isinstance(response, GetTokenOverviewResponse)
+        assert response.data.address == token_address
+
     def test_get_trades_token_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Trades - Token" 
@@ -464,13 +617,36 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.birdeye.client.get_trades_token(SOL)
+
         # actual test
         assert isinstance(response, GetTradesTokenResponse)
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
-    
+
+    @pytest.mark.asyncio
+    async def test_get_trades_token_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Trades - Token" 
+            for asynchronous logic.
+
+            Mock Response File: get_trades_token.json
+        """
+
+        # load mock response
+        mock_file_name = "get_trades_token"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesTokenResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_trades_token(SOL)
+
+        # actual test
+        assert isinstance(response, GetTradesTokenResponse)
+
     def test_get_trades_pair_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Trades - Pair" 
@@ -494,6 +670,27 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_trades_pair_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Trades - Pair" 
+            for asynchronous logic.
+
+            Mock Response File: get_trades_pair.json
+        """
+        # load mock response
+        mock_file_name = "get_trades_pair"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTradesPairResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_trades_pair(address = TOM_SOL)
+
+        # actual test
+        assert isinstance(response, GetTradesPairResponse)
+
     def test_get_ohlcv_incorrect_input_dates_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the incorrect dates inputs (dt_from > dt_to) 
@@ -508,6 +705,23 @@ class TestBirdeyePrivate:
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
             )
+
+    @pytest.mark.asyncio
+    async def test_get_ohlcv_incorrect_input_dates_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the incorrect dates inputs (dt_from > dt_to) 
+            for asynchronous logic.
+        """
+
+        with pytest.raises(BirdeyeTimeRangeError):
+            # execute request
+            async with self.birdeye.async_client as client:
+                await client.get_ohlcv(
+                    address = SOL,
+                    address_type = BirdeyeAddressType.TOKEN.value,
+                    timeframe = BirdeyeTimeFrame.MIN15.value,
+                    dt_from = datetime.now() + timedelta(hours = 1)
+                )
 
     def test_get_ohlcv_token_sync(self, mocker: MockerFixture) -> None:
         """
@@ -539,6 +753,34 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_ohlcv_token_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "OHLCV - Token" 
+            for asynchronous logic.
+
+            Mock Response File: get_ohlcv_token.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ohlcv_token"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_ohlcv(
+                address = SOL,
+                address_type = BirdeyeAddressType.TOKEN.value,
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() - timedelta(hours = 1),
+                dt_to = datetime.now()
+            )
+
+        # actual test
+        assert isinstance(response, GetOHLCVTokenPairResponse)
+
     def test_get_ohlcv_pair_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "OHLCV - Pair" 
@@ -569,6 +811,34 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_ohlcv_pair_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "OHLCV - Pair" 
+            for asynchronous logic.
+
+            Mock Response File: get_ohlcv_pair.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ohlcv_pair"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVTokenPairResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_ohlcv(
+                address = SOL,
+                address_type = BirdeyeAddressType.PAIR.value,
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() - timedelta(hours = 1),
+                dt_to = datetime.now()
+            )
+
+        # actual test
+        assert isinstance(response, GetOHLCVTokenPairResponse)
+
     def test_get_ohlcv_base_quote_incorrect_input_dates_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the incorrect dates inputs (dt_from > dt_to) 
@@ -583,6 +853,23 @@ class TestBirdeyePrivate:
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
             )
+
+    @pytest.mark.asyncio
+    async def test_get_ohlcv_base_quote_incorrect_input_dates_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the incorrect dates inputs (dt_from > dt_to) 
+            for asynchronous logic.
+        """
+
+        with pytest.raises(BirdeyeTimeRangeError):
+            # execute request
+            async with self.birdeye.async_client as client:
+                await client.get_ohlcv_base_quote(
+                    base_address = SOL,
+                    quote_address = USDC,
+                    timeframe = BirdeyeTimeFrame.MIN15.value,
+                    dt_from = datetime.now() + timedelta(hours = 1)
+                )
 
     def test_get_ohlcv_base_quote_sync(self, mocker: MockerFixture) -> None:
         """
@@ -614,6 +901,34 @@ class TestBirdeyePrivate:
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_ohlcv_base_quote_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "OHLCV - Base/Quote" 
+            for asynchronous logic.
+
+            Mock Response File: get_ohlcv_base_quote.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ohlcv_base_quote"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetOHLCVBaseQuoteResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_ohlcv_base_quote(
+                base_address = SOL,
+                quote_address = USDC,
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() - timedelta(hours = 1),
+                dt_to = datetime.now()
+            )
+
+        # actual test
+        assert isinstance(response, GetOHLCVBaseQuoteResponse)
+
     def test_get_wallet_supported_networks_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Wallet - Supported Networks" 
@@ -637,3 +952,25 @@ class TestBirdeyePrivate:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_private:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_wallet_supported_networks_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Wallet - Supported Networks" 
+            for asynchronous logic.
+
+            Mock Response File: get_wallet_supported_networks.json
+        """
+
+        # load mock response
+        mock_file_name = "get_wallet_supported_networks"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetWalletSupportedNetworksResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_wallet_supported_networks()
+
+        # actual test
+        assert isinstance(response, GetWalletSupportedNetworksResponse)
