@@ -76,6 +76,28 @@ class TestBirdeyePublic:
         if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_token_list_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - List" 
+            for asynchronous logic.
+
+            Mock Response File: get_token_list.json
+        """
+    
+        # load mock response
+        mock_file_name = "get_token_list"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_list(limit = 1)
+
+        # actual test
+        assert isinstance(response, GetTokenListResponse)
+
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Price" 
@@ -99,6 +121,28 @@ class TestBirdeyePublic:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_price_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic.
+
+            Mock Response File: get_price.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_price(address = SOL)
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
 
     def test_get_price_historical_sync(self, mocker: MockerFixture) -> None:
         """
@@ -129,6 +173,33 @@ class TestBirdeyePublic:
         if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
 
+    @pytest.mark.asyncio
+    async def test_get_price_historical_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price - Historical" 
+            for asynchronous logic.
+
+            Mock Response File: get_price_historical.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_historical"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceHistoricalResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_price_historical(
+                address = SOL,
+                address_type = BirdeyeAddressType.TOKEN.value,
+                timeframe = BirdeyeTimeFrame.MIN15.value,
+                dt_from = datetime.now() - timedelta(hours = 1)
+            )
+
+        # actual test
+        assert isinstance(response, GetPriceHistoricalResponse)
+
     def test_get_price_historical_incorrect_input_dates_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the incorrect dates inputs (dt_from > dt_to) 
@@ -143,6 +214,23 @@ class TestBirdeyePublic:
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
             )
+
+    @pytest.mark.asyncio
+    async def test_get_price_historical_incorrect_input_dates_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the incorrect dates inputs (dt_from > dt_to) 
+            for asynchronous logic.
+        """
+
+        with pytest.raises(BirdeyeTimeRangeError):
+            # execute request
+            async with self.birdeye.async_client as client:
+                await client.get_price_historical(
+                    address = SOL,
+                    address_type = BirdeyeAddressType.TOKEN.value,
+                    timeframe = BirdeyeTimeFrame.MIN15.value,
+                    dt_from = datetime.now() + timedelta(hours = 1)
+                )
 
     def test_get_history_sync(self, mocker: MockerFixture) -> None:
         """
@@ -167,6 +255,28 @@ class TestBirdeyePublic:
         # store request (only not mock)
         if config.mock_file_overwrite and not config.birdeye.mock_response_public:
             self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_history_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "History" 
+            for asynchronous logic.
+
+            Mock Response File: get_history.json
+        """
+
+        # load mock response
+        mock_file_name = "get_history"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetHistoryResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.get_history()
+
+        # actual test
+        assert isinstance(response, GetHistoryResponse)
 
 class TestBirdeyePrivate:
     """
