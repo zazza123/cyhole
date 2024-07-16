@@ -46,13 +46,24 @@ class Birdeye(Interaction):
             api_key: specify the API key to use for the connection.
 
         **Example**
-
         ```python
+        import asyncio
         from cyhole.birdeye import Birdeye
 
-        # get current token list on Solana
         birdeye = Birdeye()
-        token_list = Birdeye().get_token_list()
+
+        # Get current token list on Solana
+        # synchronous
+        response = birdeye.client.get_token_list()
+        print(f"Currently listed {len(response.data.tokens)} tokens on Solana")
+
+        # asynchronous
+        async def main() -> None:
+            async with birdeye.async_client as client:
+                response = await client.get_token_list()
+                print(f"Currently listed {len(response.data.tokens)} tokens on Solana")
+
+        asyncio.run(main())
         ```
 
         Raises:
