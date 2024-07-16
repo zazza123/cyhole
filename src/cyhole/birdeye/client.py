@@ -131,7 +131,7 @@ class BirdeyeClient(APIClient):
         """
         return self._interaction._get_ohlcv_base_quote(True, base_address, quote_address, timeframe, dt_from, dt_to, chain)
 
-    def get_wallet_supported_networks(self, sync: bool) -> GetWalletSupportedNetworksResponse:
+    def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
             Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for synchronous logic. 
             All the API endopint details are available on [`Birdeye._get_wallet_supported_networks`][cyhole.birdeye.interaction.Birdeye._get_wallet_supported_networks].
@@ -239,7 +239,7 @@ class BirdeyeAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_ohlcv_base_quote(False, base_address, quote_address, timeframe, dt_from, dt_to, chain)
 
-    async def get_wallet_supported_networks(self, sync: bool) -> GetWalletSupportedNetworksResponse:
+    async def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
             Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for asynchronous logic. 
             All the API endopint details are available on [`Birdeye._get_wallet_supported_networks`][cyhole.birdeye.interaction.Birdeye._get_wallet_supported_networks].

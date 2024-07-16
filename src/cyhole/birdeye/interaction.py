@@ -65,15 +65,15 @@ class Birdeye(Interaction):
         if self.api_key is None:
             raise MissingAPIKeyError("no API key is provided during object's creation.")
 
-        # header setup
-        header = {
+        # headers setup
+        headers = {
             "X-API-KEY": self.api_key
         }
-        super().__init__(header)
+        super().__init__(headers)
 
         # clients
-        self.client = BirdeyeClient(self)
-        self.async_client = BirdeyeAsyncClient(self)
+        self.client = BirdeyeClient(self, headers = headers)
+        self.async_client = BirdeyeAsyncClient(self, headers = headers)
 
         # API urls
         self.url_api_public = "https://public-api.birdeye.so/defi/"
