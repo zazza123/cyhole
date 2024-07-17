@@ -6,17 +6,29 @@ The API connector is [`Birdeye`](../birdeye/interaction.md) class imported from 
 
 ## Quick Example
 
-Extract the latest tokens from Ethereum chain sorted in descending order by USD volume in few lines of code.
+Extract the latest tokens from Ethereum chain sorted in descending order by USD volume in few lines of code by using [`get_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_list) in **synchronous** and **asynchronous** logic.
 
 ```py
+import asyncio
+import asyncio
 from cyhole.birdeye import Birdeye
 from cyhole.birdeye.param import BirdeyeChain
 
-api = Birdeye()
-token_list = api.get_token_list(chain = BirdeyeChain.ETHEREUM.value)
+birdeye = Birdeye(chain = BirdeyeChain.ETHEREUM.value)
 
-for token in token_list:
-    print(token)
+# synchronous
+response = birdeye.client.get_token_list(limit = 1)
+token = response.data.tokens[0]
+print(f"Highest 24h USD volume token: '{token.name}', volume: {round(token.volume_24h_usd, 2)}.")
+
+# asynchronous
+async def main() -> None:
+    async with birdeye.async_client as client:
+        response = await client.get_token_list(limit = 1)
+        token = response.data.tokens[0]
+        print(f"Highest 24h USD volume token: '{token.name}', volume: {round(token.volume_24h_usd, 2)}.")
+
+asyncio.run(main())
 ```
 
 !!! note

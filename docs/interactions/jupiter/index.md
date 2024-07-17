@@ -8,21 +8,26 @@ The API connector is [`Jupiter`](../jupiter/interaction.md) class imported from 
 
 ### Get Latest Token Price
 
-Extract the latest `JUP` buy price over `USDC` in few lines of code.
+Extract the latest `JUP` buy price over `USDC` in few lines of code by using [`get_price`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_price) in **asynchronous** logic.
 
 ```py
+import asyncio
 from cyhole.jupiter import Jupiter
 from cyhole.core.address.solana import JUP
 
 # get current price of JUP on Solana
-api = Jupiter()
-response = api.get_price([JUP])
-print("Current JUP/USDC:", response.data[JUP].price)
+async def main() -> None:
+    jupiter = Jupiter()
+    async with jupiter.async_client as client:
+        response = await client.get_price([JUP])
+        print("Current JUP/USDC:", response.data[JUP].price)
+
+asyncio.run(main())
 ```
 
 ### Create Limit Order Transaction
 
-Get the transaction for the creation of a new Limit Order by using [`post_limit_order_create`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_create).
+Get the transaction for the creation of a new Limit Order by using [`post_limit_order_create`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_create) in **synchronous** logic.
 
 ```py
 from solders.keypair import Keypair
@@ -31,7 +36,7 @@ from cyhole.jupiter import Jupiter
 from cyhole.jupiter.schema import PostLimitOrderCreateBody
 from cyhole.core.address.solana import JUP, USDC
 
-api = Jupiter()
+jupiter = Jupiter()
 
 # create body for the request
 key = Keypair()
@@ -45,7 +50,7 @@ body = PostLimitOrderCreateBody(
 )
 
 # send request
-response = api.post_limit_order_create(body)
+response = jupiter.client.post_limit_order_create(body)
 print("Transaction:", response.transaction)
 ```
 
