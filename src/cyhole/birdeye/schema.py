@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field, field_validator
 
 # classes used on GET "Token List" endpoint
 class GetTokenListInfo(BaseModel):
-    name: str
-    symbol: str
+    name: str | None                = None
+    symbol: str | None              = None
     address: str
     decimals: int
     liquidity: float
@@ -14,7 +14,7 @@ class GetTokenListInfo(BaseModel):
     market_cap: float               = Field(alias = "mc")
     volume_24h_change: float | None = Field(alias = "v24hChangePercent", default = None)
     last_trade_unix_time: float     = Field(alias = "lastTradeUnixTime")
-    logo_uri: str                   = Field(alias = "logoURI")
+    logo_uri: str  | None           = Field(alias = "logoURI", default = None)
 
 class GetTokenListData(BaseModel):
     total: int
