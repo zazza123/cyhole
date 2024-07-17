@@ -44,6 +44,9 @@ class Birdeye(Interaction):
 
         Parameters:
             api_key: specify the API key to use for the connection.
+            chain: identifier of the chain to use in all the requests.
+                The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
+                Import them from the library to use the correct identifier.
 
         **Example**
         ```python
@@ -69,18 +72,22 @@ class Birdeye(Interaction):
         Raises:
             MissingAPIKeyError: if no API Key was available during the object creation.
     """
-    def __init__(self, api_key: str | None = None) -> None:
+    def __init__(self, api_key: str | None = None, chain: str = BirdeyeChain.SOLANA.value) -> None:
 
         # set API
         self.api_key = api_key if api_key is not None else os.environ.get("BIRDEYE_API_KEY")
         if self.api_key is None:
             raise MissingAPIKeyError("no API key is provided during object's creation.")
 
+        # input check
+
         # headers setup
         headers = {
-            "X-API-KEY": self.api_key
+            "X-API-KEY": self.api_key,
+            "x-chain": chain
         }
         super().__init__(headers)
+        self.headers: dict[str, str]
 
         # clients
         self.client = BirdeyeClient(self, headers = headers)
@@ -96,7 +103,6 @@ class Birdeye(Interaction):
     def _get_token_list(
         self,
         sync: Literal[True],
-        chain: str = BirdeyeChain.SOLANA.value,
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
@@ -107,7 +113,6 @@ class Birdeye(Interaction):
     def _get_token_list(
         self,
         sync: Literal[False],
-        chain: str = BirdeyeChain.SOLANA.value,
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
@@ -117,7 +122,6 @@ class Birdeye(Interaction):
     def _get_token_list(
         self,
         sync: bool,
-        chain: str = BirdeyeChain.SOLANA.value,
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
@@ -128,9 +132,6 @@ class Birdeye(Interaction):
             to get the list of Birdeye tokens according on a specific chain.
 
             Parameters:
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
                 sort_by: define the type of sorting to apply in the
                     extraction; e.g. USD volume in the last 24h.
                     The sorting types are available on [`BirdeyeSort`][cyhole.birdeye.param.BirdeyeSort].
@@ -150,14 +151,12 @@ class Birdeye(Interaction):
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
-        BirdeyeChain.check(chain)
         BirdeyeSort.check(sort_by)
         BirdeyeOrder.check(order_by)
 
         # set params
         url = self.url_api_public + "tokenlist"
         params = {
-            "x-chain" : chain,
             "sort_by" : sort_by,
             "sort_type" : order_by,
             "offset" : offset,
@@ -178,23 +177,20 @@ class Birdeye(Interaction):
     def _get_token_creation_info(
         self,
         sync: Literal[True],
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> GetTokenCreationInfoResponse: ...
 
     @overload
     def _get_token_creation_info(
         self,
         sync: Literal[False],
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> Coroutine[None, None, GetTokenCreationInfoResponse]: ...
 
     def _get_token_creation_info(
         self,
         sync: bool,
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> GetTokenCreationInfoResponse | Coroutine[None, None, GetTokenCreationInfoResponse]:
         """
             This function refers to the **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get_defi-token-creation-info)** and is used 
@@ -202,9 +198,6 @@ class Birdeye(Interaction):
 
             Parameters:
                 address: CA of the token to search on the chain.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
             
             Returns:
                 token's creation information.
@@ -213,13 +206,9 @@ class Birdeye(Interaction):
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
-        # check param consistency
-        BirdeyeChain.check(chain)
-
         # set params
         url = self.url_api_public + "token_creation_info"
         params = {
-            "x-chain" : chain,
             "address" : address
         }
 
@@ -237,23 +226,20 @@ class Birdeye(Interaction):
     def _get_token_security(
         self,
         sync: Literal[True],
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> GetTokenSecurityResponse: ...
 
     @overload
     def _get_token_security(
         self,
         sync: Literal[False],
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> Coroutine[None, None, GetTokenSecurityResponse]: ...
 
     def _get_token_security(
         self,
         sync: bool,
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> GetTokenSecurityResponse | Coroutine[None, None, GetTokenSecurityResponse]:
         """
             This function refers to the **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get_defi-token-security)** and is used 
@@ -262,9 +248,6 @@ class Birdeye(Interaction):
 
             Parameters:
                 address: CA of the token to search on the chain.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
             
             Returns:
                 token's security information.
@@ -274,13 +257,9 @@ class Birdeye(Interaction):
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
-        # check param consistency
-        BirdeyeChain.check(chain)
-
         # set params
         url = self.url_api_public + "token_security"
         params = {
-            "x-chain" : chain,
             "address" : address
         }
 
@@ -298,23 +277,20 @@ class Birdeye(Interaction):
     def _get_token_overview(
         self,
         sync: Literal[True],
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> GetTokenOverviewResponse: ...
 
     @overload
     def _get_token_overview(
         self,
         sync: Literal[False],
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> Coroutine[None, None, GetTokenOverviewResponse]: ...
 
     def _get_token_overview(
         self,
         sync: bool,
-        address: str,
-        chain: str = BirdeyeChain.SOLANA.value
+        address: str
     ) -> GetTokenOverviewResponse | Coroutine[None, None, GetTokenOverviewResponse]:
         """
             This function refers to the **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get_defi-token-overview)** and is used 
@@ -323,9 +299,6 @@ class Birdeye(Interaction):
 
             Parameters:
                 address: CA of the token to search on the chain.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
             
             Returns:
                 token's information.
@@ -335,13 +308,9 @@ class Birdeye(Interaction):
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
-        # check param consistency
-        BirdeyeChain.check(chain)
-
         # set params
         url = self.url_api_public + "token_overview"
         params = {
-            "x-chain" : chain,
             "address" : address
         }
 
@@ -360,8 +329,7 @@ class Birdeye(Interaction):
         self,
         sync: Literal[True],
         address: str,
-        include_liquidity: bool | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        include_liquidity: bool | None = None
     ) -> GetPriceResponse: ...
 
     @overload
@@ -369,16 +337,14 @@ class Birdeye(Interaction):
         self,
         sync: Literal[False],
         address: str,
-        include_liquidity: bool | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        include_liquidity: bool | None = None
     ) -> Coroutine[None, None, GetPriceResponse]: ...
 
     def _get_price(
         self,
         sync: bool,
         address: str,
-        include_liquidity: bool | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        include_liquidity: bool | None = None
     ) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
             This function refers to the **PUBLIC** API endpoint **[Price](https://docs.birdeye.so/reference/get_defi-price)** and is used 
@@ -388,9 +354,6 @@ class Birdeye(Interaction):
                 address: CA of the token to search on the chain.
                 include_liquidity: include the current liquidity of the token.
                     Default Value: `None` (`False`)
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
 
             Returns:
                 token's price returned by birdeye.so.
@@ -398,14 +361,9 @@ class Birdeye(Interaction):
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
-        """
-        # check param consistency
-        BirdeyeChain.check(chain)
-
-        # set params
+        """        # set params
         url = self.url_api_public + "price"
         params = {
-            "x-chain" : chain,
             "address" : address,
             "include_liquidity" : str(include_liquidity).lower() if include_liquidity else None
         }
@@ -425,8 +383,7 @@ class Birdeye(Interaction):
         self,
         sync: Literal[True],
         list_address: list[str],
-        include_liquidity: bool | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        include_liquidity: bool | None = None
     ) -> GetPriceMultipleResponse: ...
 
     @overload
@@ -434,16 +391,14 @@ class Birdeye(Interaction):
         self,
         sync: Literal[False],
         list_address: list[str],
-        include_liquidity: bool | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        include_liquidity: bool | None = None
     ) -> Coroutine[None, None, GetPriceMultipleResponse]: ...
 
     def _get_price_multiple(
         self,
         sync: bool,
         list_address: list[str],
-        include_liquidity: bool | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        include_liquidity: bool | None = None
     ) -> GetPriceMultipleResponse | Coroutine[None, None, GetPriceMultipleResponse]:
         """
             This function refers to the **PRIVATE** API endpoint **[Price - Multiple](https://docs.birdeye.so/reference/get_defi-multi-price)** and is used 
@@ -453,9 +408,6 @@ class Birdeye(Interaction):
                 list_address: CA of the tokens to search on the chain.
                 include_liquidity: include the current liquidity of the token.
                     Default Value: `None` (`False`)
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
 
             Returns:
                 list of tokens returned by birdeye.so.
@@ -464,13 +416,9 @@ class Birdeye(Interaction):
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
-        # check param consistency
-        BirdeyeChain.check(chain)
-
         # set params
         url = self.url_api_public + "multi_price"
         params = {
-            "x-chain" : chain,
             "list_address" : ",".join(list_address),
             "include_liquidity" : str(include_liquidity).lower() if include_liquidity else None
         }
@@ -493,8 +441,7 @@ class Birdeye(Interaction):
         address_type: str,
         timeframe: str,
         dt_from: datetime,
-        dt_to: datetime | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        dt_to: datetime | None = None
     ) -> GetPriceHistoricalResponse: ...
 
     @overload
@@ -505,8 +452,7 @@ class Birdeye(Interaction):
         address_type: str,
         timeframe: str,
         dt_from: datetime,
-        dt_to: datetime | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        dt_to: datetime | None = None
     ) -> Coroutine[None, None, GetPriceHistoricalResponse]: ...
 
     def _get_price_historical(
@@ -516,8 +462,7 @@ class Birdeye(Interaction):
         address_type: str,
         timeframe: str,
         dt_from: datetime,
-        dt_to: datetime | None = None,
-        chain: str = BirdeyeChain.SOLANA.value
+        dt_to: datetime | None = None
     ) -> GetPriceHistoricalResponse | Coroutine[None, None, GetPriceHistoricalResponse]:
         """
             This function refers to the **PUBLIC** API endpoint **[Price - Historical](https://docs.birdeye.so/reference/get_defi-history-price)** and is used 
@@ -536,9 +481,6 @@ class Birdeye(Interaction):
                 dt_to: end time to take take price data.
                     It should be `dt_from` < `dt_to`.
                     If not ptovided (None), the current time is used.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
 
             Returns:
                 list of prices returned by birdeye.so.
@@ -548,7 +490,6 @@ class Birdeye(Interaction):
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
-        BirdeyeChain.check(chain)
         BirdeyeAddressType.check(address_type)
         BirdeyeTimeFrame.check(timeframe)
 
@@ -563,7 +504,6 @@ class Birdeye(Interaction):
         # set params
         url = self.url_api_public + "history_price"
         params = {
-            "x-chain" : chain,
             "address" : address,
             "address_type" : address_type,
             "type" : timeframe,
@@ -593,9 +533,6 @@ class Birdeye(Interaction):
             to get the history of prices of a token according on a specific chain on Birdeye.
 
             Parameters:
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
 
             Returns:
                 list of prices returned by birdeye.so.
@@ -604,9 +541,6 @@ class Birdeye(Interaction):
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
-        # check param consistency
-        BirdeyeChain.check(chain)
-
         # set params
         url = self.url_api_public + "history"
         params = {
@@ -629,7 +563,6 @@ class Birdeye(Interaction):
             sync: Literal[True],
             address: str,
             trade_type: str = BirdeyeTradeType.SWAP.value,
-            chain: str = BirdeyeChain.SOLANA.value,
             offset: int | None = None,
             limit: int | None = None
     ) -> GetTradesTokenResponse: ...
@@ -640,7 +573,6 @@ class Birdeye(Interaction):
             sync: Literal[False],
             address: str,
             trade_type: str = BirdeyeTradeType.SWAP.value,
-            chain: str = BirdeyeChain.SOLANA.value,
             offset: int | None = None,
             limit: int | None = None
     ) -> Coroutine[None, None, GetTradesTokenResponse]: ...
@@ -650,7 +582,6 @@ class Birdeye(Interaction):
             sync: bool,
             address: str,
             trade_type: str = BirdeyeTradeType.SWAP.value,
-            chain: str = BirdeyeChain.SOLANA.value,
             offset: int | None = None,
             limit: int | None = None
     ) -> GetTradesTokenResponse | Coroutine[None, None, GetTradesTokenResponse]:
@@ -663,9 +594,6 @@ class Birdeye(Interaction):
                 trade_type: the type of transactions to extract.
                     The supported chains are available on [`BirdeyeTradeType`][cyhole.birdeye.param.BirdeyeTradeType].
                     Import them from the library to use the correct identifier.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
                 offset: offset to apply in the extraction.
                 limit: limit the number of returned records in the extraction.
 
@@ -677,7 +605,6 @@ class Birdeye(Interaction):
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
-        BirdeyeChain.check(chain)
         BirdeyeTradeType.check(trade_type)
 
         # set params
@@ -685,7 +612,6 @@ class Birdeye(Interaction):
         params = {
             "address" : address,
             "tx_type" : trade_type,
-            "x-chain" : chain,
             "offset" : offset,
             "limit": limit
         }
@@ -706,7 +632,6 @@ class Birdeye(Interaction):
             sync: Literal[True],
             address: str,
             trade_type: str = BirdeyeTradeType.SWAP.value,
-            chain: str = BirdeyeChain.SOLANA.value,
             order_by: str = BirdeyeOrder.DESCENDING.value,
             offset: int | None = None,
             limit: int | None = None
@@ -718,7 +643,6 @@ class Birdeye(Interaction):
             sync: Literal[False],
             address: str,
             trade_type: str = BirdeyeTradeType.SWAP.value,
-            chain: str = BirdeyeChain.SOLANA.value,
             order_by: str = BirdeyeOrder.DESCENDING.value,
             offset: int | None = None,
             limit: int | None = None
@@ -729,7 +653,6 @@ class Birdeye(Interaction):
             sync: bool,
             address: str,
             trade_type: str = BirdeyeTradeType.SWAP.value,
-            chain: str = BirdeyeChain.SOLANA.value,
             order_by: str = BirdeyeOrder.DESCENDING.value,
             offset: int | None = None,
             limit: int | None = None
@@ -743,9 +666,6 @@ class Birdeye(Interaction):
                 address: CA of the token to search on the chain.
                 trade_type: the type of transactions to extract.
                     The supported chains are available on [`BirdeyeTradeType`][cyhole.birdeye.param.BirdeyeTradeType].
-                    Import them from the library to use the correct identifier.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
                     Import them from the library to use the correct identifier.
                 order_by: define the type of ordering to apply in the 
                     extraction; e.g. ascending or descending.
@@ -762,7 +682,6 @@ class Birdeye(Interaction):
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
-        BirdeyeChain.check(chain)
         BirdeyeOrder.check(order_by)
         BirdeyeTradeType.check(trade_type)
 
@@ -771,7 +690,6 @@ class Birdeye(Interaction):
         params = {
             "address" : address,
             "tx_type" : trade_type,
-            "x-chain" : chain,
             "sort_type": order_by,
             "offset" : offset,
             "limit": limit
@@ -838,9 +756,6 @@ class Birdeye(Interaction):
                 dt_to: end time to take take price data.
                     It should be `dt_from` < `dt_to`.
                     If not ptovided (None), the current time is used.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
 
             Returns:
                 list of prices returned by birdeye.so.
@@ -850,7 +765,6 @@ class Birdeye(Interaction):
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
-        BirdeyeChain.check(chain)
         BirdeyeAddressType.check(address_type)
         BirdeyeTimeFrame.check(timeframe)
 
@@ -867,7 +781,6 @@ class Birdeye(Interaction):
         if address_type == BirdeyeAddressType.PAIR.value:
             url = url + "/" + BirdeyeAddressType.PAIR.value
         params = {
-            "x-chain" : chain,
             "address" : address,
             "type" : timeframe,
             "time_from" : int(dt_from.timestamp()),
@@ -934,9 +847,6 @@ class Birdeye(Interaction):
                 dt_to: end time to take take price data.
                     It should be `dt_from` < `dt_to`.
                     If not ptovided (None), the current time is used.
-                chain: identifier of the chain to check.
-                    The supported chains are available on [`BirdeyeChain`][cyhole.birdeye.param.BirdeyeChain].
-                    Import them from the library to use the correct identifier.
             Returns:
                 list of prices returned by birdeye.so.
 
@@ -945,7 +855,6 @@ class Birdeye(Interaction):
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
         # check param consistency
-        BirdeyeChain.check(chain)
         BirdeyeTimeFrame.check(timeframe)
 
         # set default
@@ -959,7 +868,6 @@ class Birdeye(Interaction):
         # set params
         url = self.url_api_public + "ohlcv/base_quote"
         params = {
-            "x-chain" : chain,
             "base_address" : base_address,
             "quote_address" : quote_address,
             "type" : timeframe,

@@ -454,6 +454,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_security_other.json
         """
+        birdeye = Birdeye(api_key = config.birdeye.api_key, chain = BirdeyeChain.ETHEREUM.value)
 
         # load mock response
         mock_file_name = "get_token_security_other"
@@ -462,10 +463,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.get_token_security(
-            address = JRK, 
-            chain = BirdeyeChain.ETHEREUM.value
-        )
+        response = birdeye.client.get_token_security(address = JRK)
 
         # actual test
         assert isinstance(response, GetTokenSecurityResponse)
@@ -483,6 +481,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_security_other.json
         """
+        birdeye = Birdeye(api_key = config.birdeye.api_key, chain = BirdeyeChain.ETHEREUM.value)
 
         # load mock response
         mock_file_name = "get_token_security_other"
@@ -492,10 +491,7 @@ class TestBirdeyePrivate:
             
         # execute request
         async with self.birdeye.async_client as client:
-            response = await client.get_token_security(
-                address = JRK, 
-                chain = BirdeyeChain.ETHEREUM.value
-            )
+            response = await client.get_token_security(address = JRK)
 
         # actual test
         assert isinstance(response, GetTokenSecurityResponse)
@@ -558,6 +554,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_ethereum.json
         """
+        birdeye = Birdeye(api_key = config.birdeye.api_key, chain = BirdeyeChain.ETHEREUM.value)
         token_address = WETH
 
         # load mock response
@@ -567,7 +564,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
+        response = birdeye.client.get_token_overview(token_address)
 
         # actual test
         assert isinstance(response, GetTokenOverviewResponse)
@@ -585,6 +582,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_ethereum.json
         """
+        birdeye = Birdeye(api_key = config.birdeye.api_key, chain = BirdeyeChain.ETHEREUM.value)
         token_address = WETH
 
         # load mock response
@@ -594,8 +592,8 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             
         # execute request
-        async with self.birdeye.async_client as client:
-            response = await client.get_token_overview(token_address, BirdeyeChain.ETHEREUM.value)
+        async with birdeye.async_client as client:
+            response = await client.get_token_overview(token_address)
 
         # actual test
         assert isinstance(response, GetTokenOverviewResponse)
