@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 class APIClientInterface(metaclass = abc.ABCMeta):
     """
-        The following abtract class defines a general Client API. 
+        The following abstract class defines a general Client API. 
         A client is used in order to connect and interact with an external API.
 
         The key method of an API client is the `api` function that is used 
@@ -44,9 +44,7 @@ class APIClientInterface(metaclass = abc.ABCMeta):
                 kwargs: additional input parameters to provided.
 
             Returns:
-                The response object structured as `request` library. 
-                Observe that the return type could be a `Coroutine` in case of implementation 
-                of an `async` client.
+                The response object structured as `request` library. Observe that the return type could be a `Coroutine` in case of implementation  of an `async` client.
 
             Raises:
                 RequestTypeNotSupported: if the request type is not a valid value of [`RequestType`][cyhole.core.param.RequestType].

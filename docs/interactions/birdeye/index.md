@@ -2,7 +2,7 @@
 
 Birdeye ([https://birdeye.so](https://birdeye.so)) is a popular treading crypto platform connected to different blockchains that provides tokens data and pairs' prices in real time. The access to both their public and private APIs is managed by a valid API key requestable on their site.
 
-The API connector is [`Birdeye`](../birdeye/api.md) class imported from `cyhole.birdeye` path.
+The API connector is [`Birdeye`](../birdeye/interaction.md) class imported from `cyhole.birdeye` path.
 
 ## Quick Example
 
@@ -33,9 +33,9 @@ The documentation follows the library's structure by providing all the technical
 
     ---
 
-    `cyhole.birdeye` - Explore the [`Birdeye`](../birdeye/api.md) API connector and all its methods. 
+    `cyhole.birdeye` - Explore the [`Birdeye`](../birdeye/interaction.md) API connector and all its methods. 
 
-    [:octicons-arrow-right-24: Reference](../birdeye/api.md)
+    [:octicons-arrow-right-24: Reference](../birdeye/interaction.md)
 
 -   :material-list-status:{ .lg .middle } __API Parameters__
 
