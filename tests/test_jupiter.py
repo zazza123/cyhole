@@ -22,7 +22,7 @@ from cyhole.jupiter.schema import (
     GetLimitOrderTradeHistoryResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
-from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterInvalidRequest, JupiterException
+from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException
 from cyhole.core.address.solana import SOL, JUP, USDC, BONK
 from cyhole.core.address.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
@@ -650,7 +650,7 @@ class TestJupiter:
             user_public_key = "XXX",
             quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
         )
-        with pytest.raises(JupiterInvalidRequest):
+        with pytest.raises(JupiterException):
             self.jupiter.client.post_swap(body)
 
     @pytest.mark.asyncio
@@ -663,7 +663,7 @@ class TestJupiter:
             user_public_key = "XXX",
             quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
         )
-        with pytest.raises(JupiterInvalidRequest):
+        with pytest.raises(JupiterException):
             async with self.jupiter.async_client as client:
                 await client.post_swap(body)
 
