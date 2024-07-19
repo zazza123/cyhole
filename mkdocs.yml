@@ -88,6 +88,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Interactions:
+    - interactions/index.md
     - Birdeye:
       - interactions/birdeye/index.md
       - Interaction: interactions/birdeye/interaction.md
