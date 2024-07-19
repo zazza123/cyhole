@@ -7,7 +7,6 @@ from ..core.client import APIClient, AsyncAPIClient
 from ..core.exception import AuthorizationAPIKeyError
 from ..birdeye.exception import BirdeyeAuthorisationError
 from ..birdeye.param import (
-    BirdeyeChain,
     BirdeyeOrder,
     BirdeyeSort,
     BirdeyeTradeType
@@ -20,7 +19,6 @@ from ..birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
-    GetHistoryResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -95,13 +93,6 @@ class BirdeyeClient(APIClient):
             All the API endopint details are available on [`Birdeye._get_price_historical`][cyhole.birdeye.interaction.Birdeye._get_price_historical].
         """
         return self._interaction._get_price_historical(True, address, address_type, timeframe, dt_from, dt_to)
-
-    def get_history(self) -> GetHistoryResponse:
-        """
-            Call the Birdeye's **PUBLIC** API endpoint **[History](https://docs.birdeye.so/reference/get_defi-history)** for synchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_history`][cyhole.birdeye.interaction.Birdeye._get_history].
-        """
-        return self._interaction._get_history(True)
 
     def get_trades_token(self, address: str, trade_type: str = BirdeyeTradeType.SWAP.value, offset: int | None = None, limit: int | None = None) -> GetTradesTokenResponse:
         """
@@ -203,13 +194,6 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Birdeye._get_price_historical`][cyhole.birdeye.interaction.Birdeye._get_price_historical].
         """
         return await self._interaction._get_price_historical(False, address, address_type, timeframe, dt_from, dt_to)
-
-    async def get_history(self) -> GetHistoryResponse:
-        """
-            Call the Birdeye's **PUBLIC** API endpoint **[History](https://docs.birdeye.so/reference/get_defi-history)** for asynchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_history`][cyhole.birdeye.interaction.Birdeye._get_history].
-        """
-        return await self._interaction._get_history(False)
 
     async def get_trades_token(self, address: str, trade_type: str = BirdeyeTradeType.SWAP.value, offset: int | None = None, limit: int | None = None) -> GetTradesTokenResponse:
         """

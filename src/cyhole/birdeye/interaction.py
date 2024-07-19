@@ -23,7 +23,6 @@ from ..birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
-    GetHistoryResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -519,42 +518,6 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetPriceHistoricalResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _get_history(self, sync: Literal[True], chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse: ...
-
-    @overload
-    def _get_history(self, sync: Literal[False], chain: str = BirdeyeChain.SOLANA.value) -> Coroutine[None, None, GetHistoryResponse]: ...
-
-    def _get_history(self, sync: bool, chain: str = BirdeyeChain.SOLANA.value) -> GetHistoryResponse | Coroutine[None, None, GetHistoryResponse]:
-        """
-            This function refers to the **PUBLIC** API endpoint **[History](https://docs.birdeye.so/reference/get_defi-history)** and is used 
-            to get the history of prices of a token according on a specific chain on Birdeye.
-
-            Parameters:
-
-            Returns:
-                list of prices returned by birdeye.so.
-
-            Raises:
-                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
-                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
-        """
-        # set params
-        url = self.url_api_public + "history"
-        params = {
-            "x-chain" : chain
-        }
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetHistoryResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetHistoryResponse(**content_raw.json())
             return async_request()
 
     @overload

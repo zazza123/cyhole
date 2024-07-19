@@ -14,7 +14,6 @@ from cyhole.birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
-    GetHistoryResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -232,52 +231,6 @@ class TestBirdeyePublic:
                     dt_from = datetime.now() + timedelta(hours = 1)
                 )
 
-    def test_get_history_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "History" 
-            for synchronous logic.
-
-            Mock Response File: get_history.json
-        """
-
-        # load mock response
-        mock_file_name = "get_history"
-        if config.mock_response or config.birdeye.mock_response_public:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetHistoryResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-            
-        # execute request
-        response = self.birdeye.client.get_history()
-
-        # actual test
-        assert isinstance(response, GetHistoryResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_history_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "History" 
-            for asynchronous logic.
-
-            Mock Response File: get_history.json
-        """
-
-        # load mock response
-        mock_file_name = "get_history"
-        if config.mock_response or config.birdeye.mock_response_public:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetHistoryResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-            
-        # execute request
-        async with self.birdeye.async_client as client:
-            response = await client.get_history()
-
-        # actual test
-        assert isinstance(response, GetHistoryResponse)
-
 class TestBirdeyePrivate:
     """
         Class grouping all unit test associate to PRIVATE endpoints
@@ -490,7 +443,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             
         # execute request
-        async with self.birdeye.async_client as client:
+        async with birdeye.async_client as client:
             response = await client.get_token_security(address = JRK)
 
         # actual test
