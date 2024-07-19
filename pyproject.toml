@@ -26,7 +26,8 @@ classifiers = [
 ]
 dependencies = [
     "requests>=2.31.0",
-    "pydantic>=2.7.0"
+    "pydantic>=2.7.0",
+    "aiohttp>=3.9.5"
 ]
 
 [project.urls]
