@@ -27,3 +27,9 @@ class ParamUnknownError(CyholeException):
     def __init__(self, param_value: Any, param_enum: Type[Enum]):
         description = f"param '{str(param_value)}' not supported in {param_enum.__name__} enum class. \nAdmissible values: {[(param.name, param.value) for param in param_enum]}"
         super().__init__(description)
+
+class AsyncClientAPISessionNotAvailable(CyholeException):
+    """
+        Exception raised when the [`AsyncAPIClient`][cyhole.core.AsyncAPIClient] has not an open session to use.
+    """
+    pass

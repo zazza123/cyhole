@@ -2,21 +2,33 @@
 
 Birdeye ([https://birdeye.so](https://birdeye.so)) is a popular treading crypto platform connected to different blockchains that provides tokens data and pairs' prices in real time. The access to both their public and private APIs is managed by a valid API key requestable on their site.
 
-The API connector is [`Birdeye`](../birdeye/api.md) class imported from `cyhole.birdeye` path.
+The API connector is [`Birdeye`](../birdeye/interaction.md) class imported from `cyhole.birdeye` path.
 
 ## Quick Example
 
-Extract the latest tokens from Ethereum chain sorted in descending order by USD volume in few lines of code.
+Extract the latest tokens from Ethereum chain sorted in descending order by USD volume in few lines of code by using [`get_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_list) in **synchronous** and **asynchronous** logic.
 
 ```py
+import asyncio
+import asyncio
 from cyhole.birdeye import Birdeye
 from cyhole.birdeye.param import BirdeyeChain
 
-api = Birdeye()
-token_list = api.get_token_list(chain = BirdeyeChain.ETHEREUM.value)
+birdeye = Birdeye(chain = BirdeyeChain.ETHEREUM.value)
 
-for token in token_list:
-    print(token)
+# synchronous
+response = birdeye.client.get_token_list(limit = 1)
+token = response.data.tokens[0]
+print(f"Highest 24h USD volume token: '{token.name}', volume: {round(token.volume_24h_usd, 2)}.")
+
+# asynchronous
+async def main() -> None:
+    async with birdeye.async_client as client:
+        response = await client.get_token_list(limit = 1)
+        token = response.data.tokens[0]
+        print(f"Highest 24h USD volume token: '{token.name}', volume: {round(token.volume_24h_usd, 2)}.")
+
+asyncio.run(main())
 ```
 
 !!! note
@@ -33,9 +45,9 @@ The documentation follows the library's structure by providing all the technical
 
     ---
 
-    `cyhole.birdeye` - Explore the [`Birdeye`](../birdeye/api.md) API connector and all its methods. 
+    `cyhole.birdeye` - Explore the [`Birdeye`](../birdeye/interaction.md) API connector and all its methods. 
 
-    [:octicons-arrow-right-24: Reference](../birdeye/api.md)
+    [:octicons-arrow-right-24: Reference](../birdeye/interaction.md)
 
 -   :material-list-status:{ .lg .middle } __API Parameters__
 

@@ -2,27 +2,32 @@
 
 Jupiter ([https://jup.ag](https://jup.ag)) is one of the most popular DEX on Solana ecosystem with an active community, the cats! The platform provides many useful services directly from the site, but it also gives the possibility to other developers to create new powerful tools via the many **open to use** API endopints. Jupiter's documentation is well written and can be access from [here](https://station.jup.ag/docs).
 
-The API connector is [`Jupiter`](../jupiter/api.md) class imported from `cyhole.jupiter` path.
+The API connector is [`Jupiter`](../jupiter/interaction.md) class imported from `cyhole.jupiter` path.
 
 ## Quick Examples
 
 ### Get Latest Token Price
 
-Extract the latest `JUP` buy price over `USDC` in few lines of code.
+Extract the latest `JUP` buy price over `USDC` in few lines of code by using [`get_price`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_price) in **asynchronous** logic.
 
 ```py
+import asyncio
 from cyhole.jupiter import Jupiter
 from cyhole.core.address.solana import JUP
 
 # get current price of JUP on Solana
-api = Jupiter()
-response = api.get_price([JUP])
-print("Current JUP/USDC:", response.data[JUP].price)
+async def main() -> None:
+    jupiter = Jupiter()
+    async with jupiter.async_client as client:
+        response = await client.get_price([JUP])
+        print("Current JUP/USDC:", response.data[JUP].price)
+
+asyncio.run(main())
 ```
 
 ### Create Limit Order Transaction
 
-Get the transaction for the creation of a new Limit Order by using [`post_limit_order_create`](../jupiter/api.md#cyhole.jupiter.Jupiter.Jupiter.post_limit_order_create).
+Get the transaction for the creation of a new Limit Order by using [`post_limit_order_create`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_create) in **synchronous** logic.
 
 ```py
 from solders.keypair import Keypair
@@ -31,7 +36,7 @@ from cyhole.jupiter import Jupiter
 from cyhole.jupiter.schema import PostLimitOrderCreateBody
 from cyhole.core.address.solana import JUP, USDC
 
-api = Jupiter()
+jupiter = Jupiter()
 
 # create body for the request
 key = Keypair()
@@ -45,7 +50,7 @@ body = PostLimitOrderCreateBody(
 )
 
 # send request
-response = api.post_limit_order_create(body)
+response = jupiter.client.post_limit_order_create(body)
 print("Transaction:", response.transaction)
 ```
 
@@ -62,9 +67,9 @@ The documentation follows the library's structure by providing all the technical
 
     ---
 
-    `cyhole.jupiter` - Explore the [`Jupiter`](../jupiter/api.md) API connector and all its methods. 
+    `cyhole.jupiter` - Explore the [`Jupiter`](../jupiter/interaction.md) API connector and all its methods. 
 
-    [:octicons-arrow-right-24: Reference](../jupiter/api.md)
+    [:octicons-arrow-right-24: Reference](../jupiter/interaction.md)
 
 -   :material-list-status:{ .lg .middle } __API Parameters__
 

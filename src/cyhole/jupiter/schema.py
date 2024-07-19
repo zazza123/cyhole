@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, field_validator, field_serializer
+from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer
 
 from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState
 
@@ -11,7 +11,7 @@ class JupiterHTTPError(BaseModel):
         that can be used to investigated the error. This schema 
         is used to strandardise the HTTPErrors.
     """
-    code: str = Field(alias = "errorCode")
+    code: str = Field(validation_alias = AliasChoices("errorCode", "error_code"))
     msg: str = Field(alias = "error")
 
 # classes used on GET "Price" endpoint

@@ -88,24 +88,28 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Interactions:
+    - interactions/index.md
     - Birdeye:
       - interactions/birdeye/index.md
-      - Connector: interactions/birdeye/api.md
-      - API Parameters: interactions/birdeye/param.md
+      - Interaction: interactions/birdeye/interaction.md
+      - Client: interactions/birdeye/client.md
+      - Parameters: interactions/birdeye/param.md
       - Response Schema: interactions/birdeye/schema.md
       - Exceptions: interactions/birdeye/exception.md
     - Jupiter:
       - interactions/jupiter/index.md
-      - Connector: interactions/jupiter/api.md
-      - API Parameters: interactions/jupiter/param.md
+      - Interaction: interactions/jupiter/interaction.md
+      - Client: interactions/jupiter/client.md
+      - Parameters: interactions/jupiter/param.md
       - Response Schema: interactions/jupiter/schema.md
       - Exceptions: interactions/jupiter/exception.md
   - Development:
     - development/index.md
     - Core:
       - development/core/index.md
-      - Connector: development/core/api.md
-      - API Parameters: development/core/param.md
+      - Interaction: development/core/interaction.md
+      - Client: development/core/client.md
+      - Parameters: development/core/param.md
       - Exceptions: development/core/exception.md
 
 extra_css:

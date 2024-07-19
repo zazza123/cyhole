@@ -1,4 +1,4 @@
-from ..jupiter.Jupiter import Jupiter
+from ..jupiter.interaction import Jupiter
 
 __all__ = [
     "Jupiter"

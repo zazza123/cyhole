@@ -5,8 +5,8 @@ from pydantic import BaseModel, Field, field_validator
 
 # classes used on GET "Token List" endpoint
 class GetTokenListInfo(BaseModel):
-    name: str
-    symbol: str
+    name: str | None                = None
+    symbol: str | None              = None
     address: str
     decimals: int
     liquidity: float
@@ -14,7 +14,7 @@ class GetTokenListInfo(BaseModel):
     market_cap: float               = Field(alias = "mc")
     volume_24h_change: float | None = Field(alias = "v24hChangePercent", default = None)
     last_trade_unix_time: float     = Field(alias = "lastTradeUnixTime")
-    logo_uri: str                   = Field(alias = "logoURI")
+    logo_uri: str  | None           = Field(alias = "logoURI", default = None)
 
 class GetTokenListData(BaseModel):
     total: int
@@ -443,18 +443,6 @@ class GetPriceHistoricalResponse(BaseModel):
         Model used to represent the **Price - Historical** endpoint from birdeye API.
     """
     data: GetPriceHistoricalData
-    success: bool
-
-# classes used on GET "History" endpoint
-class GetHistoryData(BaseModel):
-    items: list[str]
-    reset_in_seconds: int = Field(alias = "resetInSeconds")
-
-class GetHistoryResponse(BaseModel):
-    """
-        Model used to represent the **History** endpoint from birdeye API.
-    """
-    data: GetHistoryData
     success: bool
 
 # classes used on GET "Trades - Token" endpoint
