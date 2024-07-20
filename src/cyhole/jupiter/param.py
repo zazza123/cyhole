@@ -19,6 +19,7 @@ class JupiterSwapDex(CyholeParam):
     CROPPER = "Cropper"
     CROPPER_LEGACY = "Cropper Legacy"
     DEXLAB = "Dexlab"
+    DEX1 = "1DEX"
     FLUX = "FluxBeam"
     GOOSEFX = "GooseFX"
     GUACSWAP = "Guacswap"
