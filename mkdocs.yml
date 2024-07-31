@@ -105,6 +105,10 @@ nav:
       - Exceptions: interactions/jupiter/exception.md
   - Development:
     - development/index.md
+    - development/new-interaction.md
+    - development/bugs-improvements.md
+    - development/testing.md
+    - development/pull-requests.md
     - Core:
       - development/core/index.md
       - Interaction: development/core/interaction.md

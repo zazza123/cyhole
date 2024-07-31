@@ -28,8 +28,8 @@ The main class inherits from [`Interaction`](../development/core/interaction.md#
 - `client`: object created by [`JupiterClient`](jupiter/client.md#cyhole.jupiter.client.JupiterClient) class that inherits from [`APIClient`](../development/core/client.md#cyhole.core.client.APIClient).
 - `async_client`: object created by [`JupiterAsyncClient`](jupiter/client.md#cyhole.jupiter.client.JupiterAsyncClient) class that inherits from [`AsyncAPIClient`](../development/core/client.md#cyhole.core.client.AsyncAPIClient).
 
-The GET endopint is available as:
+The GET "Price" endopint is available as:
 
 - [`Jupiter._get_price`](jupiter/interaction.md#cyhole.jupiter.Jupiter._get_price): **private** version of the endpoint with all the logic.
-- [`JupiterClient.get_price`](jupiter/client.md#cyhole.jupiter.client.JupiterClient.get_price): **synchronous** logic calls.
-- [`JupiterAsyncClient.get_price`](jupiter/client.md#cyhole.jupiter.client.JupiterAsyncClient.get_price): **asynchronous** logic calls.
+- [`JupiterClient.get_price`](jupiter/client.md#cyhole.jupiter.client.JupiterClient.get_price): **synchronous** logic call.
+- [`JupiterAsyncClient.get_price`](jupiter/client.md#cyhole.jupiter.client.JupiterAsyncClient.get_price): **asynchronous** logic call.
