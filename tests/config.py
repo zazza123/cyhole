@@ -1,25 +1,3 @@
-"""
-    This file is used to load and manage all the tests' configurations.
-
-    The 'cyhole' library interacts with many external API that requires 
-    an API Key in order to extract data. Since the usage of these API Keys 
-    is subjected to costs, a proper configuration for the tests was required.
-
-    The configuration is managed by a 'test.ini' file loaded during the 
-    execution of the tests. By using this file will be possible to:
-        - manage API Keys externally
-        - enable/disable mock responses
-
-    Check the default 'test.ini' file for a complete list of available configurations.
-
-    Mock Responses
-    If the mock response functionality is enabled, then the tests try to load a JSON file 
-    with the response stored from a previous extration from the API.
-    Moreover, every time the tests are executed with the mock response functionality 
-    disabled, the process automatically stores the response in a JSON file into the 
-    proper resources folder.
-
-"""
 import json
 import configparser
 from pathlib import Path
@@ -34,35 +12,47 @@ class JupiterConfiguration(BaseModel):
         Model in charge to manage the Jupiter APIs.
     """
     mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
     mock_folder: str = "jupiter"
+    """Folder where the mock responses are stored."""
 
 class BirdeyeConfiguration(BaseModel):
     """
         Model in charge to manage the birdeye APIs.
     """
     mock_response_public: bool = False
+    """Flag to enable/disable the mock responses for the public APIs."""
     mock_response_private: bool = True
+    """Flag to enable/disable the mock responses for the private APIs."""
     mock_folder: str = "birdeye"
+    """Folder where the mock responses are stored."""
     api_key: str = ""
+    """API key to access the birdeye APIs."""
 
 class TestConfiguration(BaseModel):
     """
         Model in charge to manage the tests' configuration.
     """
     mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
     mock_folder: str = "tests/resources/mock"
+    """Folder where the mock responses are stored."""
     mock_file_overwrite: bool = False
+    """Flag to enable/disable the overwrite of the mock files."""
+
     birdeye: BirdeyeConfiguration = BirdeyeConfiguration()
+    """Birdeye configuration."""
     jupiter: JupiterConfiguration = JupiterConfiguration()
+    """Jupiter configuration."""
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
         This function is used to load the test configuration file.
 
-        It is strongly suggested to leave the default 'path' and 'file' 
+        It is **strongly suggested** to leave the default `path` and `file` 
         name for the test configuration file. However, if a dedicated file 
         is used, then is possible to load another file by providing the 
-        necesary information in the input variables.
+        necessary information in the input variables.
 
         Parameters:
             path: path of the configuration file.

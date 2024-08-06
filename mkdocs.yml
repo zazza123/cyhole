@@ -40,7 +40,7 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [src]
+          paths: [src, tests]
           options:
             show_symbol_type_heading: true
             show_symbol_type_toc: true
