@@ -76,7 +76,7 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt') }}-test
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt', 'src/requirements.txt', 'pyproject.toml') }}-test
 
       # install dependencies
       - name: install pip and dependencies
