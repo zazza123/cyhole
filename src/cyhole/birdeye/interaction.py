@@ -12,6 +12,7 @@ from ..birdeye.param import (
     BirdeyeOrder,
     BirdeyeSort,
     BirdeyeTimeFrame,
+    BirdeyeHourTimeFrame,
     BirdeyeTradeType,
     BirdeyeAddressType
 )
@@ -23,6 +24,7 @@ from ..birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
+    GetPriceVolumeSingleResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -518,6 +520,61 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetPriceHistoricalResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_price_volume_single(
+        self,
+        sync: Literal[True],
+        address: str,
+        timeframe: str = BirdeyeHourTimeFrame.H24.value
+    ) -> GetPriceVolumeSingleResponse: ...
+
+    @overload
+    def _get_price_volume_single(
+        self,
+        sync: Literal[False],
+        address: str,
+        timeframe: str = BirdeyeHourTimeFrame.H24.value
+    ) -> Coroutine[None, None, GetPriceVolumeSingleResponse]: ...
+
+    def _get_price_volume_single(self, sync: bool, address: str, timeframe: str = BirdeyeHourTimeFrame.H24.value) -> GetPriceVolumeSingleResponse | Coroutine[None, None, GetPriceVolumeSingleResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Price Volume - Single Token](https://docs.birdeye.so/reference/get_defi-price-volume-single)** and is used 
+            to get the current price and volume data for a specified token over a given time period on Birdeye.
+
+            Parameters:
+                address: CA of the token to search on the chain.
+                timeframe: the type of timeframe involved in the extraction.
+                    The timeframe is used to define intervall between a measure and the next one.
+                    The supported timeframes are available on [`BirdeyeHourTimeFrame`][cyhole.birdeye.param.BirdeyeHourTimeFrame].
+                    Import them from the library to use the correct identifier.
+
+            Returns:
+                current price and volume data for a specified token over a given time period.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is not aligned to it.
+        """
+        # check param consistency
+        BirdeyeHourTimeFrame.check(timeframe)
+
+        # set params
+        url = self.url_api_private + "price_volume/single"
+        params = {
+            "address" : address,
+            "type" : timeframe
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetPriceVolumeSingleResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetPriceVolumeSingleResponse(**content_raw.json())
             return async_request()
 
     @overload

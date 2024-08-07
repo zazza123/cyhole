@@ -9,7 +9,8 @@ from ..birdeye.exception import BirdeyeAuthorisationError
 from ..birdeye.param import (
     BirdeyeOrder,
     BirdeyeSort,
-    BirdeyeTradeType
+    BirdeyeTradeType,
+    BirdeyeHourTimeFrame
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -19,6 +20,7 @@ from ..birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
+    GetPriceVolumeSingleResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -94,6 +96,13 @@ class BirdeyeClient(APIClient):
         """
         return self._interaction._get_price_historical(True, address, address_type, timeframe, dt_from, dt_to)
 
+    def get_price_volume_single(self, address: str, timeframe: str = BirdeyeHourTimeFrame.H24.value) -> GetPriceVolumeSingleResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Price Volume - Single Token](https://docs.birdeye.so/reference/get_defi-price-volume-single)** for synchronous logic. 
+            All the API endopint details are available on [`Birdeye._get_price_volume_single`][cyhole.birdeye.interaction.Birdeye._get_price_volume_single].
+        """
+        return self._interaction._get_price_volume_single(True, address, timeframe)
+
     def get_trades_token(self, address: str, trade_type: str = BirdeyeTradeType.SWAP.value, offset: int | None = None, limit: int | None = None) -> GetTradesTokenResponse:
         """
             Call the Birdeye's **PRIVATE** API endpoint **[Trades - Token](https://docs.birdeye.so/reference/get_defi-txs-token)** for synchronous logic. 
@@ -145,8 +154,7 @@ class BirdeyeAsyncClient(AsyncAPIClient):
         except AuthorizationAPIKeyError:
             raise BirdeyeAuthorisationError
 
-    async def get_token_list(self, sort_by: str = BirdeyeSort.SORT_V24HUSD.value, order_by: str = BirdeyeOrder.DESCENDING.value, offset: int | None = None, limit: int | None = None
-    ) -> GetTokenListResponse:
+    async def get_token_list(self, sort_by: str = BirdeyeSort.SORT_V24HUSD.value, order_by: str = BirdeyeOrder.DESCENDING.value, offset: int | None = None, limit: int | None = None) -> GetTokenListResponse:
         """
             Call the Birdeye's **PUBLIC** API endpoint **[Token - List](https://docs.birdeye.so/reference/get_defi-tokenlist)** for asynchronous logic. 
             All the API endopint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
@@ -194,6 +202,13 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Birdeye._get_price_historical`][cyhole.birdeye.interaction.Birdeye._get_price_historical].
         """
         return await self._interaction._get_price_historical(False, address, address_type, timeframe, dt_from, dt_to)
+
+    async def get_price_volume_single(self, address: str, timeframe: str = BirdeyeHourTimeFrame.H24.value) -> GetPriceVolumeSingleResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Price Volume - Single Token](https://docs.birdeye.so/reference/get_defi-price-volume-single)** for asynchronous logic. 
+            All the API endopint details are available on [`Birdeye._get_price_volume_single`][cyhole.birdeye.interaction.Birdeye._get_price_volume_single].
+        """
+        return await self._interaction._get_price_volume_single(False, address, timeframe)
 
     async def get_trades_token(self, address: str, trade_type: str = BirdeyeTradeType.SWAP.value, offset: int | None = None, limit: int | None = None) -> GetTradesTokenResponse:
         """

@@ -1,0 +1,11 @@
+{
+    "success": true,
+    "data": {
+        "price": 146.97843882208798,
+        "updateUnixTime": 1719905910,
+        "updateHumanTime": "2024-07-02T07:38:30",
+        "volumeUSD": 1012968266.6856732,
+        "volumeChangePercent": 4.602474543711091,
+        "priceChangePercent": -0.6528161755948374
+    }
+}

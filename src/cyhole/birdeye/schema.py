@@ -445,6 +445,28 @@ class GetPriceHistoricalResponse(BaseModel):
     data: GetPriceHistoricalData
     success: bool
 
+# classes used on GET "Price Volume - Single Token" endpoint
+class GetPriceVolumeSingleData(BaseModel):
+    price: float
+    update_unix_time: int = Field(alias = "updateUnixTime")
+    update_human_time: datetime = Field(alias = "updateHumanTime")
+    volume_usd: float = Field(alias = "volumeUSD")
+    volume_change_percent: float = Field(alias = "volumeChangePercent")
+    price_change_percent: float = Field(alias = "priceChangePercent")
+
+    @field_validator("update_human_time")
+    def parse_update_human_time(cls, update_human_time_raw: str | datetime) -> datetime:
+        if isinstance(update_human_time_raw, str):
+            return datetime.strptime(update_human_time_raw, "%Y-%m-%dT%H:%M:%S")
+        return update_human_time_raw
+
+class GetPriceVolumeSingleResponse(BaseModel):
+    """
+        Model used to represent the **Price Volume - Single Token** endpoint from birdeye API.
+    """
+    data: GetPriceVolumeSingleData
+    success: bool
+
 # classes used on GET "Trades - Token" endpoint
 class GetTradesTokenTradeToken(BaseModel):
     symbol: str

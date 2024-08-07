@@ -78,6 +78,21 @@ class BirdeyeTimeFrame(CyholeParam):
     M1 = "1M"
     """1 month"""
 
+class BirdeyeHourTimeFrame(CyholeParam):
+    """
+        Enum class to get the supported Birdeye's timeframe sizes with hour as unit size.
+    """
+    H1 = "1h"
+    """1 hour"""
+    H2 = "2h"
+    """2 hour"""
+    H4 = "4h"
+    """4 hour"""
+    H8 = "8h"
+    """8 hour"""
+    H24 = "24h"
+    """24 hour"""
+
 class BirdeyeAddressType(CyholeParam):
     """
         Enum class to get the supported Birdeye's address' types.
