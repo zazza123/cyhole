@@ -21,6 +21,7 @@ from ..birdeye.schema import (
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
     GetPriceVolumeSingleResponse,
+    PostPriceVolumeMultiResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -102,6 +103,13 @@ class BirdeyeClient(APIClient):
             All the API endopint details are available on [`Birdeye._get_price_volume_single`][cyhole.birdeye.interaction.Birdeye._get_price_volume_single].
         """
         return self._interaction._get_price_volume_single(True, address, timeframe)
+
+    def post_price_volume_multi(self, list_address: list[str], timeframe: str = BirdeyeHourTimeFrame.H24.value) -> PostPriceVolumeMultiResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Price Volume - Multiple Token](https://docs.birdeye.so/reference/get_defi-price-volume-single)** for synchronous logic. 
+            All the API endopint details are available on [`Birdeye._post_price_volume_multi`][cyhole.birdeye.interaction.Birdeye._post_price_volume_multi].
+        """
+        return self._interaction._post_price_volume_multi(True, list_address, timeframe)
 
     def get_trades_token(self, address: str, trade_type: str = BirdeyeTradeType.SWAP.value, offset: int | None = None, limit: int | None = None) -> GetTradesTokenResponse:
         """
@@ -209,6 +217,13 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Birdeye._get_price_volume_single`][cyhole.birdeye.interaction.Birdeye._get_price_volume_single].
         """
         return await self._interaction._get_price_volume_single(False, address, timeframe)
+
+    async def post_price_volume_multi(self, list_address: list[str], timeframe: str = BirdeyeHourTimeFrame.H24.value) -> PostPriceVolumeMultiResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Price Volume - Multiple Token](https://docs.birdeye.so/reference/get_defi-price-volume-single)** for asynchronous logic. 
+            All the API endopint details are available on [`Birdeye._post_price_volume_multi`][cyhole.birdeye.interaction.Birdeye._post_price_volume_multi].
+        """
+        return await self._interaction._post_price_volume_multi(False, list_address, timeframe)
 
     async def get_trades_token(self, address: str, trade_type: str = BirdeyeTradeType.SWAP.value, offset: int | None = None, limit: int | None = None) -> GetTradesTokenResponse:
         """

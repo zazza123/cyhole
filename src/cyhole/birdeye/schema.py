@@ -467,6 +467,17 @@ class GetPriceVolumeSingleResponse(BaseModel):
     data: GetPriceVolumeSingleData
     success: bool
 
+# classes used on POST "Price Volume - Multiple Token" endpoint
+class PostPriceVolumeMultiData(GetPriceVolumeSingleData):
+    address: str
+
+class PostPriceVolumeMultiResponse(BaseModel):
+    """
+        Model used to represent the **Price Volume - Multiple Token** endpoint from birdeye API.
+    """
+    data: list[PostPriceVolumeMultiData]
+    success: bool
+
 # classes used on GET "Trades - Token" endpoint
 class GetTradesTokenTradeToken(BaseModel):
     symbol: str

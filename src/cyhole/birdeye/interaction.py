@@ -25,6 +25,7 @@ from ..birdeye.schema import (
     GetPriceMultipleResponse,
     GetPriceHistoricalResponse,
     GetPriceVolumeSingleResponse,
+    PostPriceVolumeMultiResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
@@ -575,6 +576,67 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetPriceVolumeSingleResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_price_volume_multi(
+        self,
+        sync: Literal[True],
+        list_address: list[str],
+        timeframe: str = BirdeyeHourTimeFrame.H24.value
+    ) -> PostPriceVolumeMultiResponse: ...
+
+    @overload
+    def _post_price_volume_multi(
+        self,
+        sync: Literal[False],
+        list_address: list[str],
+        timeframe: str = BirdeyeHourTimeFrame.H24.value
+    ) -> Coroutine[None, None, PostPriceVolumeMultiResponse]: ...
+
+    def _post_price_volume_multi(self, sync: bool, list_address: list[str], timeframe: str = BirdeyeHourTimeFrame.H24.value) -> PostPriceVolumeMultiResponse | Coroutine[None, None, PostPriceVolumeMultiResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Price Volume - Multiple Token](https://docs.birdeye.so/reference/post_defi-price-volume-multi)** and is used 
+            to get the current price and volume data for multiple tokens over a given time period on Birdeye.
+
+            Parameters:
+                list_address: list of CA of the tokens to search on the chain.
+                timeframe: the type of timeframe involved in the extraction.
+                    The timeframe is used to define intervall between a measure and the next one.
+                    The supported timeframes are available on [`BirdeyeHourTimeFrame`][cyhole.birdeye.param.BirdeyeHourTimeFrame].
+                    Import them from the library to use the correct identifier.
+
+            Returns:
+                current price and volume data for multiple tokens over a given time period.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is not aligned to it.
+        """
+        # check param consistency
+        BirdeyeHourTimeFrame.check(timeframe)
+
+        # set params
+        url = self.url_api_private + "price_volume/multi"
+
+        # set headers
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+
+        # set body
+        body = {
+            "list_address" : ",".join(list_address),
+            "type" : timeframe
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.POST.value, url, json = body, headers = headers)
+            return PostPriceVolumeMultiResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.POST.value, url, json = body, headers = headers)
+                return PostPriceVolumeMultiResponse(**content_raw.json())
             return async_request()
 
     @overload

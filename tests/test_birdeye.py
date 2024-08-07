@@ -14,6 +14,7 @@ from cyhole.birdeye.schema import (
     GetPriceResponse,
     GetPriceMultipleResponse,
     GetPriceVolumeSingleResponse,
+    PostPriceVolumeMultiResponse,
     GetPriceHistoricalResponse,
     GetTradesTokenResponse,
     GetTradesPairResponse,
@@ -23,7 +24,7 @@ from cyhole.birdeye.schema import (
 )
 from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
-from cyhole.core.address.solana import SOL, USDC
+from cyhole.core.address.solana import SOL, USDC, BONK
 from cyhole.core.address.ethereum import WETH
 
 # load test config
@@ -307,7 +308,7 @@ class TestBirdeyePrivate:
         # actual test
         assert isinstance(response, GetPriceMultipleResponse)
 
-    def test_get_price_single_volume_sync(self, mocker: MockerFixture) -> None:
+    def test_get_price_volume_single_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Price Volume - Single Token" 
             for synchronous logic.
@@ -332,7 +333,7 @@ class TestBirdeyePrivate:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_price_single_volume_async(self, mocker: MockerFixture) -> None:
+    async def test_get_price_volume_single_async(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Price Volume - Single Token" 
             for asynchronous logic.
@@ -352,6 +353,52 @@ class TestBirdeyePrivate:
 
         # actual test
         assert isinstance(response, GetPriceVolumeSingleResponse)
+
+    def test_post_price_volume_multi_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price Volume - Multi Token" 
+            for synchronous logic.
+
+            Mock Response File: post_price_volume_multi.json
+        """
+
+        # load mock response
+        mock_file_name = "post_price_volume_multi"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostPriceVolumeMultiResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            
+        # execute request
+        response = self.birdeye.client.post_price_volume_multi(list_address = [SOL, BONK])
+
+        # actual test
+        assert isinstance(response, PostPriceVolumeMultiResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_price_volume_multi_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price Volume - Multi Token" 
+            for asynchronous logic.
+
+            Mock Response File: post_price_volume_multi.json
+        """
+
+        # load mock response
+        mock_file_name = "post_price_volume_multi"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostPriceVolumeMultiResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.birdeye.async_client as client:
+            response = await client.post_price_volume_multi(list_address = [SOL, BONK])
+
+        # actual test
+        assert isinstance(response, PostPriceVolumeMultiResponse)
 
     def test_get_token_creation_info_sync(self, mocker: MockerFixture) -> None:
         """
