@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field, field_serializer
 
 class SolanaFMPagination(BaseModel):
-    current_page: int = Field(validation_alias = "currentPage")
-    total_pages: int = Field(validation_alias = "totalPages")
+    current_page: int = Field(alias = "currentPage")
+    total_pages: int = Field(alias = "totalPages")
 
 # classes used on GET "Account - Transactions" endpoint
 # Param
@@ -54,9 +54,9 @@ class GetAccountTransactionsData(BaseModel):
     """
         Model used to identify the data of the GET "Account - Transactions" endpoint.
     """
-    block_time: int = Field(validation_alias = "blockTime")
-    confirmation_status: str = Field(validation_alias = "confirmationStatus")
-    error: str | None = Field(default = None, validation_alias = "err")
+    block_time: int = Field(alias = "blockTime")
+    confirmation_status: str = Field(alias = "confirmationStatus")
+    error: str | None = Field(default = None, alias = "err")
     memo: str | None = None
     signature: str
     slot: int
