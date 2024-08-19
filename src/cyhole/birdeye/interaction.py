@@ -81,8 +81,6 @@ class Birdeye(Interaction):
         if self.api_key is None:
             raise MissingAPIKeyError("no API key is provided during object's creation.")
 
-        # input check
-
         # headers setup
         headers = {
             "X-API-KEY": self.api_key,
