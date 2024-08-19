@@ -7,6 +7,17 @@ from pydantic import BaseModel
 
 ResponseModel = TypeVar('ResponseModel', bound = BaseModel)
 
+class SolanaFMConfiguration(BaseModel):
+    """
+        Model in charge to manage the SolanaFM APIs.
+    """
+    mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
+    mock_folder: str = "solana_fm"
+    """Folder where the mock responses are stored."""
+    api_key: str | None = None
+    """API key to access the SolanaFM APIs."""
+
 class JupiterConfiguration(BaseModel):
     """
         Model in charge to manage the Jupiter APIs.
@@ -20,7 +31,7 @@ class BirdeyeConfiguration(BaseModel):
     """
         Model in charge to manage the birdeye APIs.
     """
-    mock_response_public: bool = False
+    mock_response_public: bool = True
     """Flag to enable/disable the mock responses for the public APIs."""
     mock_response_private: bool = True
     """Flag to enable/disable the mock responses for the private APIs."""
@@ -44,6 +55,8 @@ class TestConfiguration(BaseModel):
     """Birdeye configuration."""
     jupiter: JupiterConfiguration = JupiterConfiguration()
     """Jupiter configuration."""
+    solana_fm: SolanaFMConfiguration = SolanaFMConfiguration()
+    """SolanaFM configuration."""
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -82,6 +95,11 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     # jupiter
     test_config.jupiter.mock_response = config.getboolean("jupiter", "mock_response", fallback = test_config.jupiter.mock_response)
     test_config.jupiter.mock_folder = config.get("jupiter", "mock_folder", fallback = test_config.jupiter.mock_folder)
+
+    # solana_fm
+    test_config.solana_fm.mock_response = config.getboolean("solana_fm", "mock_response", fallback = test_config.solana_fm.mock_response)
+    test_config.solana_fm.mock_folder = config.get("solana_fm", "mock_folder", fallback = test_config.solana_fm.mock_folder)
+    test_config.solana_fm.api_key = config.get("solana_fm", "api_key", fallback = test_config.solana_fm.api_key)
 
     return test_config
 
