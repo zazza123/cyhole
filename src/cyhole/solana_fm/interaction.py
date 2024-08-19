@@ -11,7 +11,7 @@ from ..solana_fm.schema import (
 
 class SolanaFM(Interaction):
     """
-        Class used to connect [SolanaFM](https://solana.fm/) API, one of them most popular Solana DEX. 
+        Class used to connect [SolanaFM](https://solana.fm/) API, popular site to interact and explore Solana blockchain.
         To have access SolanaFM API is **not** required an API key, but it is recommended to have one to increase the rate limit. 
 
         Check [https://docs.solana.fm/](https://docs.solana.fm/) for all the details on the available endpoints.
@@ -25,24 +25,24 @@ class SolanaFM(Interaction):
 
         **Example**
         ```python
-            import asyncio
-            from cyhole.solana_fm import SolanaFM
+        import asyncio
+        from cyhole.solana_fm import SolanaFM
 
-            account = "ACCOUNT_ID"
-            solana_fm = SolanaFM()
+        account = "ACCOUNT_ID"
+        solana_fm = SolanaFM()
 
-            # Get account transactions
-            # synchronous
-            response = solana_fm.client.get_account_transactions(account)
-            print("Transactions Extracted:", len(response.result.data))
+        # Get account transactions
+        # synchronous
+        response = solana_fm.client.get_account_transactions(account)
+        print("Transactions Extracted:", len(response.result.data))
 
-            # asynchronous
-            async def main() -> None:
-                async with solana_fm.async_client as client:
-                    response = await client.get_account_transactions(account)
-                    print("Transactions Extracted:", len(response.result.data))
+        # asynchronous
+        async def main() -> None:
+            async with solana_fm.async_client as client:
+                response = await client.get_account_transactions(account)
+                print("Transactions Extracted:", len(response.result.data))
 
-            asyncio.run(main())
+        asyncio.run(main())
         ```
     """
     def __init__(self, api_key: str | None = None) -> None:
