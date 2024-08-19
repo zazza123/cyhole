@@ -3,8 +3,8 @@ from typing import Coroutine, overload, Literal
 
 from ..core.param import RequestType
 from ..core.interaction import Interaction
-from ..solanafm.client import SolanaFMClient, SolanaFMAsyncClient
-from ..solanafm.schema import (
+from ..solana_fm.client import SolanaFMClient, SolanaFMAsyncClient
+from ..solana_fm.schema import (
     GetAccountTransactionsParam,
     GetAccountTransactionsResponse
 )
@@ -26,7 +26,7 @@ class SolanaFM(Interaction):
         **Example**
         ```python
             import asyncio
-            from cyhole.solanafm import SolanaFM
+            from cyhole.solana_fm import SolanaFM
 
             account = "ACCOUNT_ID"
             solana_fm = SolanaFM()

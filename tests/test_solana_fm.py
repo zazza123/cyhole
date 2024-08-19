@@ -3,8 +3,8 @@ from pathlib import Path
 
 from pytest_mock import MockerFixture
 
-from cyhole.solanafm import SolanaFM
-from cyhole.solanafm.schema import (
+from cyhole.solana_fm import SolanaFM
+from cyhole.solana_fm.schema import (
     GetAccountTransactionsResponse
 )
 from cyhole.core.address.solana import JUP

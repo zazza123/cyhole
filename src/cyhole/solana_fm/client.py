@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from ..core.client import APIClient, AsyncAPIClient
-from ..solanafm.schema import (
+from ..solana_fm.schema import (
     GetAccountTransactionsParam,
     GetAccountTransactionsResponse
 )
 
 if TYPE_CHECKING:
-    from ..solanafm.interaction import SolanaFM
+    from ..solana_fm.interaction import SolanaFM
 
 class SolanaFMClient(APIClient):
     """
@@ -22,7 +22,7 @@ class SolanaFMClient(APIClient):
     def get_account_transactions(self, account: str, params: GetAccountTransactionsParam = GetAccountTransactionsParam()) -> GetAccountTransactionsResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transactions](https://docs.solana.fm/reference/get_account_transactions)** for synchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solanafm.interaction.SolanaFM._get_account_transactions].
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions].
         """
         return self._interaction._get_account_transactions(True, account, params)
 
@@ -38,6 +38,6 @@ class SolanaFMAsyncClient(AsyncAPIClient):
     async def get_account_transactions(self, account: str, params: GetAccountTransactionsParam = GetAccountTransactionsParam()) -> GetAccountTransactionsResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transactions](https://docs.solana.fm/reference/get_account_transactions)** for asynchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solanafm.interaction.SolanaFM._get_account_transactions].
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions].
         """
         return await self._interaction._get_account_transactions(False, account, params)
