@@ -103,6 +103,13 @@ nav:
       - Parameters: interactions/jupiter/param.md
       - Response Schema: interactions/jupiter/schema.md
       - Exceptions: interactions/jupiter/exception.md
+    - SolanaFM:
+      - interactions/solana_fm/index.md
+      - Interaction: interactions/solana_fm/interaction.md
+      - Client: interactions/solana_fm/client.md
+      - Parameters: interactions/solana_fm/param.md
+      - Response Schema: interactions/solana_fm/schema.md
+      - Exceptions: interactions/solana_fm/exception.md
   - Development:
     - development/index.md
     - development/new-interaction.md
