@@ -65,3 +65,9 @@ The documentation follows the library's structure by providing all the technical
     [:octicons-arrow-right-24: Reference](../solana_fm/exception.md)
 
 </div>
+
+## Endpoints
+
+| Endpoint  | Type      | Method    | `cyhole` Release  | Deprecated    |
+| ---       | ---       | ---       | ---               | ---           |
+| Account Transactions | `GET` | [`get_account_transactions`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_account_transactions) | `0.2.1` | - |

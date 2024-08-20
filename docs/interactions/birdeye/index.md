@@ -74,3 +74,23 @@ The documentation follows the library's structure by providing all the technical
     [:octicons-arrow-right-24: Reference](../birdeye/exception.md)
 
 </div>
+
+## Endpoints
+
+| Endpoint  | Type      | Method    | `cyhole` Release  | Deprecated    |
+| ---       | ---       | ---       | ---               | ---           |
+| Token - List | `GET` | [`get_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_list) | `0.0.1-alpha` | - |
+| Token - Creation Token Info | `GET` | [`get_token_creation_info`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_creation_info) | `0.0.1-alpha` | - |
+| Token - Security | `GET` | [`get_token_security`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_security) | `0.0.1-alpha` | - |
+| Token - Overview | `GET` | [`get_token_overview`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_overview) | `0.0.1-alpha` | - |
+| Price | `GET` | [`get_price`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_price) | `0.0.1-alpha` | - |
+| Price - Multiple | `GET` | [`get_price_multiple`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_price_multiple) | `0.0.1-alpha` | - |
+| Price - Historical | `GET` | [`get_price_historical`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_price_historical) | `0.0.1-alpha` | - |
+| Price Volume - Single Token | `GET` | [`get_price_volume_single`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_price_volume_single) | `0.2.1` | - |
+| Price Volume - Multiple Token | `POST` | [`post_price_volume_multi`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._post_price_volume_multi) | `0.2.1` | - |
+| Trades - Token | `GET` | [`get_trades_token`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_trades_token) | `0.0.1-alpha` | - |
+| Trades - Pair | `GET` | [`get_trades_pair`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_trades_pair) | `0.0.1-alpha` | - |
+| OHLCV - Token/Pair | `GET` | [`get_ohlcv`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_ohlcv) | `0.0.1-alpha` | - |
+| OHLCV - Base/Quote | `GET` | [`get_ohlcv_base_quote`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_ohlcv_base_quote) | `0.0.1-alpha` | - |
+| Wallet - Supported Networks | `GET` | [`get_wallet_supported_networks`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_wallet_supported_networks) | `0.0.1-alpha` | - |
+| History | `GET` | `get_history` | `0.0.1-alpha` | `0.2.0` |
