@@ -146,3 +146,11 @@ class GetAccountTransfersResponse(SolanaFMBaseResponse):
     """
     results: list[GetAccountTransfersResults]
     pagination: SolanaFMPagination
+
+# classes used on GET "Account - Transfers CSV Export" endpoint
+# Param
+class GetAccountTransfersCsvExportParam(GetAccountTransactionsParam):
+    """
+        Model used to identify the parameters of the GET "Account - Transfers CSV Export" endpoint.
+    """
+    pass

@@ -8,7 +8,8 @@ from ..solana_fm.schema import (
     GetAccountTransactionsParam,
     GetAccountTransactionsResponse,
     GetAccountTransfersParam,
-    GetAccountTransfersResponse
+    GetAccountTransfersResponse,
+    GetAccountTransfersCsvExportParam
 )
 
 class SolanaFM(Interaction):
@@ -147,4 +148,40 @@ class SolanaFM(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountTransfersResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_account_transfers_csv_export(self, sync: Literal[True], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> str: ...
+
+    @overload
+    def _get_account_transfers_csv_export(self, sync: Literal[False], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> Coroutine[None, None, str]: ...
+
+    def _get_account_transfers_csv_export(self, sync: bool, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> str | Coroutine[None, None, str]:
+        """
+            This function refers to the **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** API endpoint,
+            and it is used to get the list of transfers for a given account according to input parameters in CSV format.
+
+            Parameters:
+                account: The account address.
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of transfers in CSV format.
+        """
+        # set params
+        url = self.base_v0_url + f"accounts/{account}/transfers/csv"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return content_raw.text
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return content_raw.text
             return async_request()
