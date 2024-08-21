@@ -4,7 +4,9 @@ from typing import TYPE_CHECKING, Any
 from ..core.client import APIClient, AsyncAPIClient
 from ..solana_fm.schema import (
     GetAccountTransactionsParam,
-    GetAccountTransactionsResponse
+    GetAccountTransactionsResponse,
+    GetAccountTransfersParam,
+    GetAccountTransfersResponse
 )
 
 if TYPE_CHECKING:
@@ -26,6 +28,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_account_transactions(True, account, params)
 
+    def get_account_transfers(self, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers].
+        """
+        return self._interaction._get_account_transfers(True, account, params)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -41,3 +50,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions].
         """
         return await self._interaction._get_account_transactions(False, account, params)
+
+    async def get_account_transfers(self, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers].
+        """
+        return await self._interaction._get_account_transfers(False, account, params)

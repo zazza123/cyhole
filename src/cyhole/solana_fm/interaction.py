@@ -6,7 +6,9 @@ from ..core.interaction import Interaction
 from ..solana_fm.client import SolanaFMClient, SolanaFMAsyncClient
 from ..solana_fm.schema import (
     GetAccountTransactionsParam,
-    GetAccountTransactionsResponse
+    GetAccountTransactionsResponse,
+    GetAccountTransfersParam,
+    GetAccountTransfersResponse
 )
 
 class SolanaFM(Interaction):
@@ -109,4 +111,40 @@ class SolanaFM(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountTransactionsResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_account_transfers(self, sync: Literal[True], account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse: ...
+
+    @overload
+    def _get_account_transfers(self, sync: Literal[False], account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> Coroutine[None, None, GetAccountTransfersResponse]: ...
+
+    def _get_account_transfers(self, sync: bool, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse | Coroutine[None, None, GetAccountTransfersResponse]:
+        """
+            This function refers to the **[Get Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** API endpoint, 
+            and it is used to get the list of transfers for a given account according to input parameters.
+
+            Parameters:
+                account: The account address.
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of transfers.
+        """
+        # set params
+        url = self.base_v0_url + f"accounts/{account}/transfers"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetAccountTransfersResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetAccountTransfersResponse(**content_raw.json())
             return async_request()
