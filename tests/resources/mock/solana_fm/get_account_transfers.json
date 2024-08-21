@@ -1,0 +1,119 @@
+{
+    "status": "success",
+    "message": "Retrieved transfers for 1 transactions",
+    "results": [
+        {
+            "transactionHash": "24j1Qn4MNYVg98FqdkLcPuGCexs1qfRXs4MAM1DWNfficRQphNmfKDG3iS214k13rKaQK3Q5GFacA4ENpLWQ4Mkz",
+            "data": [
+                {
+                    "instructionIndex": -1,
+                    "innerInstructionIndex": -1,
+                    "action": "pay_tx_fees",
+                    "status": "Successful",
+                    "source": "G13mgPqCdLN5P7SnqA8ig78kBPNq3JGLopowCcxofWw7",
+                    "sourceAssociation": null,
+                    "destination": null,
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 35461,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 2,
+                    "innerInstructionIndex": 1,
+                    "action": "createAccount",
+                    "status": "Successful",
+                    "source": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "sourceAssociation": null,
+                    "destination": "2qhfppBkcsKYFHYctE1BdKwmeSj7cC3V1Get66V2P9wR",
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 2039280,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 3,
+                    "innerInstructionIndex": -1,
+                    "action": "createAccountWithSeed",
+                    "status": "Successful",
+                    "source": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "sourceAssociation": null,
+                    "destination": "5qSPg362aibMHb2zDqVupYdSR5XUPERYWDPt8T1avHB6",
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 2054234,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 5,
+                    "innerInstructionIndex": -1,
+                    "action": "transfer",
+                    "status": "Successful",
+                    "source": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "sourceAssociation": "5qSPg362aibMHb2zDqVupYdSR5XUPERYWDPt8T1avHB6",
+                    "destination": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "destinationAssociation": "2qhfppBkcsKYFHYctE1BdKwmeSj7cC3V1Get66V2P9wR",
+                    "token": "So11111111111111111111111111111111111111112",
+                    "amount": 14954,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 6,
+                    "innerInstructionIndex": 0,
+                    "action": "transfer",
+                    "status": "Successful",
+                    "source": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "sourceAssociation": "2qhfppBkcsKYFHYctE1BdKwmeSj7cC3V1Get66V2P9wR",
+                    "destination": "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1",
+                    "destinationAssociation": "BDCLRuo4gwJRzQ3BJHxURh4k3SfCCqtATeCqPMbM5BUy",
+                    "token": "So11111111111111111111111111111111111111112",
+                    "amount": 9972,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 6,
+                    "innerInstructionIndex": 1,
+                    "action": "transfer",
+                    "status": "Successful",
+                    "source": "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1",
+                    "sourceAssociation": "5HyhazXE1bd7K46gnrQUoCrnrcRdY9XrtUCSuuSK3ukX",
+                    "destination": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "destinationAssociation": "5CfzUDqWFQsmqDjYkF1RnrBbYNGZfWyHYrByQW4NtfXk",
+                    "token": "73dMZscLfAwQEfpHiUb5bgQhudmJrXdqKxWtG9E3pump",
+                    "amount": 3441156,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 7,
+                    "innerInstructionIndex": -1,
+                    "action": "closeAccount",
+                    "status": "Successful",
+                    "source": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "sourceAssociation": "5qSPg362aibMHb2zDqVupYdSR5XUPERYWDPt8T1avHB6",
+                    "destination": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 2054234,
+                    "timestamp": 1724248762
+                },
+                {
+                    "instructionIndex": 8,
+                    "innerInstructionIndex": -1,
+                    "action": "closeAccount",
+                    "status": "Successful",
+                    "source": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "sourceAssociation": "2qhfppBkcsKYFHYctE1BdKwmeSj7cC3V1Get66V2P9wR",
+                    "destination": "GZNAZEBBsLr9EDMrspEtK4pYkNggWC8sijwpA85boHWh",
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 0,
+                    "timestamp": 1724248762
+                }
+            ]
+        }
+    ],
+    "pagination": {
+        "currentPage": 1,
+        "totalPages": 2
+    }
+}
