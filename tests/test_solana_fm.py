@@ -8,7 +8,8 @@ from cyhole.solana_fm import SolanaFM
 from cyhole.solana_fm.schema import (
     GetAccountTransactionsResponse,
     GetAccountTransfersParam,
-    GetAccountTransfersResponse
+    GetAccountTransfersResponse,
+    GetAccountTransfersCsvExportParam
 )
 from cyhole.core.address.solana import JUP
 
@@ -128,3 +129,37 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetAccountTransfersResponse)
+
+    def test_get_account_transfers_csv_export_sync(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Account Transfers CSV Export" for synchronous logic.
+        """
+        # execute request
+        account = "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"
+        params = GetAccountTransfersCsvExportParam(
+            utc_from_unix_time = int(datetime.now().timestamp()) - 5, # 5 seconds ago
+            utc_to_unix_time = int(datetime.now().timestamp())
+        )
+        response = self.solana_fm.client.get_account_transfers_csv_export(account, params)
+
+        # actual test
+        assert isinstance(response, str)
+
+    @pytest.mark.asyncio
+    async def test_get_account_transfers_csv_export_async(self) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Account Transfers CSV Export" for asynchronous logic.
+        """
+        # execute request
+        account = "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"
+        params = GetAccountTransfersCsvExportParam(
+            utc_from_unix_time = int(datetime.now().timestamp()) - 5, # 5 seconds ago
+            utc_to_unix_time = int(datetime.now().timestamp())
+        )
+        async with self.solana_fm.async_client as client:
+            response = await client.get_account_transfers_csv_export(account, params)
+
+        # actual test
+        assert isinstance(response, str)
