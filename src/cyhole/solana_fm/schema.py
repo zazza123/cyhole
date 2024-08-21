@@ -78,12 +78,10 @@ class GetAccountTransactionsResult(BaseModel):
     data: list[GetAccountTransactionsData]
     pagination: SolanaFMPagination
 
-class GetAccountTransactionsResponse(BaseModel):
+class GetAccountTransactionsResponse(SolanaFMBaseResponse):
     """
         Model used to identify the response of the GET "Account - Transactions" endpoint.
     """
-    status: str
-    message: str
     result: GetAccountTransactionsResult
 
 # classes used on GET "Account - Transfers" endpoint
