@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from ..core.client import APIClient, AsyncAPIClient
+from ..solana_fm.param import SolanaFMBlocksPaginationType
 from ..solana_fm.schema import (
     GetAccountTransactionsParam,
     GetAccountTransactionsResponse,
@@ -10,7 +11,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersResponse,
     GetAccountTransfersCsvExportParam,
     GetAccountTransfersCsvExportResponse,
-    GetAccountTransactionsFeesResponse
+    GetAccountTransactionsFeesResponse,
+    GetBlocksResponse
 )
 
 if TYPE_CHECKING:
@@ -53,6 +55,19 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_account_transfers_csv_export(True, account, params)
 
+    def get_blocks(
+        self,
+        from_block: int | None = None,
+        page_size: int = 50,
+        page_type: str = SolanaFMBlocksPaginationType.BLOCK_NUMBER.value,
+        ascending: bool | None = None
+    ) -> GetBlocksResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_blocks].
+        """
+        return self._interaction._get_blocks(True, from_block, page_size, page_type, ascending)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -89,3 +104,16 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].
         """
         return await self._interaction._get_account_transfers_csv_export(False, account, params)
+
+    async def get_blocks(
+        self,
+        from_block: int | None = None,
+        page_size: int = 50,
+        page_type: str = SolanaFMBlocksPaginationType.BLOCK_NUMBER.value,
+        ascending: bool | None = None
+    ) -> GetBlocksResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_blocks].
+        """
+        return await self._interaction._get_blocks(False, from_block, page_size, page_type, ascending)

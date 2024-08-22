@@ -5,6 +5,7 @@ from typing import Coroutine, overload, Literal
 from ..core.param import RequestType
 from ..core.interaction import Interaction
 from ..solana_fm.client import SolanaFMClient, SolanaFMAsyncClient
+from ..solana_fm.param import SolanaFMBlocksPaginationType
 from ..solana_fm.schema import (
     GetAccountTransactionsParam,
     GetAccountTransactionsResponse,
@@ -12,8 +13,10 @@ from ..solana_fm.schema import (
     GetAccountTransfersResponse,
     GetAccountTransfersCsvExportParam,
     GetAccountTransfersCsvExportResponse,
-    GetAccountTransactionsFeesResponse
+    GetAccountTransactionsFeesResponse,
+    GetBlocksResponse
 )
+
 
 class SolanaFM(Interaction):
     """
@@ -224,3 +227,68 @@ class SolanaFM(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountTransfersCsvExportResponse(csv = content_raw.text)
             return async_request()
+
+    @overload
+    def _get_blocks(
+            self,
+            sync: Literal[True],
+            from_block: int | None = None,
+            page_size: int = 50,
+            page_type: str = SolanaFMBlocksPaginationType.BLOCK_NUMBER.value,
+            ascending: bool | None = None
+        ) -> GetBlocksResponse: ...
+
+    @overload
+    def _get_blocks(
+            self,
+            sync: Literal[False],
+            from_block: int | None = None,
+            page_size: int = 50,
+            page_type: str = SolanaFMBlocksPaginationType.BLOCK_NUMBER.value,
+            ascending: bool | None = None
+        ) -> Coroutine[None, None, GetBlocksResponse]: ...
+
+    def _get_blocks(
+        self,
+        sync: bool,
+        from_block: int | None = None,
+        page_size: int = 50,
+        page_type: str = SolanaFMBlocksPaginationType.BLOCK_NUMBER.value,
+        ascending: bool | None = None
+    ) -> GetBlocksResponse | Coroutine[None, None, GetBlocksResponse]:
+        """
+            This function refers to the **[Get Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** API endpoint,
+            and it is used to get the list of blocks according to input parameters.
+
+            Parameters:
+                from_block: The block number to start from.
+                    If not provided, the latest block is returned.
+                page_size: The number of blocks to return.
+                page_type: The type of page to return.
+                    The supported types are available on [`SolanaFMBlocksPaginationType`][cyhole.solana_fm.param.SolanaFMBlocksPaginationType].
+                ascending: The order of the blocks.
+
+            Returns:
+                List of blocks.
+        """
+        # check param consistency
+        SolanaFMBlocksPaginationType.check(page_type)
+
+        # set params
+        url = self.base_v0_url + "blocks"
+
+        api_params = {
+            "from": from_block,
+            "pageSize": page_size,
+            "paginationType": page_type,
+            "reverse": ascending
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetBlocksResponse,
+            params = api_params
+        )

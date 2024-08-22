@@ -183,3 +183,54 @@ class GetAccountTransactionsFeesResponse(BaseModel):
         Model used to identify the response of the GET "Account Transactions Fees" endpoint.
     """
     data: list[GetAccountTransactionsFeesData]
+
+# classes used on GET "Blocks" endpoint
+# Response
+class GetBlocksDataData(BaseModel):
+    """
+        Model used to identify the info of the GET "Blocks" endpoint.
+    """
+    epoch: int
+    previous_hash: str = Field(alias = "previousHash")
+    producer: str
+    hash: str
+    parent_number: int = Field(alias = "parentNumber")
+    number: int
+    data_size: int = Field(alias = "dataSize")
+    number_of_transactions: int = Field(alias = "numberOfTransactions")
+    successful_transactions: int = Field(alias = "successfulTransactions")
+    vote_transactions: int = Field(alias = "voteTransactions")
+    total_tx_fees: int = Field(alias = "totalTxFees")
+    number_of_rewards: int = Field(alias = "numberOfRewards")
+    total_reward_amount: int = Field(alias = "totalRewardAmount")
+    total_compute_units_consumed: int = Field(alias = "totalComputeUnitsConsumed")
+    total_compute_units_limit: int = Field(alias = "totalComputeUnitsLimit")
+    block_time: int = Field(alias = "blockTime")
+
+class GetBlocksData(BaseModel):
+    """
+        Model used to identify the data of the GET "Blocks" endpoint.
+    """
+    block_number: int = Field(alias = "blockNumber")
+    data: GetBlocksDataData
+
+
+class GetBlocksPagination(BaseModel):
+    """
+        Model used to identify the pagination of the GET "Blocks" endpoint.
+    """
+    next: int | None = None
+    previous: int | None = None
+
+class GetBlocksResult(BaseModel):
+    """
+        Model used to identify the result of the GET "Blocks" endpoint.
+    """
+    data: list[GetBlocksData]
+    pagination: GetBlocksPagination
+
+class GetBlocksResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the data of the GET "Blocks" endpoint.
+    """
+    result: GetBlocksResult
