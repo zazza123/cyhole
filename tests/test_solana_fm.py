@@ -10,7 +10,8 @@ from cyhole.solana_fm.schema import (
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
     GetAccountTransfersCsvExportParam,
-    GetAccountTransfersCsvExportResponse
+    GetAccountTransfersCsvExportResponse,
+    GetAccountTransactionsFeesResponse
 )
 from cyhole.core.address.solana import JUP
 
@@ -74,6 +75,62 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetAccountTransactionsResponse)
+
+    def test_get_account_transactions_fees_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Account Transactions Fees" for synchronous logic.
+
+            Mock Response File: get_account_transactions_fees.json
+        """
+
+        # load mock response
+        mock_file_name = "get_account_transactions_fees"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsFeesResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["data"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.get_account_transactions_fees(JUP, dt_from = datetime(2024, 8, 15), dt_to = datetime(2024, 8, 20))
+
+        # actual test
+        assert isinstance(response, GetAccountTransactionsFeesResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_account_transactions_fees_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Account Transactions Fees" for asynchronous logic.
+
+            Mock Response File: get_account_transactions_fees.json
+        """
+
+        # load mock response
+        mock_file_name = "get_account_transactions_fees"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsFeesResponse)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["data"]).replace("'", '"').encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.get_account_transactions_fees(JUP, dt_from = datetime(2024, 8, 15), dt_to = datetime(2024, 8, 20))
+
+        # actual test
+        assert isinstance(response, GetAccountTransactionsFeesResponse)
 
     def test_get_account_transfers_sync(self, mocker: MockerFixture) -> None:
         """
