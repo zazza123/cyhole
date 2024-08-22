@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import Coroutine, overload, Literal
 
 from ..core.param import RequestType
@@ -10,7 +11,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
     GetAccountTransfersCsvExportParam,
-    GetAccountTransfersCsvExportResponse
+    GetAccountTransfersCsvExportResponse,
+    GetAccountTransactionsFeesResponse
 )
 
 class SolanaFM(Interaction):
@@ -113,6 +115,44 @@ class SolanaFM(Interaction):
             response_model = GetAccountTransactionsResponse,
             params = api_params
         )
+
+    @overload
+    def _get_account_transactions_fees(self, sync: Literal[True], account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse: ...
+
+    @overload
+    def _get_account_transactions_fees(self, sync: Literal[False], account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> Coroutine[None, None, GetAccountTransactionsFeesResponse]: ...
+
+    def _get_account_transactions_fees(self, sync: bool, account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse | Coroutine[None, None, GetAccountTransactionsFeesResponse]:
+        """
+            This function refers to the **[Get Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** API endpoint,
+            and it is used to get the list of transactions fees for a given account according to input parameters.
+
+            Parameters:
+                account: The account address.
+                dt_from: The start date to filter transactions.
+                dt_to: The end date to filter transactions.
+
+            Returns:
+                List of transactions fees.
+        """
+        # set params
+        url = self.base_v0_url + f"accounts/{account}/fees"
+
+        api_params = {}
+        if dt_from is not None:
+            api_params["from"] = dt_from.strftime("%Y-%m-%d")
+        if dt_to is not None:
+            api_params["to"] = dt_to.strftime("%Y-%m-%d")
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetAccountTransactionsFeesResponse(data = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetAccountTransactionsFeesResponse(data = content_raw.json())
+            return async_request()
 
     @overload
     def _get_account_transfers(self, sync: Literal[True], account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse: ...

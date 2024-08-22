@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import datetime
 from typing import TYPE_CHECKING, Any
 
 from ..core.client import APIClient, AsyncAPIClient
@@ -8,7 +9,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
     GetAccountTransfersCsvExportParam,
-    GetAccountTransfersCsvExportResponse
+    GetAccountTransfersCsvExportResponse,
+    GetAccountTransactionsFeesResponse
 )
 
 if TYPE_CHECKING:
@@ -29,6 +31,13 @@ class SolanaFMClient(APIClient):
             All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions].
         """
         return self._interaction._get_account_transactions(True, account, params)
+
+    def get_account_transactions_fees(self, account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions_fees].
+        """
+        return self._interaction._get_account_transactions_fees(True, account, dt_from, dt_to)
 
     def get_account_transfers(self, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse:
         """
@@ -59,6 +68,13 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions].
         """
         return await self._interaction._get_account_transactions(False, account, params)
+
+    async def get_account_transactions_fees(self, account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions_fees].
+        """
+        return await self._interaction._get_account_transactions_fees(False, account, dt_from, dt_to)
 
     async def get_account_transfers(self, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse:
         """

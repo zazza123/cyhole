@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, field_serializer
+from datetime import datetime
+from pydantic import BaseModel, Field, field_serializer, field_validator
 
 class SolanaFMBaseResponse(BaseModel):
     """
@@ -161,3 +162,24 @@ class GetAccountTransfersCsvExportResponse(BaseModel):
         Model used to identify the response of the GET "Account - Transfers CSV Export" endpoint.
     """
     csv: str
+
+# classes used on GET "Account Transactions Fees" endpoint
+# Response
+class GetAccountTransactionsFeesData(BaseModel):
+    """
+        Model used to identify the data of the GET "Account Transactions Fees" endpoint.
+    """
+    tx_fees: int
+    time: datetime
+
+    @field_validator("time")
+    def parse_time(cls, time: str | datetime) -> datetime:
+        if isinstance(time, str):
+            return datetime.strptime(time, "%Y-%m-%d")
+        return time
+
+class GetAccountTransactionsFeesResponse(BaseModel):
+    """
+        Model used to identify the response of the GET "Account Transactions Fees" endpoint.
+    """
+    data: list[GetAccountTransactionsFeesData]
