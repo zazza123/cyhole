@@ -154,3 +154,10 @@ class GetAccountTransfersCsvExportParam(GetAccountTransactionsParam):
         Model used to identify the parameters of the GET "Account - Transfers CSV Export" endpoint.
     """
     pass
+
+# Response
+class GetAccountTransfersCsvExportResponse(BaseModel):
+    """
+        Model used to identify the response of the GET "Account - Transfers CSV Export" endpoint.
+    """
+    csv: str

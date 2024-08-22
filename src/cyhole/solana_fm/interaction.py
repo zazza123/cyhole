@@ -9,7 +9,8 @@ from ..solana_fm.schema import (
     GetAccountTransactionsResponse,
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
-    GetAccountTransfersCsvExportParam
+    GetAccountTransfersCsvExportParam,
+    GetAccountTransfersCsvExportResponse
 )
 
 class SolanaFM(Interaction):
@@ -151,12 +152,12 @@ class SolanaFM(Interaction):
             return async_request()
 
     @overload
-    def _get_account_transfers_csv_export(self, sync: Literal[True], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> str: ...
+    def _get_account_transfers_csv_export(self, sync: Literal[True], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse: ...
 
     @overload
-    def _get_account_transfers_csv_export(self, sync: Literal[False], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> Coroutine[None, None, str]: ...
+    def _get_account_transfers_csv_export(self, sync: Literal[False], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> Coroutine[None, None, GetAccountTransfersCsvExportResponse]: ...
 
-    def _get_account_transfers_csv_export(self, sync: bool, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> str | Coroutine[None, None, str]:
+    def _get_account_transfers_csv_export(self, sync: bool, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse | Coroutine[None, None, GetAccountTransfersCsvExportResponse]:
         """
             This function refers to the **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** API endpoint,
             and it is used to get the list of transfers for a given account according to input parameters in CSV format.
@@ -179,9 +180,9 @@ class SolanaFM(Interaction):
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
-            return content_raw.text
+            return GetAccountTransfersCsvExportResponse(csv = content_raw.text)
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
-                return content_raw.text
+                return GetAccountTransfersCsvExportResponse(csv = content_raw.text)
             return async_request()

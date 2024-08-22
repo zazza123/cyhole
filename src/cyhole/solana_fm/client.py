@@ -7,7 +7,8 @@ from ..solana_fm.schema import (
     GetAccountTransactionsResponse,
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
-    GetAccountTransfersCsvExportParam
+    GetAccountTransfersCsvExportParam,
+    GetAccountTransfersCsvExportResponse
 )
 
 if TYPE_CHECKING:
@@ -36,7 +37,7 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_account_transfers(True, account, params)
 
-    def get_account_transfers_csv_export(self, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> str:
+    def get_account_transfers_csv_export(self, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for synchronous logic. 
             All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].
@@ -66,7 +67,7 @@ class SolanaFMAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_account_transfers(False, account, params)
 
-    async def get_account_transfers_csv_export(self, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> str:
+    async def get_account_transfers_csv_export(self, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for asynchronous logic. 
             All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].

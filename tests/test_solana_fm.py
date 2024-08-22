@@ -9,7 +9,8 @@ from cyhole.solana_fm.schema import (
     GetAccountTransactionsResponse,
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
-    GetAccountTransfersCsvExportParam
+    GetAccountTransfersCsvExportParam,
+    GetAccountTransfersCsvExportResponse
 )
 from cyhole.core.address.solana import JUP
 
@@ -130,11 +131,20 @@ class TestSolanaFM:
         # actual test
         assert isinstance(response, GetAccountTransfersResponse)
 
-    def test_get_account_transfers_csv_export_sync(self) -> None:
+    def test_get_account_transfers_csv_export_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint 
             "Get Account Transfers CSV Export" for synchronous logic.
+
+            Mock Response File: get_account_transfers_csv_export.json
         """
+
+        # load mock response
+        mock_file_name = "get_account_transfers_csv_export"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransfersCsvExportResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
         # execute request
         account = "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"
         params = GetAccountTransfersCsvExportParam(
@@ -144,14 +154,27 @@ class TestSolanaFM:
         response = self.solana_fm.client.get_account_transfers_csv_export(account, params)
 
         # actual test
-        assert isinstance(response, str)
+        assert isinstance(response, GetAccountTransfersCsvExportResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_account_transfers_csv_export_async(self) -> None:
+    async def test_get_account_transfers_csv_export_async(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint 
             "Get Account Transfers CSV Export" for asynchronous logic.
+
+            Mock Response File: get_account_transfers_csv_export.json
         """
+
+        # load mock response
+        mock_file_name = "get_account_transfers_csv_export"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransfersCsvExportResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
         # execute request
         account = "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"
         params = GetAccountTransfersCsvExportParam(
@@ -162,4 +185,4 @@ class TestSolanaFM:
             response = await client.get_account_transfers_csv_export(account, params)
 
         # actual test
-        assert isinstance(response, str)
+        assert isinstance(response, GetAccountTransfersCsvExportResponse)
