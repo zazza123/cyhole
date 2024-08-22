@@ -106,14 +106,13 @@ class SolanaFM(Interaction):
         )
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
-            return GetAccountTransactionsResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
-                return GetAccountTransactionsResponse(**content_raw.json())
-            return async_request()
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountTransactionsResponse,
+            params = api_params
+        )
 
     @overload
     def _get_account_transfers(self, sync: Literal[True], account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse: ...
@@ -142,14 +141,13 @@ class SolanaFM(Interaction):
         )
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
-            return GetAccountTransfersResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
-                return GetAccountTransfersResponse(**content_raw.json())
-            return async_request()
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountTransfersResponse,
+            params = api_params
+        )
 
     @overload
     def _get_account_transfers_csv_export(self, sync: Literal[True], account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse: ...
