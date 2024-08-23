@@ -1,0 +1,8 @@
+{
+    "status": "Success",
+    "message": "Retrieved Transaction Fees Analytics Data",
+    "result": {
+        "totalTxFees": 1730888703878,
+        "date": "23-08-2024"
+    }
+}

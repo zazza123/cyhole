@@ -173,6 +173,7 @@ class GetAccountTransactionsFeesData(BaseModel):
     time: datetime
 
     @field_validator("time")
+    @classmethod
     def parse_time(cls, time: str | datetime) -> datetime:
         if isinstance(time, str):
             return datetime.strptime(time, "%Y-%m-%d")
@@ -294,3 +295,30 @@ class PostMultipleBlocksResponse(SolanaFMBaseResponse):
         Model used to identify the response of the POST "Multiple Blocks" endpoint.
     """
     result: list[PostMultipleBlocksResult]
+
+# classes used on GET "Solana Daily Transaction Fees" endpoint
+# Response
+class GetSolanaDailyTransactionFeesResult(BaseModel):
+    """
+        Model used to identify the result of the GET "Solana Daily Transaction Fees" endpoint.
+    """
+    total_tx_fees: int = Field(alias = "totalTxFees")
+    date: str
+
+    @field_validator("date")
+    @classmethod
+    def parse_date(cls, dt: str | datetime) -> datetime:
+        if isinstance(dt, str):
+            return datetime.strptime(dt, "%d-%m-%Y")
+        return dt
+
+    @field_serializer("date")
+    @classmethod
+    def serialize_date(cls, dt: datetime) -> str:
+        return dt.strftime("%d-%m-%Y")
+
+class GetSolanaDailyTransactionFeesResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the GET "Solana Daily Transaction Fees" endpoint.
+    """
+    result: GetSolanaDailyTransactionFeesResult

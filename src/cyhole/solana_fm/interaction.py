@@ -16,7 +16,8 @@ from ..solana_fm.schema import (
     GetAccountTransactionsFeesResponse,
     GetBlocksResponse,
     GetBlockResponse,
-    PostMultipleBlocksResponse
+    PostMultipleBlocksResponse,
+    GetSolanaDailyTransactionFeesResponse
 )
 
 
@@ -361,4 +362,41 @@ class SolanaFM(Interaction):
             response_model = PostMultipleBlocksResponse,
             headers = headers,
             json = json
+        )
+
+    @overload
+    def _get_solana_daily_transaction_fees(self, sync: Literal[True], dt: datetime = datetime.now()) -> GetSolanaDailyTransactionFeesResponse: ...
+
+    @overload
+    def _get_solana_daily_transaction_fees(self, sync: Literal[False], dt: datetime = datetime.now()) -> Coroutine[None, None, GetSolanaDailyTransactionFeesResponse]: ...
+
+    def _get_solana_daily_transaction_fees(self, sync: bool, dt: datetime = datetime.now()) -> GetSolanaDailyTransactionFeesResponse | Coroutine[None, None, GetSolanaDailyTransactionFeesResponse]:
+        """
+            This function refers to the **[Get Solana Daily Transaction Fees](https://docs.solana.fm/reference/get_daily_tx_fees)** API endpoint,
+            and it is used to get the daily transaction fees for a given date on the whole Solana chain.
+
+            Observe that if the date is not provided, the current date is used and the result could change over time 
+            as the day is not finished yet.
+
+            Parameters:
+                dt: The date to get the transaction fees.
+                    By default, the current date is used.
+
+            Returns:
+                Daily transaction fees.
+        """
+        # set params
+        url = self.base_v0_url + "stats/tx-fees"
+
+        api_params = {
+            "date": dt.strftime("%d-%m-%Y")
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetSolanaDailyTransactionFeesResponse,
+            params = api_params
         )

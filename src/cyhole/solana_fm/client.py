@@ -14,7 +14,8 @@ from ..solana_fm.schema import (
     GetAccountTransactionsFeesResponse,
     GetBlocksResponse,
     GetBlockResponse,
-    PostMultipleBlocksResponse
+    PostMultipleBlocksResponse,
+    GetSolanaDailyTransactionFeesResponse
 )
 
 if TYPE_CHECKING:
@@ -84,6 +85,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._post_multiple_blocks(True, block_numbers, producer_details)
 
+    def get_solana_daily_transaction_fees(self, dt: datetime = datetime.now()) -> GetSolanaDailyTransactionFeesResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Solana Daily Transaction Fees](https://docs.solana.fm/reference/get_daily_tx_fees)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_solana_daily_transaction_fees`][cyhole.solana_fm.interaction.SolanaFM._get_solana_daily_transaction_fees].
+        """
+        return self._interaction._get_solana_daily_transaction_fees(True, dt)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -147,3 +155,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._post_multiple_blocks`][cyhole.solana_fm.interaction.SolanaFM._post_multiple_blocks].
         """
         return await self._interaction._post_multiple_blocks(False, block_numbers, producer_details)
+
+    async def get_solana_daily_transaction_fees(self, dt: datetime = datetime.now()) -> GetSolanaDailyTransactionFeesResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Solana Daily Transaction Fees](https://docs.solana.fm/reference/get_daily_tx_fees)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_solana_daily_transaction_fees`][cyhole.solana_fm.interaction.SolanaFM._get_solana_daily_transaction_fees].
+        """
+        return await self._interaction._get_solana_daily_transaction_fees(False, dt)

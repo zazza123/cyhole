@@ -14,7 +14,8 @@ from cyhole.solana_fm.schema import (
     GetAccountTransactionsFeesResponse,
     GetBlocksResponse,
     GetBlockResponse,
-    PostMultipleBlocksResponse
+    PostMultipleBlocksResponse,
+    GetSolanaDailyTransactionFeesResponse
 )
 from cyhole.core.address.solana import JUP
 
@@ -432,3 +433,49 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, PostMultipleBlocksResponse)
+
+    def test_get_solana_daily_transaction_fees_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Solana Daily Transaction Fees" for synchronous logic.
+
+            Mock Response File: get_solana_daily_transaction_fees.json
+        """
+
+        # load mock response
+        mock_file_name = "get_solana_daily_transaction_fees"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetSolanaDailyTransactionFeesResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.get_solana_daily_transaction_fees()
+
+        # actual test
+        assert isinstance(response, GetSolanaDailyTransactionFeesResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_solana_daily_transaction_fees_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Solana Daily Transaction Fees" for asynchronous logic.
+
+            Mock Response File: get_solana_daily_transaction_fees.json
+        """
+
+        # load mock response
+        mock_file_name = "get_solana_daily_transaction_fees"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetSolanaDailyTransactionFeesResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.get_solana_daily_transaction_fees()
+
+        # actual test
+        assert isinstance(response, GetSolanaDailyTransactionFeesResponse)
