@@ -1,0 +1,33 @@
+{
+    "status": "Success",
+    "message": "Retrieved Blocks",
+    "result": {
+        "data": [
+            {
+                "blockNumber": 285300727,
+                "data": {
+                    "epoch": 660,
+                    "previousHash": "CHEzvHp1uZjSbjPVtmvERmemPc8oaU4qZxVi6ygyn6PV",
+                    "producer": "DtdSSG8ZJRZVv5Jx7K1MeWp7Zxcu19GD5wQRGRpQ9uMF",
+                    "hash": "HbqGV2r4DmGcfSKJsAoPr9TAMdahP3fxWMCCpxHrNY8g",
+                    "parentNumber": 285300726,
+                    "number": 285300727,
+                    "dataSize": 0,
+                    "numberOfTransactions": 1232,
+                    "successfulTransactions": 1193,
+                    "voteTransactions": 1066,
+                    "totalTxFees": 7908362,
+                    "numberOfRewards": 1,
+                    "totalRewardAmount": 3954181,
+                    "totalComputeUnitsConsumed": 24968012,
+                    "totalComputeUnitsLimit": 329567977,
+                    "blockTime": 1724397757
+                }
+            }
+        ],
+        "pagination": {
+            "next": 285300726,
+            "previous": null
+        }
+    }
+}
