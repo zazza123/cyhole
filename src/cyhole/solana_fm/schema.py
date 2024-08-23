@@ -185,14 +185,12 @@ class GetAccountTransactionsFeesResponse(BaseModel):
     data: list[GetAccountTransactionsFeesData]
 
 # classes used on GET "Blocks" endpoint
-# Response
-class GetBlocksDataData(BaseModel):
+class SolanaFMBlockData(BaseModel):
     """
-        Model used to identify the info of the GET "Blocks" endpoint.
+        Model used to identify the data of the SolanaFM block.
     """
     epoch: int
     previous_hash: str = Field(alias = "previousHash")
-    producer: str
     hash: str
     parent_number: int = Field(alias = "parentNumber")
     number: int
@@ -206,6 +204,13 @@ class GetBlocksDataData(BaseModel):
     total_compute_units_consumed: int = Field(alias = "totalComputeUnitsConsumed")
     total_compute_units_limit: int = Field(alias = "totalComputeUnitsLimit")
     block_time: int = Field(alias = "blockTime")
+
+# Response
+class GetBlocksDataData(SolanaFMBlockData):
+    """
+        Model used to identify the info of the GET "Blocks" endpoint.
+    """
+    producer: str
 
 class GetBlocksData(BaseModel):
     """
@@ -248,3 +253,44 @@ class GetBlockResponse(SolanaFMBaseResponse):
         Model used to identify the response of the GET "Block" endpoint.
     """
     result: GetBlockResult
+
+# classes used on POST "Multiple Blocks" endpoint
+# Response
+class PostMultipleBlocksProducerData(BaseModel):
+    """
+        Model used to identify the data of the producer from POST "Multiple Blocks" endpoint.
+    """
+    friendly_name: str = Field(alias = "friendlyName")
+    abbreviation: str
+    category: str
+    vote_key: str = Field(alias = "voteKey")
+    network: str
+    tags: list[str]
+    logo_uri: str | None = Field(default = None, alias = "logoURI")
+    flag: str | None = None
+
+class PostMultipleBlocksProducer(BaseModel):
+    """
+        Model used to identify the producer of the POST "Multiple Blocks" endpoint.
+    """
+    account_hash: str = Field(alias = "accountHash")
+    data: PostMultipleBlocksProducerData
+
+class PostMultipleBlocksData(SolanaFMBlockData):
+    """
+        Model used to identify the data of the POST "Multiple Blocks" endpoint.
+    """
+    producer: str | PostMultipleBlocksProducer
+
+class PostMultipleBlocksResult(BaseModel):
+    """
+        Model used to identify the result of the POST "Multiple Blocks" endpoint.
+    """
+    block_number: int = Field(alias = "blockNumber")
+    data: PostMultipleBlocksData
+
+class PostMultipleBlocksResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the POST "Multiple Blocks" endpoint.
+    """
+    result: list[PostMultipleBlocksResult]

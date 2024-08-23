@@ -13,7 +13,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersCsvExportResponse,
     GetAccountTransactionsFeesResponse,
     GetBlocksResponse,
-    GetBlockResponse
+    GetBlockResponse,
+    PostMultipleBlocksResponse
 )
 
 if TYPE_CHECKING:
@@ -76,6 +77,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_block(True, block_number)
 
+    def post_multiple_blocks(self, block_numbers: list[int], producer_details: bool = True) -> PostMultipleBlocksResponse:
+        """
+            Call the SolanaFM's API endpoint **[Post Multiple Blocks](https://docs.solana.fm/reference/get_multiple_blocks)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._post_multiple_blocks`][cyhole.solana_fm.interaction.SolanaFM._post_multiple_blocks].
+        """
+        return self._interaction._post_multiple_blocks(True, block_numbers, producer_details)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -132,3 +140,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_block`][cyhole.solana_fm.interaction.SolanaFM._get_block].
         """
         return await self._interaction._get_block(False, block_number)
+
+    async def post_multiple_blocks(self, block_numbers: list[int], producer_details: bool = True) -> PostMultipleBlocksResponse:
+        """
+            Call the SolanaFM's API endpoint **[Post Multiple Blocks](https://docs.solana.fm/reference/get_multiple_blocks)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._post_multiple_blocks`][cyhole.solana_fm.interaction.SolanaFM._post_multiple_blocks].
+        """
+        return await self._interaction._post_multiple_blocks(False, block_numbers, producer_details)

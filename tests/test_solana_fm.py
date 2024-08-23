@@ -13,7 +13,8 @@ from cyhole.solana_fm.schema import (
     GetAccountTransfersCsvExportResponse,
     GetAccountTransactionsFeesResponse,
     GetBlocksResponse,
-    GetBlockResponse
+    GetBlockResponse,
+    PostMultipleBlocksResponse
 )
 from cyhole.core.address.solana import JUP
 
@@ -337,3 +338,97 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetBlockResponse)
+
+    def test_post_multiple_blocks_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Multiple Blocks" for synchronous logic.
+
+            Mock Response File: post_multiple_blocks.json
+        """
+
+        # load mock response
+        mock_file_name = "post_multiple_blocks"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostMultipleBlocksResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.post_multiple_blocks([180000000])
+
+        # actual test
+        assert isinstance(response, PostMultipleBlocksResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_multiple_blocks_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Multiple Blocks" for asynchronous logic.
+
+            Mock Response File: post_multiple_blocks.json
+        """
+
+        # load mock response
+        mock_file_name = "post_multiple_blocks"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostMultipleBlocksResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.post_multiple_blocks([180000000])
+
+        # actual test
+        assert isinstance(response, PostMultipleBlocksResponse)
+
+    def test_post_multiple_blocks_no_producer_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Multiple Blocks" for synchronous logic by setting
+            producer's details to false.
+
+            Mock Response File: post_multiple_blocks_no_producer.json
+        """
+
+        # load mock response
+        mock_file_name = "post_multiple_blocks_no_producer"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostMultipleBlocksResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.post_multiple_blocks([200000000], producer_details = False)
+
+        # actual test
+        assert isinstance(response, PostMultipleBlocksResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_multiple_blocks_no_producer_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Multiple Blocks" for asynchronous logic by setting
+            producer's details to false.
+
+            Mock Response File: post_multiple_blocks_no_producer.json
+        """
+
+        # load mock response
+        mock_file_name = "post_multiple_blocks_no_producer"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostMultipleBlocksResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.post_multiple_blocks([200000000], producer_details = False)
+
+        # actual test
+        assert isinstance(response, PostMultipleBlocksResponse)

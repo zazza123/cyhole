@@ -15,7 +15,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersCsvExportResponse,
     GetAccountTransactionsFeesResponse,
     GetBlocksResponse,
-    GetBlockResponse
+    GetBlockResponse,
+    PostMultipleBlocksResponse
 )
 
 
@@ -320,4 +321,44 @@ class SolanaFM(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetBlockResponse
+        )
+
+    @overload
+    def _post_multiple_blocks(self, sync: Literal[True], block_numbers: list[int], producer_details: bool = True) -> PostMultipleBlocksResponse: ...
+
+    @overload
+    def _post_multiple_blocks(self, sync: Literal[False], block_numbers: list[int], producer_details: bool = True) -> Coroutine[None, None, PostMultipleBlocksResponse]: ...
+
+    def _post_multiple_blocks(self, sync: bool, block_numbers: list[int], producer_details: bool = True) -> PostMultipleBlocksResponse | Coroutine[None, None, PostMultipleBlocksResponse]:
+        """
+            This function refers to the **[Post Multiple Blocks](https://docs.solana.fm/reference/get_multiple_blocks)** API endpoint,
+            and it is used to get multiple blocks information from the SolanaFM API.
+
+            Parameters:
+                block_numbers: The list of block numbers to get.
+
+            Returns:
+                Block details.
+        """
+        # set params
+        url = self.base_v0_url + "blocks"
+
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+
+        json = {
+            "hydration": { "accountHash": producer_details },
+            "blockNumbers": block_numbers,
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.POST.value,
+            url = url,
+            response_model = PostMultipleBlocksResponse,
+            headers = headers,
+            json = json
         )

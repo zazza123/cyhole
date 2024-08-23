@@ -1,0 +1,27 @@
+{
+    "status": "Success",
+    "message": "Retrieved Blocks",
+    "result": [
+        {
+            "blockNumber": 200000000,
+            "data": {
+                "epoch": 462,
+                "previousHash": "6pVPHuTPZxwFueNHyFQGtb1vzj8czCDuJPPH8VvFpyMc",
+                "hash": "bYJHNf3HevTfeX2EDCoHNCs3zedpdsTYAF8g3s1yuxZ",
+                "parentNumber": 199999999,
+                "number": 200000000,
+                "dataSize": 0,
+                "numberOfTransactions": 3769,
+                "successfulTransactions": 3510,
+                "voteTransactions": 3744,
+                "totalTxFees": 18867575,
+                "numberOfRewards": 473,
+                "totalRewardAmount": 9437447,
+                "totalComputeUnitsConsumed": 1776690,
+                "totalComputeUnitsLimit": 38829586,
+                "blockTime": 1686964563,
+                "producer": "RBFiUqjYuy4mupzZaU96ctXJBy23sRBRsL3KivDAsFM"
+            }
+        }
+    ]
+}
