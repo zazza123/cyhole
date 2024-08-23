@@ -12,7 +12,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersCsvExportParam,
     GetAccountTransfersCsvExportResponse,
     GetAccountTransactionsFeesResponse,
-    GetBlocksResponse
+    GetBlocksResponse,
+    GetBlockResponse
 )
 
 if TYPE_CHECKING:
@@ -37,21 +38,21 @@ class SolanaFMClient(APIClient):
     def get_account_transactions_fees(self, account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** for synchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions_fees].
+            All the API endopint details are available on [`SolanaFM._get_account_transactions_fees`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions_fees].
         """
         return self._interaction._get_account_transactions_fees(True, account, dt_from, dt_to)
 
     def get_account_transfers(self, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** for synchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers].
+            All the API endopint details are available on [`SolanaFM._get_account_transfers`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers].
         """
         return self._interaction._get_account_transfers(True, account, params)
 
     def get_account_transfers_csv_export(self, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for synchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].
+            All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].
         """
         return self._interaction._get_account_transfers_csv_export(True, account, params)
 
@@ -64,9 +65,16 @@ class SolanaFMClient(APIClient):
     ) -> GetBlocksResponse:
         """
             Call the SolanaFM's API endpoint **[Get Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** for synchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_blocks].
+            All the API endopint details are available on [`SolanaFM._get_blocks`][cyhole.solana_fm.interaction.SolanaFM._get_blocks].
         """
         return self._interaction._get_blocks(True, from_block, page_size, page_type, ascending)
+
+    def get_block(self, block_number: int) -> GetBlockResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Block](https://docs.solana.fm/reference/get_block)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_block`][cyhole.solana_fm.interaction.SolanaFM._get_block].
+        """
+        return self._interaction._get_block(True, block_number)
 
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
@@ -87,21 +95,21 @@ class SolanaFMAsyncClient(AsyncAPIClient):
     async def get_account_transactions_fees(self, account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** for asynchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions_fees].
+            All the API endopint details are available on [`SolanaFM._get_account_transactions_fees`][cyhole.solana_fm.interaction.SolanaFM._get_account_transactions_fees].
         """
         return await self._interaction._get_account_transactions_fees(False, account, dt_from, dt_to)
 
     async def get_account_transfers(self, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** for asynchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers].
+            All the API endopint details are available on [`SolanaFM._get_account_transfers`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers].
         """
         return await self._interaction._get_account_transfers(False, account, params)
 
     async def get_account_transfers_csv_export(self, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse:
         """
             Call the SolanaFM's API endpoint **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** for asynchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].
+            All the API endopint details are available on [`SolanaFM._get_account_transfers_csv_export`][cyhole.solana_fm.interaction.SolanaFM._get_account_transfers_csv_export].
         """
         return await self._interaction._get_account_transfers_csv_export(False, account, params)
 
@@ -114,6 +122,13 @@ class SolanaFMAsyncClient(AsyncAPIClient):
     ) -> GetBlocksResponse:
         """
             Call the SolanaFM's API endpoint **[Get Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** for synchronous logic. 
-            All the API endopint details are available on [`SolanaFM._get_account_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_blocks].
+            All the API endopint details are available on [`SolanaFM._get_blocks`][cyhole.solana_fm.interaction.SolanaFM._get_blocks].
         """
         return await self._interaction._get_blocks(False, from_block, page_size, page_type, ascending)
+
+    async def get_block(self, block_number: int) -> GetBlockResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Block](https://docs.solana.fm/reference/get_block)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_block`][cyhole.solana_fm.interaction.SolanaFM._get_block].
+        """
+        return await self._interaction._get_block(False, block_number)

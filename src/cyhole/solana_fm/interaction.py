@@ -14,7 +14,8 @@ from ..solana_fm.schema import (
     GetAccountTransfersCsvExportParam,
     GetAccountTransfersCsvExportResponse,
     GetAccountTransactionsFeesResponse,
-    GetBlocksResponse
+    GetBlocksResponse,
+    GetBlockResponse
 )
 
 
@@ -291,4 +292,32 @@ class SolanaFM(Interaction):
             url = url,
             response_model = GetBlocksResponse,
             params = api_params
+        )
+
+    @overload
+    def _get_block(self, sync: Literal[True], block_number: int) -> GetBlockResponse: ...
+
+    @overload
+    def _get_block(self, sync: Literal[False], block_number: int) -> Coroutine[None, None, GetBlockResponse]: ...
+
+    def _get_block(self, sync: bool, block_number: int) -> GetBlockResponse | Coroutine[None, None, GetBlockResponse]:
+        """
+            This function refers to the **[Get Block](https://docs.solana.fm/reference/get_block)** API endpoint,
+            and it is used to get the block details for a given block Number.
+
+            Parameters:
+                block_number: The block number.
+
+            Returns:
+                Block details.
+        """
+        # set params
+        url = self.base_v0_url + f"blocks/{block_number}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetBlockResponse
         )

@@ -234,3 +234,17 @@ class GetBlocksResponse(SolanaFMBaseResponse):
         Model used to identify the data of the GET "Blocks" endpoint.
     """
     result: GetBlocksResult
+
+# classes used on GET "Block" endpoint
+# Response
+class GetBlockResult(GetBlocksData):
+    """
+        Model used to identify the result of the GET "Block" endpoint.
+    """
+    pass
+
+class GetBlockResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the GET "Block" endpoint.
+    """
+    result: GetBlockResult

@@ -1,0 +1,25 @@
+{
+    "status": "Success",
+    "message": "Retrieved Block",
+    "result": {
+        "blockNumber": 19941305,
+        "data": {
+            "epoch": 46,
+            "previousHash": "9LaJsht53JAiNijqXwqiEYHUy7eorFqigDpUMCqGFVkX",
+            "producer": "",
+            "hash": "8hdzjGcHRzH471U2r4Z3f2yjM1tgwMKWFjnLGArsa5Ja",
+            "parentNumber": 19941304,
+            "number": 19941305,
+            "dataSize": 0,
+            "numberOfTransactions": 82,
+            "successfulTransactions": 78,
+            "voteTransactions": 82,
+            "totalTxFees": 410000,
+            "numberOfRewards": 0,
+            "totalRewardAmount": 0,
+            "totalComputeUnitsConsumed": 0,
+            "totalComputeUnitsLimit": 0,
+            "blockTime": 1593239082
+        }
+    }
+}
