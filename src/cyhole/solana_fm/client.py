@@ -15,7 +15,8 @@ from ..solana_fm.schema import (
     GetBlocksResponse,
     GetBlockResponse,
     PostMultipleBlocksResponse,
-    GetSolanaDailyTransactionFeesResponse
+    GetSolanaDailyTransactionFeesResponse,
+    GetTaggedTokensListResponse
 )
 
 if TYPE_CHECKING:
@@ -92,6 +93,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_solana_daily_transaction_fees(True, dt)
 
+    def get_tagged_tokens_list(self) -> GetTaggedTokensListResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Tagged Tokens List](https://docs.solana.fm/reference/get_tokens_by_pagination)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_tagged_tokens_list`][cyhole.solana_fm.interaction.SolanaFM._get_tagged_tokens_list].
+        """
+        return self._interaction._get_tagged_tokens_list(True)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -162,3 +170,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_solana_daily_transaction_fees`][cyhole.solana_fm.interaction.SolanaFM._get_solana_daily_transaction_fees].
         """
         return await self._interaction._get_solana_daily_transaction_fees(False, dt)
+
+    async def get_tagged_tokens_list(self) -> GetTaggedTokensListResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Tagged Tokens List](https://docs.solana.fm/reference/get_tokens_by_pagination)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_tagged_tokens_list`][cyhole.solana_fm.interaction.SolanaFM._get_tagged_tokens_list].
+        """
+        return await self._interaction._get_tagged_tokens_list(False)

@@ -15,7 +15,8 @@ from cyhole.solana_fm.schema import (
     GetBlocksResponse,
     GetBlockResponse,
     PostMultipleBlocksResponse,
-    GetSolanaDailyTransactionFeesResponse
+    GetSolanaDailyTransactionFeesResponse,
+    GetTaggedTokensListResponse
 )
 from cyhole.core.address.solana import JUP
 
@@ -479,3 +480,49 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetSolanaDailyTransactionFeesResponse)
+
+    def test_get_tagged_tokens_list_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Tagged Tokens List" for synchronous logic.
+
+            Mock Response File: get_tagged_tokens_list.json
+        """
+
+        # load mock response
+        mock_file_name = "get_tagged_tokens_list"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTaggedTokensListResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.get_tagged_tokens_list()
+
+        # actual test
+        assert isinstance(response, GetTaggedTokensListResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_tagged_tokens_list_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Tagged Tokens List" for asynchronous logic.
+
+            Mock Response File: get_tagged_tokens_list.json
+        """
+
+        # load mock response
+        mock_file_name = "get_tagged_tokens_list"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTaggedTokensListResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.get_tagged_tokens_list()
+
+        # actual test
+        assert isinstance(response, GetTaggedTokensListResponse)

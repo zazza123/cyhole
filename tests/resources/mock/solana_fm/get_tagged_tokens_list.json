@@ -1,0 +1,27 @@
+{
+    "status": "Success",
+    "message": "Retrieved page of tokens",
+    "result": {
+        "data": [
+            {
+                "tokenHash": "8PAk8nbGum3PzUQB7ZE7CeiAo75CN1tZjYSUxUsWhpAW",
+                "data": {
+                    "mint": "8PAk8nbGum3PzUQB7ZE7CeiAo75CN1tZjYSUxUsWhpAW",
+                    "tokenName": "",
+                    "symbol": "",
+                    "decimals": 2,
+                    "description": "Utility token for the Criminals that are spreading Fear across the Solana blockchain.",
+                    "logo": "",
+                    "tags": [],
+                    "verified": "",
+                    "network": [],
+                    "metadataToken": "EBkrs665b9g9cEKT3VSr3wkxLFmygEVjf1T8az8KyYHz"
+                }
+            }
+        ],
+        "pagination": {
+            "next": "62d7db8dc398973b0d769157",
+            "previous": null
+        }
+    }
+}

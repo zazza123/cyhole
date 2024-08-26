@@ -220,7 +220,6 @@ class GetBlocksData(BaseModel):
     block_number: int = Field(alias = "blockNumber")
     data: GetBlocksDataData
 
-
 class GetBlocksPagination(BaseModel):
     """
         Model used to identify the pagination of the GET "Blocks" endpoint.
@@ -322,3 +321,47 @@ class GetSolanaDailyTransactionFeesResponse(SolanaFMBaseResponse):
         Model used to identify the response of the GET "Solana Daily Transaction Fees" endpoint.
     """
     result: GetSolanaDailyTransactionFeesResult
+
+# classes used on GET "Tagged Tokens List" endpoint
+# Response
+class GetTaggedTokensListPagination(BaseModel):
+    """
+        Model used to identify the pagination of the GET "Blocks" endpoint.
+    """
+    next: str | None = None
+    previous: str | None = None
+
+class GetTaggedTokensListDataData(BaseModel):
+    """
+        Model used to identify the data of a token inside the GET "Tagged Tokens List" endpoint.
+    """
+    mint: str
+    token_name: str = Field(alias = "tokenName")
+    symbol: str
+    decimals: int
+    description: str
+    logo: str
+    tags: list[str]
+    verified: str
+    network: list[str]
+    metadata_token: str = Field(alias = "metadataToken")
+
+class GetTaggedTokensListData(BaseModel):
+    """
+        Model used to identify the data of the GET "Tagged Tokens List" endpoint.
+    """
+    token: str = Field(alias = "tokenHash")
+    data: GetTaggedTokensListDataData
+
+class GetTaggedTokensListResult(BaseModel):
+    """
+        Model used to identify the result of the GET "Tagged Tokens List" endpoint.
+    """
+    data: list[GetTaggedTokensListData]
+    pagination: GetTaggedTokensListPagination
+
+class GetTaggedTokensListResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the GET "Tagged Tokens List" endpoint.
+    """
+    result: GetTaggedTokensListResult

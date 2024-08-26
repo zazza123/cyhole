@@ -17,7 +17,8 @@ from ..solana_fm.schema import (
     GetBlocksResponse,
     GetBlockResponse,
     PostMultipleBlocksResponse,
-    GetSolanaDailyTransactionFeesResponse
+    GetSolanaDailyTransactionFeesResponse,
+    GetTaggedTokensListResponse
 )
 
 
@@ -399,4 +400,29 @@ class SolanaFM(Interaction):
             url = url,
             response_model = GetSolanaDailyTransactionFeesResponse,
             params = api_params
+        )
+
+    @overload
+    def _get_tagged_tokens_list(self, sync: Literal[True]) -> GetTaggedTokensListResponse: ...
+
+    @overload
+    def _get_tagged_tokens_list(self, sync: Literal[False]) -> Coroutine[None, None, GetTaggedTokensListResponse]: ...
+
+    def _get_tagged_tokens_list(self, sync: bool) -> GetTaggedTokensListResponse | Coroutine[None, None, GetTaggedTokensListResponse]:
+        """
+            This function refers to the **[Get Tagged Tokens List](https://docs.solana.fm/reference/get_tokens_by_pagination)** API endpoint,
+            and it is used to get the list of tagged tokens identified by the SolanaFM team (**not tokens indexed on-chain**).
+
+            Returns:
+                List of tagged tokens.
+        """
+        # set params
+        url = self.base_v0_url + "tokens"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTaggedTokensListResponse
         )
