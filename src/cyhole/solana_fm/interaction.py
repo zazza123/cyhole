@@ -19,7 +19,8 @@ from ..solana_fm.schema import (
     PostMultipleBlocksResponse,
     GetSolanaDailyTransactionFeesResponse,
     GetTaggedTokensListResponse,
-    GetTokenInfoV0Response
+    GetTokenInfoV0Response,
+    PostTokenMultipleInfoV0Response
 )
 
 
@@ -457,4 +458,47 @@ class SolanaFM(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenInfoV0Response
+        )
+
+    @overload
+    def _post_token_multiple_info_v0(self, sync: Literal[True], addresses: list[str]) -> PostTokenMultipleInfoV0Response: ...
+
+    @overload
+    def _post_token_multiple_info_v0(self, sync: Literal[False], addresses: list[str]) -> Coroutine[None, None, PostTokenMultipleInfoV0Response]: ...
+
+    def _post_token_multiple_info_v0(self, sync: bool, addresses: list[str]) -> PostTokenMultipleInfoV0Response | Coroutine[None, None, PostTokenMultipleInfoV0Response]:
+        """
+            This function refers to the **[Post Token Multiple Info V0](https://docs.solana.fm/reference/get_tokens_by_account_hashes)** API endpoint,
+            and it is used to get the token information for multiple token addresses.
+
+            !!! info
+                This endpoint refers to the V0 version of the API.
+
+            Parameters:
+                addresses: The list of token addresses.
+
+            Returns:
+                Token information.
+        """
+        # set params
+        url = self.base_v0_url + "tokens"
+
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+
+        json = {
+            "hydration": { "accountHash": True },
+            "tokenHashes": addresses
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.POST.value,
+            url = url,
+            response_model = PostTokenMultipleInfoV0Response,
+            headers = headers,
+            json = json
         )

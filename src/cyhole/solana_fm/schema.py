@@ -379,3 +379,17 @@ class GetTokenInfoV0Response(SolanaFMBaseResponse):
         Model used to identify the response of the GET "Token Info (v0)" endpoint.
     """
     result: GetTokenInfoV0Result
+
+# classes used on POST "Token Multiple Info (v0)" endpoint
+# Response
+class PostTokenMultipleInfoV0Result(GetTaggedTokensListData):
+    """
+        Model used to identify the data of the POST "Token Multiple Info (v0)" endpoint
+    """
+    pass
+
+class PostTokenMultipleInfoV0Response(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the POST "Token Multiple Info (v0)" endpoint.
+    """
+    result: list[PostTokenMultipleInfoV0Result]
