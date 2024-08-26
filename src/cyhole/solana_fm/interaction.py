@@ -18,7 +18,8 @@ from ..solana_fm.schema import (
     GetBlockResponse,
     PostMultipleBlocksResponse,
     GetSolanaDailyTransactionFeesResponse,
-    GetTaggedTokensListResponse
+    GetTaggedTokensListResponse,
+    GetTokenInfoV0Response
 )
 
 
@@ -425,4 +426,35 @@ class SolanaFM(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTaggedTokensListResponse
+        )
+
+    @overload
+    def _get_token_info_v0(self, sync: Literal[True], address: str) -> GetTokenInfoV0Response: ...
+
+    @overload
+    def _get_token_info_v0(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetTokenInfoV0Response]: ...
+
+    def _get_token_info_v0(self, sync: bool, address: str) -> GetTokenInfoV0Response | Coroutine[None, None, GetTokenInfoV0Response]:
+        """
+            This function refers to the **[Get Token Info V0](https://docs.solana.fm/reference/get_token_by_account_hash)** API endpoint,
+            and it is used to get the token information for a given token address.
+
+            !!! info
+                This endpoint refers to the V0 version of the API.
+
+            Parameters:
+                address: The token address.
+
+            Returns:
+                Token information.
+        """
+        # set params
+        url = self.base_v0_url + f"tokens/{address}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenInfoV0Response
         )

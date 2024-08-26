@@ -1,0 +1,24 @@
+{
+    "status": "Success",
+    "message": "Retrieved Token Info from Token Hash",
+    "result": {
+        "tokenHash": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "data": {
+            "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "tokenName": "USD Coin",
+            "symbol": "USDC",
+            "decimals": 6,
+            "description": "",
+            "logo": "https://s3.coinmarketcap.com/static-gravity/image/5a8229787b5e4c809b5914eef709b59a.png",
+            "tags": [
+                "stablecoin",
+                "saber-mkt-usd"
+            ],
+            "verified": "true",
+            "network": [
+                "mainnet"
+            ],
+            "metadataToken": ""
+        }
+    }
+}

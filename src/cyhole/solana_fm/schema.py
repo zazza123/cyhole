@@ -365,3 +365,17 @@ class GetTaggedTokensListResponse(SolanaFMBaseResponse):
         Model used to identify the response of the GET "Tagged Tokens List" endpoint.
     """
     result: GetTaggedTokensListResult
+
+# classes used on GET "Token Info (v0)" endpoint
+# Response
+class GetTokenInfoV0Result(GetTaggedTokensListData):
+    """
+        Model used to identify the data of the GET "Token Info (v0)" endpoint.
+    """
+    pass
+
+class GetTokenInfoV0Response(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the GET "Token Info (v0)" endpoint.
+    """
+    result: GetTokenInfoV0Result
