@@ -1,0 +1,36 @@
+{
+    "mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "decimals": 6,
+    "freezeAuthority": null,
+    "mintAuthority": null,
+    "tokenType": "Fungible",
+    "tokenList": {
+        "name": "Jupiter",
+        "symbol": "JUP",
+        "image": "https://static.jup.ag/jup/icon.png",
+        "extensions": {
+            "coingeckoId": "jupiter-exchange-solana"
+        },
+        "chainId": 101
+    },
+    "tokenMetadata": {
+        "onChainInfo": {
+            "name": "Jupiter",
+            "symbol": "JUP",
+            "metadata": "5pddDLA4taryBwRYGdtKmS9qkwssXD8vHECeNbCZnwUy",
+            "updateAuthority": "61aq585V8cR2sZBeawJFt2NPqmN7zDi1sws4KLs5xHXV",
+            "isMasterEdition": null,
+            "edition": null,
+            "uri": "https://static.jup.ag/jup/metadata.json",
+            "sellerFeeBasisPoints": 0,
+            "primarySaleHappened": false,
+            "isMutable": true,
+            "creators": [],
+            "ruleSet": null,
+            "collection": null,
+            "collectionDetails": null,
+            "uses": null
+        },
+        "offChainInfo": null
+    }
+}

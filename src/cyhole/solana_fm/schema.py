@@ -393,3 +393,66 @@ class PostTokenMultipleInfoV0Response(SolanaFMBaseResponse):
         Model used to identify the response of the POST "Token Multiple Info (v0)" endpoint.
     """
     result: list[PostTokenMultipleInfoV0Result]
+
+# classes used on GET "Token Info (v1)" endpoint
+# Response
+class GetTokenInfoV1ChainInfo(BaseModel):
+    """
+        Model used to identify the chain metadata of the token in the GET "Token Info (v1)" endpoint.
+    """
+    name: str
+    symbol: str
+    metadata: str
+    update_authority: str = Field(alias = "updateAuthority")
+    is_master_edition: bool | None = Field(default = None, alias = "isMasterEdition")
+    edition: str | None = None
+    uri: str
+    seller_fee_basis_points: int = Field(alias = "sellerFeeBasisPoints")
+    primary_sale_happened: bool = Field(alias = "primarySaleHappened")
+    is_mutable: bool = Field(alias = "isMutable")
+    creators: list[str]
+    rule_set: str | None = Field(default = None, alias = "ruleSet")
+    collection: str | None = None
+    collection_details: str | None = Field(default = None, alias = "collectionDetails")
+    uses: str | None = None
+
+class GetTokenInfoV1OffChainInfo(GetTokenInfoV1ChainInfo):
+    """
+        Model used to identify the off-chain metadata of the token in the GET "Token Info (v1)" endpoint.
+    """
+    pass
+
+class GetTokenInfoV1OnChainInfo(GetTokenInfoV1ChainInfo):
+    """
+        Model used to identify the on-chain metadata of the token in the GET "Token Info (v1)" endpoint.
+    """
+    pass
+
+class GetTokenInfoV1TokenMetadata(BaseModel):
+    """
+        Model used to identify the metadata of the token in the GET "Token Info (v1)" endpoint.
+    """
+    on_chain_info: GetTokenInfoV1OnChainInfo | None = Field(default = None, alias = "onChainInfo")
+    off_chain_info: GetTokenInfoV1OffChainInfo | None = Field(default = None, alias = "offChainInfo")
+
+class GetTokenInfoV1TokenList(BaseModel):
+    """
+        Model used to identify the token list in the GET "Token Info (v1)" endpoint.
+    """
+    name: str
+    symbol: str
+    image: str
+    extensions: dict[str, str]
+    chain_id: int = Field(alias = "chainId")
+
+class GetTokenInfoV1Response(BaseModel):
+    """
+        Model used to identify the response of the GET "Token Info (v0)" endpoint.
+    """
+    mint: str
+    decimals: int
+    freeze_authority: str | None = Field(default = None, alias = "freezeAuthority")
+    mint_authority: str | None = Field(default = None, alias = "mintAuthority")
+    token_type: str = Field(alias = "tokenType")
+    token_list: GetTokenInfoV1TokenList = Field(alias = "tokenList")
+    token_metadata: GetTokenInfoV1TokenMetadata = Field(alias = "tokenMetadata")

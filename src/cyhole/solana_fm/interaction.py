@@ -20,7 +20,8 @@ from ..solana_fm.schema import (
     GetSolanaDailyTransactionFeesResponse,
     GetTaggedTokensListResponse,
     GetTokenInfoV0Response,
-    PostTokenMultipleInfoV0Response
+    PostTokenMultipleInfoV0Response,
+    GetTokenInfoV1Response
 )
 
 
@@ -81,6 +82,7 @@ class SolanaFM(Interaction):
 
         # API urls
         self.base_v0_url = "https://api.solana.fm/v0/"
+        self.base_v1_url = "https://api.solana.fm/v1/"
 
         # private attributes
         self._name = "SolanaFM"
@@ -441,7 +443,7 @@ class SolanaFM(Interaction):
             and it is used to get the token information for a given token address.
 
             !!! info
-                This endpoint refers to the V0 version of the API.
+                This endpoint refers to the **V0** version of the API.
 
             Parameters:
                 address: The token address.
@@ -472,7 +474,7 @@ class SolanaFM(Interaction):
             and it is used to get the token information for multiple token addresses.
 
             !!! info
-                This endpoint refers to the V0 version of the API.
+                This endpoint refers to the **V0** version of the API.
 
             Parameters:
                 addresses: The list of token addresses.
@@ -501,4 +503,35 @@ class SolanaFM(Interaction):
             response_model = PostTokenMultipleInfoV0Response,
             headers = headers,
             json = json
+        )
+
+    @overload
+    def _get_token_info_v1(self, sync: Literal[True], address: str) -> GetTokenInfoV1Response: ...
+
+    @overload
+    def _get_token_info_v1(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetTokenInfoV1Response]: ...
+
+    def _get_token_info_v1(self, sync: bool, address: str) -> GetTokenInfoV1Response | Coroutine[None, None, GetTokenInfoV1Response]:
+        """
+            This function refers to the **[Get Token Info V1](https://docs.solana.fm/reference/get_one_token)** API endpoint,
+            and it is used to get the token information for a given token address.
+
+            !!! info
+                This endpoint refers to the **V1** version of the API.
+
+            Parameters:
+                address: The token address.
+
+            Returns:
+                Token information.
+        """
+        # set params
+        url = self.base_v1_url + f"tokens/{address}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenInfoV1Response
         )
