@@ -21,7 +21,8 @@ from ..solana_fm.schema import (
     GetTaggedTokensListResponse,
     GetTokenInfoV0Response,
     PostTokenMultipleInfoV0Response,
-    GetTokenInfoV1Response
+    GetTokenInfoV1Response,
+    PostTokenMultipleInfoV1Response
 )
 
 
@@ -535,3 +536,45 @@ class SolanaFM(Interaction):
             url = url,
             response_model = GetTokenInfoV1Response
         )
+
+    @overload
+    def _post_token_multiple_info_v1(self, sync: Literal[True], addresses: list[str]) -> PostTokenMultipleInfoV1Response: ...
+
+    @overload
+    def _post_token_multiple_info_v1(self, sync: Literal[False], addresses: list[str]) -> Coroutine[None, None, PostTokenMultipleInfoV1Response]: ...
+
+    def _post_token_multiple_info_v1(self, sync: bool, addresses: list[str]) -> PostTokenMultipleInfoV1Response | Coroutine[None, None, PostTokenMultipleInfoV1Response]:
+        """
+            This function refers to the **[Post Token Multiple Info V1](https://docs.solana.fm/reference/retrieve_multiple_tokens)** API endpoint,
+            and it is used to get the token information for multiple token addresses.
+
+            !!! info
+                This endpoint refers to the **V1** version of the API.
+
+            Parameters:
+                addresses: The list of token addresses.
+
+            Returns:
+                Token information.
+        """
+        # set params
+        url = self.base_v1_url + "tokens"
+
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+
+        json = {
+            "tokens": addresses
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.POST.value, url, headers = headers, json = json)
+            return PostTokenMultipleInfoV1Response(tokens = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.POST.value, url, headers = headers, json = json)
+                return PostTokenMultipleInfoV1Response(tokens = content_raw.json())
+            return async_request()

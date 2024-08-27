@@ -1,0 +1,76 @@
+{
+    "tokens": {
+        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
+            "mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "decimals": 6,
+            "freezeAuthority": null,
+            "mintAuthority": null,
+            "tokenType": "Fungible",
+            "tokenList": {
+                "name": "Jupiter",
+                "symbol": "JUP",
+                "image": "https://static.jup.ag/jup/icon.png",
+                "extensions": {
+                    "coingeckoId": "jupiter-exchange-solana"
+                },
+                "chainId": 101
+            },
+            "tokenMetadata": {
+                "onChainInfo": {
+                    "name": "Jupiter",
+                    "symbol": "JUP",
+                    "metadata": "5pddDLA4taryBwRYGdtKmS9qkwssXD8vHECeNbCZnwUy",
+                    "updateAuthority": "61aq585V8cR2sZBeawJFt2NPqmN7zDi1sws4KLs5xHXV",
+                    "isMasterEdition": null,
+                    "edition": null,
+                    "uri": "https://static.jup.ag/jup/metadata.json",
+                    "sellerFeeBasisPoints": 0,
+                    "primarySaleHappened": false,
+                    "isMutable": true,
+                    "creators": [],
+                    "ruleSet": null,
+                    "collection": null,
+                    "collectionDetails": null,
+                    "uses": null
+                },
+                "offChainInfo": null
+            }
+        },
+        "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {
+            "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 6,
+            "freezeAuthority": "3sNBr7kMccME5D55xNgsmYpZnzPgP2g12CixAajXypn6",
+            "mintAuthority": "2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9",
+            "tokenType": "Legacy",
+            "tokenList": {
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "image": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
+                "extensions": {
+                    "coingeckoId": "usd-coin"
+                },
+                "chainId": 101
+            },
+            "tokenMetadata": {
+                "onChainInfo": {
+                    "name": "USD Coin",
+                    "symbol": "USDC",
+                    "metadata": "5x38Kp4hvdomTCnCrAny4UtMUt5rQBdB6px2K1Ui45Wq",
+                    "updateAuthority": "2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9",
+                    "isMasterEdition": null,
+                    "edition": null,
+                    "uri": "",
+                    "sellerFeeBasisPoints": 0,
+                    "primarySaleHappened": false,
+                    "isMutable": true,
+                    "creators": [],
+                    "ruleSet": null,
+                    "collection": null,
+                    "collectionDetails": null,
+                    "uses": null
+                },
+                "offChainInfo": null
+            }
+        }
+    }
+}

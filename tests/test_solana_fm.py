@@ -19,7 +19,8 @@ from cyhole.solana_fm.schema import (
     GetTaggedTokensListResponse,
     GetTokenInfoV0Response,
     PostTokenMultipleInfoV0Response,
-    GetTokenInfoV1Response
+    GetTokenInfoV1Response,
+    PostTokenMultipleInfoV1Response
 )
 from cyhole.core.address.solana import JUP, USDC, SOL
 
@@ -667,3 +668,59 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetTokenInfoV1Response)
+
+    def test_post_token_multiple_info_v1_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Token Multiple Info V1" for synchronous logic.
+
+            Mock Response File: post_token_multiple_info_v1.json
+        """
+
+        # load mock response
+        mock_file_name = "post_token_multiple_info_v1"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenMultipleInfoV1Response)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["tokens"]).replace("'", '"').replace("False", "false").replace("True", "true").encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.post_token_multiple_info_v1([JUP, USDC])
+
+        # actual test
+        assert isinstance(response, PostTokenMultipleInfoV1Response)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_token_multiple_info_v1_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Token Multiple Info V1" for asynchronous logic.
+
+            Mock Response File: post_token_multiple_info_v1.json
+        """
+
+        # load mock response
+        mock_file_name = "post_token_multiple_info_v1"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenMultipleInfoV1Response)
+
+            # response content to be adjusted
+            content = str(mock_response.json()["tokens"]).replace("'", '"').replace("False", "false").replace("True", "true").encode()
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.post_token_multiple_info_v1([JUP, USDC])
+
+        # actual test
+        assert isinstance(response, PostTokenMultipleInfoV1Response)

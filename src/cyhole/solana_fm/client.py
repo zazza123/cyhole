@@ -19,7 +19,8 @@ from ..solana_fm.schema import (
     GetTaggedTokensListResponse,
     GetTokenInfoV0Response,
     PostTokenMultipleInfoV0Response,
-    GetTokenInfoV1Response
+    GetTokenInfoV1Response,
+    PostTokenMultipleInfoV1Response
 )
 
 if TYPE_CHECKING:
@@ -124,6 +125,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_token_info_v1(True, address)
 
+    def post_token_multiple_info_v1(self, addresses: list[str]) -> PostTokenMultipleInfoV1Response:
+        """
+            Call the SolanaFM's API endpoint **[Post Token Multiple Info V1](https://docs.solana.fm/reference/retrieve_multiple_tokens)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._post_token_multiple_info_v1`][cyhole.solana_fm.interaction.SolanaFM._post_token_multiple_info_v1].
+        """
+        return self._interaction._post_token_multiple_info_v1(True, addresses)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -222,3 +230,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_token_info_v1`][cyhole.solana_fm.interaction.SolanaFM._get_token_info_v1].
         """
         return await self._interaction._get_token_info_v1(False, address)
+
+    async def post_token_multiple_info_v1(self, addresses: list[str]) -> PostTokenMultipleInfoV1Response:
+        """
+            Call the SolanaFM's API endpoint **[Post Token Multiple Info V1](https://docs.solana.fm/reference/retrieve_multiple_tokens)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._post_token_multiple_info_v1`][cyhole.solana_fm.interaction.SolanaFM._post_token_multiple_info_v1].
+        """
+        return await self._interaction._post_token_multiple_info_v1(False, addresses)

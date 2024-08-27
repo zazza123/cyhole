@@ -456,3 +456,11 @@ class GetTokenInfoV1Response(BaseModel):
     token_type: str = Field(alias = "tokenType")
     token_list: GetTokenInfoV1TokenList = Field(alias = "tokenList")
     token_metadata: GetTokenInfoV1TokenMetadata = Field(alias = "tokenMetadata")
+
+# classes used on POST "Token Multiple Info (v1)" endpoint
+# Response
+class PostTokenMultipleInfoV1Response(BaseModel):
+    """
+        Model used to identify the response of the POST "Token Multiple Info (v1)" endpoint.
+    """
+    tokens: dict[str, GetTokenInfoV1Response]
