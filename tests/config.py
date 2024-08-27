@@ -169,3 +169,20 @@ class MockerManager:
         mock_response.encoding = "utf-8"
 
         return mock_response
+
+    def adjust_content_json(self, content: str) -> bytes:
+        """
+            Use this function to adjust an input string to ensure that 
+            can be used as content for a `Response` object and paresed 
+            as a JSON object.
+
+            Parameters:
+                content: string to adjust.
+        """
+        # adjustemts
+        content = content.replace("'", '"')
+        content = content.replace("False", "false")
+        content = content.replace("True", "true")
+        content = content.replace("None", "null")
+
+        return content.encode()

@@ -99,7 +99,7 @@ class TestSolanaFM:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsFeesResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["data"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["data"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -129,7 +129,7 @@ class TestSolanaFM:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsFeesResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["data"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["data"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -683,7 +683,7 @@ class TestSolanaFM:
             mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenMultipleInfoV1Response)
 
             # response content to be adjusted
-            content = str(mock_response.json()["tokens"]).replace("'", '"').replace("False", "false").replace("True", "true").encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -713,7 +713,7 @@ class TestSolanaFM:
             mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenMultipleInfoV1Response)
 
             # response content to be adjusted
-            content = str(mock_response.json()["tokens"]).replace("'", '"').replace("False", "false").replace("True", "true").encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
