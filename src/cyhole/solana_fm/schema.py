@@ -464,3 +464,53 @@ class PostTokenMultipleInfoV1Response(BaseModel):
         Model used to identify the response of the POST "Token Multiple Info (v1)" endpoint.
     """
     tokens: dict[str, GetTokenInfoV1Response]
+
+# classes used on POST "User's Token Accounts" endpoint
+# Response
+class PostUserTokenAccountsInfoExtensionState(BaseModel):
+    """
+        Model used to identify the state of the extension of the token in the POST "User's Token Accounts" endpoint.
+    """
+    with_held_amount: int = Field(alias = "withheldAmount")
+
+class PostUserTokenAccountsInfoExtension(BaseModel):
+    """
+        Model used to identify the extension of the token in the POST "User's Token Accounts" endpoint.
+    """
+    extension: str
+    state: PostUserTokenAccountsInfoExtensionState | None = None
+
+class PostUserTokenAccountsInfoTokenAmount(BaseModel):
+    """
+        Model used to identify the token amount of the token in the POST "User's Token Accounts" endpoint.
+    """
+    amount: int
+    decimals: int
+    ui_amount: float = Field(alias = "uiAmount")
+    ui_amount_string: str = Field(alias = "uiAmountString")
+
+class PostUserTokenAccountsInfo(BaseModel):
+    """
+        Model used to identify the info of the token of the POST "User's Token Accounts" endpoint.
+    """
+    extensions: list[PostUserTokenAccountsInfoExtension] | None = None
+    is_native: bool = Field(alias = "isNative")
+    mint: str
+    owner: str
+    state: str
+    token_amount: PostUserTokenAccountsInfoTokenAmount = Field(alias = "tokenAmount")
+
+class PostUserTokenAccounts(BaseModel):
+    """
+        Model used to identify the token's account of the POST "User's Token Accounts" endpoint.
+    """
+    id: str = Field(alias = "_id")
+    info: PostUserTokenAccountsInfo
+    slot: int
+
+class PostUserTokenAccountsResponse(BaseModel):
+    """
+        Model used to identify the response of the POST "User's Token Accounts" endpoint.
+    """
+    sol_balance: int | None = Field(default = None, alias = "solBalance")
+    token_accounts: list[PostUserTokenAccounts] = Field(alias = "tokenAccounts")

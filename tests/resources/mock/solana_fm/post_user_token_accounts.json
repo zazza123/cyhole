@@ -1,0 +1,50 @@
+{
+    "solBalance": null,
+    "tokenAccounts": [
+        {
+            "_id": "7cKdxncEnxgwcwN3VhFUQabisNCD5RGkiY89PgQYsZPk",
+            "info": {
+                "extensions": [
+                    {
+                        "extension": "immutableOwner",
+                        "state": null
+                    },
+                    {
+                        "extension": "transferFeeAmount",
+                        "state": {
+                            "withheldAmount": 20000000
+                        }
+                    }
+                ],
+                "isNative": false,
+                "mint": "7atgF8KQo4wJrD5ATGX7t1V2zVvykPJbFfNeVf1icFv1",
+                "owner": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "state": "initialized",
+                "tokenAmount": {
+                    "amount": 480000000,
+                    "decimals": 2,
+                    "uiAmount": 4800000.0,
+                    "uiAmountString": "4800000"
+                }
+            },
+            "slot": 286149708
+        },
+        {
+            "_id": "8jLqanKyVKXnRC3Y9JFK2Weo9fUnNg26myyY3bYJetfS",
+            "info": {
+                "extensions": null,
+                "isNative": false,
+                "mint": "Fm6ntLp18rd49LHGnHRV3L3RitwuVoqCUN4FYn3ECKt4",
+                "owner": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "state": "initialized",
+                "tokenAmount": {
+                    "amount": 550312598938152,
+                    "decimals": 9,
+                    "uiAmount": 550312.598938152,
+                    "uiAmountString": "550312.598938152"
+                }
+            },
+            "slot": 286177816
+        }
+    ]
+}

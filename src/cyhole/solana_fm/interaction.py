@@ -22,7 +22,8 @@ from ..solana_fm.schema import (
     GetTokenInfoV0Response,
     PostTokenMultipleInfoV0Response,
     GetTokenInfoV1Response,
-    PostTokenMultipleInfoV1Response
+    PostTokenMultipleInfoV1Response,
+    PostUserTokenAccountsResponse
 )
 
 
@@ -578,3 +579,45 @@ class SolanaFM(Interaction):
                 content_raw = await self.async_client.api(RequestType.POST.value, url, headers = headers, json = json)
                 return PostTokenMultipleInfoV1Response(tokens = content_raw.json())
             return async_request()
+
+    @overload
+    def _post_user_token_accounts(self, sync: Literal[True], address: str, include_sol_balance: bool = False, tokens: list[str] | None = None) -> PostUserTokenAccountsResponse: ...
+
+    @overload
+    def _post_user_token_accounts(self, sync: Literal[False], address: str, include_sol_balance: bool = False, tokens: list[str] | None = None) -> Coroutine[None, None, PostUserTokenAccountsResponse]: ...
+
+    def _post_user_token_accounts(self, sync: bool, address: str, include_sol_balance: bool = False, tokens: list[str] | None = None) -> PostUserTokenAccountsResponse | Coroutine[None, None, PostUserTokenAccountsResponse]:
+        """
+            This function refers to the **[Post User Token Accounts](https://docs.solana.fm/reference/get_user_token_accounts)** API endpoint,
+            and it is used to get the token accounts for a given user address.
+
+            Parameters:
+                address: The user address.
+                include_sol_balance: Flag to include the Sol balance of the account.
+                tokens: The list of token addresses to filter the accounts.
+
+            Returns:
+                Token accounts.
+        """
+        # set params
+        url = self.base_v1_url + f"tokens/{address}/token-accounts"
+
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+
+        json = {
+            "includeSolBalance": include_sol_balance,
+            "tokenHashes": tokens
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.POST.value,
+            url = url,
+            response_model = PostUserTokenAccountsResponse,
+            headers = headers,
+            json = json
+        )

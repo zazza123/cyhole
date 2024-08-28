@@ -20,7 +20,8 @@ from ..solana_fm.schema import (
     GetTokenInfoV0Response,
     PostTokenMultipleInfoV0Response,
     GetTokenInfoV1Response,
-    PostTokenMultipleInfoV1Response
+    PostTokenMultipleInfoV1Response,
+    PostUserTokenAccountsResponse
 )
 
 if TYPE_CHECKING:
@@ -132,6 +133,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._post_token_multiple_info_v1(True, addresses)
 
+    def post_user_token_accounts(self, address: str, include_sol_balance: bool = False, tokens: list[str] | None = None) -> PostUserTokenAccountsResponse:
+        """
+            Call the SolanaFM's API endpoint **[Post User Token Accounts](https://docs.solana.fm/reference/get_user_token_accounts)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._post_user_token_accounts`][cyhole.solana_fm.interaction.SolanaFM._post_user_token_accounts].
+        """
+        return self._interaction._post_user_token_accounts(True, address, include_sol_balance, tokens)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -237,3 +245,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._post_token_multiple_info_v1`][cyhole.solana_fm.interaction.SolanaFM._post_token_multiple_info_v1].
         """
         return await self._interaction._post_token_multiple_info_v1(False, addresses)
+
+    async def post_user_token_accounts(self, address: str, include_sol_balance: bool = False, tokens: list[str] | None = None) -> PostUserTokenAccountsResponse:
+        """
+            Call the SolanaFM's API endpoint **[Post User Token Accounts](https://docs.solana.fm/reference/get_user_token_accounts)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._post_user_token_accounts`][cyhole.solana_fm.interaction.SolanaFM._post_user_token_accounts].
+        """
+        return await self._interaction._post_user_token_accounts(False, address, include_sol_balance, tokens)
