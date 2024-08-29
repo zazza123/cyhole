@@ -21,7 +21,8 @@ from cyhole.solana_fm.schema import (
     PostTokenMultipleInfoV0Response,
     GetTokenInfoV1Response,
     PostTokenMultipleInfoV1Response,
-    PostUserTokenAccountsResponse
+    PostUserTokenAccountsResponse,
+    GetMintTokenAccountsResponse
 )
 from cyhole.core.address.solana import JUP, USDC, SOL
 
@@ -771,3 +772,49 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, PostUserTokenAccountsResponse)
+
+    def test_get_mint_token_accounts_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Mint Token Accounts" for synchronous logic.
+
+            Mock Response File: get_mint_token_accounts.json
+        """
+
+        # load mock response
+        mock_file_name = "get_mint_token_accounts"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetMintTokenAccountsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.get_mint_token_accounts(JUP, page_size = 2)
+
+        # actual test
+        assert isinstance(response, GetMintTokenAccountsResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_mint_token_accounts_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Mint Token Accounts" for asynchronous logic.
+
+            Mock Response File: get_mint_token_accounts.json
+        """
+
+        # load mock response
+        mock_file_name = "get_mint_token_accounts"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetMintTokenAccountsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.get_mint_token_accounts(JUP, page_size = 2)
+
+        # actual test
+        assert isinstance(response, GetMintTokenAccountsResponse)

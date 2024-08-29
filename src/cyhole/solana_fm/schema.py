@@ -514,3 +514,18 @@ class PostUserTokenAccountsResponse(BaseModel):
     """
     sol_balance: int | None = Field(default = None, alias = "solBalance")
     token_accounts: list[PostUserTokenAccounts] = Field(alias = "tokenAccounts")
+
+# classes used on GET "Mint Token Accounts" endpoint
+# Response
+class GetMintTokenAccountsTokenAccounts(PostUserTokenAccounts):
+    """
+        Model used to identify the token accounts of the GET "Mint Token Accounts" endpoint.
+    """
+    pass
+
+class GetMintTokenAccountsResponse(BaseModel):
+    """
+        Model used to identify the response of the GET "Mint Token Accounts" endpoint.
+    """
+    token_accounts: list[GetMintTokenAccountsTokenAccounts] = Field(alias = "tokenAccounts")
+    total_item_count: int = Field(alias = "totalItemCount")

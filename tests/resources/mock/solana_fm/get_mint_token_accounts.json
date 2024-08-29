@@ -1,0 +1,39 @@
+{
+    "tokenAccounts": [
+        {
+            "_id": "26ddLrqXDext6caX1gRxARePN4kzajyGiAUz9JmzmTGQ",
+            "info": {
+                "extensions": null,
+                "isNative": false,
+                "mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "owner": "61aq585V8cR2sZBeawJFt2NPqmN7zDi1sws4KLs5xHXV",
+                "state": "initialized",
+                "tokenAmount": {
+                    "amount": 4090152116568146,
+                    "decimals": 6,
+                    "uiAmount": 4090152116.568146,
+                    "uiAmountString": "4090152116.568146"
+                }
+            },
+            "slot": 286443507
+        },
+        {
+            "_id": "6G4XDSge4txj5tBkA5gZqefXXE3BRxqA37Yb1pmrHv6N",
+            "info": {
+                "extensions": null,
+                "isNative": false,
+                "mint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "owner": "EXJHiMkj6NRFDfhWBMKccHNwdSpCT7tdvQeRf87yHm6T",
+                "state": "initialized",
+                "tokenAmount": {
+                    "amount": 3500000000001000,
+                    "decimals": 6,
+                    "uiAmount": 3500000000.001,
+                    "uiAmountString": "3500000000.001"
+                }
+            },
+            "slot": 286547876
+        }
+    ],
+    "totalItemCount": 1997588
+}

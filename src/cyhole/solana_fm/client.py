@@ -21,7 +21,8 @@ from ..solana_fm.schema import (
     PostTokenMultipleInfoV0Response,
     GetTokenInfoV1Response,
     PostTokenMultipleInfoV1Response,
-    PostUserTokenAccountsResponse
+    PostUserTokenAccountsResponse,
+    GetMintTokenAccountsResponse
 )
 
 if TYPE_CHECKING:
@@ -140,6 +141,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._post_user_token_accounts(True, address, include_sol_balance, tokens)
 
+    def get_mint_token_accounts(self, address: str, page: int | None = None, page_size: int | None = None) -> GetMintTokenAccountsResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Mint Token Accounts](https://docs.solana.fm/reference/get_token_accounts_for_token_mint)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_mint_token_accounts`][cyhole.solana_fm.interaction.SolanaFM._get_mint_token_accounts].
+        """
+        return self._interaction._get_mint_token_accounts(True, address, page, page_size)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -252,3 +260,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._post_user_token_accounts`][cyhole.solana_fm.interaction.SolanaFM._post_user_token_accounts].
         """
         return await self._interaction._post_user_token_accounts(False, address, include_sol_balance, tokens)
+
+    async def get_mint_token_accounts(self, address: str, page: int | None = None, page_size: int | None = None) -> GetMintTokenAccountsResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Mint Token Accounts](https://docs.solana.fm/reference/get_token_accounts_for_token_mint)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_mint_token_accounts`][cyhole.solana_fm.interaction.SolanaFM._get_mint_token_accounts].
+        """
+        return await self._interaction._get_mint_token_accounts(False, address, page, page_size)

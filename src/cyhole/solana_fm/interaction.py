@@ -23,7 +23,8 @@ from ..solana_fm.schema import (
     PostTokenMultipleInfoV0Response,
     GetTokenInfoV1Response,
     PostTokenMultipleInfoV1Response,
-    PostUserTokenAccountsResponse
+    PostUserTokenAccountsResponse,
+    GetMintTokenAccountsResponse
 )
 
 
@@ -621,3 +622,39 @@ class SolanaFM(Interaction):
             headers = headers,
             json = json
         )
+
+    @overload
+    def _get_mint_token_accounts(self, sync: Literal[True], address: str, page: int | None = None, page_size: int | None = None) -> GetMintTokenAccountsResponse: ...
+
+    @overload
+    def _get_mint_token_accounts(self, sync: Literal[False], address: str, page: int | None = None, page_size: int | None = None) -> Coroutine[None, None, GetMintTokenAccountsResponse]: ...
+
+    def _get_mint_token_accounts(self, sync: bool, address: str, page: int | None = None, page_size: int | None = None) -> GetMintTokenAccountsResponse | Coroutine[None, None, GetMintTokenAccountsResponse]:
+        """
+            This function refers to the **[Get Mint Token Accounts](https://docs.solana.fm/reference/get_token_accounts_for_token_mint)** API endpoint,
+            and it is used to get the token accounts owned by a given token mint address.
+
+            Parameters:
+                address: The token address.
+                page: The page number.
+                page_size: The number of accounts to return per page.
+
+            Returns:
+                Token accounts.
+        """
+        # set params
+        url = self.base_v1_url + f"tokens/{address}/holders"
+
+        api_params = {
+            "page": page,
+            "pageSize": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetMintTokenAccountsResponse,
+            params = api_params
+        ) 
