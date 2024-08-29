@@ -23,7 +23,8 @@ from cyhole.solana_fm.schema import (
     PostTokenMultipleInfoV1Response,
     PostUserTokenAccountsResponse,
     GetMintTokenAccountsResponse,
-    GetOnChainTokenDataResponse
+    GetOnChainTokenDataResponse,
+    GetTokenSupplyResponse
 )
 from cyhole.core.address.solana import JUP, USDC, SOL
 
@@ -867,3 +868,49 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetOnChainTokenDataResponse)
+
+    def test_get_token_supply_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Token Supply" for synchronous logic.
+
+            Mock Response File: get_token_supply.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_supply"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSupplyResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.get_token_supply(JUP)
+
+        # actual test
+        assert isinstance(response, GetTokenSupplyResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_supply_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get Token Supply" for asynchronous logic.
+
+            Mock Response File: get_token_supply.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_supply"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSupplyResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.get_token_supply(JUP)
+
+        # actual test
+        assert isinstance(response, GetTokenSupplyResponse)

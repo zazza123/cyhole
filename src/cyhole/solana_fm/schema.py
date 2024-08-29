@@ -569,3 +569,16 @@ class GetOnChainTokenDataResponse(BaseModel):
     info: GetOnChainTokenDataInfo
     slot: int
     type: str | None = None
+
+# classes used on GET "Token Supply" endpoint
+# Response
+class GetTokenSupplyResponse(BaseModel):
+    """
+        Model used to identify the response of the GET "Token Supply" endpoint.
+    """
+    circulating_supply: float = Field(alias = "circulatingSupply")
+    token_withheld_amount: int | None = Field(default = None, alias = "tokenWithheldAmount")
+    user_total_withheld_amount: int = Field(alias = "userTotalWithheldAmount")
+    total_withheld_amount: int = Field(alias = "totalWithheldAmount")
+    real_circulating_supply: float = Field(alias = "realCirculatingSupply")
+    decimals: int

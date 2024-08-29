@@ -25,7 +25,8 @@ from ..solana_fm.schema import (
     PostTokenMultipleInfoV1Response,
     PostUserTokenAccountsResponse,
     GetMintTokenAccountsResponse,
-    GetOnChainTokenDataResponse
+    GetOnChainTokenDataResponse,
+    GetTokenSupplyResponse
 )
 
 
@@ -686,4 +687,32 @@ class SolanaFM(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetOnChainTokenDataResponse
+        )
+
+    @overload
+    def _get_token_supply(self, sync: Literal[True], address: str) -> GetTokenSupplyResponse: ...
+
+    @overload
+    def _get_token_supply(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetTokenSupplyResponse]: ...
+
+    def _get_token_supply(self, sync: bool, address: str) -> GetTokenSupplyResponse | Coroutine[None, None, GetTokenSupplyResponse]:
+        """
+            This function refers to the **[Get Token Supply](https://docs.solana.fm/reference/get_token_circulating_supply)** API endpoint,
+            and it is used to get the token circulating supply for a given token address.
+
+            Parameters:
+                address: The token address.
+
+            Returns:
+                Token supply.
+        """
+        # set params
+        url = self.base_v1_url + f"tokens/{address}/supply"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenSupplyResponse
         )
