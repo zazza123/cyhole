@@ -467,11 +467,23 @@ class PostTokenMultipleInfoV1Response(BaseModel):
 
 # classes used on POST "User's Token Accounts" endpoint
 # Response
+class PostUserTokenAccountsInfoExtensionStateTransferFee(BaseModel):
+    """
+        Model used to identify the transfer fee of the extension state of the token in the POST "User's Token Accounts" endpoint.
+    """
+    epoch: int
+    maximum_fee: int = Field(alias = "maximumFee")
+    transfer_fee_basis_points: int = Field(alias = "transferFeeBasisPoints")
+
 class PostUserTokenAccountsInfoExtensionState(BaseModel):
     """
         Model used to identify the state of the extension of the token in the POST "User's Token Accounts" endpoint.
     """
-    with_held_amount: int = Field(alias = "withheldAmount")
+    newer_transfer_fee: PostUserTokenAccountsInfoExtensionStateTransferFee | None = Field(default = None, alias = "newerTransferFee")
+    older_transfer_fee: PostUserTokenAccountsInfoExtensionStateTransferFee | None = Field(default = None, alias = "olderTransferFee")
+    withheld_amount: int | None = Field(default = None, alias = "withheldAmount")
+    withdraw_withheld_authority: str | None = Field(default = None, alias = "withdrawWithheldAuthority")
+    transfer_fee_config_authority: str | None = Field(default = None, alias = "transferFeeConfigAuthority")
 
 class PostUserTokenAccountsInfoExtension(BaseModel):
     """
@@ -529,3 +541,31 @@ class GetMintTokenAccountsResponse(BaseModel):
     """
     token_accounts: list[GetMintTokenAccountsTokenAccounts] = Field(alias = "tokenAccounts")
     total_item_count: int = Field(alias = "totalItemCount")
+
+# classes used on GET "On-Chain Token Data" endpoint
+# Response
+class GetOnChainTokenDataInfoExtension(PostUserTokenAccountsInfoExtension):
+    """
+        Model used to identify the extension of the token in the GET "On-Chain Token Data" endpoint.
+    """
+    pass
+
+class GetOnChainTokenDataInfo(BaseModel):
+    """
+        Model used to identify the info of the token in the GET "On-Chain Token Data" endpoint.
+    """
+    decimals: int
+    extensions: list[GetOnChainTokenDataInfoExtension] | None = None
+    freeze_authority: str | None = Field(default = None, alias = "freezeAuthority")
+    is_initialized: bool = Field(alias = "isInitialized")
+    mint_authority: str | None = Field(default = None, alias = "mintAuthority")
+    supply: str
+
+class GetOnChainTokenDataResponse(BaseModel):
+    """
+        Model used to identify the response of the GET "On-Chain Token Data" endpoint.
+    """
+    id: str
+    info: GetOnChainTokenDataInfo
+    slot: int
+    type: str | None = None

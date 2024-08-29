@@ -1,0 +1,32 @@
+{
+    "id": "7atgF8KQo4wJrD5ATGX7t1V2zVvykPJbFfNeVf1icFv1",
+    "info": {
+        "decimals": 2,
+        "extensions": [
+            {
+                "extension": "transferFeeConfig",
+                "state": {
+                    "newerTransferFee": {
+                        "epoch": 551,
+                        "maximumFee": 99999999999999904,
+                        "transferFeeBasisPoints": 400
+                    },
+                    "olderTransferFee": {
+                        "epoch": 551,
+                        "maximumFee": 99999999999999904,
+                        "transferFeeBasisPoints": 400
+                    },
+                    "withheldAmount": 46160361979077257,
+                    "withdrawWithheldAuthority": null,
+                    "transferFeeConfigAuthority": null
+                }
+            }
+        ],
+        "freezeAuthority": null,
+        "isInitialized": true,
+        "mintAuthority": null,
+        "supply": "99994921564360750"
+    },
+    "slot": 286559234,
+    "type": null
+}

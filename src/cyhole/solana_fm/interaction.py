@@ -24,7 +24,8 @@ from ..solana_fm.schema import (
     GetTokenInfoV1Response,
     PostTokenMultipleInfoV1Response,
     PostUserTokenAccountsResponse,
-    GetMintTokenAccountsResponse
+    GetMintTokenAccountsResponse,
+    GetOnChainTokenDataResponse
 )
 
 
@@ -657,4 +658,32 @@ class SolanaFM(Interaction):
             url = url,
             response_model = GetMintTokenAccountsResponse,
             params = api_params
-        ) 
+        )
+
+    @overload
+    def _get_on_chain_token_data(self, sync: Literal[True], address: str) -> GetOnChainTokenDataResponse: ...
+
+    @overload
+    def _get_on_chain_token_data(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetOnChainTokenDataResponse]: ...
+
+    def _get_on_chain_token_data(self, sync: bool, address: str) -> GetOnChainTokenDataResponse | Coroutine[None, None, GetOnChainTokenDataResponse]:
+        """
+            This function refers to the **[Get On-Chain Token Data](https://docs.solana.fm/reference/get_tfi_token_data)** API endpoint,
+            and it is used to get the token data for a given token address stored on-chain.
+
+            Parameters:
+                address: The token address.
+
+            Returns:
+                Token data.
+        """
+        # set params
+        url = self.base_v1_url + f"tokens/{address}/info"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetOnChainTokenDataResponse
+        )

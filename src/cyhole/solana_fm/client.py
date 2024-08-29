@@ -22,7 +22,8 @@ from ..solana_fm.schema import (
     GetTokenInfoV1Response,
     PostTokenMultipleInfoV1Response,
     PostUserTokenAccountsResponse,
-    GetMintTokenAccountsResponse
+    GetMintTokenAccountsResponse,
+    GetOnChainTokenDataResponse
 )
 
 if TYPE_CHECKING:
@@ -148,6 +149,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_mint_token_accounts(True, address, page, page_size)
 
+    def get_on_chain_token_data(self, address: str) -> GetOnChainTokenDataResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get On Chain Token Data](https://docs.solana.fm/reference/get_tfi_token_data)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_on_chain_token_data`][cyhole.solana_fm.interaction.SolanaFM._get_on_chain_token_data].
+        """
+        return self._interaction._get_on_chain_token_data(True, address)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -267,3 +275,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_mint_token_accounts`][cyhole.solana_fm.interaction.SolanaFM._get_mint_token_accounts].
         """
         return await self._interaction._get_mint_token_accounts(False, address, page, page_size)
+
+    async def get_on_chain_token_data(self, address: str) -> GetOnChainTokenDataResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get On Chain Token Data](https://docs.solana.fm/reference/get_tfi_token_data)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_on_chain_token_data`][cyhole.solana_fm.interaction.SolanaFM._get_on_chain_token_data].
+        """
+        return await self._interaction._get_on_chain_token_data(False, address)
