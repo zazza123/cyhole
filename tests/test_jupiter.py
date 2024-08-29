@@ -490,7 +490,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteTokensResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["tokens"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -519,7 +519,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteTokensResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["tokens"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -545,7 +545,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteProgramIdLabelResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["dexes"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["dexes"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -575,7 +575,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteProgramIdLabelResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["dexes"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["dexes"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -681,7 +681,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["tokens"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -712,7 +712,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["tokens"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -912,7 +912,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderOpenResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -943,7 +943,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderOpenResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -969,7 +969,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderHistoryResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -1003,7 +1003,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderHistoryResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -1032,7 +1032,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderTradeHistoryResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -1066,7 +1066,7 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderTradeHistoryResponse)
 
             # response content to be adjusted
-            content = str(mock_response.json()["orders"]).replace("'", '"').encode()
+            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
             mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
