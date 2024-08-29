@@ -24,7 +24,8 @@ from ..solana_fm.schema import (
     PostUserTokenAccountsResponse,
     GetMintTokenAccountsResponse,
     GetOnChainTokenDataResponse,
-    GetTokenSupplyResponse
+    GetTokenSupplyResponse,
+    GetTransferTransactionsResponse
 )
 
 if TYPE_CHECKING:
@@ -164,6 +165,13 @@ class SolanaFMClient(APIClient):
         """
         return self._interaction._get_token_supply(True, address)
 
+    def get_transfer_transactions(self, transaction: str) -> GetTransferTransactionsResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Transfer Transactions](https://docs.solana.fm/reference/get_transfers)** for synchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_transfer_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_transfer_transactions].
+        """
+        return self._interaction._get_transfer_transactions(True, transaction)
+
 class SolanaFMAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `SolanaFM` interaction.
@@ -297,3 +305,10 @@ class SolanaFMAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`SolanaFM._get_token_supply`][cyhole.solana_fm.interaction.SolanaFM._get_token_supply].
         """
         return await self._interaction._get_token_supply(False, address)
+
+    async def get_transfer_transactions(self, transaction: str) -> GetTransferTransactionsResponse:
+        """
+            Call the SolanaFM's API endpoint **[Get Transfer Transactions](https://docs.solana.fm/reference/get_transfers)** for asynchronous logic. 
+            All the API endopint details are available on [`SolanaFM._get_transfer_transactions`][cyhole.solana_fm.interaction.SolanaFM._get_transfer_transactions].
+        """
+        return await self._interaction._get_transfer_transactions(False, transaction)

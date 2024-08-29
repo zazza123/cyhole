@@ -582,3 +582,17 @@ class GetTokenSupplyResponse(BaseModel):
     total_withheld_amount: int = Field(alias = "totalWithheldAmount")
     real_circulating_supply: float = Field(alias = "realCirculatingSupply")
     decimals: int
+
+# classes used on GET "Transfer Transactions" endpoint
+# Response
+class GetTransferTransactionsResult(GetAccountTransfersResults):
+    """
+        Model used to identify the result of the GET "Transfer Transactions" endpoint.
+    """
+    pass
+
+class GetTransferTransactionsResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the GET "Transfer Transactions" endpoint.
+    """
+    result: GetTransferTransactionsResult

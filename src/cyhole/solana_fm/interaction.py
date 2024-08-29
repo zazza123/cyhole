@@ -26,7 +26,8 @@ from ..solana_fm.schema import (
     PostUserTokenAccountsResponse,
     GetMintTokenAccountsResponse,
     GetOnChainTokenDataResponse,
-    GetTokenSupplyResponse
+    GetTokenSupplyResponse,
+    GetTransferTransactionsResponse
 )
 
 
@@ -715,4 +716,32 @@ class SolanaFM(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenSupplyResponse
+        )
+
+    @overload
+    def _get_transfer_transactions(self, sync: Literal[True], transaction: str) -> GetTransferTransactionsResponse: ...
+
+    @overload
+    def _get_transfer_transactions(self, sync: Literal[False], transaction: str) -> Coroutine[None, None, GetTransferTransactionsResponse]: ...
+
+    def _get_transfer_transactions(self, sync: bool, transaction: str) -> GetTransferTransactionsResponse | Coroutine[None, None, GetTransferTransactionsResponse]:
+        """
+            This function refers to the **[Get Transfer Transactions](https://docs.solana.fm/reference/get_transfers)** API endpoint,
+            and it is used to get the list of transfer transactions for a given account according to input parameters.
+
+            Parameters:
+                transaction: The transaction hash.
+
+            Returns:
+                List of transfer transactions.
+        """
+        # set params
+        url = self.base_v0_url + f"transfers/{transaction}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTransferTransactionsResponse
         )
