@@ -596,3 +596,17 @@ class GetTransferTransactionsResponse(SolanaFMBaseResponse):
         Model used to identify the response of the GET "Transfer Transactions" endpoint.
     """
     result: GetTransferTransactionsResult
+
+# classes used on POST "Multiple Transfer Transactions" endpoint
+# Response
+class PostMultipleTransferTransactionsResult(GetAccountTransfersResults):
+    """
+        Model used to identify the result of the POST "Multiple Transfer Transactions" endpoint.
+    """
+    pass
+
+class PostMultipleTransferTransactionsResponse(SolanaFMBaseResponse):
+    """
+        Model used to identify the response of the POST "Multiple Transfer Transactions" endpoint.
+    """
+    result: list[PostMultipleTransferTransactionsResult]

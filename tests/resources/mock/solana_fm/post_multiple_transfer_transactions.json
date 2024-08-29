@@ -1,0 +1,42 @@
+{
+    "status": "success",
+    "message": "Retrieved Transactions Info",
+    "result": [
+        {
+            "transactionHash": "4wGMriaRA55F1opEhJW2is34aDQdJHE13vJCbqP6WzrnzFwThnvZYvRZ2AKc2Meh5JToETz3eCCeuavepz6iTPZx",
+            "data": [
+                {
+                    "instructionIndex": -1,
+                    "innerInstructionIndex": -1,
+                    "action": "pay_tx_fees",
+                    "status": "Successful",
+                    "source": "4cKNZSta5KhUGwVVWgyr1uhnzioNDdV1bNkhmfDbtVPJ",
+                    "sourceAssociation": null,
+                    "destination": null,
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 6600,
+                    "timestamp": 1685094373
+                }
+            ]
+        },
+        {
+            "transactionHash": "FUCoNwzCfPugjBwR4Q2uzDMZJdA3E5GAqDB1HGgfi3cTPyqBk11HniqQCGSCin3oBGQLFwcQ3fEHdsEJbgaZZ5p",
+            "data": [
+                {
+                    "instructionIndex": -1,
+                    "innerInstructionIndex": -1,
+                    "action": "pay_tx_fees",
+                    "status": "Successful",
+                    "source": "4cKNZSta5KhUGwVVWgyr1uhnzioNDdV1bNkhmfDbtVPJ",
+                    "sourceAssociation": null,
+                    "destination": null,
+                    "destinationAssociation": null,
+                    "token": "",
+                    "amount": 6600,
+                    "timestamp": 1685094468
+                }
+            ]
+        }
+    ]
+}

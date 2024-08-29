@@ -25,7 +25,8 @@ from cyhole.solana_fm.schema import (
     GetMintTokenAccountsResponse,
     GetOnChainTokenDataResponse,
     GetTokenSupplyResponse,
-    GetTransferTransactionsResponse
+    GetTransferTransactionsResponse,
+    PostMultipleTransferTransactionsResponse
 )
 from cyhole.core.address.solana import JUP, USDC, SOL
 
@@ -963,3 +964,57 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, GetTransferTransactionsResponse)
+
+    def test_post_multiple_transfer_transactions_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Multiple Transfer Transactions" for synchronous logic.
+
+            Mock Response File: post_multiple_transfer_transactions.json
+        """
+
+        # load mock response
+        mock_file_name = "post_multiple_transfer_transactions"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostMultipleTransferTransactionsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        transactions = [
+            "4wGMriaRA55F1opEhJW2is34aDQdJHE13vJCbqP6WzrnzFwThnvZYvRZ2AKc2Meh5JToETz3eCCeuavepz6iTPZx",
+            "FUCoNwzCfPugjBwR4Q2uzDMZJdA3E5GAqDB1HGgfi3cTPyqBk11HniqQCGSCin3oBGQLFwcQ3fEHdsEJbgaZZ5p"
+        ]
+        response = self.solana_fm.client.post_multiple_transfer_transactions(transactions)
+
+        # actual test
+        assert isinstance(response, PostMultipleTransferTransactionsResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_multiple_transfer_transactions_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Post Multiple Transfer Transactions" for asynchronous logic.
+
+            Mock Response File: post_multiple_transfer_transactions.json
+        """
+
+        # load mock response
+        mock_file_name = "post_multiple_transfer_transactions"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostMultipleTransferTransactionsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        transactions = [
+            "4wGMriaRA55F1opEhJW2is34aDQdJHE13vJCbqP6WzrnzFwThnvZYvRZ2AKc2Meh5JToETz3eCCeuavepz6iTPZx",
+            "FUCoNwzCfPugjBwR4Q2uzDMZJdA3E5GAqDB1HGgfi3cTPyqBk11HniqQCGSCin3oBGQLFwcQ3fEHdsEJbgaZZ5p"
+        ]
+        async with self.solana_fm.async_client as client:
+            response = await client.post_multiple_transfer_transactions(transactions)
+
+        # actual test
+        assert isinstance(response, PostMultipleTransferTransactionsResponse)

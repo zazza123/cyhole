@@ -27,7 +27,8 @@ from ..solana_fm.schema import (
     GetMintTokenAccountsResponse,
     GetOnChainTokenDataResponse,
     GetTokenSupplyResponse,
-    GetTransferTransactionsResponse
+    GetTransferTransactionsResponse,
+    PostMultipleTransferTransactionsResponse
 )
 
 
@@ -744,4 +745,43 @@ class SolanaFM(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTransferTransactionsResponse
+        )
+
+    @overload
+    def _post_multiple_transfer_transactions(self, sync: Literal[True], transactions: list[str]) -> PostMultipleTransferTransactionsResponse: ...
+
+    @overload
+    def _post_multiple_transfer_transactions(self, sync: Literal[False], transactions: list[str]) -> Coroutine[None, None, PostMultipleTransferTransactionsResponse]: ...
+
+    def _post_multiple_transfer_transactions(self, sync: bool, transactions: list[str]) -> PostMultipleTransferTransactionsResponse | Coroutine[None, None, PostMultipleTransferTransactionsResponse]:
+        """
+            This function refers to the **[Post Multiple Transfer Transactions](https://docs.solana.fm/reference/post_transfers)** API endpoint,
+            and it is used to get multiple transfer transactions information from the SolanaFM API.
+
+            Parameters:
+                transactions: The list of transaction hashes to get.
+
+            Returns:
+                Transfer transactions details.
+        """
+        # set params
+        url = self.base_v0_url + "transfers"
+
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json"
+        }
+
+        json = {
+            "transactionHashes": transactions
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.POST.value,
+            url = url,
+            response_model = PostMultipleTransferTransactionsResponse,
+            headers = headers,
+            json = json
         )
