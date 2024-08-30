@@ -71,3 +71,22 @@ The documentation follows the library's structure by providing all the technical
 | Endpoint  | Type      | Method    | `cyhole` Release  | Deprecated    |
 | ---       | ---       | ---       | ---               | ---           |
 | Account Transactions | `GET` | [`get_account_transactions`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_account_transactions) | `0.2.1` | - |
+| Account Transactions Fees | `GET` | [`_get_account_transactions_fees`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_account_transactions_fees) | `0.2.2` | - |
+| Account Transfers | `GET` | [`_get_account_transfers`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_account_transfers) | `0.2.2` | - |
+| Account Transfers CSV Export | `GET` | [`_get_account_transfers_csv_export`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_account_transfers_csv_export) | `0.2.2` | - |
+| Blocks | `GET` | [`_get_blocks`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_blocks) | `0.2.2` | - |
+| Block | `GET` | [`_get_block`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_block) | `0.2.2` | - |
+| Multiple Blocks | `POST` | [`_post_multiple_blocks`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._post_multiple_blocks) | `0.2.2` | - |
+| Solana Daily Transaction Fees | `GET` | [`_get_solana_daily_transaction_fees`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_solana_daily_transaction_fees) | `0.2.2` | - |
+| Tagged Tokens List | `GET` | [`_get_tagged_tokens_list`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_tagged_tokens_list) | `0.2.2` | - |
+| Token Info V0 | `GET` | [`_get_token_info_v0`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_token_info_v0) | `0.2.2` | - |
+| Token Multiple Info V0 | `POST` | [`_post_token_multiple_info_v0`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._post_token_multiple_info_v0) | `0.2.2` | - |
+| Token Info V1 | `GET` | [`_get_token_info_v1`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_token_info_v1) | `0.2.2` | - |
+| Token Multiple Info V1 | `POST` | [`_post_token_multiple_info_v1`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._post_token_multiple_info_v1) | `0.2.2` | - |
+| User Token Accounts | `POST` | [`_post_user_token_accounts`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._post_user_token_accounts) | `0.2.2` | - |
+| Mint Token Accounts | `GET` | [`_get_mint_token_accounts`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_mint_token_accounts) | `0.2.2` | - |
+| On-Chain Token Data | `GET` | [`_get_on_chain_token_data`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_on_chain_token_data) | `0.2.2` | - |
+| Token Supply | `GET` | [`_get_token_supply`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_token_supply) | `0.2.2` | - |
+| Transfer Transactions | `GET` | [`_get_transfer_transactions`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_transfer_transactions) | `0.2.2` | - |
+| Multiple Transfer Transactions | `POST` | [`_post_multiple_transfer_transactions`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._post_multiple_transfer_transactions) | `0.2.2` | - |
+| All Transfer Actions | `GET` | [`_get_all_transfer_actions`](../solana_fm/interaction.md#cyhole.solana_fm.SolanaFM._get_all_transfer_actions) | `0.2.2` | - |
