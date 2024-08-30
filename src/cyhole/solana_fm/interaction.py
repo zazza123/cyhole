@@ -28,7 +28,8 @@ from ..solana_fm.schema import (
     GetOnChainTokenDataResponse,
     GetTokenSupplyResponse,
     GetTransferTransactionsResponse,
-    PostMultipleTransferTransactionsResponse
+    PostMultipleTransferTransactionsResponse,
+    GetAllTransferActionsResponse
 )
 
 
@@ -785,3 +786,30 @@ class SolanaFM(Interaction):
             headers = headers,
             json = json
         )
+
+    @overload
+    def _get_all_transfer_actions(self, sync: Literal[True]) -> GetAllTransferActionsResponse: ...
+
+    @overload
+    def _get_all_transfer_actions(self, sync: Literal[False]) -> Coroutine[None, None, GetAllTransferActionsResponse]: ...
+
+    def _get_all_transfer_actions(self, sync: bool) -> GetAllTransferActionsResponse | Coroutine[None, None, GetAllTransferActionsResponse]:
+        """
+            This function refers to the **[Get All Transfer Actions](https://docs.solana.fm/reference/get_actions)** API endpoint,
+            and it is used to get the list of all transfer actions on SolanaFM.
+
+            Returns:
+                List of all transfer actions.
+        """
+        # set params
+        url = self.base_v1_url + "actions"
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetAllTransferActionsResponse(actions = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetAllTransferActionsResponse(actions = content_raw.json())
+            return async_request()

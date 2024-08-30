@@ -26,7 +26,8 @@ from cyhole.solana_fm.schema import (
     GetOnChainTokenDataResponse,
     GetTokenSupplyResponse,
     GetTransferTransactionsResponse,
-    PostMultipleTransferTransactionsResponse
+    PostMultipleTransferTransactionsResponse,
+    GetAllTransferActionsResponse
 )
 from cyhole.core.address.solana import JUP, USDC, SOL
 
@@ -1018,3 +1019,59 @@ class TestSolanaFM:
 
         # actual test
         assert isinstance(response, PostMultipleTransferTransactionsResponse)
+
+    def test_get_all_transfer_actions_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get All Transfer Actions" for synchronous logic.
+
+            Mock Response File: get_all_transfer_actions.json
+        """
+
+        # load mock response
+        mock_file_name = "get_all_transfer_actions"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAllTransferActionsResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["actions"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solana_fm.client.get_all_transfer_actions()
+
+        # actual test
+        assert isinstance(response, GetAllTransferActionsResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solana_fm.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_all_transfer_actions_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            "Get All Transfer Actions" for asynchronous logic.
+
+            Mock Response File: get_all_transfer_actions.json
+        """
+
+        # load mock response
+        mock_file_name = "get_all_transfer_actions"
+        if config.mock_response or config.solana_fm.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAllTransferActionsResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["actions"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.solana_fm.async_client as client:
+            response = await client.get_all_transfer_actions()
+
+        # actual test
+        assert isinstance(response, GetAllTransferActionsResponse)
