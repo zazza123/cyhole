@@ -82,7 +82,7 @@ class Jupiter(Interaction):
 
     def _get_price(self, sync: bool, address: list[str], vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the **[Price](https://station.jup.ag/docs/apis/price-api)** API endpoint, 
+            This function refers to the GET **[Price](https://station.jup.ag/docs/apis/price-api)** API endpoint, 
             and it is used to get the current price of a list of tokens on Solana chain with respect to another token. 
 
             The API returns the unit buy price for the tokens; by default, the price is provided according to 
@@ -126,7 +126,7 @@ class Jupiter(Interaction):
 
     def _get_quote(self, sync: bool, input: GetQuoteInput) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
         """
-            This function refers to the **[Get Quote](https://station.jup.ag/api-v6/get-quote)** API endpoint, 
+            This function refers to the GET **[Quote](https://station.jup.ag/api-v6/get-quote)** API endpoint, 
             and it is used to get a quote for swapping a specific amount of tokens.  
             The function can be combined with the `post_swap` to implement a payment mechanism.
 
@@ -168,7 +168,7 @@ class Jupiter(Interaction):
 
     def _get_quote_tokens(self, sync: bool) -> GetQuoteTokensResponse | Coroutine[None, None, GetQuoteTokensResponse]:
         """
-            This function refers to the **[Get Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint, 
+            This function refers to the GET **[Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint, 
             and it is used to get the list of the current supported tradable tokens. 
 
             Returns:
@@ -195,7 +195,7 @@ class Jupiter(Interaction):
 
     def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
         """
-            This function refers to the **[Get Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint, 
+            This function refers to the GET **[Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint, 
             and it is used to get the list of supported DEXes to use in quote endpoint. 
 
             Returns:
@@ -222,7 +222,7 @@ class Jupiter(Interaction):
 
     def _post_swap(self, sync: bool, body: PostSwapBody) -> PostSwapResponse | Coroutine[None, None, PostSwapResponse]:
         """
-            This function refers to the **[Post Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint, 
+            This function refers to the POST **[Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint, 
             and it is used to recive the transaction to perform the swap initialised from `get_quote` 
             endopoint for the desired pair.  
             The function should be combined with the `get_quote` endpoint.
@@ -274,7 +274,7 @@ class Jupiter(Interaction):
 
     def _get_token_list(self, sync: bool, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
         """
-            This function refers to the **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint, 
+            This function refers to the GET **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint, 
             and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
             Choose the tokens list according to `type` field.
 
@@ -316,7 +316,7 @@ class Jupiter(Interaction):
 
     def _post_limit_order_create(self, sync: bool, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse | Coroutine[None, None, PostLimitOrderCreateResponse]:
         """
-            This function refers to the **[Post Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            This function refers to the POST **[Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
             and it is used to receive the transaction to perform the creation of a Limit Order via Jupiter API.
 
             Parameters:
@@ -367,7 +367,7 @@ class Jupiter(Interaction):
 
     def _post_limit_order_cancel(self, sync: bool, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse | Coroutine[None, None, PostLimitOrderCancelResponse]:
         """
-            This function refers to the **[Post Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            This function refers to the POST **[Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
             and it is used to receive the transaction to perform the cancellation of a Limit Order previously 
             opened via Jupiter API.
 
@@ -437,7 +437,7 @@ class Jupiter(Interaction):
         output_token: str | None = None
     ) -> GetLimitOrderOpenResponse | Coroutine[None, None, GetLimitOrderOpenResponse]:
         """
-            This function refers to the **[Get Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            This function refers to the GET **[Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** 
             API endpoint, and it is used to receive the current open limit orders related to a wallet, input token 
             or output token via Jupiter API. 
 
@@ -499,7 +499,7 @@ class Jupiter(Interaction):
         take: int | None = None
     ) -> GetLimitOrderHistoryResponse | Coroutine[None, None, GetLimitOrderHistoryResponse]:
         """
-            This function refers to the **[Get Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            This function refers to the GET **[Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
             API endpoint, and it is used to retrieve the history of Limit Orders associated to a wallet via Jupiter API. 
 
             Parameters:
@@ -565,7 +565,7 @@ class Jupiter(Interaction):
         take: int | None = None
     ) -> GetLimitOrderTradeHistoryResponse | Coroutine[None, None, GetLimitOrderTradeHistoryResponse]:
         """
-            This function refers to the **[Get Limit Order - Trade History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            This function refers to the GET **[Limit Order - Trade History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
             API endpoint, and it is used to retrieve the trades history related to Limit Orders extracted with specific 
             requirements via Jupiter API. 
 
