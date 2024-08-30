@@ -108,7 +108,7 @@ class SolanaFM(Interaction):
 
     def _get_account_transactions(self, sync: bool, account: str, params: GetAccountTransactionsParam = GetAccountTransactionsParam()) -> GetAccountTransactionsResponse | Coroutine[None, None, GetAccountTransactionsResponse]:
         """
-            This function refers to the **[Get Account Transactions](https://docs.solana.fm/reference/get_account_transactions)** API endpoint, 
+            This function refers to the GET **[Account Transactions](https://docs.solana.fm/reference/get_account_transactions)** API endpoint, 
             and it is used to get the list of transactions for a given account according to input parameters.
 
             Parameters:
@@ -143,7 +143,7 @@ class SolanaFM(Interaction):
 
     def _get_account_transactions_fees(self, sync: bool, account: str, dt_from: datetime | None = None, dt_to: datetime | None = None) -> GetAccountTransactionsFeesResponse | Coroutine[None, None, GetAccountTransactionsFeesResponse]:
         """
-            This function refers to the **[Get Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** API endpoint,
+            This function refers to the GET **[Account Transactions Fees](https://docs.solana.fm/reference/get_account_tx_fees)** API endpoint,
             and it is used to get the list of transactions fees for a given account according to input parameters.
 
             Parameters:
@@ -181,7 +181,7 @@ class SolanaFM(Interaction):
 
     def _get_account_transfers(self, sync: bool, account: str, params: GetAccountTransfersParam = GetAccountTransfersParam()) -> GetAccountTransfersResponse | Coroutine[None, None, GetAccountTransfersResponse]:
         """
-            This function refers to the **[Get Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** API endpoint, 
+            This function refers to the GET **[Account Transfers](https://docs.solana.fm/reference/get_account_transfers_v1)** API endpoint, 
             and it is used to get the list of transfers for a given account according to input parameters.
 
             Parameters:
@@ -216,7 +216,7 @@ class SolanaFM(Interaction):
 
     def _get_account_transfers_csv_export(self, sync: bool, account: str, params: GetAccountTransfersCsvExportParam = GetAccountTransfersCsvExportParam()) -> GetAccountTransfersCsvExportResponse | Coroutine[None, None, GetAccountTransfersCsvExportResponse]:
         """
-            This function refers to the **[Get Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** API endpoint,
+            This function refers to the GET **[Account Transfers CSV Export](https://docs.solana.fm/reference/download_csv_v1)** API endpoint,
             and it is used to get the list of transfers for a given account according to input parameters in CSV format.
 
             Parameters:
@@ -273,7 +273,7 @@ class SolanaFM(Interaction):
         ascending: bool | None = None
     ) -> GetBlocksResponse | Coroutine[None, None, GetBlocksResponse]:
         """
-            This function refers to the **[Get Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** API endpoint,
+            This function refers to the GET **[Blocks](https://docs.solana.fm/reference/get_blocks_by_pagination)** API endpoint,
             and it is used to get the list of blocks according to input parameters.
 
             Parameters:
@@ -317,7 +317,7 @@ class SolanaFM(Interaction):
 
     def _get_block(self, sync: bool, block_number: int) -> GetBlockResponse | Coroutine[None, None, GetBlockResponse]:
         """
-            This function refers to the **[Get Block](https://docs.solana.fm/reference/get_block)** API endpoint,
+            This function refers to the GET **[Block](https://docs.solana.fm/reference/get_block)** API endpoint,
             and it is used to get the block details for a given block Number.
 
             Parameters:
@@ -345,7 +345,7 @@ class SolanaFM(Interaction):
 
     def _post_multiple_blocks(self, sync: bool, block_numbers: list[int], producer_details: bool = True) -> PostMultipleBlocksResponse | Coroutine[None, None, PostMultipleBlocksResponse]:
         """
-            This function refers to the **[Post Multiple Blocks](https://docs.solana.fm/reference/get_multiple_blocks)** API endpoint,
+            This function refers to the POST **[Multiple Blocks](https://docs.solana.fm/reference/get_multiple_blocks)** API endpoint,
             and it is used to get multiple blocks information from the SolanaFM API.
 
             Parameters:
@@ -385,7 +385,7 @@ class SolanaFM(Interaction):
 
     def _get_solana_daily_transaction_fees(self, sync: bool, dt: datetime = datetime.now()) -> GetSolanaDailyTransactionFeesResponse | Coroutine[None, None, GetSolanaDailyTransactionFeesResponse]:
         """
-            This function refers to the **[Get Solana Daily Transaction Fees](https://docs.solana.fm/reference/get_daily_tx_fees)** API endpoint,
+            This function refers to the GET **[Solana Daily Transaction Fees](https://docs.solana.fm/reference/get_daily_tx_fees)** API endpoint,
             and it is used to get the daily transaction fees for a given date on the whole Solana chain.
 
             Observe that if the date is not provided, the current date is used and the result could change over time 
@@ -422,7 +422,7 @@ class SolanaFM(Interaction):
 
     def _get_tagged_tokens_list(self, sync: bool) -> GetTaggedTokensListResponse | Coroutine[None, None, GetTaggedTokensListResponse]:
         """
-            This function refers to the **[Get Tagged Tokens List](https://docs.solana.fm/reference/get_tokens_by_pagination)** API endpoint,
+            This function refers to the GET **[Tagged Tokens List](https://docs.solana.fm/reference/get_tokens_by_pagination)** API endpoint,
             and it is used to get the list of tagged tokens identified by the SolanaFM team (**not tokens indexed on-chain**).
 
             Returns:
@@ -447,7 +447,7 @@ class SolanaFM(Interaction):
 
     def _get_token_info_v0(self, sync: bool, address: str) -> GetTokenInfoV0Response | Coroutine[None, None, GetTokenInfoV0Response]:
         """
-            This function refers to the **[Get Token Info V0](https://docs.solana.fm/reference/get_token_by_account_hash)** API endpoint,
+            This function refers to the GET **[Token Info V0](https://docs.solana.fm/reference/get_token_by_account_hash)** API endpoint,
             and it is used to get the token information for a given token address.
 
             !!! info
@@ -478,7 +478,7 @@ class SolanaFM(Interaction):
 
     def _post_token_multiple_info_v0(self, sync: bool, addresses: list[str]) -> PostTokenMultipleInfoV0Response | Coroutine[None, None, PostTokenMultipleInfoV0Response]:
         """
-            This function refers to the **[Post Token Multiple Info V0](https://docs.solana.fm/reference/get_tokens_by_account_hashes)** API endpoint,
+            This function refers to the POST **[Token Multiple Info V0](https://docs.solana.fm/reference/get_tokens_by_account_hashes)** API endpoint,
             and it is used to get the token information for multiple token addresses.
 
             !!! info
@@ -521,7 +521,7 @@ class SolanaFM(Interaction):
 
     def _get_token_info_v1(self, sync: bool, address: str) -> GetTokenInfoV1Response | Coroutine[None, None, GetTokenInfoV1Response]:
         """
-            This function refers to the **[Get Token Info V1](https://docs.solana.fm/reference/get_one_token)** API endpoint,
+            This function refers to the GET **[Token Info V1](https://docs.solana.fm/reference/get_one_token)** API endpoint,
             and it is used to get the token information for a given token address.
 
             !!! info
@@ -552,7 +552,7 @@ class SolanaFM(Interaction):
 
     def _post_token_multiple_info_v1(self, sync: bool, addresses: list[str]) -> PostTokenMultipleInfoV1Response | Coroutine[None, None, PostTokenMultipleInfoV1Response]:
         """
-            This function refers to the **[Post Token Multiple Info V1](https://docs.solana.fm/reference/retrieve_multiple_tokens)** API endpoint,
+            This function refers to the POST **[Token Multiple Info V1](https://docs.solana.fm/reference/retrieve_multiple_tokens)** API endpoint,
             and it is used to get the token information for multiple token addresses.
 
             !!! info
@@ -594,7 +594,7 @@ class SolanaFM(Interaction):
 
     def _post_user_token_accounts(self, sync: bool, address: str, include_sol_balance: bool = False, tokens: list[str] | None = None) -> PostUserTokenAccountsResponse | Coroutine[None, None, PostUserTokenAccountsResponse]:
         """
-            This function refers to the **[Post User Token Accounts](https://docs.solana.fm/reference/get_user_token_accounts)** API endpoint,
+            This function refers to the POST **[User Token Accounts](https://docs.solana.fm/reference/get_user_token_accounts)** API endpoint,
             and it is used to get the token accounts for a given user address.
 
             Parameters:
@@ -636,7 +636,7 @@ class SolanaFM(Interaction):
 
     def _get_mint_token_accounts(self, sync: bool, address: str, page: int | None = None, page_size: int | None = None) -> GetMintTokenAccountsResponse | Coroutine[None, None, GetMintTokenAccountsResponse]:
         """
-            This function refers to the **[Get Mint Token Accounts](https://docs.solana.fm/reference/get_token_accounts_for_token_mint)** API endpoint,
+            This function refers to the GET **[Mint Token Accounts](https://docs.solana.fm/reference/get_token_accounts_for_token_mint)** API endpoint,
             and it is used to get the token accounts owned by a given token mint address.
 
             Parameters:
@@ -672,7 +672,7 @@ class SolanaFM(Interaction):
 
     def _get_on_chain_token_data(self, sync: bool, address: str) -> GetOnChainTokenDataResponse | Coroutine[None, None, GetOnChainTokenDataResponse]:
         """
-            This function refers to the **[Get On-Chain Token Data](https://docs.solana.fm/reference/get_tfi_token_data)** API endpoint,
+            This function refers to the GET **[On-Chain Token Data](https://docs.solana.fm/reference/get_tfi_token_data)** API endpoint,
             and it is used to get the token data for a given token address stored on-chain.
 
             Parameters:
@@ -700,7 +700,7 @@ class SolanaFM(Interaction):
 
     def _get_token_supply(self, sync: bool, address: str) -> GetTokenSupplyResponse | Coroutine[None, None, GetTokenSupplyResponse]:
         """
-            This function refers to the **[Get Token Supply](https://docs.solana.fm/reference/get_token_circulating_supply)** API endpoint,
+            This function refers to the GET **[Token Supply](https://docs.solana.fm/reference/get_token_circulating_supply)** API endpoint,
             and it is used to get the token circulating supply for a given token address.
 
             Parameters:
@@ -728,7 +728,7 @@ class SolanaFM(Interaction):
 
     def _get_transfer_transactions(self, sync: bool, transaction: str) -> GetTransferTransactionsResponse | Coroutine[None, None, GetTransferTransactionsResponse]:
         """
-            This function refers to the **[Get Transfer Transactions](https://docs.solana.fm/reference/get_transfers)** API endpoint,
+            This function refers to the GET **[Transfer Transactions](https://docs.solana.fm/reference/get_transfers)** API endpoint,
             and it is used to get the list of transfer transactions for a given account according to input parameters.
 
             Parameters:
@@ -756,7 +756,7 @@ class SolanaFM(Interaction):
 
     def _post_multiple_transfer_transactions(self, sync: bool, transactions: list[str]) -> PostMultipleTransferTransactionsResponse | Coroutine[None, None, PostMultipleTransferTransactionsResponse]:
         """
-            This function refers to the **[Post Multiple Transfer Transactions](https://docs.solana.fm/reference/post_transfers)** API endpoint,
+            This function refers to the POST **[Multiple Transfer Transactions](https://docs.solana.fm/reference/post_transfers)** API endpoint,
             and it is used to get multiple transfer transactions information from the SolanaFM API.
 
             Parameters:
@@ -795,7 +795,7 @@ class SolanaFM(Interaction):
 
     def _get_all_transfer_actions(self, sync: bool) -> GetAllTransferActionsResponse | Coroutine[None, None, GetAllTransferActionsResponse]:
         """
-            This function refers to the **[Get All Transfer Actions](https://docs.solana.fm/reference/get_actions)** API endpoint,
+            This function refers to the GET **[All Transfer Actions](https://docs.solana.fm/reference/get_actions)** API endpoint,
             and it is used to get the list of all transfer actions on SolanaFM.
 
             Returns:
