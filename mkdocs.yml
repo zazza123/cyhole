@@ -5,6 +5,7 @@ repo_name: zazza123/cyhole
 
 theme:
   name: material
+  favicon: config/images/favicon.png
   custom_dir: docs/config/overrides
   language: en
   icon:
