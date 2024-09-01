@@ -22,7 +22,7 @@ class SolscanV1Client(APIClient):
         super().__init__(interaction, headers)
         self._interaction = cast('Solscan', self._interaction)
 
-    def get_v1_account_tokens(self, account: str) -> GetV1AccountTokensResponse:
+    def get_account_tokens(self, account: str) -> GetV1AccountTokensResponse:
         """
             Call the Solscan's **V1** API endpoint GET **[Account Tokens](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-tokens)** for synchronous logic. 
             All the API endopint details are available on [`Solscan._get_v1_account_tokens`][cyhole.solscan.interaction.Solscan._get_v1_account_tokens].
@@ -38,7 +38,7 @@ class SolscanV1AsyncClient(AsyncAPIClient):
         super().__init__(interaction, headers)
         self._interaction = cast('Solscan', self._interaction)
 
-    async def get_v1_account_tokens(self, account: str) -> GetV1AccountTokensResponse:
+    async def get_account_tokens(self, account: str) -> GetV1AccountTokensResponse:
         """
             Call the Solscan's **V1** API endpoint GET **[Account Tokens](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-tokens)** for asynchronous logic. 
             All the API endopint details are available on [`Solscan._get_v1_account_tokens`][cyhole.solscan.interaction.Solscan._get_v1_account_tokens].
