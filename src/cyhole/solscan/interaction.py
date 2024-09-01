@@ -1,5 +1,5 @@
 import os
-from typing import Any, Coroutine, Literal, overload
+from typing import Any, Coroutine, Literal, Type, overload, cast
 
 from ..core.param import RequestType
 from ..core.interaction import Interaction, ResponseModel
@@ -60,6 +60,49 @@ class Solscan(Interaction):
 
     def __str__(self) -> str:
         return self._name
+
+    def api_return_model(
+        self, 
+        sync: bool,
+        type: str,
+        url: str,
+        response_model: Type[ResponseModel],
+        *args: tuple,
+        **kwargs: Any
+    ) -> ResponseModel | Coroutine[None, None, ResponseModel]:
+
+        # check API version
+        if "api_version" not in kwargs:
+            raise ValueError("The 'api_version' parameter is required to specify the API version.")
+
+        api_version = cast(str, kwargs["api_version"])
+        if api_version not in self._api_versions:
+            raise ValueError(f"The API version '{api_version}' not admitted. Admitted versions: {self._api_versions}")
+
+        # remove api_version from kwargs
+        kwargs.pop("api_version")
+
+        # set clients
+        client = self.client
+        async_client = self.async_client
+
+        match api_version:
+            case "v1":
+                client = self.client.v1
+                async_client = self.async_client.v1
+            case "v2":
+                client = self.client.v2
+                async_client = self.async_client.v2
+
+        # execute request
+        if sync:
+            content_raw = client.api(type, url, *args, **kwargs)
+            return response_model(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await async_client.api(type, url, *args, **kwargs)
+                return response_model(**content_raw.json())
+            return async_request()
 
     # **************************
     # * V1 API                 *
