@@ -18,9 +18,9 @@ class GetV1AccountTokensToken(BaseModel):
     """
     token_account: str = Field(alias = "tokenAccount")
     token_address: str = Field(alias = "tokenAddress")
-    token_symbol: str = Field(alias = "tokenSymbol")
-    token_name: str = Field(alias = "tokenName")
-    token_icon: str = Field(alias = "tokenIcon")
+    token_symbol: str | None = Field(default = None, alias = "tokenSymbol")
+    token_name: str | None = Field(default = None, alias = "tokenName")
+    token_icon: str | None = Field(default = None, alias = "tokenIcon")
     token_amount: GetV1AccountTokensTokenAmount = Field(alias = "tokenAmount")
     decimals: int
     rent_epoch: int = Field(alias = "rentEpoch")
