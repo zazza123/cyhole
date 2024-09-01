@@ -7,6 +7,19 @@ from pydantic import BaseModel
 
 ResponseModel = TypeVar('ResponseModel', bound = BaseModel)
 
+class SolscanConfiguration(BaseModel):
+    """
+        Model in charge to manage the Solscan APIs.
+    """
+    mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
+    mock_folder: str = "solscan"
+    """Folder where the mock responses are stored."""
+    api_v1_key: str | None = None
+    """API key to access the Solscan V1 APIs."""
+    api_v2_key: str | None = None
+    """API key to access the Solscan V2 APIs."""
+
 class SolanaFMConfiguration(BaseModel):
     """
         Model in charge to manage the SolanaFM APIs.
@@ -57,6 +70,8 @@ class TestConfiguration(BaseModel):
     """Jupiter configuration."""
     solana_fm: SolanaFMConfiguration = SolanaFMConfiguration()
     """SolanaFM configuration."""
+    solscan: SolscanConfiguration = SolscanConfiguration()
+    """Solscan configuration."""
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -100,6 +115,12 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.solana_fm.mock_response = config.getboolean("solana_fm", "mock_response", fallback = test_config.solana_fm.mock_response)
     test_config.solana_fm.mock_folder = config.get("solana_fm", "mock_folder", fallback = test_config.solana_fm.mock_folder)
     test_config.solana_fm.api_key = config.get("solana_fm", "api_key", fallback = test_config.solana_fm.api_key)
+
+    # solscan
+    test_config.solscan.mock_response = config.getboolean("solscan", "mock_response", fallback = test_config.solscan.mock_response)
+    test_config.solscan.mock_folder = config.get("solscan", "mock_folder", fallback = test_config.solscan.mock_folder)
+    test_config.solscan.api_v1_key = config.get("solscan", "api_v1_key", fallback = test_config.solscan.api_v1_key)
+    test_config.solscan.api_v2_key = config.get("solscan", "api_v2_key", fallback = test_config.solscan.api_v2_key)
 
     return test_config
 
