@@ -1,9 +1,6 @@
 from pydantic import BaseModel, Field
 
-# **************************
-# * V1 API                 *
-# **************************
-class GetV1AccountTokensTokenAmount(BaseModel):
+class GetAccountTokensTokenAmount(BaseModel):
     """
         This class refers to the model of a token amount inside the response of GET **[Account Tokens](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-tokens)** of **V1** API endpoint.
     """
@@ -12,7 +9,7 @@ class GetV1AccountTokensTokenAmount(BaseModel):
     ui_amount: float = Field(alias = "uiAmount")
     ui_amount_string: str = Field(alias = "uiAmountString")
 
-class GetV1AccountTokensToken(BaseModel):
+class GetAccountTokensToken(BaseModel):
     """
         This class refers to the model of a token inside the response of GET **[Account Tokens](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-tokens)** of **V1** API endpoint.
     """
@@ -21,17 +18,13 @@ class GetV1AccountTokensToken(BaseModel):
     token_symbol: str | None = Field(default = None, alias = "tokenSymbol")
     token_name: str | None = Field(default = None, alias = "tokenName")
     token_icon: str | None = Field(default = None, alias = "tokenIcon")
-    token_amount: GetV1AccountTokensTokenAmount = Field(alias = "tokenAmount")
+    token_amount: GetAccountTokensTokenAmount = Field(alias = "tokenAmount")
     decimals: int
     rent_epoch: int = Field(alias = "rentEpoch")
     lamports: int
 
-class GetV1AccountTokensResponse(BaseModel):
+class GetAccountTokensResponse(BaseModel):
     """
         This class refers to the response model of GET **[Account Tokens](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-tokens)** of **V1** API endpoint.
     """
-    tokens: list[GetV1AccountTokensToken]
-
-# **************************
-# * V2 API                 *
-# **************************
+    tokens: list[GetAccountTokensToken]
