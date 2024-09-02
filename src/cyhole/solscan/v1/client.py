@@ -9,7 +9,8 @@ from ...solscan.v1.schema import (
     GetAccountStakeAccountsResponse,
     GetAccountSplTransfersResponse,
     GetAccountSolTransfersResponse,
-    GetAccountExportTransactionsResponse
+    GetAccountExportTransactionsResponse,
+    GetAccountExportRewardsResponse
 )
 
 if TYPE_CHECKING:
@@ -80,6 +81,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_export_transactions(True, account, export_type, dt_from, dt_to)
 
+    def get_account_export_rewards(self, account: str, dt_from: datetime, dt_to: datetime) -> GetAccountExportRewardsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account Export Rewards](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportRewards)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_export_rewards`][cyhole.solscan.interaction.v1.Solscan._get_account_export_rewards].
+        """
+        return self._interaction._get_account_export_rewards(True, account, dt_from, dt_to)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -144,3 +152,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_export_transactions`][cyhole.solscan.interaction.v1.Solscan._get_account_export_transactions].
         """
         return await self._interaction._get_account_export_transactions(False, account, export_type, dt_from, dt_to)
+
+    async def get_account_export_rewards(self, account: str, dt_from: datetime, dt_to: datetime) -> GetAccountExportRewardsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account Export Rewards](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportRewards)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_export_rewards`][cyhole.solscan.interaction.v1.Solscan._get_account_export_rewards].
+        """
+        return await self._interaction._get_account_export_rewards(False, account, dt_from, dt_to)

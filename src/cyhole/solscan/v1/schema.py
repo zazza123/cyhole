@@ -137,3 +137,10 @@ class GetAccountExportTransactionsResponse(BaseModel):
         This class refers to the response model of GET **[Account ExportTransactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportTransactions)** of **V1** API endpoint.
     """
     csv: str
+
+# GET - Account ExportRewards
+class GetAccountExportRewardsResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account ExportRewards](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportRewards)** of **V1** API endpoint.
+    """
+    csv: str
