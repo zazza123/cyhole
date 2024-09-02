@@ -6,7 +6,8 @@ from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
 from ...solscan.v1.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v1.schema import (
-    GetAccountTokensResponse
+    GetAccountTokensResponse,
+    GetAccountTransactionsResponse
 )
 
 class Solscan(Interaction):
@@ -94,4 +95,41 @@ class Solscan(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountTokensResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_account_transactions(self, sync: Literal[True], account: str, before_hash: str | None = None, limit: int | None = None) -> GetAccountTransactionsResponse: ...
+
+    @overload
+    def _get_account_transactions(self, sync: Literal[False], account: str, before_hash: str | None = None, limit: int | None = None) -> Coroutine[None, None, GetAccountTransactionsResponse]: ...
+
+    def _get_account_transactions(self, sync: bool, account: str, before_hash: str | None = None, limit: int | None = None) -> GetAccountTransactionsResponse | Coroutine[None, None, GetAccountTransactionsResponse]:
+        """
+            This function refers to the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-transactions)** of **V1** API endpoint, 
+            and it is used to get transactions of an account.
+
+            Parameters:
+                account: The account address.
+                before_hash: The transaction hash to get transactions before it.
+                limit: The number of transactions to get; maximum is 50.
+
+            Returns:
+                List of transactions of the account.
+        """
+        # set params
+        url = self.base_url + f"account/transactions"
+        api_params = {
+            "account": account,
+            "beforeHash": before_hash,
+            "limit": limit
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetAccountTransactionsResponse(transactions = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetAccountTransactionsResponse(transactions = content_raw.json())
             return async_request()
