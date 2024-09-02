@@ -109,3 +109,24 @@ class GetAccountSplTransfersResponse(BaseModel):
     """
     total: int
     data: list[GetAccountSplTransfersTransfer]
+
+# GET - Account SolTransfers
+class GetAccountSolTransfersTransfer(BaseModel):
+    """
+        This class refers to the model of a transfer inside the response of GET **[Account SolTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-solTransfers)** of **V1** API endpoint.
+    """
+    slot: int
+    block_time_unix_utc: int = Field(alias = "blockTime")
+    transaction_id: str = Field(alias = "txHash")
+    source_account : str = Field(alias = "src")
+    decimals: int
+    destination_account: str = Field(alias = "dst")
+    lamport: int
+    status: str
+    fee: int
+
+class GetAccountSolTransfersResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account SolTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-solTransfers)** of **V1** API endpoint.
+    """
+    data: list[GetAccountSolTransfersTransfer]

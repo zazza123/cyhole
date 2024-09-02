@@ -9,7 +9,8 @@ from ...solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeAccountsResponse,
-    GetAccountSplTransfersResponse
+    GetAccountSplTransfersResponse,
+    GetAccountSolTransfersResponse
 )
 
 class Solscan(Interaction):
@@ -230,5 +231,69 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountSplTransfersResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_account_sol_transfers(
+        self,
+        sync: Literal[True],
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetAccountSolTransfersResponse: ...
+
+    @overload
+    def _get_account_sol_transfers(
+        self,
+        sync: Literal[False],
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> Coroutine[None, None, GetAccountSolTransfersResponse]: ...
+
+    def _get_account_sol_transfers(
+        self,
+        sync: bool,
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetAccountSolTransfersResponse | Coroutine[None, None, GetAccountSolTransfersResponse]:
+        """
+            This function refers to the GET **[Account SolTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-solTransfers)** of **V1** API endpoint, 
+            and it is used to get sol transfers of an account.
+
+            Parameters:
+                account: The account address.
+                utc_from_unix_time: The start time in unix time.
+                utc_to_unix_time: The end time in unix time.
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+
+            Returns:
+                List of sol transfers of the account.
+        """
+        # set params
+        url = self.base_url + f"account/solTransfers"
+        api_params = {
+            "account": account,
+            "fromTime": utc_from_unix_time,
+            "toTime": utc_to_unix_time,
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountSolTransfersResponse,
             params = api_params
         )

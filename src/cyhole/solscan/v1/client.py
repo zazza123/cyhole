@@ -6,7 +6,8 @@ from ...solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeAccountsResponse,
-    GetAccountSplTransfersResponse
+    GetAccountSplTransfersResponse,
+    GetAccountSolTransfersResponse
 )
 
 if TYPE_CHECKING:
@@ -56,6 +57,20 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_spl_transfers(True, account, utc_from_unix_time, utc_to_unix_time, limit, offset)
 
+    def get_account_sol_transfers(
+        self,
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetAccountSolTransfersResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account SolTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-solTransfers)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_sol_transfers`][cyhole.solscan.interaction.v1.Solscan._get_account_sol_transfers].
+        """
+        return self._interaction._get_account_sol_transfers(True, account, utc_from_unix_time, utc_to_unix_time, limit, offset)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -99,3 +114,17 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_spl_transfers`][cyhole.solscan.interaction.v1.Solscan._get_account_spl_transfers].
         """
         return await self._interaction._get_account_spl_transfers(False, account, utc_from_unix_time, utc_to_unix_time, limit, offset)
+
+    async def get_account_sol_transfers(
+        self,
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetAccountSolTransfersResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account SolTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-solTransfers)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_sol_transfers`][cyhole.solscan.interaction.v1.Solscan._get_account_sol_transfers].
+        """
+        return await self._interaction._get_account_sol_transfers(False, account, utc_from_unix_time, utc_to_unix_time, limit, offset)
