@@ -328,3 +328,37 @@ class GetTokenListResponse(BaseModel):
     """
     total: int
     data: list[GetTokenListToken]
+
+# GET - Market Token Detail
+class GetMarketTokenDetailMarketBaseQuote(BaseModel):
+    """
+        This class refers to the model of a base or quote inside the response of GET **[Market Token Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/market-token-detail)** of **V1** API endpoint.
+    """
+    symbol: str | None = None
+    decimals: int
+    address: str
+
+class GetMarketTokenDetailMarket(BaseModel):
+    """
+        This class refers to the model of a market inside the response of GET **[Market Token Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/market-token-detail)** of **V1** API endpoint.
+    """
+    address: str
+    amm_id: str = Field(alias = "ammId")
+    base: GetMarketTokenDetailMarketBaseQuote
+    base_token_account: str = Field(alias = "baseTokenAccount")
+    name: str
+    quote: GetMarketTokenDetailMarketBaseQuote
+    source: str
+    quote_token_account: str = Field(alias = "quoteTokenAccount")
+    volume_24h: int = Field(alias = "volume24h")
+
+class GetMarketTokenDetailResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Market Token Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/market-token-detail)** of **V1** API endpoint.
+    """
+    price_usdt: float = Field(alias = "priceUsdt")
+    volume_usdt: int = Field(alias = "volumeUsdt")
+    market_cap_fd: int = Field(alias = "marketCapFD")
+    market_cap_rank: int = Field(alias = "marketCapRank")
+    price_change_24h: float = Field(alias = "priceChange24h")
+    markets: list[GetMarketTokenDetailMarket]

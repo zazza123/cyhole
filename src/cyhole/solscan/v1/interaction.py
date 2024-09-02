@@ -19,7 +19,8 @@ from ...solscan.v1.schema import (
     GetTokenHoldersResponse,
     GetTokenMetaResponse,
     GetTokenTransferResponse,
-    GetTokenListResponse
+    GetTokenListResponse,
+    GetMarketTokenDetailResponse
 )
 
 class Solscan(Interaction):
@@ -633,5 +634,40 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenListResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_market_token_detail(self, sync: Literal[True], token: str, limit: int = 10, offset: int | None = None) -> GetMarketTokenDetailResponse: ...
+
+    @overload
+    def _get_market_token_detail(self, sync: Literal[False], token: str, limit: int = 10, offset: int | None = None) -> Coroutine[None, None, GetMarketTokenDetailResponse]: ...
+
+    def _get_market_token_detail(self, sync: bool, token: str, limit: int = 10, offset: int | None = None) -> GetMarketTokenDetailResponse | Coroutine[None, None, GetMarketTokenDetailResponse]:
+        """
+            This function refers to the GET **[Market Token Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/market-token-detail)** of **V1** API endpoint, 
+            and it is used to get market details of a token.
+
+            Parameters:
+                token: The token address.
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+
+            Returns:
+                Market details of the token.
+        """
+        # set params
+        url = self.base_url + f"market/token/{token}"
+        api_params = {
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetMarketTokenDetailResponse,
             params = api_params
         )

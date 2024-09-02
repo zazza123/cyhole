@@ -16,7 +16,8 @@ from ...solscan.v1.schema import (
     GetTokenHoldersResponse,
     GetTokenMetaResponse,
     GetTokenTransferResponse,
-    GetTokenListResponse
+    GetTokenListResponse,
+    GetMarketTokenDetailResponse
 )
 
 if TYPE_CHECKING:
@@ -142,6 +143,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_list(True, sort_by, order_by, limit, offset)
 
+    def get_market_token_detail(self, token: str, limit: int = 10, offset: int | None = None) -> GetMarketTokenDetailResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Market Token Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/market-token-detail)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_market_token_detail`][cyhole.solscan.interaction.v1.Solscan._get_market_token_detail].
+        """
+        return self._interaction._get_market_token_detail(True, token, limit, offset)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -261,3 +269,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_list`][cyhole.solscan.interaction.v1.Solscan._get_token_list].
         """
         return await self._interaction._get_token_list(False, sort_by, order_by, limit, offset)
+
+    async def get_market_token_detail(self, token: str, limit: int = 10, offset: int | None = None) -> GetMarketTokenDetailResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Market Token Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/market-token-detail)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_market_token_detail`][cyhole.solscan.interaction.v1.Solscan._get_market_token_detail].
+        """
+        return await self._interaction._get_market_token_detail(False, token, limit, offset)
