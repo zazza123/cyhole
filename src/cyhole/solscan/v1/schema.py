@@ -43,7 +43,7 @@ class GetAccountTransactionsTransaction(BaseModel):
     """
         This class refers to the model of a transaction inside the response of GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-transactions)** of **V1** API endpoint.
     """
-    block_time: int = Field(alias = "blockTime")
+    block_time_unix_utc: int = Field(alias = "blockTime")
     slot: int
     transaction_id: str = Field(alias = "txHash")
     fee: int
@@ -59,7 +59,7 @@ class GetAccountTransactionsResponse(BaseModel):
     """
     transactions: list[GetAccountTransactionsTransaction]
 
-# GET - account StakeAccounts
+# GET - Account StakeAccounts
 class GetAccountStakeAccountsStakeAccount(BaseModel):
     """
         This class refers to the model of a stake account inside the response of GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** of **V1** API endpoint.
@@ -82,3 +82,30 @@ class GetAccountStakeAccountsResponse(BaseModel):
         This class refers to the response model of GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** of **V1** API endpoint.
     """
     stake_accounts: dict[str, GetAccountStakeAccountsStakeAccount]
+
+# GET - Account SplTransfers
+class GetAccountSplTransfersTransfer(BaseModel):
+    """
+        This class refers to the model of a transfer inside the response of GET **[Account SplTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-splTransfers)** of **V1** API endpoint.
+    """
+    slot: int
+    block_time_unix_utc: int = Field(alias = "blockTime")
+    signature: list[str]
+    change_type: str = Field(alias = "changeType")
+    change_amount: str = Field(alias = "changeAmount")
+    decimals: int
+    post_balance: str = Field(alias = "postBalance")
+    pre_balance: str = Field(alias = "preBalance")
+    token_address: str = Field(alias = "tokenAddress")
+    owner: str
+    fee: int
+    address: str
+    symbol: str
+    token_name: str = Field(alias = "tokenName")
+
+class GetAccountSplTransfersResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account SplTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-splTransfers)** of **V1** API endpoint.
+    """
+    total: int
+    data: list[GetAccountSplTransfersTransfer]

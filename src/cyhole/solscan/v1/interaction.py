@@ -8,7 +8,8 @@ from ...solscan.v1.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
-    GetAccountStakeAccountsResponse
+    GetAccountStakeAccountsResponse,
+    GetAccountSplTransfersResponse
 )
 
 class Solscan(Interaction):
@@ -167,3 +168,67 @@ class Solscan(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountStakeAccountsResponse(stake_accounts = content_raw.json())
             return async_request()
+
+    @overload
+    def _get_account_spl_transfers(
+        self,
+        sync: Literal[True],
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetAccountSplTransfersResponse: ...
+
+    @overload
+    def _get_account_spl_transfers(
+        self,
+        sync: Literal[False],
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> Coroutine[None, None, GetAccountSplTransfersResponse]: ...
+
+    def _get_account_spl_transfers(
+        self,
+        sync: bool,
+        account: str,
+        utc_from_unix_time: int | None = None,
+        utc_to_unix_time: int | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetAccountSplTransfersResponse | Coroutine[None, None, GetAccountSplTransfersResponse]:
+        """
+            This function refers to the GET **[Account SplTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-splTransfers)** of **V1** API endpoint, 
+            and it is used to get spl transfers of an account.
+
+            Parameters:
+                account: The account address.
+                utc_from_unix_time: The start time in unix time.
+                utc_to_unix_time: The end time in unix time.
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+
+            Returns:
+                List of spl transfers of the account.
+        """
+        # set params
+        url = self.base_url + f"account/splTransfers"
+        api_params = {
+            "account": account,
+            "fromTime": utc_from_unix_time,
+            "toTime": utc_to_unix_time,
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountSplTransfersResponse,
+            params = api_params
+        )
