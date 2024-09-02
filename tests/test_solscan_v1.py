@@ -4,6 +4,7 @@ from pathlib import Path
 
 from pytest_mock import MockerFixture
 
+from cyhole.core.address.solana import JUP, SOL
 from cyhole.solscan.v1 import Solscan
 from cyhole.solscan.v1.param import SolscanExportType
 from cyhole.solscan.v1.schema import (
@@ -14,7 +15,11 @@ from cyhole.solscan.v1.schema import (
     GetAccountSolTransfersResponse,
     GetAccountExportTransactionsResponse,
     GetAccountExportRewardsResponse,
-    GetAccountDetailResponse
+    GetAccountDetailResponse,
+    GetTokenHoldersResponse,
+    GetTokenMetaResponse,
+    GetTokenTransferResponse,
+    GetTokenListResponse
 )
 
 # load test config
@@ -470,3 +475,187 @@ class TestSolscanV1:
 
         # actual test
         assert isinstance(response, GetAccountDetailResponse)
+
+    def test_get_token_holders_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Holders" on V1 API for synchronous logic.
+
+            Mock Response File: get_v1_token_holders.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_holders"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenHoldersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_token_holders(JUP, limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTokenHoldersResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_holders_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Holders" on V1 API for asynchronous logic.
+
+            Mock Response File: get_v1_token_holders.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_holders"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenHoldersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_token_holders(JUP, limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTokenHoldersResponse)
+
+    def test_get_token_meta_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Meta" on V1 API for synchronous logic.
+
+            Mock Response File: get_v1_token_meta.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_meta"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenMetaResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_token_meta(JUP)
+
+        # actual test
+        assert isinstance(response, GetTokenMetaResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_meta_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Meta" on V1 API for asynchronous logic.
+
+            Mock Response File: get_v1_token_meta.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_meta"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenMetaResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_token_meta(JUP)
+
+        # actual test
+        assert isinstance(response, GetTokenMetaResponse)
+
+    def test_get_token_transfer_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Transfer" on V1 API for synchronous logic.
+
+            Mock Response File: get_v1_token_transfer.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_transfer"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTransferResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_token_transfer(token = SOL, account = SOLSCAN_DONATION_ADDRESS, limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTokenTransferResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_transfer_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Transfer" on V1 API for asynchronous logic.
+
+            Mock Response File: get_v1_token_transfer.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_transfer"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTransferResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_token_transfer(token = SOL, account = SOLSCAN_DONATION_ADDRESS, limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTokenTransferResponse)
+
+    def test_get_token_list_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token List" on V1 API for synchronous logic.
+
+            Mock Response File: get_v1_token_list.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_list"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_token_list(limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTokenListResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_list_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token List" on V1 API for asynchronous logic.
+
+            Mock Response File: get_v1_token_list.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_token_list"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenListResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_token_list(limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTokenListResponse)

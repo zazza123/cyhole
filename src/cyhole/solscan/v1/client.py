@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
+from ...solscan.v1.param import SolscanSort, SolscanOrder
 from ...solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
@@ -11,7 +12,11 @@ from ...solscan.v1.schema import (
     GetAccountSolTransfersResponse,
     GetAccountExportTransactionsResponse,
     GetAccountExportRewardsResponse,
-    GetAccountDetailResponse
+    GetAccountDetailResponse,
+    GetTokenHoldersResponse,
+    GetTokenMetaResponse,
+    GetTokenTransferResponse,
+    GetTokenListResponse
 )
 
 if TYPE_CHECKING:
@@ -96,6 +101,47 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_detail(True, account)
 
+    def get_token_holders(
+        self,
+        token: str,
+        limit: int = 10,
+        offset: int | None = None,
+        amount_from: int | None = None,
+        amount_to: int | None = None
+    ) -> GetTokenHoldersResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-holders)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_holders`][cyhole.solscan.interaction.v1.Solscan._get_token_holders].
+        """
+        return self._interaction._get_token_holders(True, token, limit, offset, amount_from, amount_to)
+
+    def get_token_meta(self, token: str) -> GetTokenMetaResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-meta)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_meta`][cyhole.solscan.interaction.v1.Solscan._get_token_meta].
+        """
+        return self._interaction._get_token_meta(True, token)
+
+    def get_token_transfer(self, token: str, account: str | None = None, limit: int = 10, offset: int | None = None) -> GetTokenTransferResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-transfer)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_transfer`][cyhole.solscan.interaction.v1.Solscan._get_token_transfer].
+        """
+        return self._interaction._get_token_transfer(True, token, account, limit, offset)
+
+    def get_token_list(
+        self,
+        sort_by: str = SolscanSort.MARKET_CAP.value,
+        order_by: str = SolscanOrder.DESCENDING.value,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetTokenListResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-list)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_list`][cyhole.solscan.interaction.v1.Solscan._get_token_list].
+        """
+        return self._interaction._get_token_list(True, sort_by, order_by, limit, offset)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -174,3 +220,44 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_detail`][cyhole.solscan.interaction.v1.Solscan._get_account_detail].
         """
         return await self._interaction._get_account_detail(False, account)
+
+    async def get_token_holders(
+        self,
+        token: str,
+        limit: int = 10,
+        offset: int | None = None,
+        amount_from: int | None = None,
+        amount_to: int | None = None
+    ) -> GetTokenHoldersResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-holders)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_holders`][cyhole.solscan.interaction.v1.Solscan._get_token_holders].
+        """
+        return await self._interaction._get_token_holders(False, token, limit, offset, amount_from, amount_to)
+
+    async def get_token_meta(self, token: str) -> GetTokenMetaResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-meta)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_meta`][cyhole.solscan.interaction.v1.Solscan._get_token_meta].
+        """
+        return await self._interaction._get_token_meta(False, token)
+
+    async def get_token_transfer(self, token: str, account: str | None = None, limit: int = 10, offset: int | None = None) -> GetTokenTransferResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-transfer)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_transfer`][cyhole.solscan.interaction.v1.Solscan._get_token_transfer].
+        """
+        return await self._interaction._get_token_transfer(False, token, account, limit, offset)
+
+    async def get_token_list(
+        self,
+        sort_by: str = SolscanSort.MARKET_CAP.value,
+        order_by: str = SolscanOrder.DESCENDING.value,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetTokenListResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-list)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_list`][cyhole.solscan.interaction.v1.Solscan._get_token_list].
+        """
+        return await self._interaction._get_token_list(False, sort_by, order_by, limit, offset)

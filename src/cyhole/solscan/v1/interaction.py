@@ -5,8 +5,8 @@ from typing import Coroutine, Literal, overload
 from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
-from ...solscan.v1.param import SolscanExportType
 from ...solscan.v1.client import SolscanClient, SolscanAsyncClient
+from ...solscan.v1.param import SolscanExportType, SolscanSort, SolscanOrder
 from ...solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
@@ -15,7 +15,11 @@ from ...solscan.v1.schema import (
     GetAccountSolTransfersResponse,
     GetAccountExportTransactionsResponse,
     GetAccountExportRewardsResponse,
-    GetAccountDetailResponse
+    GetAccountDetailResponse,
+    GetTokenHoldersResponse,
+    GetTokenMetaResponse,
+    GetTokenTransferResponse,
+    GetTokenListResponse
 )
 
 class Solscan(Interaction):
@@ -418,4 +422,216 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountDetailResponse
+        )
+
+    @overload
+    def _get_token_holders(
+        self,
+        sync: Literal[True],
+        token: str,
+        limit: int = 10,
+        offset: int | None = None,
+        amount_from: int | None = None,
+        amount_to: int | None = None
+    ) -> GetTokenHoldersResponse: ...
+
+    @overload
+    def _get_token_holders(
+        self,
+        sync: Literal[False],
+        token: str,
+        limit: int = 10,
+        offset: int | None = None,
+        amount_from: int | None = None,
+        amount_to: int | None = None
+    ) -> Coroutine[None, None, GetTokenHoldersResponse]: ...
+
+    def _get_token_holders(
+        self,
+        sync: bool,
+        token: str,
+        limit: int = 10,
+        offset: int | None = None,
+        amount_from: int | None = None,
+        amount_to: int | None = None
+    ) -> GetTokenHoldersResponse | Coroutine[None, None, GetTokenHoldersResponse]:
+        """
+            This function refers to the GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-holders)** of **V1** API endpoint, 
+            and it is used to get token holders of a token.
+
+            Parameters:
+                token: The token address.
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+                amount_from: The minimum amount of the token.
+                amount_to: The maximum amount of the token
+
+            Returns:
+                List of token holders of the token.
+        """
+        # set params
+        url = self.base_url + f"token/holders"
+        api_params = {
+            "tokenAddress": token,
+            "limit": limit,
+            "offset": offset,
+            "fromAmount": amount_from,
+            "toAmount": amount_to
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenHoldersResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_meta(self, sync: Literal[True], token: str) -> GetTokenMetaResponse: ...
+
+    @overload
+    def _get_token_meta(self, sync: Literal[False], token: str) -> Coroutine[None, None, GetTokenMetaResponse]: ...
+
+    def _get_token_meta(self, sync: bool, token: str) -> GetTokenMetaResponse | Coroutine[None, None, GetTokenMetaResponse]:
+        """
+            This function refers to the GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-meta)** of **V1** API endpoint, 
+            and it is used to get meta of a token.
+
+            Parameters:
+                token: The token address.
+
+            Returns:
+                Meta of the token.
+        """
+        # set params
+        url = self.base_url + f"token/meta"
+        api_params = {
+            "tokenAddress": token
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenMetaResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_transfer(
+        self,
+        sync: Literal[True],
+        token: str,
+        account: str | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetTokenTransferResponse: ...
+
+    @overload
+    def _get_token_transfer(
+        self,
+        sync: Literal[False],
+        token: str,
+        account: str | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> Coroutine[None, None, GetTokenTransferResponse]: ...
+
+    def _get_token_transfer(
+        self,
+        sync: bool,
+        token: str,
+        account: str | None = None,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetTokenTransferResponse | Coroutine[None, None, GetTokenTransferResponse]:
+        """
+            This function refers to the GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-transfer)** of **V1** API endpoint, 
+            and it is used to get token transfers of a token.
+
+            Parameters:
+                token: The token address.
+                account: The account address to filter for.
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+
+            Returns:
+                List of token transfers of the token.
+        """
+        # set params
+        url = self.base_url + f"token/transfer"
+        api_params = {
+            "tokenAddress": token,
+            "address": account,
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenTransferResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_list(
+        self,
+        sync: Literal[True],
+        sort_by: str = SolscanSort.MARKET_CAP.value,
+        order_by: str = SolscanOrder.DESCENDING.value,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetTokenListResponse: ...
+
+    @overload
+    def _get_token_list(
+        self,
+        sync: Literal[False],
+        sort_by: str = SolscanSort.MARKET_CAP.value,
+        order_by: str = SolscanOrder.DESCENDING.value,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> Coroutine[None, None, GetTokenListResponse]: ...
+
+    def _get_token_list(
+        self,
+        sync: bool,
+        sort_by: str = SolscanSort.MARKET_CAP.value,
+        order_by: str = SolscanOrder.DESCENDING.value,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
+        """
+            This function refers to the GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/token-list)** of **V1** API endpoint, 
+            and it is used to get list of tokens according to Solscan, with additional token's information.
+
+            Parameters:
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+
+            Returns:
+                List of tokens.
+        """
+        # set params
+        url = self.base_url + f"token/list"
+        api_params = {
+            "sortBy": sort_by,
+            "direction": order_by,
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenListResponse,
+            params = api_params
         )

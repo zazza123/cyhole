@@ -1,0 +1,19 @@
+{
+    "total": 800527,
+    "data": [
+        {
+            "address": "26ddLrqXDext6caX1gRxARePN4kzajyGiAUz9JmzmTGQ",
+            "amount": 4090152116568146,
+            "decimals": 6,
+            "owner": "61aq585V8cR2sZBeawJFt2NPqmN7zDi1sws4KLs5xHXV",
+            "rank": 1
+        },
+        {
+            "address": "6G4XDSge4txj5tBkA5gZqefXXE3BRxqA37Yb1pmrHv6N",
+            "amount": 3500000000001000,
+            "decimals": 6,
+            "owner": "EXJHiMkj6NRFDfhWBMKccHNwdSpCT7tdvQeRf87yHm6T",
+            "rank": 2
+        }
+    ]
+}
