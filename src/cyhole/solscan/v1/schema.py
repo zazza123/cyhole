@@ -144,3 +144,15 @@ class GetAccountExportRewardsResponse(BaseModel):
         This class refers to the response model of GET **[Account ExportRewards](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportRewards)** of **V1** API endpoint.
     """
     csv: str
+
+# GET - Account Detail
+class GetAccountDetailResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-detail)** of **V1** API endpoint.
+    """
+    lamports: int
+    owner_program: str = Field(alias = "ownerProgram")
+    type: str
+    rent_epoch: int = Field(alias = "rentEpoch")
+    executable: bool
+    account: str

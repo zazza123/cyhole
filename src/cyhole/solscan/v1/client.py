@@ -10,7 +10,8 @@ from ...solscan.v1.schema import (
     GetAccountSplTransfersResponse,
     GetAccountSolTransfersResponse,
     GetAccountExportTransactionsResponse,
-    GetAccountExportRewardsResponse
+    GetAccountExportRewardsResponse,
+    GetAccountDetailResponse
 )
 
 if TYPE_CHECKING:
@@ -88,6 +89,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_export_rewards(True, account, dt_from, dt_to)
 
+    def get_account_detail(self, account: str) -> GetAccountDetailResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-detail)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_detail`][cyhole.solscan.interaction.v1.Solscan._get_account_detail].
+        """
+        return self._interaction._get_account_detail(True, account)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -159,3 +167,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_export_rewards`][cyhole.solscan.interaction.v1.Solscan._get_account_export_rewards].
         """
         return await self._interaction._get_account_export_rewards(False, account, dt_from, dt_to)
+
+    async def get_account_detail(self, account: str) -> GetAccountDetailResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-detail)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_detail`][cyhole.solscan.interaction.v1.Solscan._get_account_detail].
+        """
+        return await self._interaction._get_account_detail(False, account)

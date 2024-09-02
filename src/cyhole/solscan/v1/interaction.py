@@ -14,7 +14,8 @@ from ...solscan.v1.schema import (
     GetAccountSplTransfersResponse,
     GetAccountSolTransfersResponse,
     GetAccountExportTransactionsResponse,
-    GetAccountExportRewardsResponse
+    GetAccountExportRewardsResponse,
+    GetAccountDetailResponse
 )
 
 class Solscan(Interaction):
@@ -390,3 +391,31 @@ class Solscan(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountExportRewardsResponse(csv = content_raw.text)
             return async_request()
+
+    @overload
+    def _get_account_detail(self, sync: Literal[True], account: str) -> GetAccountDetailResponse: ...
+
+    @overload
+    def _get_account_detail(self, sync: Literal[False], account: str) -> Coroutine[None, None, GetAccountDetailResponse]: ...
+
+    def _get_account_detail(self, sync: bool, account: str) -> GetAccountDetailResponse | Coroutine[None, None, GetAccountDetailResponse]:
+        """
+            This function refers to the GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-detail)** of **V1** API endpoint, 
+            and it is used to get details of an account.
+
+            Parameters:
+                account: The account address.
+
+            Returns:
+                Details of the account.
+        """
+        # set params
+        url = self.base_url + f"account/{account}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountDetailResponse
+        )
