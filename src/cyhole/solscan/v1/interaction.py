@@ -7,7 +7,8 @@ from ...core.exception import MissingAPIKeyError
 from ...solscan.v1.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v1.schema import (
     GetAccountTokensResponse,
-    GetAccountTransactionsResponse
+    GetAccountTransactionsResponse,
+    GetAccountStakeAccountsResponse
 )
 
 class Solscan(Interaction):
@@ -132,4 +133,37 @@ class Solscan(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountTransactionsResponse(transactions = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_account_stake_accounts(self, sync: Literal[True], account: str) -> GetAccountStakeAccountsResponse: ...
+
+    @overload
+    def _get_account_stake_accounts(self, sync: Literal[False], account: str) -> Coroutine[None, None, GetAccountStakeAccountsResponse]: ...
+
+    def _get_account_stake_accounts(self, sync: bool, account: str) -> GetAccountStakeAccountsResponse | Coroutine[None, None, GetAccountStakeAccountsResponse]:
+        """
+            This function refers to the GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** of **V1** API endpoint, 
+            and it is used to get stake accounts of an account.
+
+            Parameters:
+                account: The account address.
+
+            Returns:
+                List of stake accounts of the account.
+        """
+        # set params
+        url = self.base_url + f"account/stakeAccounts"
+        api_params = {
+            "account": account
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetAccountStakeAccountsResponse(stake_accounts = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetAccountStakeAccountsResponse(stake_accounts = content_raw.json())
             return async_request()

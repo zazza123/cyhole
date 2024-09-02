@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING, Any, cast
 from ...core.client import APIClient, AsyncAPIClient
 from ...solscan.v1.schema import (
     GetAccountTokensResponse,
-    GetAccountTransactionsResponse
+    GetAccountTransactionsResponse,
+    GetAccountStakeAccountsResponse
 )
 
 if TYPE_CHECKING:
@@ -33,6 +34,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_transactions(True, account, before_hash, limit)
 
+    def get_account_stake_accounts(self, account: str) -> GetAccountStakeAccountsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_stake_accounts`][cyhole.solscan.interaction.v1.Solscan._get_account_stake_accounts].
+        """
+        return self._interaction._get_account_stake_accounts(True, account)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -55,3 +63,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_transactions`][cyhole.solscan.interaction.v1.Solscan._get_account_transactions].
         """
         return await self._interaction._get_account_transactions(False, account, before_hash, limit)
+
+    async def get_account_stake_accounts(self, account: str) -> GetAccountStakeAccountsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_stake_accounts`][cyhole.solscan.interaction.v1.Solscan._get_account_stake_accounts].
+        """
+        return await self._interaction._get_account_stake_accounts(False, account)

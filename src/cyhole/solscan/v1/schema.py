@@ -58,3 +58,27 @@ class GetAccountTransactionsResponse(BaseModel):
         This class refers to the response model of GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-transactions)** of **V1** API endpoint.
     """
     transactions: list[GetAccountTransactionsTransaction]
+
+# GET - account StakeAccounts
+class GetAccountStakeAccountsStakeAccount(BaseModel):
+    """
+        This class refers to the model of a stake account inside the response of GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** of **V1** API endpoint.
+    """
+    active_stake_amount: int = Field(alias = "activeStakeAmount")
+    amount: int
+    delegated_stake_amount: int = Field(alias = "delegatedStakeAmount")
+    role: list[str]
+    sol_balance: int = Field(alias = "solBalance")
+    total_reward: str = Field(alias = "totalReward")
+    status: str
+    stake_account: str = Field(alias = "stakeAccount")
+    type: str
+    voter: str
+    activation_epoch: int = Field(alias = "activationEpoch")
+    stake_type: str = Field(alias = "stakeType")
+
+class GetAccountStakeAccountsResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account StakeAccounts](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-stakeAccounts)** of **V1** API endpoint.
+    """
+    stake_accounts: dict[str, GetAccountStakeAccountsStakeAccount]

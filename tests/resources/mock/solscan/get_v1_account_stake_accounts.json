@@ -1,0 +1,38 @@
+{
+    "stake_accounts": {
+        "3QTWp29qaduKsXFGU9hSjBzqeHj6j5a2XNYzVn1tT61i": {
+            "activeStakeAmount": 62198784215,
+            "amount": 62198784215,
+            "delegatedStakeAmount": 62198784215,
+            "role": [
+                "staker",
+                "withdrawer"
+            ],
+            "solBalance": 62574838138,
+            "totalReward": "3201067095",
+            "status": "active",
+            "stakeAccount": "3QTWp29qaduKsXFGU9hSjBzqeHj6j5a2XNYzVn1tT61i",
+            "type": "active",
+            "voter": "27MtjMSAQ2BGkXNuJEJkxFyCJT8dugGAaHJ9T7Gc6x4x",
+            "activationEpoch": 543,
+            "stakeType": "Stake"
+        },
+        "HNs78RnF6vDdg8ti1G6g9xxoEeF4TUBKEccWpxLz6mne": {
+            "activeStakeAmount": 3046724556074,
+            "amount": 3046724556074,
+            "delegatedStakeAmount": 3046724556074,
+            "role": [
+                "staker",
+                "withdrawer"
+            ],
+            "solBalance": 3065341685080,
+            "totalReward": "353688644282",
+            "status": "active",
+            "stakeAccount": "HNs78RnF6vDdg8ti1G6g9xxoEeF4TUBKEccWpxLz6mne",
+            "type": "active",
+            "voter": "27MtjMSAQ2BGkXNuJEJkxFyCJT8dugGAaHJ9T7Gc6x4x",
+            "activationEpoch": 372,
+            "stakeType": "Stake"
+        }
+    }
+}
