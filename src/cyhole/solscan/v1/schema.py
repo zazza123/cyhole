@@ -130,3 +130,10 @@ class GetAccountSolTransfersResponse(BaseModel):
         This class refers to the response model of GET **[Account SolTransfers](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-solTransfers)** of **V1** API endpoint.
     """
     data: list[GetAccountSolTransfersTransfer]
+
+# GET - Account ExportTransactions
+class GetAccountExportTransactionsResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account ExportTransactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportTransactions)** of **V1** API endpoint.
+    """
+    csv: str

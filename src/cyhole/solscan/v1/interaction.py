@@ -1,16 +1,19 @@
 import os
+from datetime import datetime
 from typing import Coroutine, Literal, overload
 
 from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
+from ...solscan.v1.param import SolscanExportType
 from ...solscan.v1.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeAccountsResponse,
     GetAccountSplTransfersResponse,
-    GetAccountSolTransfersResponse
+    GetAccountSolTransfersResponse,
+    GetAccountExportTransactionsResponse
 )
 
 class Solscan(Interaction):
@@ -297,3 +300,50 @@ class Solscan(Interaction):
             response_model = GetAccountSolTransfersResponse,
             params = api_params
         )
+
+    @overload
+    def _get_account_export_transactions(self, sync: Literal[True], account: str, export_type: str, dt_from: datetime, dt_to: datetime) -> GetAccountExportTransactionsResponse: ...
+
+    @overload
+    def _get_account_export_transactions(self, sync: Literal[False], account: str, export_type: str, dt_from: datetime, dt_to: datetime) -> Coroutine[None, None, GetAccountExportTransactionsResponse]: ...
+
+    def _get_account_export_transactions(self, sync: bool, account: str, export_type: str, dt_from: datetime, dt_to: datetime) -> GetAccountExportTransactionsResponse | Coroutine[None, None, GetAccountExportTransactionsResponse]:
+        """
+            This function refers to the GET **[Account Export Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportTransactions)** of **V1** API endpoint, 
+            and it is used to get export transactions of an account in CSV format.
+
+            !!! info
+                The limit of the export transactions is 5000. 
+                Moreover, it is possible to execute the export transactions **only** for 1 time for every minute.
+
+            Parameters:
+                account: The account address.
+                export_type: The export type.
+                    The supported types are available on [`SolscanExportType`][cyhole.solscan.v1.param.SolscanExportType].
+                dt_from: The start time.
+                dt_to: The end time.
+
+            Returns:
+                List of export transactions of the account.
+        """
+        # check param consistency
+        SolscanExportType.check(export_type)
+
+        # set params
+        url = self.base_url + f"account/exportTransactions"
+        api_params = {
+            "account": account,
+            "type": export_type,
+            "fromTime": int(dt_from.timestamp()),
+            "toTime": int(dt_to.timestamp())
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetAccountExportTransactionsResponse(csv = content_raw.text)
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetAccountExportTransactionsResponse(csv = content_raw.text)
+            return async_request()

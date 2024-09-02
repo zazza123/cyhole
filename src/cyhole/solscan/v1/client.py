@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
@@ -7,7 +8,8 @@ from ...solscan.v1.schema import (
     GetAccountTransactionsResponse,
     GetAccountStakeAccountsResponse,
     GetAccountSplTransfersResponse,
-    GetAccountSolTransfersResponse
+    GetAccountSolTransfersResponse,
+    GetAccountExportTransactionsResponse
 )
 
 if TYPE_CHECKING:
@@ -71,6 +73,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_sol_transfers(True, account, utc_from_unix_time, utc_to_unix_time, limit, offset)
 
+    def get_account_export_transactions(self, account: str, export_type: str, dt_from: datetime, dt_to: datetime) -> GetAccountExportTransactionsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account Export Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportTransactions)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_export_transactions`][cyhole.solscan.interaction.v1.Solscan._get_account_export_transactions].
+        """
+        return self._interaction._get_account_export_transactions(True, account, export_type, dt_from, dt_to)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -128,3 +137,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_sol_transfers`][cyhole.solscan.interaction.v1.Solscan._get_account_sol_transfers].
         """
         return await self._interaction._get_account_sol_transfers(False, account, utc_from_unix_time, utc_to_unix_time, limit, offset)
+
+    async def get_account_export_transactions(self, account: str, export_type: str, dt_from: datetime, dt_to: datetime) -> GetAccountExportTransactionsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Account Export Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/account-exportTransactions)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_export_transactions`][cyhole.solscan.interaction.v1.Solscan._get_account_export_transactions].
+        """
+        return await self._interaction._get_account_export_transactions(False, account, export_type, dt_from, dt_to)

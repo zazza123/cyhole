@@ -1,15 +1,18 @@
 import pytest
+from datetime import datetime
 from pathlib import Path
 
 from pytest_mock import MockerFixture
 
 from cyhole.solscan.v1 import Solscan
+from cyhole.solscan.v1.param import SolscanExportType
 from cyhole.solscan.v1.schema import (
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeAccountsResponse,
     GetAccountSplTransfersResponse,
-    GetAccountSolTransfersResponse
+    GetAccountSolTransfersResponse,
+    GetAccountExportTransactionsResponse
 )
 
 # load test config
@@ -289,3 +292,69 @@ class TestSolscanV1:
 
         # actual test
         assert isinstance(response, GetAccountSolTransfersResponse)
+
+    def test_get_account_export_transactions_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Account Export Transactions" on V1 API for synchronous logic.
+
+            Mock Response File: get_v1_account_export_transactions.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_account_export_transactions"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountExportTransactionsResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["csv"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_account_export_transactions(
+            account = SOLSCAN_DONATION_ADDRESS,
+            export_type = SolscanExportType.SOL_TRANSFER.value,
+            dt_from = datetime(2024, 8, 12),
+            dt_to = datetime(2024, 8, 25)
+        )
+
+        # actual test
+        assert isinstance(response, GetAccountExportTransactionsResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_account_export_transactions_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Account Export Transactions" on V1 API for asynchronous logic.
+
+            Mock Response File: get_v1_account_export_transactions.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_account_export_transactions"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountExportTransactionsResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["csv"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_account_export_transactions(
+                account = SOLSCAN_DONATION_ADDRESS,
+                export_type = SolscanExportType.SOL_TRANSFER.value,
+                dt_from = datetime(2024, 8, 12),
+                dt_to = datetime(2024, 8, 25)
+            )
+
+        # actual test
+        assert isinstance(response, GetAccountExportTransactionsResponse)
