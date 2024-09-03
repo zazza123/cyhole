@@ -17,7 +17,8 @@ from ...solscan.v1.schema import (
     GetTokenMetaResponse,
     GetTokenTransferResponse,
     GetTokenListResponse,
-    GetMarketTokenDetailResponse
+    GetMarketTokenDetailResponse,
+    GetTransactionLastResponse
 )
 
 if TYPE_CHECKING:
@@ -150,6 +151,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_market_token_detail(True, token, limit, offset)
 
+    def get_transaction_last(self, limit: int = 10) -> GetTransactionLastResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_transaction_last`][cyhole.solscan.interaction.v1.Solscan._get_transaction_last].
+        """
+        return self._interaction._get_transaction_last(True, limit)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -276,3 +284,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_market_token_detail`][cyhole.solscan.interaction.v1.Solscan._get_market_token_detail].
         """
         return await self._interaction._get_market_token_detail(False, token, limit, offset)
+
+    async def get_transaction_last(self, limit: int = 10) -> GetTransactionLastResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_transaction_last`][cyhole.solscan.interaction.v1.Solscan._get_transaction_last].
+        """
+        return await self._interaction._get_transaction_last(False, limit)

@@ -20,7 +20,8 @@ from ...solscan.v1.schema import (
     GetTokenMetaResponse,
     GetTokenTransferResponse,
     GetTokenListResponse,
-    GetMarketTokenDetailResponse
+    GetMarketTokenDetailResponse,
+    GetTransactionLastResponse
 )
 
 class Solscan(Interaction):
@@ -671,3 +672,36 @@ class Solscan(Interaction):
             response_model = GetMarketTokenDetailResponse,
             params = api_params
         )
+
+    @overload
+    def _get_transaction_last(self, sync: Literal[True], limit: int = 10) -> GetTransactionLastResponse: ...
+
+    @overload
+    def _get_transaction_last(self, sync: Literal[False], limit: int = 10) -> Coroutine[None, None, GetTransactionLastResponse]: ...
+
+    def _get_transaction_last(self, sync: bool, limit: int = 10) -> GetTransactionLastResponse | Coroutine[None, None, GetTransactionLastResponse]:
+        """
+            This function refers to the GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint, 
+            and it is used to get last transactions.
+
+            Parameters:
+                limit: The number of transactions to get; maximum is 20.
+
+            Returns:
+                Last transactions.
+        """
+        # set params
+        url = self.base_url + f"transaction/last"
+        api_params = {
+            "limit": limit
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetTransactionLastResponse(data = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetTransactionLastResponse(data = content_raw.json())
+            return async_request()

@@ -8,7 +8,7 @@ class GetAccountTokensTokenAmount(BaseModel):
     """
     amount: str
     decimals: int
-    ui_amount: float = Field(alias = "uiAmount")
+    ui_amount: float | None = Field(default = None, alias = "uiAmount")
     ui_amount_string: str = Field(alias = "uiAmountString")
 
 class GetAccountTokensToken(BaseModel):
@@ -362,3 +362,185 @@ class GetMarketTokenDetailResponse(BaseModel):
     market_cap_rank: int = Field(alias = "marketCapRank")
     price_change_24h: float = Field(alias = "priceChange24h")
     markets: list[GetMarketTokenDetailMarket]
+
+# GET - Transaction Last
+
+# Transaction Instruction SPL-Token: START
+class GetTransactionLastInstructionSplTokenAmount(GetAccountTokensTokenAmount):
+    pass
+
+class GetTransactionLastInstructionSplTokenParsedInfo(BaseModel):
+    authority: str | None = None    
+    account: str | None = None
+    mint: str | None = None
+    destination: str | None = None
+    source: str | None = None
+    owner: str | None = None
+    rent_sysvar: str | None = Field(default = None, alias = "rentSysvar")
+    token_amount: GetTransactionLastInstructionSplTokenAmount | None = Field(default = None, alias = "tokenAmount")
+
+class GetTransactionLastInstructionSplTokenParsed(BaseModel):
+    info: GetTransactionLastInstructionSplTokenParsedInfo
+    type: str
+
+class GetTransactionLastInstructionSplToken(BaseModel):
+    """
+        This class refers to the model of instruction `spl-token` inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    parsed: GetTransactionLastInstructionSplTokenParsed
+    program: str
+    program_id: str = Field(alias = "programId")
+    stack_height: int | None = Field(default = None, alias = "stackHeight")
+
+# Transaction Instruction SPL-Token: END
+
+# Transaction Instruction System: START
+class GetTransactionLastInstructionSystemParsedInfo(BaseModel):
+    base: str
+    lamports: int
+    new_account: str = Field(alias = "newAccount")
+    owner: str
+    seed: str
+    source: str
+    space: int
+
+class GetTransactionLastInstructionSystemParsed(BaseModel):
+    info: GetTransactionLastInstructionSystemParsedInfo
+    type: str
+
+class GetTransactionLastInstructionSystem(BaseModel):
+    """
+        This class refers to the model of instruction `system` inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    parsed: GetTransactionLastInstructionSystemParsed
+    program: str
+    program_id: str = Field(alias = "programId")
+    stack_height: int | None = Field(default = None, alias = "stackHeight")
+
+# Transaction Instruction System: END
+
+# Transaction Instruction Vote: START
+class GetTransactionLastInstructionVoteLockout(BaseModel):
+    confirmation_count: int
+    slot: int
+
+class GetTransactionLastInstructionVoteStateUpdate(BaseModel):
+    hash: str
+    root: int
+    lockouts: list[GetTransactionLastInstructionVoteLockout]
+    timestamp_unix_utc: int = Field(alias = "timestamp")
+
+class GetTransactionLastInstructionVoteParsedInfo(BaseModel):
+    vote_account: str = Field(alias = "voteAccount")
+    vote_authority: str = Field(alias = "voteAuthority")
+    vote_state_updated: GetTransactionLastInstructionVoteStateUpdate = Field(alias = "voteStateUpdated")
+
+class GetTransactionLastInstructionVoteParsed(BaseModel):
+    info: GetTransactionLastInstructionVoteParsedInfo
+    type: str
+
+class GetTransactionLastInstructionVote(BaseModel):
+    """
+        This class refers to the model of instruction `vote` inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    parsed: GetTransactionLastInstructionVoteParsed
+    program: str
+    program_id: str = Field(alias = "programId")
+    stack_height: int | None = Field(default = None, alias = "stackHeight")
+
+# Transaction Instruction Vote: END
+
+# Transaction Instruction General: START
+class GetTransactionLastInstructionGeneral(BaseModel):
+    """
+        This class refers to the model of instruction `general` inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    accounts: list[str]
+    data: str
+    program_id: str = Field(alias = "programId")
+    stack_height: int | None = Field(default = None, alias = "stackHeight")
+
+# Transaction Instruction General: END
+
+class GetTransactionLastAddressTableLookup(BaseModel):
+    account_key: str = Field(alias = "accountKey")
+    readonly_indexes: list[int] = Field(alias = "readonlyIndexes")
+    writable_indexes: list[int] = Field(alias = "writableIndexes")
+
+class GetTransactionLastAccountKeys(BaseModel):
+    public_key: str = Field(alias = "pubkey")
+    signer: bool
+    source: str
+    writable: bool
+
+class GetTransactionLastMessage(BaseModel):
+    account_keys: list[GetTransactionLastAccountKeys] = Field(alias = "accountKeys")
+    address_table_lookups: list[GetTransactionLastAddressTableLookup] | None = Field(default = None, alias = "addressTableLookups")
+    instructions: list[
+        GetTransactionLastInstructionGeneral | GetTransactionLastInstructionVote | GetTransactionLastInstructionSystem | GetTransactionLastInstructionSplToken
+    ]
+    recent_blockhash: str = Field(alias = "recentBlockhash")
+
+class GetTransactionLastTransaction(BaseModel):
+    """
+        This class refers to the model of transaction inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    message: GetTransactionLastMessage
+    signatures: list[str]
+
+# Transaction Meta: START
+
+class GetTransactionLastMetaError(BaseModel):
+    instruction_error: list[int | dict] = Field(alias = "InstructionError")
+
+class GetTransactionLastMetaStatus(BaseModel):
+    error: GetTransactionLastMetaError | None = Field(default = None, alias = "err")
+    ok: None = Field(default = None, alias = "Ok")
+
+class GetTransactionLastMetaInstructions(BaseModel):
+    index: int
+    instructions: list[
+        GetTransactionLastInstructionGeneral | GetTransactionLastInstructionVote | GetTransactionLastInstructionSystem | GetTransactionLastInstructionSplToken
+    ]
+
+class GetTransactionLastMetaTokenAmount(GetAccountTokensTokenAmount):
+    pass
+
+class GetTransactionLastMetaTokenBalance(BaseModel):
+    account_index: int = Field(alias = "accountIndex")
+    mint: str
+    owner: str
+    program_id: str = Field(alias = "programId")
+    ui_token_amount: GetTransactionLastMetaTokenAmount = Field(alias = "uiTokenAmount")
+
+class GetTransactionLastMeta(BaseModel):
+    """
+        This class refers to the model of meta inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    compute_units_consumed: int = Field(alias = "computeUnitsConsumed")
+    error: GetTransactionLastMetaError | None = Field(default = None, alias = "err")
+    fee: int
+    inner_instructions: list[GetTransactionLastMetaInstructions] = Field(alias = "innerInstructions")
+    log_messages: list[str] = Field(alias = "logMessages")
+    post_balances: list[int] = Field(alias = "postBalances")
+    post_token_balances: list[GetTransactionLastMetaTokenBalance] | None = Field(default = None, alias = "postTokenBalances")
+    pre_balances: list[int] = Field(alias = "preBalances")
+    pre_token_balances: list[GetTransactionLastMetaTokenBalance] | None = Field(default = None, alias = "preTokenBalances")
+    rewards: list[str] | None = None
+    status: GetTransactionLastMetaStatus
+
+# Transaction Meta: END
+
+class GetTransactionLastData(BaseModel):
+    """
+        This class refers to the model of data inside the response of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    meta: GetTransactionLastMeta
+    transaction: GetTransactionLastTransaction
+    version: str | int
+
+class GetTransactionLastResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
+    """
+    data: list[GetTransactionLastData]

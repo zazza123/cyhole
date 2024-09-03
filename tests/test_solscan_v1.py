@@ -20,7 +20,8 @@ from cyhole.solscan.v1.schema import (
     GetTokenMetaResponse,
     GetTokenTransferResponse,
     GetTokenListResponse,
-    GetMarketTokenDetailResponse
+    GetMarketTokenDetailResponse,
+    GetTransactionLastResponse
 )
 
 # load test config
@@ -706,3 +707,59 @@ class TestSolscanV1:
 
         # actual test
         assert isinstance(response, GetMarketTokenDetailResponse)
+
+    def test_get_transaction_last_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Transaction Last" on V1 API for synchronous logic.
+
+            Mock Response File: get_v1_transaction_last.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_transaction_last"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTransactionLastResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["data"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_transaction_last(limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTransactionLastResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_transaction_last_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Transaction Last" on V1 API for asynchronous logic.
+
+            Mock Response File: get_v1_transaction_last.json
+        """
+
+        # load mock response
+        mock_file_name = "get_v1_transaction_last"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTransactionLastResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["data"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_transaction_last(limit = 2)
+
+        # actual test
+        assert isinstance(response, GetTransactionLastResponse)
