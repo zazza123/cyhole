@@ -47,3 +47,22 @@ class SolscanAccountType(CyholeParam):
     """Export only NFT accounts."""
     TOKEN = "token"
     """Export only token accounts."""
+
+class SolscanActivityDefiType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's DeFi activities types.
+    """
+    TOKEN_SWAP = "ACTIVITY_TOKEN_SWAP"
+    """Export only token swaps."""
+    AGG_TOKEN_SWAP = "ACTIVITY_AGG_TOKEN_SWAP"
+    """Export only aggregated token swaps."""
+    TOKEN_ADD_LIQ = "ACTIVITY_TOKEN_ADD_LIQ"
+    """Export only token add liquidity."""
+    TOKEN_REMOVE_LIQ = "ACTIVITY_TOKEN_REMOVE_LIQ"
+    """Export only token remove liquidity."""
+    SPL_TOKEN_STAKE = "ACTIVITY_SPL_TOKEN_STAKE"
+    """Export only SPL token stakes."""
+    SPL_TOKEN_UNSTAKE = "ACTIVITY_SPL_TOKEN_UNSTAKE"
+    """Export only SPL token unstakes."""
+    SPL_TOKEN_WITHDRAW_STAKE = "ACTIVITY_SPL_TOKEN_WITHDRAW_STAKE"
+    """Export only SPL token withdraw stakes."""

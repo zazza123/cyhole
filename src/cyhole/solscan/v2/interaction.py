@@ -12,7 +12,9 @@ from ...solscan.v2.param import (
 from ...solscan.v2.schema import (
     GetAccountTransferParam,
     GetAccountTransferResponse,
-    GetAccountTokenNFTAccountResponse
+    GetAccountTokenNFTAccountResponse,
+    GetAccountDefiActivitiesParam,
+    GetAccountDefiActivitiesResponse
 )
 
 class Solscan(Interaction):
@@ -172,5 +174,39 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountTokenNFTAccountResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_account_defi_activities(self, sync: Literal[True], account: str, params: GetAccountDefiActivitiesParam = GetAccountDefiActivitiesParam()) -> GetAccountDefiActivitiesResponse: ...
+
+    @overload
+    def _get_account_defi_activities(self, sync: Literal[False], account: str, params: GetAccountDefiActivitiesParam = GetAccountDefiActivitiesParam()) -> Coroutine[None, None, GetAccountDefiActivitiesResponse]: ...
+
+    def _get_account_defi_activities(self, sync: bool, account: str, params: GetAccountDefiActivitiesParam = GetAccountDefiActivitiesParam()) -> GetAccountDefiActivitiesResponse | Coroutine[None, None, GetAccountDefiActivitiesResponse]:
+        """
+            This function refers to the GET **[Account DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** of **V2** API endpoint, 
+            and it is used to get the DeFi activities of an account.
+
+            Parameters:
+                account: The account address.
+
+            Returns:
+                List of DeFi activities.
+        """
+        # set params
+        url = self.base_url + "account/defi/activities"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+        api_params["address"] = account
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountDefiActivitiesResponse,
             params = api_params
         )

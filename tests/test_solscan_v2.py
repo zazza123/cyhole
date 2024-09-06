@@ -7,13 +7,16 @@ from pytest_mock import MockerFixture
 from cyhole.solscan.v2 import Solscan
 from cyhole.solscan.v2.param import (
     SolscanActivityTransferType,
-    SolscanFlowType,
-    SolscanAccountType
+    SolscanActivityDefiType,
+    SolscanAccountType,
+    SolscanFlowType
 )
 from cyhole.solscan.v2.schema import (
     GetAccountTransferParam,
     GetAccountTransferResponse,
-    GetAccountTokenNFTAccountResponse
+    GetAccountTokenNFTAccountResponse,
+    GetAccountDefiActivitiesParam,
+    GetAccountDefiActivitiesResponse
 )
 
 # load test config
@@ -126,3 +129,54 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetAccountTokenNFTAccountResponse)
+
+    def test_get_account_defi_activities_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Account DeFi Activities" on V2 API for synchronous logic.
+
+            Mock Response File: get_v2_account_defi_activities.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_account_defi_activities"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountDefiActivitiesResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        param = GetAccountDefiActivitiesParam(
+            activity_type = [
+                SolscanActivityDefiType.SPL_TOKEN_UNSTAKE.value,
+                SolscanActivityDefiType.AGG_TOKEN_SWAP.value
+            ],
+            time_range = (datetime(2024, 6, 1), datetime(2024, 8, 31))
+        )
+        response = self.solscan.client.get_account_defi_activities(SOLSCAN_DONATION_ADDRESS, param)
+
+        # actual test
+        assert isinstance(response, GetAccountDefiActivitiesResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_account_defi_activities_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Account DeFi Activities" on V2 API for asynchronous logic.
+
+            Mock Response File: get_v2_account_defi_activities.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_account_defi_activities"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountDefiActivitiesResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_account_defi_activities(SOLSCAN_DONATION_ADDRESS)
+
+        # actual test
+        assert isinstance(response, GetAccountDefiActivitiesResponse)
