@@ -754,3 +754,10 @@ class GetBlockLastResponse(BaseModel):
         This class refers to the response model of GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-last)** of **V1** API endpoint.
     """
     data: list[GetBlockLastData]
+
+# GET - Block Detail
+class GetBlockDetailResponse(GetBlockLastData):
+    """
+        This class refers to the response model of GET **[Block Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-detail)** of **V1** API endpoint.
+    """
+    pass

@@ -23,7 +23,8 @@ from ...solscan.v1.schema import (
     GetMarketTokenDetailResponse,
     GetTransactionLastResponse,
     GetTransactionDetailResponse,
-    GetBlockLastResponse
+    GetBlockLastResponse,
+    GetBlockDetailResponse
 )
 
 class Solscan(Interaction):
@@ -768,3 +769,31 @@ class Solscan(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetBlockLastResponse(data = content_raw.json())
             return async_request()
+
+    @overload
+    def _get_block_detail(self, sync: Literal[True], block_id: int) -> GetBlockDetailResponse: ...
+
+    @overload
+    def _get_block_detail(self, sync: Literal[False], block_id: int) -> Coroutine[None, None, GetBlockDetailResponse]: ...
+
+    def _get_block_detail(self, sync: bool, block_id: int) -> GetBlockDetailResponse | Coroutine[None, None, GetBlockDetailResponse]:
+        """
+            This function refers to the GET **[Block Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-detail)** of **V1** API endpoint, 
+            and it is used to get detail of a block.
+
+            Parameters:
+                block_id: The block number.
+
+            Returns:
+                Detail of the block.
+        """
+        # set params
+        url = self.base_url + f"block/{block_id}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetBlockDetailResponse
+        )

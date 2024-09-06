@@ -1,0 +1,13 @@
+{
+    "currentSlot": 288107093,
+    "result": {
+        "blockHeight": 267075155,
+        "blockTime": 1725607439,
+        "blockhash": "5sjpAiPsDL7bX9JqCG5TEugVzPeo5LPLtQfbkAqgMkdi",
+        "parentSlot": 288107092,
+        "previousBlockhash": "DxZ1LmhCrANPHN5nwnVEsgj1sEyWTTkWzazacug425tt",
+        "feeRewards": 2967778,
+        "validator": "31vn2U3Ue4fDHqB24PU4qNhynGnjNDtUhu5y9bHygbSw",
+        "transactionCount": 602
+    }
+}
