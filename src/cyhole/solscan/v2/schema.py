@@ -4,6 +4,12 @@ from pydantic import BaseModel, Field, field_validator, field_serializer
 from ...solscan.v2.param import SolscanActivityTransferType, SolscanPageSizeType, SolscanFlowType
 from ...solscan.v2.exception import SolscanAccountTransferInvalidAmountRange, SolscanAccountTransferInvalidTimeRange
 
+class SolscanBaseResponse(BaseModel):
+    """
+        Model used to identify the base response of the Solscan API.
+    """
+    success: bool
+
 # GET - Account Transfer
 # Param
 class GetAccountTransferParam(BaseModel):
@@ -114,9 +120,25 @@ class GetAccountTransferData(BaseModel):
     flow_type: str = Field(alias= "flow")
     time: datetime
 
-class GetAccountTransferResponse(BaseModel):
+class GetAccountTransferResponse(SolscanBaseResponse):
     """
         Model used to parse the response of the GET **[Account Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transfer)** of **V2** API endpoint.
     """
-    success: bool
     data: list[GetAccountTransferData]
+
+# GET - Account Token/NFT Account
+class GetAccountTokenNFTAccountData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Account Token/NFT Account](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-token-accounts)** of **V2** API endpoint.
+    """
+    token_account: str
+    token_address: str
+    amount: int
+    token_decimals: int
+    owner: str
+
+class GetAccountTokenNFTAccountResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Account Token/NFT Account](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-token-accounts)** of **V2** API endpoint.
+    """
+    data: list[GetAccountTokenNFTAccountData]

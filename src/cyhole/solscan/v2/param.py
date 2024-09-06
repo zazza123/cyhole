@@ -38,3 +38,12 @@ class SolscanFlowType(CyholeParam):
     """Export only incoming transactions."""
     OUTGOING = "out"
     """Export only outgoing transactions."""
+
+class SolscanAccountType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's account types.
+    """
+    NFT = "nft"
+    """Export only NFT accounts."""
+    TOKEN = "token"
+    """Export only token accounts."""

@@ -2,9 +2,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
+from ...solscan.v2.param import (
+    SolscanPageSizeType
+)
 from ...solscan.v2.schema import (
     GetAccountTransferParam,
-    GetAccountTransferResponse
+    GetAccountTransferResponse,
+    GetAccountTokenNFTAccountResponse
 )
 
 if TYPE_CHECKING:
@@ -26,6 +30,20 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_transfers(True, account, params)
 
+    def get_account_token_nft_account(
+        self, 
+        account: str,
+        account_type: str,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value,
+        hide_zero: bool = True
+    ) -> GetAccountTokenNFTAccountResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Token/NFT Account](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-token-accounts)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_token_nft_account`][cyhole.solscan.interaction.v2.Solscan._get_account_token_nft_account].
+        """
+        return self._interaction._get_account_token_nft_account(True, account, account_type, page, page_size, hide_zero)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -41,3 +59,17 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_transfers`][cyhole.solscan.interaction.v2.Solscan._get_account_transfers].
         """
         return await self._interaction._get_account_transfers(False, account, params)
+
+    async def get_account_token_nft_account(
+        self, 
+        account: str,
+        account_type: str,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value,
+        hide_zero: bool = True
+    ) -> GetAccountTokenNFTAccountResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Token/NFT Account](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-token-accounts)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_token_nft_account`][cyhole.solscan.interaction.v2.Solscan._get_account_token_nft_account].
+        """
+        return await self._interaction._get_account_token_nft_account(False, account, account_type, page, page_size, hide_zero)
