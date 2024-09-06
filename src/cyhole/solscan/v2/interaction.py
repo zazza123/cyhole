@@ -6,6 +6,7 @@ from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
 from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v2.param import (
+    SolscanReturnLimitType,
     SolscanPageSizeType,
     SolscanAccountType
 )
@@ -16,7 +17,8 @@ from ...solscan.v2.schema import (
     GetAccountDefiActivitiesParam,
     GetAccountDefiActivitiesResponse,
     GetAccountBalanceChangeActivitiesParam,
-    GetAccountBalanceChangeActivitiesResponse
+    GetAccountBalanceChangeActivitiesResponse,
+    GetAccountTransactionsResponse
 )
 
 class Solscan(Interaction):
@@ -246,5 +248,45 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountBalanceChangeActivitiesResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_account_transactions(self, sync: Literal[True], account: str, before_transaction: str | None = None, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountTransactionsResponse: ...
+
+    @overload
+    def _get_account_transactions(self, sync: Literal[False], account: str, before_transaction: str | None = None, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> Coroutine[None, None, GetAccountTransactionsResponse]: ...
+
+    def _get_account_transactions(self, sync: bool, account: str, before_transaction: str | None = None, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountTransactionsResponse | Coroutine[None, None, GetAccountTransactionsResponse]:
+        """
+            This function refers to the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** of **V2** API endpoint, 
+            and it is used to get the latest transactions of an account.
+
+            Parameters:
+                account: The account address.
+                before_transaction: The signature of the latest transaction of previous page.
+                limit: The number of transactions to be returned.
+                    The supported types are available on [`SolscanReturnLimitType`][cyhole.solscan.v2.param.SolscanReturnLimitType].
+
+            Returns:
+                List of transactions of the account.
+        """
+        # check param consistency
+        SolscanReturnLimitType.check(limit)
+
+        # set params
+        url = self.base_url + "account/transactions"
+        api_params = {
+            "address": account,
+            "before": before_transaction,
+            "limit": limit
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountTransactionsResponse,
             params = api_params
         )

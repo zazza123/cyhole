@@ -353,3 +353,33 @@ class GetAccountBalanceChangeActivitiesResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Account Balance Change Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-balance_change)** of **V2** API endpoint.
     """
     data: list[GetAccountBalanceChangeActivitiesData]
+
+# GET - Account Transactions
+# Response
+class GetAccountTransactionsInstruction(BaseModel):
+    """
+        Model used to parse the instructions of the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** of **V2** API endpoint.
+    """
+    type: str
+    program: str
+    program_id: str
+
+class GetAccountTransactionsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** of **V2** API endpoint.
+    """
+    slot: int
+    fee: int
+    status: str
+    signer: list[str]
+    block_time_unix_utc: int = Field(alias = "block_time")
+    transaction_id: str = Field(alias = "tx_hash")
+    parsed_instructions: list[GetAccountTransactionsInstruction]
+    program_ids: list[str]
+    time: datetime
+
+class GetAccountTransactionsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** of **V2** API endpoint.
+    """
+    data: list[GetAccountTransactionsData]

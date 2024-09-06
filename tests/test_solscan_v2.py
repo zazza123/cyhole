@@ -18,7 +18,8 @@ from cyhole.solscan.v2.schema import (
     GetAccountDefiActivitiesParam,
     GetAccountDefiActivitiesResponse,
     GetAccountBalanceChangeActivitiesParam,
-    GetAccountBalanceChangeActivitiesResponse
+    GetAccountBalanceChangeActivitiesResponse,
+    GetAccountTransactionsResponse
 )
 
 # load test config
@@ -232,3 +233,47 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetAccountBalanceChangeActivitiesResponse)
+
+    def test_get_account_transactions_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Account Transactions" on V2 API for synchronous logic.
+
+            Mock Response File: get_v2_account_transactions.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_account_transactions"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_account_transactions(SOLSCAN_DONATION_ADDRESS)
+
+        # actual test
+        assert isinstance(response, GetAccountTransactionsResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_account_transactions_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Account Transactions" on V2 API for asynchronous logic.
+
+            Mock Response File: get_v2_account_transactions.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_account_transactions"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_account_transactions(SOLSCAN_DONATION_ADDRESS)
+
+        # actual test
+        assert isinstance(response, GetAccountTransactionsResponse)

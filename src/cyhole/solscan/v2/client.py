@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
 from ...solscan.v2.param import (
+    SolscanReturnLimitType,
     SolscanPageSizeType
 )
 from ...solscan.v2.schema import (
@@ -12,7 +13,8 @@ from ...solscan.v2.schema import (
     GetAccountDefiActivitiesParam,
     GetAccountDefiActivitiesResponse,
     GetAccountBalanceChangeActivitiesParam,
-    GetAccountBalanceChangeActivitiesResponse
+    GetAccountBalanceChangeActivitiesResponse,
+    GetAccountTransactionsResponse
 )
 
 if TYPE_CHECKING:
@@ -62,6 +64,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_balance_change_activities(True, account, params)
 
+    def get_account_transactions(self, account: str, before_transaction: str | None = None, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountTransactionsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_transactions`][cyhole.solscan.interaction.v2.Solscan._get_account_transactions].
+        """
+        return self._interaction._get_account_transactions(True, account, before_transaction, limit)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -105,3 +114,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_balance_change_activities`][cyhole.solscan.interaction.v2.Solscan._get_account_balance_change_activities].
         """
         return await self._interaction._get_account_balance_change_activities(False, account, params)
+
+    async def get_account_transactions(self, account: str, before_transaction: str | None = None, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountTransactionsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_transactions`][cyhole.solscan.interaction.v2.Solscan._get_account_transactions].
+        """
+        return await self._interaction._get_account_transactions(False, account, before_transaction, limit)

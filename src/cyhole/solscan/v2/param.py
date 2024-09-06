@@ -30,6 +30,19 @@ class SolscanPageSizeType(CyholeParam):
     SIZE_100 = 100
     """Export only 100 items per page."""
 
+class SolscanReturnLimitType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's return limit types.
+    """
+    LIMIT_10 = 10
+    """Export only 10 items."""
+    LIMIT_20 = 20
+    """Export only 20 items."""
+    LIMIT_30 = 30
+    """Export only 30 items."""
+    LIMIT_40 = 40
+    """Export only 40 items."""
+
 class SolscanFlowType(CyholeParam):
     """
         Enum class to get the supported Solscan's flow types.
