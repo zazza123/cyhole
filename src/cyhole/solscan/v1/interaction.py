@@ -22,7 +22,8 @@ from ...solscan.v1.schema import (
     GetTokenListResponse,
     GetMarketTokenDetailResponse,
     GetTransactionLastResponse,
-    GetTransactionDetailResponse
+    GetTransactionDetailResponse,
+    GetBlockLastResponse
 )
 
 class Solscan(Interaction):
@@ -734,3 +735,36 @@ class Solscan(Interaction):
             url = url,
             response_model = GetTransactionDetailResponse
         )
+
+    @overload
+    def _get_block_last(self, sync: Literal[True], limit: int = 10) -> GetBlockLastResponse: ...
+
+    @overload
+    def _get_block_last(self, sync: Literal[False], limit: int = 10) -> Coroutine[None, None, GetBlockLastResponse]: ...
+
+    def _get_block_last(self, sync: bool, limit: int = 10) -> GetBlockLastResponse | Coroutine[None, None, GetBlockLastResponse]:
+        """
+            This function refers to the GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-last)** of **V1** API endpoint, 
+            and it is used to get last block.
+
+            Parameters:
+                limit: The number of blocks to get; maximum is 20.
+
+            Returns:
+                Last block.
+        """
+        # set params
+        url = self.base_url + f"block/last"
+        api_params = {
+            "limit": limit
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetBlockLastResponse(data = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetBlockLastResponse(data = content_raw.json())
+            return async_request()

@@ -727,3 +727,30 @@ class GetTransactionDetailResponse(BaseModel):
     serum_transactions: list[dict] = Field(alias = "serumTransactions")
     raydium_transactions: list[dict] = Field(alias = "raydiumTransactions")
     unknown_transfers: list[GetTransactionDetailUnknownTransfer] = Field(alias = "unknownTransfers")
+
+# GET - Block Last
+class GetBlockLastResult(BaseModel):
+    """
+        This class refers to the model of result inside the response of GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-last)** of **V1** API endpoint.
+    """
+    block_height: int = Field(alias = "blockHeight")
+    block_time_unix_utc: int = Field(alias = "blockTime")
+    blockhash: str
+    parent_slot: int = Field(alias = "parentSlot")
+    previous_blockhash: str = Field(alias = "previousBlockhash")
+    fee_rewards: int = Field(alias = "feeRewards")
+    validator: str
+    transaction_count: int = Field(alias = "transactionCount")
+
+class GetBlockLastData(BaseModel):
+    """
+        This class refers to the model of data inside the response of GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-last)** of **V1** API endpoint.
+    """
+    current_slot: int = Field(alias = "currentSlot")
+    result: GetBlockLastResult
+
+class GetBlockLastResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-last)** of **V1** API endpoint.
+    """
+    data: list[GetBlockLastData]

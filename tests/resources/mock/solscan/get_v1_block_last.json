@@ -1,0 +1,30 @@
+{
+    "data": [
+        {
+            "currentSlot": 288109659,
+            "result": {
+                "blockHeight": 267077630,
+                "blockTime": 1725608558,
+                "blockhash": "5CxXtmTCxeJnZegA2tEGSj6ZH2YwegATdH3jjubJJL8g",
+                "parentSlot": 288109658,
+                "previousBlockhash": "HmdvpWJUuE1HiXqFVWwFAafc3RjPKQcr2nj6AS8AjWCQ",
+                "feeRewards": 4951532,
+                "validator": "JupRhwjrF5fAcs6dFhLH59r3TJFvbcyLP2NRM8UGH9H",
+                "transactionCount": 1114
+            }
+        },
+        {
+            "currentSlot": 288109658,
+            "result": {
+                "blockHeight": 267077629,
+                "blockTime": 1725608557,
+                "blockhash": "HmdvpWJUuE1HiXqFVWwFAafc3RjPKQcr2nj6AS8AjWCQ",
+                "parentSlot": 288109657,
+                "previousBlockhash": "6cEq3ZRFsmBQy5tkH266joUug3enDmg7pcCQB6zt9tnc",
+                "feeRewards": 3622011,
+                "validator": "JupRhwjrF5fAcs6dFhLH59r3TJFvbcyLP2NRM8UGH9H",
+                "transactionCount": 393
+            }
+        }
+    ]
+}
