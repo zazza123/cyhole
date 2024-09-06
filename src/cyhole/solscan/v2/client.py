@@ -10,7 +10,9 @@ from ...solscan.v2.schema import (
     GetAccountTransferResponse,
     GetAccountTokenNFTAccountResponse,
     GetAccountDefiActivitiesParam,
-    GetAccountDefiActivitiesResponse
+    GetAccountDefiActivitiesResponse,
+    GetAccountBalanceChangeActivitiesParam,
+    GetAccountBalanceChangeActivitiesResponse
 )
 
 if TYPE_CHECKING:
@@ -53,6 +55,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_defi_activities(True, account, params)
 
+    def get_account_balance_change_activities(self, account: str, params: GetAccountBalanceChangeActivitiesParam = GetAccountBalanceChangeActivitiesParam()) -> GetAccountBalanceChangeActivitiesResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Balance Change Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-balance_change)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_balance_change_activities`][cyhole.solscan.interaction.v2.Solscan._get_account_balance_change_activities].
+        """
+        return self._interaction._get_account_balance_change_activities(True, account, params)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -89,3 +98,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_defi_activities`][cyhole.solscan.interaction.v2.Solscan._get_account_defi_activities].
         """
         return await self._interaction._get_account_defi_activities(False, account, params)
+
+    async def get_account_balance_change_activities(self, account: str, params: GetAccountBalanceChangeActivitiesParam = GetAccountBalanceChangeActivitiesParam()) -> GetAccountBalanceChangeActivitiesResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Balance Change Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-balance_change)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_balance_change_activities`][cyhole.solscan.interaction.v2.Solscan._get_account_balance_change_activities].
+        """
+        return await self._interaction._get_account_balance_change_activities(False, account, params)

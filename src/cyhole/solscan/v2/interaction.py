@@ -14,7 +14,9 @@ from ...solscan.v2.schema import (
     GetAccountTransferResponse,
     GetAccountTokenNFTAccountResponse,
     GetAccountDefiActivitiesParam,
-    GetAccountDefiActivitiesResponse
+    GetAccountDefiActivitiesResponse,
+    GetAccountBalanceChangeActivitiesParam,
+    GetAccountBalanceChangeActivitiesResponse
 )
 
 class Solscan(Interaction):
@@ -190,6 +192,7 @@ class Solscan(Interaction):
 
             Parameters:
                 account: The account address.
+                params: The parameters to be used in the request.
 
             Returns:
                 List of DeFi activities.
@@ -208,5 +211,40 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountDefiActivitiesResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_account_balance_change_activities(self, sync: Literal[True], account: str, params: GetAccountBalanceChangeActivitiesParam = GetAccountBalanceChangeActivitiesParam()) -> GetAccountBalanceChangeActivitiesResponse: ...
+
+    @overload
+    def _get_account_balance_change_activities(self, sync: Literal[False], account: str, params: GetAccountBalanceChangeActivitiesParam = GetAccountBalanceChangeActivitiesParam()) -> Coroutine[None, None, GetAccountBalanceChangeActivitiesResponse]: ...
+
+    def _get_account_balance_change_activities(self, sync: bool, account: str, params: GetAccountBalanceChangeActivitiesParam = GetAccountBalanceChangeActivitiesParam()) -> GetAccountBalanceChangeActivitiesResponse | Coroutine[None, None, GetAccountBalanceChangeActivitiesResponse]:
+        """
+            This function refers to the GET **[Account Balance Change Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-balance_change)** of **V2** API endpoint, 
+            and it is used to get the balance change activities of an account.
+
+            Parameters:
+                account: The account address.
+                params: The parameters to be used in the request.
+
+            Returns:
+                List of balance change activities.
+        """
+        # set params
+        url = self.base_url + "account/balance_change"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+        api_params["address"] = account
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountBalanceChangeActivitiesResponse,
             params = api_params
         )
