@@ -21,7 +21,8 @@ from cyhole.solscan.v1.schema import (
     GetTokenTransferResponse,
     GetTokenListResponse,
     GetMarketTokenDetailResponse,
-    GetTransactionLastResponse
+    GetTransactionLastResponse,
+    GetTransactionDetailResponse
 )
 
 # load test config
@@ -763,3 +764,81 @@ class TestSolscanV1:
 
         # actual test
         assert isinstance(response, GetTransactionLastResponse)
+
+    def test_get_transaction_detail_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Transaction Detail" on V1 API for synchronous logic.
+
+            Mock Response Files:
+                - get_v1_transaction_detail_vote.json
+                - get_v1_transaction_detail_general.json
+                - get_v1_transaction_detail_spl_token_1.json
+                - get_v1_transaction_detail_spl_token_2.json
+                - get_v1_transaction_detail_fail_1.json
+                - get_v1_transaction_detail_fail_2.json
+        """
+
+        file_transaction = {
+            "vote": "4TQYuua7nVABnCEj6re7QBb5PTKZDZzKhwi4yEntLYiacoT38HKdAbay5iB54dHbMc9JQ9vJgE1bzjkk1qZGpyuU",
+            "general": "5hDQ5qXcrURie1fPicPSrGFUEFZaRZaa4Hda9oouWj6Vk9skMJ8bXeSXAU2qDJWC5K5Ehh8mzUrnbFKNc8VhhWGM",
+            "spl_token_1": "59UUQj6iYTxbh2yeVfEuJjtSSfsbx8Z6NWB1dYNV7XCmQMMb1EPDftF7RoiJCCZcomUSioFGExpwxaZafYr5B6mi",
+            "spl_token_2": "5v7Ykci6MTGkJMm4T2B3rP1WbW92Q8oxTC1DEchTpKX9ofeQs2CEyBweTVDrFxTJVGBWoJFnyAomWonY7cfMEG63",
+            "fail_1": "5q1d8YkQsBVVjhrckydFuAr9QbVYDuRedmQ4brGpBhaFwvwwHYKQB7eX8VczPEGpEsWnWw7idSuVoKsq4putfLeW",
+            "fail_2": "66uVLbp2XTtL4va1mFt9ea3Daix9rkVBnZYxsUD7TnqbKYT66jeNossEnch5cPzXrdJGQKpWHMEt9NX9srEwyFM4"
+        }
+
+        for type, id in file_transaction.items():
+            # load mock response
+            mock_file_name = f"get_v1_transaction_detail_{type}"
+            if config.mock_response or config.solscan.mock_response:
+                mock_response = self.mocker.load_mock_response(mock_file_name, GetTransactionDetailResponse)
+                mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+            # execute request
+            response = self.solscan.client.get_transaction_detail(id)
+
+            # actual test
+            assert isinstance(response, GetTransactionDetailResponse)
+
+            # store request (only not mock)
+            if config.mock_file_overwrite and not config.solscan.mock_response:
+                self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_transaction_detail_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Transaction Detail" on V1 API for asynchronous logic.
+
+            Mock Response Files:
+                - get_v1_transaction_detail_vote.json
+                - get_v1_transaction_detail_general.json
+                - get_v1_transaction_detail_spl_token_1.json
+                - get_v1_transaction_detail_spl_token_2.json
+                - get_v1_transaction_detail_fail_1.json
+                - get_v1_transaction_detail_fail_2.json
+        """
+
+        file_transaction = {
+            "vote": "4TQYuua7nVABnCEj6re7QBb5PTKZDZzKhwi4yEntLYiacoT38HKdAbay5iB54dHbMc9JQ9vJgE1bzjkk1qZGpyuU",
+            "general": "5hDQ5qXcrURie1fPicPSrGFUEFZaRZaa4Hda9oouWj6Vk9skMJ8bXeSXAU2qDJWC5K5Ehh8mzUrnbFKNc8VhhWGM",
+            "spl_token_1": "59UUQj6iYTxbh2yeVfEuJjtSSfsbx8Z6NWB1dYNV7XCmQMMb1EPDftF7RoiJCCZcomUSioFGExpwxaZafYr5B6mi",
+            "spl_token_2": "5v7Ykci6MTGkJMm4T2B3rP1WbW92Q8oxTC1DEchTpKX9ofeQs2CEyBweTVDrFxTJVGBWoJFnyAomWonY7cfMEG63",
+            "fail_1": "5q1d8YkQsBVVjhrckydFuAr9QbVYDuRedmQ4brGpBhaFwvwwHYKQB7eX8VczPEGpEsWnWw7idSuVoKsq4putfLeW",
+            "fail_2": "66uVLbp2XTtL4va1mFt9ea3Daix9rkVBnZYxsUD7TnqbKYT66jeNossEnch5cPzXrdJGQKpWHMEt9NX9srEwyFM4"
+        }
+
+        for type, id in file_transaction.items():
+            # load mock response
+            mock_file_name = f"get_v1_transaction_detail_{type}"
+            if config.mock_response or config.solscan.mock_response:
+                mock_response = self.mocker.load_mock_response(mock_file_name, GetTransactionDetailResponse)
+                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+            # execute request
+            async with self.solscan.async_client as client:
+                response = await client.get_transaction_detail(id)
+
+            # actual test
+            assert isinstance(response, GetTransactionDetailResponse)

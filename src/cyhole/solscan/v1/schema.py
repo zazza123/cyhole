@@ -544,3 +544,186 @@ class GetTransactionLastResponse(BaseModel):
         This class refers to the response model of GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-last)** of **V1** API endpoint.
     """
     data: list[GetTransactionLastData]
+
+# GET - Transaction Detail
+
+class GetTransactionDetailInputAccount(BaseModel):
+    """
+        This class refers to the model of input account inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    account: str
+    signer: bool
+    writable: bool
+    pre_balance: int = Field(alias = "preBalance")
+    post_balance: int = Field(alias = "postBalance")
+
+# Inner Instruction: START
+class GetTransactionDetailInnerInstructionVoteParams(BaseModel):
+    vote_account: str = Field(alias = "voteAccount")
+    vote_authority: str = Field(alias = "voteAuthority")
+    vote_hash: str = Field(alias = "voteHash")
+    root: int
+    timestamp: int
+
+class GetTransactionDetailInnerInstructionSplTransferParams(BaseModel):
+    source: str
+    destination: str
+    authority: str
+    amount: str
+
+class GetTransactionDetailInnerInstructionSplTokenParams(BaseModel):
+    account: str
+    amount: str | None = None
+    mint: str | None = None
+    mint_authority: str | None = Field(default = None, alias = "mintAuthority")
+    authority: str | None = None
+
+class GetTransactionDetailInnerInstructionSolTransferParams(BaseModel):
+    source: str
+    destination: str
+    amount: int
+
+class GetTransactionDetailInnerInstructionClosedAccountParams(BaseModel):
+    closed_account: str = Field(alias = "closedAccount")
+
+class GetTransactionDetailInnerInstructionExtra(BaseModel):
+    source: str
+    destination: str
+    authority: str
+    amount: str
+    token_address: str = Field(alias = "tokenAddress")
+    decimals: int
+    symbol: str | None = None
+    icon: str | None = None
+    source_owner: str | None = Field(default = None, alias = "sourceOwner")
+    destination_owner: str | None = Field(default = None, alias = "destinationOwner")
+
+class GetTransactionDetailInnerInstructionParsed(BaseModel):
+    program_id: str = Field(alias = "programId")
+    program: str | None = None
+    data: str | None = None
+    data_encode: str | None = Field(default = None, alias = "dataEncode")
+    type: str
+    name: str
+    params: GetTransactionDetailInnerInstructionVoteParams | GetTransactionDetailInnerInstructionSplTransferParams| GetTransactionDetailInnerInstructionSplTokenParams | GetTransactionDetailInnerInstructionClosedAccountParams | GetTransactionDetailInnerInstructionSolTransferParams | dict[str, str]
+    extra: GetTransactionDetailInnerInstructionExtra | None = None
+
+class GetTransactionDetailInnerInstruction(BaseModel):
+    """
+        This class refers to the model of inner instruction inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    index: int
+    parsed_instructions: list[GetTransactionDetailInnerInstructionParsed] = Field(alias = "parsedInstructions")
+
+# Inner Instruction: END
+
+# Token Balance: START
+
+class GetTransactionDetailToken(BaseModel):
+    decimals: int
+    address: str = Field(alias = "tokenAddress")
+    name: str | None = None
+    symbol: str | None = None
+    icon: str | None = None
+
+class GetTransactionDetailTokenAmount(BaseModel):
+    post_amount: str = Field(alias = "postAmount")
+    pre_amount: str = Field(alias = "preAmount")
+
+class GetTransactionDetailTokenBalance(BaseModel):
+    """
+        This class refers to the model of parsed token balance inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    account: str
+    amount: GetTransactionDetailTokenAmount
+    token: GetTransactionDetailToken
+
+# Token Balance: END
+
+# Parsed Instruction: START
+class GetTransactionDetailParsedInstruction(GetTransactionDetailInnerInstructionParsed):
+    """
+        This class refers to the model of parsed instruction inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    pass
+
+# Parsed Instruction: END
+
+# Token Transfer: START
+class GetTransactionDetailTokenTransferToken(BaseModel):
+    address: str
+    decimals: int
+    symbol: str | None = None
+    icon: str | None = None
+
+class GetTransactionDetailTokenTransfer(BaseModel):
+    """
+        This class refers to the model of token transfer inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    source: str
+    destination: str
+    source_owner: str
+    destination_owner: str
+    amount: str
+    token: GetTransactionDetailTokenTransferToken
+    type: str
+
+# Token Transfer: END
+
+# Sol Transfer: START
+class GetTransactionDetailSolTransfer(BaseModel):
+    """
+        This class refers to the model of sol transfer inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    source: str
+    destination: str
+    amount: int
+
+# Sol Transfer: END
+
+# Unknown Transfers: START
+class GetTransactionDetailUnknownTransferEvent(BaseModel):
+    source: str
+    destination: str
+    amount: str
+    type: str
+    token_address: str = Field(alias = "tokenAddress")
+    decimals: int
+    symbol: str | None = None
+    icon: str | None = None
+    source_owner: str | None = Field(default = None, alias = "sourceOwner")
+    destination_owner: str | None = Field(default = None, alias = "destinationOwner")
+
+class GetTransactionDetailUnknownTransfer(BaseModel):
+    """
+        This class refers to the model of unknown transfer inside the response of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    program_id: str = Field(alias = "programId")
+    event: list[GetTransactionDetailUnknownTransferEvent]
+
+# Unknown Transfers: END
+
+class GetTransactionDetailResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint.
+    """
+    block_time: int = Field(alias = "blockTime")
+    slot: int
+    transaction_id: str = Field(alias = "txHash")
+    fee: int
+    status: str
+    lamport: int
+    signer: list[str]
+    log_message: list[str] = Field(alias = "logMessage")
+    input_account: list[GetTransactionDetailInputAccount] = Field(alias = "inputAccount")
+    recent_blockhash: str = Field(alias = "recentBlockhash")
+    inner_instructions: list[GetTransactionDetailInnerInstruction] = Field(alias = "innerInstructions")
+    token_balances: list[GetTransactionDetailTokenBalance] = Field(alias = "tokenBalances")
+    parsed_instruction: list[GetTransactionDetailParsedInstruction] = Field(alias = "parsedInstruction")
+    confirmations: int | None = None
+    version: str | int
+    token_transfers: list[GetTransactionDetailTokenTransfer] = Field(alias = "tokenTransfers")
+    sol_transfers: list[GetTransactionDetailSolTransfer] = Field(alias = "solTransfers")
+    serum_transactions: list[dict] = Field(alias = "serumTransactions")
+    raydium_transactions: list[dict] = Field(alias = "raydiumTransactions")
+    unknown_transfers: list[GetTransactionDetailUnknownTransfer] = Field(alias = "unknownTransfers")

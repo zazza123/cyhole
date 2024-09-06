@@ -21,7 +21,8 @@ from ...solscan.v1.schema import (
     GetTokenTransferResponse,
     GetTokenListResponse,
     GetMarketTokenDetailResponse,
-    GetTransactionLastResponse
+    GetTransactionLastResponse,
+    GetTransactionDetailResponse
 )
 
 class Solscan(Interaction):
@@ -705,3 +706,31 @@ class Solscan(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetTransactionLastResponse(data = content_raw.json())
             return async_request()
+
+    @overload
+    def _get_transaction_detail(self, sync: Literal[True], transaction_id: str) -> GetTransactionDetailResponse: ...
+
+    @overload
+    def _get_transaction_detail(self, sync: Literal[False], transaction_id: str) -> Coroutine[None, None, GetTransactionDetailResponse]: ...
+
+    def _get_transaction_detail(self, sync: bool, transaction_id: str) -> GetTransactionDetailResponse | Coroutine[None, None, GetTransactionDetailResponse]:
+        """
+            This function refers to the GET **[Transaction Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/transaction-detail)** of **V1** API endpoint, 
+            and it is used to get detail of a transaction.
+
+            Parameters:
+                transaction_id: The transaction hash.
+
+            Returns:
+                Detail of the transaction.
+        """
+        # set params
+        url = self.base_url + f"transaction/{transaction_id}"
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTransactionDetailResponse
+        )
