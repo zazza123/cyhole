@@ -1,8 +1,14 @@
 import os
+from typing import Coroutine, Literal, overload
 
+from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
 from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
+from ...solscan.v2.schema import (
+    GetAccountTransferParam,
+    GetAccountTransferResponse
+)
 
 class Solscan(Interaction):
     """
@@ -57,3 +63,39 @@ class Solscan(Interaction):
 
     def __str__(self) -> str:
         return self._name
+
+    @overload
+    def _get_account_transfers(self, sync: Literal[True], account: str, params: GetAccountTransferParam = GetAccountTransferParam()) -> GetAccountTransferResponse: ...
+
+    @overload
+    def _get_account_transfers(self, sync: Literal[False], account: str, params: GetAccountTransferParam = GetAccountTransferParam()) -> Coroutine[None, None, GetAccountTransferResponse]: ...
+
+    def _get_account_transfers(self, sync: bool, account: str, params: GetAccountTransferParam = GetAccountTransferParam()) -> GetAccountTransferResponse | Coroutine[None, None, GetAccountTransferResponse]:
+        """
+            This function refers to the GET **[Account Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transfer)** of **V2** API endpoint, 
+            and it is used to get transfers of an account.
+
+            Parameters:
+                account: The account address.
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of transfers of the account.
+        """
+        # set params
+        url = self.base_url + "account/transfer"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+        api_params["address"] = account
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountTransferResponse,
+            params = api_params
+        )
