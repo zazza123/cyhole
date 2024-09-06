@@ -761,3 +761,16 @@ class GetBlockDetailResponse(GetBlockLastData):
         This class refers to the response model of GET **[Block Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-detail)** of **V1** API endpoint.
     """
     pass
+
+# GET - Block Transactions
+class GetBlockTransactionsTransaction(GetTransactionLastData):
+    """
+        This class refers to the model of transaction inside the response of GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-transactions)** of **V1** API endpoint.
+    """
+    pass
+
+class GetBlockTransactionsResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-transactions)** of **V1** API endpoint.
+    """
+    transactions: list[GetBlockTransactionsTransaction]

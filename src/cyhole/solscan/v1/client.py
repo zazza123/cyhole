@@ -21,7 +21,8 @@ from ...solscan.v1.schema import (
     GetTransactionLastResponse,
     GetTransactionDetailResponse,
     GetBlockLastResponse,
-    GetBlockDetailResponse
+    GetBlockDetailResponse,
+    GetBlockTransactionsResponse
 )
 
 if TYPE_CHECKING:
@@ -182,6 +183,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_block_detail(True, block_id)
 
+    def get_block_transactions(self, block_id: int, limit: int = 10, offset: int | None = None) -> GetBlockTransactionsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-transactions)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_block_transactions`][cyhole.solscan.interaction.v1.Solscan._get_block_transactions].
+        """
+        return self._interaction._get_block_transactions(True, block_id, limit, offset)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V1** API.
@@ -336,3 +344,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_block_detail`][cyhole.solscan.interaction.v1.Solscan._get_block_detail].
         """
         return await self._interaction._get_block_detail(False, block_id)
+
+    async def get_block_transactions(self, block_id: int, limit: int = 10, offset: int | None = None) -> GetBlockTransactionsResponse:
+        """
+            Call the Solscan's **V1** API endpoint GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-transactions)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_block_transactions`][cyhole.solscan.interaction.v1.Solscan._get_block_transactions].
+        """
+        return await self._interaction._get_block_transactions(False, block_id, limit, offset)

@@ -24,7 +24,8 @@ from ...solscan.v1.schema import (
     GetTransactionLastResponse,
     GetTransactionDetailResponse,
     GetBlockLastResponse,
-    GetBlockDetailResponse
+    GetBlockDetailResponse,
+    GetBlockTransactionsResponse
 )
 
 class Solscan(Interaction):
@@ -797,3 +798,58 @@ class Solscan(Interaction):
             url = url,
             response_model = GetBlockDetailResponse
         )
+
+    @overload
+    def _get_block_transactions(
+        self,
+        sync: Literal[True],
+        block_id: int,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetBlockTransactionsResponse: ...
+
+    @overload
+    def _get_block_transactions(
+        self,
+        sync: Literal[False],
+        block_id: int,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> Coroutine[None, None, GetBlockTransactionsResponse]: ...
+
+    def _get_block_transactions(
+        self,
+        sync: bool,
+        block_id: int,
+        limit: int = 10,
+        offset: int | None = None
+    ) -> GetBlockTransactionsResponse | Coroutine[None, None, GetBlockTransactionsResponse]:
+        """
+            This function refers to the GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/block-transactions)** of **V1** API endpoint, 
+            and it is used to get transactions of a block.
+
+            Parameters:
+                block_id: The block number.
+                limit: The number of transactions to get; maximum is 50.
+                offset: The offset of the transactions.
+
+            Returns:
+                List of transactions of the block.
+        """
+        # set params
+        url = self.base_url + f"block/transactions"
+        api_params = {
+            "block": block_id,
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetBlockTransactionsResponse(transactions = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetBlockTransactionsResponse(transactions = content_raw.json())
+            return async_request()
