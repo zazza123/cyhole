@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
 from ...solscan.v2.param import (
+    SolscanTransactionFilterType,
     SolscanReturnLimitType,
     SolscanNFTItemSortType,
     SolscanNFTPageSizeType,
@@ -38,7 +39,8 @@ from ...solscan.v2.schema import (
     GetNFTActivitiesResponse,
     GetNFTCollectionListsParam,
     GetNFTCollectionListsResponse,
-    GetNFTCollectionItemsResponse
+    GetNFTCollectionItemsResponse,
+    GetTransactionLastResponse
 )
 
 if TYPE_CHECKING:
@@ -218,6 +220,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_nft_collection_items(True, collection, sort_by, page, page_size)
 
+    def get_transaction_last(self, limit: int = SolscanReturnLimitType.LIMIT_10.value, filter: str = SolscanTransactionFilterType.EXCEPT_VOTE.value) -> GetTransactionLastResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-last)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_transaction_last`][cyhole.solscan.interaction.v2.Solscan._get_transaction_last].
+        """
+        return self._interaction._get_transaction_last(True, limit, filter)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -391,3 +400,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_nft_collection_items`][cyhole.solscan.interaction.v2.Solscan._get_nft_collection_items].
         """
         return await self._interaction._get_nft_collection_items(False, collection, sort_by, page, page_size)
+
+    async def get_transaction_last(self, limit: int = SolscanReturnLimitType.LIMIT_10.value, filter: str = SolscanTransactionFilterType.EXCEPT_VOTE.value) -> GetTransactionLastResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-last)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_transaction_last`][cyhole.solscan.interaction.v2.Solscan._get_transaction_last].
+        """
+        return await self._interaction._get_transaction_last(False, limit, filter)

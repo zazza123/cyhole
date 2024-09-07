@@ -179,3 +179,12 @@ class SolscanNFTDaysRangeType(CyholeParam):
     """Export only 7 days."""
     DAYS_30 = 30
     """Export only 30 days."""
+
+class SolscanTransactionFilterType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's transaction filter types.
+    """
+    ALL = "all"
+    """Export all transactions."""
+    EXCEPT_VOTE = "exceptVote"
+    """Export all transactions except votes."""

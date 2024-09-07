@@ -967,3 +967,28 @@ class GetNFTCollectionItemsResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[NFT Collection Items](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-items)** of **V2** API endpoint.
     """
     data: list[GetNFTCollectionItemsData]
+
+# GET - Transaction Last
+# Response
+class GetTransactionLastInstruction(GetAccountTransactionsInstruction):
+    pass
+
+class GetTransactionLastData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-last)** of **V2** API endpoint.
+    """
+    slot: int
+    fee: int
+    status: str
+    signer: list[str]
+    block_time_unix_utc: int = Field(alias = "block_time")
+    transaction_id: str = Field(alias = "tx_hash")
+    parsed_instructions: list[GetTransactionLastInstruction]
+    program_ids: list[str]
+    time: datetime
+
+class GetTransactionLastResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-last)** of **V2** API endpoint.
+    """
+    data: list[GetTransactionLastData]

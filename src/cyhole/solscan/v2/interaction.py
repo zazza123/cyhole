@@ -8,6 +8,7 @@ from ...core.exception import MissingAPIKeyError
 from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v2.exception import SolscanInvalidTimeRange, SolscanInvalidAmountRange
 from ...solscan.v2.param import (
+    SolscanTransactionFilterType,
     SolscanReturnLimitType,
     SolscanNFTItemSortType,
     SolscanNFTPageSizeType,
@@ -43,7 +44,8 @@ from ...solscan.v2.schema import (
     GetNFTActivitiesResponse,
     GetNFTCollectionListsParam,
     GetNFTCollectionListsResponse,
-    GetNFTCollectionItemsResponse
+    GetNFTCollectionItemsResponse,
+    GetTransactionLastResponse
 )
 
 class Solscan(Interaction):
@@ -967,5 +969,45 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetNFTCollectionItemsResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_transaction_last(self, sync: Literal[True], limit: int = SolscanReturnLimitType.LIMIT_10.value, filter: str = SolscanTransactionFilterType.EXCEPT_VOTE.value) -> GetTransactionLastResponse: ...
+
+    @overload
+    def _get_transaction_last(self, sync: Literal[False], limit: int = SolscanReturnLimitType.LIMIT_10.value, filter: str = SolscanTransactionFilterType.EXCEPT_VOTE.value) -> Coroutine[None, None, GetTransactionLastResponse]: ...
+
+    def _get_transaction_last(self, sync: bool, limit: int = SolscanReturnLimitType.LIMIT_10.value, filter: str = SolscanTransactionFilterType.EXCEPT_VOTE.value) -> GetTransactionLastResponse | Coroutine[None, None, GetTransactionLastResponse]:
+        """
+            This function refers to the GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-last)** of **V2** API endpoint, 
+            and it is used to get the latest transactions.
+
+            Parameters:
+                limit: The number of transactions to be returned.
+                    The supported types are available on [`SolscanReturnLimitType`][cyhole.solscan.v2.param.SolscanReturnLimitType].
+                filter: The filter to be used.
+                    The supported types are available on [`SolscanTransactionFilterType`][cyhole.solscan.v2.param.SolscanTransactionFilterType].
+
+            Returns:
+                List of latest transactions.
+        """
+        # check param consistency
+        SolscanReturnLimitType.check(limit)
+        SolscanTransactionFilterType.check(filter)
+
+        # set params
+        url = self.base_url + "transaction/last"
+        api_params = {
+            "limit": limit,
+            "filter": filter
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTransactionLastResponse,
             params = api_params
         )
