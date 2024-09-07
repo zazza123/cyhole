@@ -34,7 +34,9 @@ from ...solscan.v2.schema import (
     GetTokenMetaResponse,
     GetNFTNewsResponse,
     GetNFTActivitiesParam,
-    GetNFTActivitiesResponse
+    GetNFTActivitiesResponse,
+    GetNFTCollectionListsParam,
+    GetNFTCollectionListsResponse
 )
 
 if TYPE_CHECKING:
@@ -194,6 +196,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_nft_activities(True, params)
 
+    def get_nft_collection_lists(self, params: GetNFTCollectionListsParam = GetNFTCollectionListsParam()) -> GetNFTCollectionListsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_collection_lists`][cyhole.solscan.interaction.v2.Solscan._get_nft_collection_lists].
+        """
+        return self._interaction._get_nft_collection_lists(True, params)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -347,3 +356,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_nft_activities`][cyhole.solscan.interaction.v2.Solscan._get_nft_activities].
         """
         return await self._interaction._get_nft_activities(False, params)
+
+    async def get_nft_collection_lists(self, params: GetNFTCollectionListsParam = GetNFTCollectionListsParam()) -> GetNFTCollectionListsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_collection_lists`][cyhole.solscan.interaction.v2.Solscan._get_nft_collection_lists].
+        """
+        return await self._interaction._get_nft_collection_lists(False, params)

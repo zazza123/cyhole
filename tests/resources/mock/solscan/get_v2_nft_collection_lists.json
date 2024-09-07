@@ -1,0 +1,138 @@
+{
+    "success": true,
+    "data": [
+        {
+            "collection_id": "fc8dd31116b25e6690d83f6fb102e67ac6a9364dc2b96285d636aed462c4a983",
+            "floor_price": 23.524,
+            "items": 6995,
+            "marketplaces": [
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 19686.000025963,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "cde1388402efb0da2ef6cff8cbd98606eb20987698d81fd86048cca8ca80e796",
+            "floor_price": 1.205,
+            "items": 7742,
+            "marketplaces": [
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "CJsLwbP1iu5DuUikHEJnLfANgKy6stB2uFgvBBHoyxwz"
+            ],
+            "volumes": 9068.835200732003,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "f25cd97f956c603b9a1fd405ae8b6a438c07dbe39f53ab48162ddd08429da6d9",
+            "floor_price": 60.2,
+            "items": 16543,
+            "marketplaces": [
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 8275.940865960001,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "abf088cf5739630ab45f28a8aff5b9af62e34a7e109f20ff074e36b222e472bc",
+            "floor_price": 23.99,
+            "items": 7019,
+            "marketplaces": [
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 3231.007383519,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "e7f22a188936b83854e5b79b3385ae6cf842cd7d264523e4a47b29216e7db635",
+            "floor_price": 4.578,
+            "items": 9874,
+            "marketplaces": [
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "HYPERfwdTjyJ2SCaKHmpF2MtrXqWxrsotYDsTrshHWq8",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 2505.3247547309998,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "09b36de0a9862cdbfe3eb023959e97e816e17d846a5762b3c1bfe7b75490c23b",
+            "floor_price": 12.99,
+            "items": 6586,
+            "marketplaces": [
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "CJsLwbP1iu5DuUikHEJnLfANgKy6stB2uFgvBBHoyxwz"
+            ],
+            "volumes": 2170.770953945,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "651fde79f01d21f5f323f53379d371bd95be959a7b0ad6440085bd614d614c1e",
+            "floor_price": 13.18,
+            "items": 12847,
+            "marketplaces": [
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 2117.9063787,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "7887a9bb00df7cf53080564fa55c2dc720bba44a6ee1b1b9776e6baecdba32c2",
+            "floor_price": 4.749,
+            "items": 15092,
+            "marketplaces": [
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 2028.5112977110005,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "b6b176e019faaec6b28fa7d99aa292e8330ca6467c5e74729bb7524423773040",
+            "floor_price": 9.9,
+            "items": 5505,
+            "marketplaces": [
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "5pBn2Sxa41SUuTxKR8s91kMn9LHptd7Q9AA7nP6mqa4W",
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 1045.605406334,
+            "volumes_change_24h": null
+        },
+        {
+            "collection_id": "dfa9c488a78b4ab3b52b7aa9946e81b3fcf92e360bcb03d99e0b310479a95680",
+            "floor_price": 17.0,
+            "items": 10285,
+            "marketplaces": [
+                "M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K",
+                "CJsLwbP1iu5DuUikHEJnLfANgKy6stB2uFgvBBHoyxwz",
+                "mmm3XBJg5gk8XJxEKBvdgptZz6SgK4tXvn36sodowMc",
+                "TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN",
+                "hadeK9DLv9eA7ya5KCTqSvSvRZeJC3JgD5a9Y3CNbvu"
+            ],
+            "volumes": 786.9689852050001,
+            "volumes_change_24h": null
+        }
+    ]
+}

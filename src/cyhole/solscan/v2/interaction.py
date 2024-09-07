@@ -39,7 +39,9 @@ from ...solscan.v2.schema import (
     GetTokenMetaResponse,
     GetNFTNewsResponse,
     GetNFTActivitiesParam,
-    GetNFTActivitiesResponse
+    GetNFTActivitiesResponse,
+    GetNFTCollectionListsParam,
+    GetNFTCollectionListsResponse,
 )
 
 class Solscan(Interaction):
@@ -864,5 +866,39 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetNFTActivitiesResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_nft_collection_lists(self, sync: Literal[True], params: GetNFTCollectionListsParam = GetNFTCollectionListsParam()) -> GetNFTCollectionListsResponse: ...
+
+    @overload
+    def _get_nft_collection_lists(self, sync: Literal[False], params: GetNFTCollectionListsParam = GetNFTCollectionListsParam()) -> Coroutine[None, None, GetNFTCollectionListsResponse]: ...
+
+    def _get_nft_collection_lists(self, sync: bool, params: GetNFTCollectionListsParam = GetNFTCollectionListsParam()) -> GetNFTCollectionListsResponse | Coroutine[None, None, GetNFTCollectionListsResponse]:
+        """
+            This function refers to the GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** of **V2** API endpoint, 
+            and it is used to get the list of NFT collections.
+
+            Parameters:
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of NFT collections.
+        """
+        # set params
+        url = self.base_url + "nft/collection/lists"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetNFTCollectionListsResponse,
             params = api_params
         )

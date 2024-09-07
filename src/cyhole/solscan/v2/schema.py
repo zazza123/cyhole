@@ -2,10 +2,14 @@ from datetime import datetime
 from pydantic import BaseModel, Field, field_validator, field_serializer
 
 from ...solscan.v2.param import (
+    SolscanNFTCollectionPageSizeType,
+    SolscanNFTDaysRangeType,
+    SolscanNFTSortType,
     SolscanActivityTransferType,
     SolscanActivityDefiType,
     SolscanActivityNFTType,
     SolscanPageSizeType,
+    SolscanOrderType,
     SolscanFlowType
 )
 from ...solscan.v2.exception import SolscanInvalidAmountRange, SolscanInvalidTimeRange
@@ -840,3 +844,86 @@ class GetNFTActivitiesResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** of **V2** API endpoint.
     """
     data: list[GetNFTActivitiesData]
+
+# GET - NFT Collection Lists
+# Param
+class GetNFTCollectionListsParam(BaseModel):
+    """
+        Model used to identify the parameters of the GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** of **V2** API endpoint.
+    """
+
+    days_range: int | None = Field(default = None, serialization_alias = "range")
+    """
+        Number of days to filter the NFT collection lists.
+        The supported types are available on [`SolscanNFTDaysRangeType`][cyhole.solscan.v2.param.SolscanNFTDaysRangeType].
+    """
+
+    order_by: str | None = Field(default = None, serialization_alias = "sort_order")
+    """
+        Order by to filter the NFT collection lists.
+        The supported types are available on [`SolscanOrderType`][cyhole.solscan.v2.param.SolscanOrderType].
+    """
+
+    sort_by: str | None = Field(default = None, serialization_alias = "sort_by")
+    """
+        Sort by to filter the NFT collection lists.
+        The supported types are available on [`SolscanNFTSortType`][cyhole.solscan.v2.param.SolscanNFTSortType].
+    """
+
+    page: int = Field(default = 1, ge = 1)
+    """Page number to get the NFT collection lists."""
+
+    page_size: int = Field(default = SolscanPageSizeType.SIZE_10.value)
+    """
+        Number of NFT activities per page. 
+        The supported types are available on [`SolscanNFTCollectionPageSizeType`][cyhole.solscan.v2.param.SolscanNFTCollectionPageSizeType].
+    """
+
+    collection_address: str | None = Field(default = None, serialization_alias = "collection")
+    """Collection address to filter."""
+
+    # Validators
+    @field_validator("days_range")
+    @classmethod
+    def validate_days_range(cls, value: int | None) -> int | None:
+        if value:
+            SolscanNFTDaysRangeType.check(value)
+        return value
+
+    @field_validator("order_by")
+    @classmethod
+    def validate_order_by(cls, value: str | None) -> str | None:
+        if value:
+            SolscanOrderType.check(value)
+        return value
+
+    @field_validator("sort_by")
+    @classmethod
+    def validate_sort_by(cls, value: str | None) -> str | None:
+        if value:
+            SolscanNFTSortType.check(value)
+        return value
+
+    @field_validator("page_size")
+    @classmethod
+    def validate_page_size(cls, value: int) -> int:
+        SolscanNFTCollectionPageSizeType.check(value)
+        return value
+
+# Response
+class GetNFTCollectionListsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** of **V2** API endpoint.
+    """
+    collection_address: str = Field(alias = "collection_id")
+    floor_price: float
+    items: int
+    marketplaces: list[str]
+    volumes: float
+    volumes_change_24h: str | None = None
+
+class GetNFTCollectionListsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** of **V2** API endpoint.
+    """
+    data: list[GetNFTCollectionListsData]

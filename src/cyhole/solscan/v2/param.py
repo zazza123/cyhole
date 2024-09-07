@@ -62,6 +62,21 @@ class SolscanNFTPageSizeType(CyholeParam):
     SIZE_36 = 36
     """Export only 36 items per page."""
 
+class SolscanNFTCollectionPageSizeType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's NFT collection page size types.
+    """
+    SIZE_10 = 10
+    """Export only 10 items per page."""
+    SIZE_18 = 18
+    """Export only 18 items per page."""
+    SIZE_20 = 20
+    """Export only 20 items per page."""
+    SIZE_30 = 30
+    """Export only 30 items per page."""
+    SIZE_40 = 40
+    """Export only 40 items per page."""
+
 class SolscanReturnLimitType(CyholeParam):
     """
         Enum class to get the supported Solscan's return limit types.
@@ -133,3 +148,25 @@ class SolscanSortType(CyholeParam):
     """Sort by market cap."""
     CREATED_TIME = "created_time"
     """Sort by created time."""
+
+class SolscanNFTSortType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's NFT sorting types.
+    """
+    ITEMS = "items"
+    """Sort by items."""
+    FLOOR_PRICE = "floor_price"
+    """Sort by floor price."""
+    VOLUMES = "volumes"
+    """Sort by volumes."""
+
+class SolscanNFTDaysRangeType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's NFT days range types.
+    """
+    DAYS_1 = 1
+    """Export only 1 day."""
+    DAYS_7 = 7
+    """Export only 7 days."""
+    DAYS_30 = 30
+    """Export only 30 days."""
