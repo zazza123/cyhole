@@ -13,6 +13,27 @@ class SolscanActivityTransferType(CyholeParam):
     SPL_CREATE_ACCOUNT = "ACTIVITY_SPL_CREATE_ACCOUNT"
     """Export only SPL create account."""
 
+class SolscanActivityNFTType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's NFT activities types.
+    """
+    SOLD = "ACTIVITY_NFT_SOLD"
+    """Export only NFT sold."""
+    LISTING = "ACTIVITY_NFT_LISTING"
+    """Export only NFT listing."""
+    BIDDING = "ACTIVITY_NFT_BIDDING"
+    """Export only NFT bidding."""
+    CANCEL_BID = "ACTIVITY_NFT_CANCEL_BID"
+    """Export only NFT cancel bid."""
+    CANCEL_LIST = "ACTIVITY_NFT_CANCEL_LIST"
+    """Export only NFT cancel list."""
+    REJECT_BID = "ACTIVITY_NFT_REJECT_BID"
+    """Export only NFT reject bid."""
+    UPDATE_PRICE = "ACTIVITY_NFT_UPDATE_PRICE"
+    """Export only NFT update price."""
+    LIST_AUCTION = "ACTIVITY_NFT_LIST_AUCTION"
+    """Export only NFT list auction."""
+
 class SolscanPageSizeType(CyholeParam):
     """
         Enum class to get the supported Solscan's page size types.

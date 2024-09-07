@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, field_validator, field_serializer
 from ...solscan.v2.param import (
     SolscanActivityTransferType,
     SolscanActivityDefiType,
+    SolscanActivityNFTType,
     SolscanPageSizeType,
     SolscanFlowType
 )
@@ -728,3 +729,114 @@ class GetNFTNewsResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[NFT News](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-news)** of **V2** API endpoint.
     """
     data: GetNFTNewsData
+
+# GET - NFT Activities
+# Param
+class GetNFTActivitiesParam(BaseModel):
+    """
+        Model used to identify the parameters of the GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** of **V2** API endpoint.
+    """
+
+    from_address: str | None = Field(default = None, serialization_alias = "from")
+    """From address to filter."""
+
+    to_address: str | None = Field(default = None, serialization_alias = "to")
+    """To address to filter."""
+
+    source_address: str | list[str] | None = Field(default = None, serialization_alias = "source[]")
+    """Source addresses to filter."""
+
+    activity_type: str | list[str] | None = Field(default = None, serialization_alias = "activity_type[]")
+    """
+        Activity type of the NFT activities.
+        The supported types are available on [`SolscanActivityNFTType`][cyhole.solscan.v2.param.SolscanActivityNFTType].
+    """
+
+    token_address: str | None = Field(default = None, serialization_alias = "token")
+    """Token address to filter."""
+
+    collection_address: str | None = Field(default = None, serialization_alias = "collection")
+    """Collection address to filter."""
+
+    currency_token_address: str | None = Field(default = None, serialization_alias = "currency_token")
+    """Currency token address to filter."""
+
+    amount_range: tuple[int, int] | None = Field(default = None, serialization_alias = "price[]")
+    """Amount range to filter for the NFT activities (from, to)."""
+
+    time_range: tuple[datetime, datetime] | None = Field(default = None, serialization_alias = "block_time[]")
+    """Block times to filter by (from, to)."""
+
+    page: int = Field(default = 1, ge = 1)
+    """Page number to get the NFT activities."""
+
+    page_size: int = Field(default = SolscanPageSizeType.SIZE_10.value)
+    """
+        Number of NFT activities per page. 
+        The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+    """
+
+    # Validators
+    @field_validator("activity_type")
+    @classmethod
+    def validate_activity_type(cls, value: list[str] | str | None) -> str | list[str] | None:
+        if isinstance(value, str):
+            SolscanActivityNFTType.check(value)
+        elif isinstance(value, list):
+            for item in value:
+                SolscanActivityNFTType.check(item)
+        return value
+
+    @field_validator("amount_range")
+    @classmethod
+    def validate_amount_range(cls, value: tuple[int, int] | None) -> tuple[int, int] | None:
+        if value and value[0] > value[1]:
+            raise SolscanInvalidAmountRange(f"Invalid amount range: {value}")
+        return value
+
+    @field_validator("page_size")
+    @classmethod
+    def validate_page_size(cls, value: int) -> int:
+        SolscanPageSizeType.check(value)
+        return value
+
+    @field_validator("time_range")
+    @classmethod
+    def validate_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[datetime, datetime] | None:
+        if value and value[0] > value[1]:
+            raise SolscanInvalidTimeRange(f"Invalid time range: {value}")
+        return value
+
+    # Serializers
+    @field_serializer("time_range")
+    @classmethod
+    def serialize_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[int, int] | None:
+        if value:
+            return (int(value[0].timestamp()), int(value[1].timestamp()))
+        return
+
+# Response
+class GetNFTActivitiesData(BaseModel):
+    """
+        Model used to parse the data of the GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** of **V2** API endpoint.
+    """
+    block_id: int
+    transaction_id: str = Field(alias = "trans_id")
+    block_time_unix_utc: int = Field(alias = "block_time")
+    activity_type: str
+    from_address: str
+    to_address: str
+    token_address: str
+    marketplace_address: str
+    collection_address: str
+    amount: int
+    price: int
+    currency_token: str
+    currency_decimals: int
+    time: datetime
+
+class GetNFTActivitiesResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** of **V2** API endpoint.
+    """
+    data: list[GetNFTActivitiesData]

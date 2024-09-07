@@ -37,7 +37,9 @@ from ...solscan.v2.schema import (
     GetTokenPriceResponse,
     GetTokenHoldersResponse,
     GetTokenMetaResponse,
-    GetNFTNewsResponse
+    GetNFTNewsResponse,
+    GetNFTActivitiesParam,
+    GetNFTActivitiesResponse
 )
 
 class Solscan(Interaction):
@@ -828,5 +830,39 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetNFTNewsResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_nft_activities(self, sync: Literal[True], params: GetNFTActivitiesParam = GetNFTActivitiesParam()) -> GetNFTActivitiesResponse: ...
+
+    @overload
+    def _get_nft_activities(self, sync: Literal[False], params: GetNFTActivitiesParam = GetNFTActivitiesParam()) -> Coroutine[None, None, GetNFTActivitiesResponse]: ...
+
+    def _get_nft_activities(self, sync: bool, params: GetNFTActivitiesParam = GetNFTActivitiesParam()) -> GetNFTActivitiesResponse | Coroutine[None, None, GetNFTActivitiesResponse]:
+        """
+            This function refers to the GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** of **V2** API endpoint, 
+            and it is used to get the NFT activities.
+
+            Parameters:
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of NFT activities.
+        """
+        # set params
+        url = self.base_url + "nft/activities"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetNFTActivitiesResponse,
             params = api_params
         )

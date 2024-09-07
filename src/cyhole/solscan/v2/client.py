@@ -32,7 +32,9 @@ from ...solscan.v2.schema import (
     GetTokenPriceResponse,
     GetTokenHoldersResponse,
     GetTokenMetaResponse,
-    GetNFTNewsResponse
+    GetNFTNewsResponse,
+    GetNFTActivitiesParam,
+    GetNFTActivitiesResponse
 )
 
 if TYPE_CHECKING:
@@ -185,6 +187,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_nft_news(True, filter, page, page_size)
 
+    def get_nft_activities(self, params: GetNFTActivitiesParam = GetNFTActivitiesParam()) -> GetNFTActivitiesResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_activities`][cyhole.solscan.interaction.v2.Solscan._get_nft_activities].
+        """
+        return self._interaction._get_nft_activities(True, params)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -331,3 +340,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_nft_news`][cyhole.solscan.interaction.v2.Solscan._get_nft_news].
         """
         return await self._interaction._get_nft_news(False, filter, page, page_size)
+
+    async def get_nft_activities(self, params: GetNFTActivitiesParam = GetNFTActivitiesParam()) -> GetNFTActivitiesResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-activities)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_activities`][cyhole.solscan.interaction.v2.Solscan._get_nft_activities].
+        """
+        return await self._interaction._get_nft_activities(False, params)

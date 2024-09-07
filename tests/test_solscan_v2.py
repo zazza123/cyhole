@@ -9,6 +9,7 @@ from cyhole.solscan.v2 import Solscan
 from cyhole.solscan.v2.param import (
     SolscanActivityTransferType,
     SolscanActivityDefiType,
+    SolscanActivityNFTType,
     SolscanAccountType,
     SolscanFlowType
 )
@@ -34,7 +35,9 @@ from cyhole.solscan.v2.schema import (
     GetTokenPriceResponse,
     GetTokenHoldersResponse,
     GetTokenMetaResponse,
-    GetNFTNewsResponse
+    GetNFTNewsResponse,
+    GetNFTActivitiesParam,
+    GetNFTActivitiesResponse
 )
 
 # load test config
@@ -862,3 +865,53 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetNFTNewsResponse)
+
+    def test_get_nft_activities_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "NFT Activities" on V2 API for synchronous logic.
+
+            Mock Response File: get_v2_nft_activities.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_nft_activities"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNFTActivitiesResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        param = GetNFTActivitiesParam(
+            activity_type = SolscanActivityNFTType.SOLD.value,
+            time_range = (datetime(2023, 12, 31), datetime(2024, 6, 30)),
+            currency_token_address = SOL,
+            amount_range = (1, 1_000_000_000)
+        )
+        response = self.solscan.client.get_nft_activities(param)
+
+        # actual test
+        assert isinstance(response, GetNFTActivitiesResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_nft_activities_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "NFT Activities" on V2 API for asynchronous logic.
+
+            Mock Response File: get_v2_nft_activities.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_nft_activities"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNFTActivitiesResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_nft_activities()
+
+        # actual test
+        assert isinstance(response, GetNFTActivitiesResponse)
