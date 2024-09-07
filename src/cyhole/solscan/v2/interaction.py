@@ -9,7 +9,9 @@ from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
     SolscanPageSizeType,
-    SolscanAccountType
+    SolscanAccountType,
+    SolscanOrderType,
+    SolscanSortType
 )
 from ...solscan.v2.schema import (
     GetAccountTransferParam,
@@ -27,7 +29,8 @@ from ...solscan.v2.schema import (
     GetTokenTransferResponse,
     GetTokenDefiActivitiesParam,
     GetTokenDefiActivitiesResponse,
-    GetTokenMarketsResponse
+    GetTokenMarketsResponse,
+    GetTokenListResponse
 )
 
 class Solscan(Interaction):
@@ -528,6 +531,9 @@ class Solscan(Interaction):
             Returns:
                 List of markets of the token.
         """
+        # check param consistency
+        SolscanPageSizeType.check(page_size)
+
         # set params
         url = self.base_url + "token/markets"
         api_params = {
@@ -543,5 +549,72 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenMarketsResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_list(
+        self,
+        sync: Literal[True],
+        sort_by: str = SolscanSortType.MARKET_CAP.value,
+        order_by: str = SolscanOrderType.DESCENDING.value,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenListResponse: ...
+
+    @overload
+    def _get_token_list(
+        self,
+        sync: Literal[False],
+        sort_by: str = SolscanSortType.MARKET_CAP.value,
+        order_by: str = SolscanOrderType.DESCENDING.value,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> Coroutine[None, None, GetTokenListResponse]: ...
+
+    def _get_token_list(
+        self,
+        sync: bool,
+        sort_by: str = SolscanSortType.MARKET_CAP.value,
+        order_by: str = SolscanOrderType.DESCENDING.value,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
+        """
+            This function refers to the GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-list)** of **V2** API endpoint, 
+            and it is used to get the list of tokens.
+
+            Parameters:
+                sort_by: The sorting method.
+                    The supported types are available on [`SolscanSortType`][cyhole.solscan.v2.param.SolscanSortType].
+                order_by: The ordering to get the response.
+                    The supported types are available on [`SolscanOrderType`][cyhole.solscan.v2.param.SolscanOrderType].
+                page: The page number.
+                page_size: The number of tokens per page.
+                    The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+
+            Returns:
+                List of tokens.
+        """
+        # check param consistency
+        SolscanSortType.check(sort_by)
+        SolscanOrderType.check(order_by)
+        SolscanPageSizeType.check(page_size)
+
+        # set params
+        url = self.base_url + "token/list"
+        api_params = {
+            "sort_by": sort_by,
+            "sort_order": order_by,
+            "page": page,
+            "page_size": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenListResponse,
             params = api_params
         )

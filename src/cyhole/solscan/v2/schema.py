@@ -529,3 +529,25 @@ class GetTokenMarketsResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Markets](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-markets)** of **V2** API endpoint.
     """
     data: list[GetTokenMarketsData]
+
+# GET - Token List
+# Response
+class GetTokenListData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-list)** of **V2** API endpoint.
+    """
+    address: str
+    decimals: int
+    name: str | None = None
+    symbol: str | None = None
+    market_cap: int | None = None
+    price: float | None = None
+    price_24h_change: float | None = None
+    holder: int | None = None
+    created_time_unix_utc: int | None = Field(default = None, alias = "created_time")
+
+class GetTokenListResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-list)** of **V2** API endpoint.
+    """
+    data: list[GetTokenListData]

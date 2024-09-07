@@ -1,0 +1,115 @@
+{
+    "success": true,
+    "data": [
+        {
+            "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+            "decimals": 6,
+            "name": "USDT",
+            "symbol": "USDT",
+            "market_cap": 118183837994,
+            "price": 0.999749,
+            "price_24h_change": 0.04666,
+            "holder": null,
+            "created_time": null
+        },
+        {
+            "address": "9gP2kCy3wA1ctvYWQk75guqXuHfrEomqydHLtcTCqiLa",
+            "decimals": 8,
+            "name": "Wrapped BNB (Wormhole)",
+            "symbol": "WBNB",
+            "market_cap": 71985281046,
+            "price": 493.54,
+            "price_24h_change": -1.96414,
+            "holder": null,
+            "created_time": null
+        },
+        {
+            "address": "So11111111111111111111111111111111111111112",
+            "decimals": 9,
+            "name": "Wrapped SOL",
+            "symbol": "SOL",
+            "market_cap": 59466460124,
+            "price": 127.18,
+            "price_24h_change": -2.08677,
+            "holder": null,
+            "created_time": null
+        },
+        {
+            "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "decimals": 6,
+            "name": "USD Coin",
+            "symbol": "USDC",
+            "market_cap": 34865555510,
+            "price": 1.0,
+            "price_24h_change": 0.05128,
+            "holder": null,
+            "created_time": null
+        },
+        {
+            "address": "DEkqHyPN7GMRJ5cArtQFAWefqbZb33Hyf6s5iCwjEonT",
+            "decimals": 9,
+            "name": "USDe",
+            "symbol": "USDe",
+            "market_cap": 2691452436,
+            "price": 0.999299,
+            "price_24h_change": -0.01186,
+            "holder": null,
+            "created_time": null
+        },
+        {
+            "address": "rndrizKT3MK1iimdxRdWabcF7Zg7AR5T4nud4EkHBof",
+            "decimals": 8,
+            "name": "Render Token",
+            "symbol": "RENDER",
+            "market_cap": 1887509183,
+            "price": 4.81,
+            "price_24h_change": 2.69414,
+            "holder": null,
+            "created_time": 1698779467
+        },
+        {
+            "address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+            "decimals": 6,
+            "name": "dogwifhat",
+            "symbol": "$WIF",
+            "market_cap": 1505459688,
+            "price": 1.51,
+            "price_24h_change": -1.12036,
+            "holder": null,
+            "created_time": 1700508163
+        },
+        {
+            "address": "hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux",
+            "decimals": 8,
+            "name": "Helium Network Token",
+            "symbol": "HNT",
+            "market_cap": 1327079523,
+            "price": 7.82,
+            "price_24h_change": -5.26432,
+            "holder": null,
+            "created_time": 1681846398
+        },
+        {
+            "address": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+            "decimals": 5,
+            "name": "Bonk",
+            "symbol": "Bonk",
+            "market_cap": 1118211278,
+            "price": 0.0000161,
+            "price_24h_change": 2.34804,
+            "holder": null,
+            "created_time": 1670531635
+        },
+        {
+            "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "decimals": 6,
+            "name": "Jupiter",
+            "symbol": "JUP",
+            "market_cap": 942909568,
+            "price": 0.698471,
+            "price_24h_change": -1.97754,
+            "holder": null,
+            "created_time": null
+        }
+    ]
+}

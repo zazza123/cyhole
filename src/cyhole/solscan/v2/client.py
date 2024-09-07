@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING, Any, cast
 from ...core.client import APIClient, AsyncAPIClient
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
-    SolscanPageSizeType
+    SolscanPageSizeType,
+    SolscanOrderType,
+    SolscanSortType
 )
 from ...solscan.v2.schema import (
     GetAccountTransferParam,
@@ -23,7 +25,8 @@ from ...solscan.v2.schema import (
     GetTokenTransferResponse,
     GetTokenDefiActivitiesParam,
     GetTokenDefiActivitiesResponse,
-    GetTokenMarketsResponse
+    GetTokenMarketsResponse,
+    GetTokenListResponse
 )
 
 if TYPE_CHECKING:
@@ -128,6 +131,19 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_markets(True, tokens, program_address, page, page_size)
 
+    def get_token_list(
+        self,
+        sort_by: str = SolscanSortType.MARKET_CAP.value,
+        order_by: str = SolscanOrderType.DESCENDING.value,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenListResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-list)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_list`][cyhole.solscan.interaction.v2.Solscan._get_token_list].
+        """
+        return self._interaction._get_token_list(True, sort_by, order_by, page, page_size)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -226,3 +242,16 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_markets`][cyhole.solscan.interaction.v2.Solscan._get_token_markets].
         """
         return await self._interaction._get_token_markets(False, tokens, program_address, page, page_size)
+
+    async def get_token_list(
+        self,
+        sort_by: str = SolscanSortType.MARKET_CAP.value,
+        order_by: str = SolscanOrderType.DESCENDING.value,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenListResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-list)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_list`][cyhole.solscan.interaction.v2.Solscan._get_token_list].
+        """
+        return await self._interaction._get_token_list(False, sort_by, order_by, page, page_size)

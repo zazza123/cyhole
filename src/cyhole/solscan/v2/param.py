@@ -79,3 +79,25 @@ class SolscanActivityDefiType(CyholeParam):
     """Export only SPL token unstakes."""
     SPL_TOKEN_WITHDRAW_STAKE = "ACTIVITY_SPL_TOKEN_WITHDRAW_STAKE"
     """Export only SPL token withdraw stakes."""
+
+class SolscanOrderType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's orders.
+    """
+    ASCENDING = "asc"
+    """Ascending sort order."""
+    DESCENDING = "desc"
+    """Descending sort order."""
+
+class SolscanSortType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's sorting types.
+    """
+    PRICE = "price"
+    """Sort by price."""
+    HOLDER = "holder"
+    """Sort by holder."""
+    MARKET_CAP = "market_cap"
+    """Sort by market cap."""
+    CREATED_TIME = "created_time"
+    """Sort by created time."""
