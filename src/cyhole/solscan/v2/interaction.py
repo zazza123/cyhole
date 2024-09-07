@@ -18,7 +18,8 @@ from ...solscan.v2.schema import (
     GetAccountDefiActivitiesResponse,
     GetAccountBalanceChangeActivitiesParam,
     GetAccountBalanceChangeActivitiesResponse,
-    GetAccountTransactionsResponse
+    GetAccountTransactionsResponse,
+    GetAccountStakeResponse
 )
 
 class Solscan(Interaction):
@@ -288,5 +289,45 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountTransactionsResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_account_stake(self, sync: Literal[True], account: str, page: int = 1, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountStakeResponse: ...
+
+    @overload
+    def _get_account_stake(self, sync: Literal[False], account: str, page: int = 1, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> Coroutine[None, None, GetAccountStakeResponse]: ...
+
+    def _get_account_stake(self, sync: bool, account: str, page: int = 1, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountStakeResponse | Coroutine[None, None, GetAccountStakeResponse]:
+        """
+            This function refers to the GET **[Account Stake](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-stake)** of **V2** API endpoint, 
+            and it is used to get the staking activities of an account.
+
+            Parameters:
+                account: The account address.
+                page: The page number.
+                limit: The number of staking activities to be returned.
+                    The supported types are available on [`SolscanReturnLimitType`][cyhole.solscan.v2.param.SolscanReturnLimitType].
+
+            Returns:
+                List of staking activities of the account.
+        """
+        # check param consistency
+        SolscanReturnLimitType.check(limit)
+
+        # set params
+        url = self.base_url + "account/stake"
+        api_params = {
+            "address": account,
+            "page": page,
+            "page_size": limit
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountStakeResponse,
             params = api_params
         )

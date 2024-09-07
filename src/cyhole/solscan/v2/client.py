@@ -14,7 +14,8 @@ from ...solscan.v2.schema import (
     GetAccountDefiActivitiesResponse,
     GetAccountBalanceChangeActivitiesParam,
     GetAccountBalanceChangeActivitiesResponse,
-    GetAccountTransactionsResponse
+    GetAccountTransactionsResponse,
+    GetAccountStakeResponse
 )
 
 if TYPE_CHECKING:
@@ -71,6 +72,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_transactions(True, account, before_transaction, limit)
 
+    def get_account_stake(self, account: str, page: int = 1, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountStakeResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Stake](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-stake)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_stake`][cyhole.solscan.interaction.v2.Solscan._get_account_stake].
+        """
+        return self._interaction._get_account_stake(True, account, page, limit)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -121,3 +129,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_transactions`][cyhole.solscan.interaction.v2.Solscan._get_account_transactions].
         """
         return await self._interaction._get_account_transactions(False, account, before_transaction, limit)
+
+    async def get_account_stake(self, account: str, page: int = 1, limit: int = SolscanReturnLimitType.LIMIT_10.value) -> GetAccountStakeResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Stake](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-stake)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_stake`][cyhole.solscan.interaction.v2.Solscan._get_account_stake].
+        """
+        return await self._interaction._get_account_stake(False, account, page, limit)

@@ -383,3 +383,28 @@ class GetAccountTransactionsResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Account Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transactions)** of **V2** API endpoint.
     """
     data: list[GetAccountTransactionsData]
+
+# GET - Account Stake
+# Response
+class GetAccountStakeData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Account Stake](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-stake)** of **V2** API endpoint.
+    """
+    amount: int
+    role: list[str]
+    status: str
+    type: str
+    voter: str
+    active_stake_amount: int
+    delegated_stake_amount: int
+    sol_balance: int
+    total_reward: str
+    stake_account: str
+    activation_epoch: int
+    stake_type: int
+
+class GetAccountStakeResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Account Stake](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-stake)** of **V2** API endpoint.
+    """
+    data: list[GetAccountStakeData]
