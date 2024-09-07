@@ -622,3 +622,28 @@ class GetTokenHoldersResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** of **V2** API endpoint.
     """
     data: GetTokenHoldersData
+
+# GET - Token Meta
+# Response
+class GetTokenMetaData(BaseModel):
+    """
+        Model used to parse the meta data of the GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-meta)** of **V2** API endpoint.
+    """
+    address: str
+    name: str | None = None
+    symbol: str | None = None
+    icon: str | None = None
+    decimals: int
+    price: float
+    volume_24h: int
+    market_cap: int
+    market_cap_rank: int
+    price_change_24h: float
+    supply: int
+    holder: int
+
+class GetTokenMetaResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-meta)** of **V2** API endpoint.
+    """
+    data: GetTokenMetaData

@@ -29,7 +29,8 @@ from ...solscan.v2.schema import (
     GetTokenListResponse,
     GetTokenTrendingResponse,
     GetTokenPriceResponse,
-    GetTokenHoldersResponse
+    GetTokenHoldersResponse,
+    GetTokenMetaResponse
 )
 
 if TYPE_CHECKING:
@@ -168,6 +169,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_holders(True, token, amount_range, page, page_size)
 
+    def get_token_meta(self, token: str) -> GetTokenMetaResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-meta)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_meta`][cyhole.solscan.interaction.v2.Solscan._get_token_meta].
+        """
+        return self._interaction._get_token_meta(True, token)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -300,3 +308,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_holders`][cyhole.solscan.interaction.v2.Solscan._get_token_holders].
         """
         return await self._interaction._get_token_holders(False, token, amount_range, page, page_size)
+
+    async def get_token_meta(self, token: str) -> GetTokenMetaResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-meta)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_meta`][cyhole.solscan.interaction.v2.Solscan._get_token_meta].
+        """
+        return await self._interaction._get_token_meta(False, token)

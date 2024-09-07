@@ -34,7 +34,8 @@ from ...solscan.v2.schema import (
     GetTokenListResponse,
     GetTokenTrendingResponse,
     GetTokenPriceResponse,
-    GetTokenHoldersResponse
+    GetTokenHoldersResponse,
+    GetTokenMetaResponse
 )
 
 class Solscan(Interaction):
@@ -753,5 +754,37 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenHoldersResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_meta(self, sync: Literal[True], token: str) -> GetTokenMetaResponse: ...
+
+    @overload
+    def _get_token_meta(self, sync: Literal[False], token: str) -> Coroutine[None, None, GetTokenMetaResponse]: ...
+
+    def _get_token_meta(self, sync: bool, token: str) -> GetTokenMetaResponse | Coroutine[None, None, GetTokenMetaResponse]:
+        """
+            This function refers to the GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-meta)** of **V2** API endpoint, 
+            and it is used to get the metadata of a token.
+
+            Parameters:
+                token: The token address.
+
+            Returns:
+                Metadata of the token.
+        """
+        # set params
+        url = self.base_url + "token/meta"
+        api_params = {
+            "address": token
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenMetaResponse,
             params = api_params
         )
