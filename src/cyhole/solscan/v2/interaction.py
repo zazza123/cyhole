@@ -45,7 +45,8 @@ from ...solscan.v2.schema import (
     GetNFTCollectionListsParam,
     GetNFTCollectionListsResponse,
     GetNFTCollectionItemsResponse,
-    GetTransactionLastResponse
+    GetTransactionLastResponse,
+    GetTransactionActionsResponse
 )
 
 class Solscan(Interaction):
@@ -1009,5 +1010,37 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTransactionLastResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_transaction_actions(self, sync: Literal[True], transaction: str) -> GetTransactionActionsResponse: ...
+
+    @overload
+    def _get_transaction_actions(self, sync: Literal[False], transaction: str) -> Coroutine[None, None, GetTransactionActionsResponse]: ...
+
+    def _get_transaction_actions(self, sync: bool, transaction: str) -> GetTransactionActionsResponse | Coroutine[None, None, GetTransactionActionsResponse]:
+        """
+            This function refers to the GET **[Transaction Actions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-actions)** of **V2** API endpoint, 
+            and it is used to get the actions of a transaction.
+
+            Parameters:
+                transaction: The transaction signature.
+
+            Returns:
+                List of actions of the transaction.
+        """
+        # set params
+        url = self.base_url + "transaction/actions"
+        api_params = {
+            "tx": transaction
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTransactionActionsResponse,
             params = api_params
         )

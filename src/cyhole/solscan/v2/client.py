@@ -40,7 +40,8 @@ from ...solscan.v2.schema import (
     GetNFTCollectionListsParam,
     GetNFTCollectionListsResponse,
     GetNFTCollectionItemsResponse,
-    GetTransactionLastResponse
+    GetTransactionLastResponse,
+    GetTransactionActionsResponse
 )
 
 if TYPE_CHECKING:
@@ -227,6 +228,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_transaction_last(True, limit, filter)
 
+    def get_transaction_actions(self, transaction: str) -> GetTransactionActionsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Transaction Actions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-actions)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_transaction_actions`][cyhole.solscan.interaction.v2.Solscan._get_transaction_actions].
+        """
+        return self._interaction._get_transaction_actions(True, transaction)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -407,3 +415,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_transaction_last`][cyhole.solscan.interaction.v2.Solscan._get_transaction_last].
         """
         return await self._interaction._get_transaction_last(False, limit, filter)
+
+    async def get_transaction_actions(self, transaction: str) -> GetTransactionActionsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Transaction Actions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-actions)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_transaction_actions`][cyhole.solscan.interaction.v2.Solscan._get_transaction_actions].
+        """
+        return await self._interaction._get_transaction_actions(False, transaction)

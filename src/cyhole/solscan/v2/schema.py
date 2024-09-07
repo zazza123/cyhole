@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import TypeAlias
+
 from pydantic import BaseModel, Field, field_validator, field_serializer
 
 from ...solscan.v2.param import (
@@ -992,3 +994,132 @@ class GetTransactionLastResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Transaction Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-last)** of **V2** API endpoint.
     """
     data: list[GetTransactionLastData]
+
+# GET - Transaction Actions
+# Response
+class GetTransactionActionsTransfer(BaseModel):
+    source_owner: str | None = None
+    source: str | None = None
+    destination_owner: str | None = None
+    destination: str | None = None
+    transfer_type: str
+    token_address: str
+    decimals: int
+    amount_str: str
+    amount: int
+    program_id: str
+    outer_program_id: str | None = None
+    ins_index: int
+    outer_ins_index: int
+
+class GetTransactionActionsActivityDataRouter(BaseModel):
+    amm_program_id: str
+    token_1: str
+    token_decimal_1: int
+    amount_1: int
+    amount_1_str: str
+    token_2: str
+    token_decimal_2: int
+    amount_2: int
+    amount_2_str: str
+
+# Data Unit Limit
+class GetTransactionActionsActivityDataUnitLimit(BaseModel):
+    compute_unit_limit: str
+
+# Data Unit Price
+class GetTransactionActionsActivityDataUnitPrice(BaseModel):
+    compute_unit_price_by_microlamport: str
+
+# Data Spl Common
+class GetTransactionActionsActivityDataSplCommon(BaseModel):
+    amount: int | None = None
+    amount_str: str | None = None
+    token_address: str
+    token_decimals: int | None = None
+    closed_account: str | None = None
+    authority: str | None = None
+    destination: str | None = None
+    sync_account: str | None = None
+    init_account: str | None = None
+    owner: str | None = None
+
+# Data Spl Mint/Burn
+class GetTransactionActionsActivityDataSplMintBurn(BaseModel):
+    account: str
+    authority: str
+    token_address: str
+    token_decimals: int
+    amount: int
+    amount_str: str
+
+# Data Token Swap
+class GetTransactionActionsActivityDataTokenSwap(BaseModel):
+    amm_id: str
+    amm_authoriy: str | None = None
+    account: str
+    token_1: str
+    token_2: str
+    amount_1: int
+    amount_1_str: str
+    amount_2: int
+    amount_2_str: str
+    token_decimal_1: int
+    token_decimal_2: int
+    token_account_1_1: str | None = None
+    token_account_1_2: str | None = None
+    token_account_2_1: str | None = None
+    token_account_2_2: str | None = None
+    owner_1: str | None = None
+    owner_2: str | None = None
+    rounters: list[GetTransactionActionsActivityDataRouter] | None = None
+    exact_amount_2: int | None = None
+    exact_amount_2_str: str | None = None
+    platform_fee: int | None = None
+    slippage: int | None = None
+
+# Data Create Account
+class GetTransactionActionsActivityDataCreateAccount(BaseModel):
+    new_account: str
+    source: str
+    transfer_amount: int
+    transfer_amount_str: str
+    program_owner: str
+    space: int
+    common_type: str
+
+# Data Type Alias
+GetTransactionActionsActivityData: TypeAlias = \
+      GetTransactionActionsActivityDataUnitLimit \
+    | GetTransactionActionsActivityDataUnitPrice \
+    | GetTransactionActionsActivityDataSplCommon \
+    | GetTransactionActionsActivityDataTokenSwap \
+    | GetTransactionActionsActivityDataSplMintBurn \
+    | GetTransactionActionsActivityDataCreateAccount
+
+class GetTransactionActionsActivity(BaseModel):
+    name: str
+    activity_type: str
+    program_id: str
+    data: GetTransactionActionsActivityData
+    ins_index: int
+    outer_ins_index: int
+    outer_program_id: str | None = None
+
+class GetTransactionActionsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Transaction Actions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-actions)** of **V2** API endpoint.
+    """
+    transaction_id: str = Field(alias = "tx_hash")
+    block_id: int
+    block_time_unix_utc: int = Field(alias = "block_time")
+    time: datetime
+    fee: int
+    transfers: list[GetTransactionActionsTransfer] | None = None
+    activities: list[GetTransactionActionsActivity] | None = None
+
+class GetTransactionActionsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Transaction Actions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-transaction-actions)** of **V2** API endpoint.
+    """
+    data: GetTransactionActionsData
