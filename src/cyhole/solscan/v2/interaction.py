@@ -6,7 +6,7 @@ from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
 from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
-from ...solscan.v2.exception import SolscanInvalidTimeRange
+from ...solscan.v2.exception import SolscanInvalidTimeRange, SolscanInvalidAmountRange
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
     SolscanPageSizeType,
@@ -33,7 +33,8 @@ from ...solscan.v2.schema import (
     GetTokenMarketsResponse,
     GetTokenListResponse,
     GetTokenTrendingResponse,
-    GetTokenPriceResponse
+    GetTokenPriceResponse,
+    GetTokenHoldersResponse
 )
 
 class Solscan(Interaction):
@@ -698,5 +699,59 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenPriceResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_holders(self, sync: Literal[True], token: str, amount_range: tuple[int, int] | None = None, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetTokenHoldersResponse: ...
+
+    @overload
+    def _get_token_holders(self, sync: Literal[False], token: str, amount_range: tuple[int, int] | None = None, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> Coroutine[None, None, GetTokenHoldersResponse]: ...
+
+    def _get_token_holders(self, sync: bool, token: str, amount_range: tuple[int, int] | None = None, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetTokenHoldersResponse | Coroutine[None, None, GetTokenHoldersResponse]:
+        """
+            This function refers to the GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** of **V2** API endpoint, 
+            and it is used to get the holders of a token.
+
+            Parameters:
+                token: The token address.
+                amount_range: The amount range.
+                    It can be a tuple of two integers (from, to).
+                page: The page number.
+                page_size: The number of holders per page.
+                    The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+
+            Returns:
+                List of holders of the token.
+        """
+        from_amount = None
+        to_amount = None
+
+        # check param consistency
+        SolscanPageSizeType.check(page_size)
+
+        if amount_range:
+            if amount_range[0] > amount_range[1]:
+                raise SolscanInvalidAmountRange("The start amount is greater than the end amount.")
+
+            from_amount = str(amount_range[0])
+            to_amount = str(amount_range[1])
+
+        # set params
+        url = self.base_url + "token/holders"
+        api_params = {
+            "address": token,
+            "from_amount": from_amount,
+            "to_amount": to_amount,
+            "page": page,
+            "page_size": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenHoldersResponse,
             params = api_params
         )

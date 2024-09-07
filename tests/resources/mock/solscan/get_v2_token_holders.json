@@ -1,0 +1,78 @@
+{
+    "success": true,
+    "data": {
+        "total": 731612,
+        "items": [
+            {
+                "address": "8ZruT2Vq5hXKMv28zWRdZ9qzA4SCaRoFE5XZoe3mXRP4",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "E5ceJYiUdanRC7fXER7Tpx9Ky8VLqxs5yvasBXSbrycq",
+                "rank": 1
+            },
+            {
+                "address": "3A9p5PrLdxXGLc39sx2Zzyfff5tsHw8uq4RADhLPpptL",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "HMBLj3j2fate4cMKyZmpKtRruxAsm9wyQbCgDkMFp4jv",
+                "rank": 2
+            },
+            {
+                "address": "9BeSkfEPLrr45uE26teinSSWJWiP3xk5Wp2S3fXfkeXA",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "F6aFb51fgpJphUzWYQCrmQ4HppdJ7kQ6FsMrXcJ8qEox",
+                "rank": 3
+            },
+            {
+                "address": "BahT5RHTZ7vofv7WURLeWMEeohtjFkggXoY2DcWc9rjP",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "BXdbrwSeHNUhKCSKPRNCCSGjBvEzQqP56C3bKaNUgLpk",
+                "rank": 4
+            },
+            {
+                "address": "oHKb7D8z51z6mLjBjByrYKM2Gh7HFVEKaTgp1L6Hxmn",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "9DFsXmaXM9XWMEUMo9wV5EYxvJBaF2mQRRTuUq5LVXKJ",
+                "rank": 5
+            },
+            {
+                "address": "AwBzUa5X4R6BtnFFS8DdzjGa81EFWMTSc4ZBJPG2XErg",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "3eRuc9hpcP656VMVkav4S1NhoM4ru4orBWR4KCcmxfaU",
+                "rank": 6
+            },
+            {
+                "address": "7z1zM4ksijZzhKHZoUk33ZBsDocXeoer79hGYquw95BR",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "JCmQBRhvirpxE6je26Ry6MQkXr9BQwGbLjGyzWyxSbTf",
+                "rank": 7
+            },
+            {
+                "address": "J5cFRKCa7QJX2UZHh6ez1cuSbhKHceG9LfDNHVQqjEHk",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "8YqMdGYEMmYefSU8fSR7UCVQLB2syfqQhvTZQBNpGJaF",
+                "rank": 8
+            },
+            {
+                "address": "GDNFgAPPStjDyUQMEecqGR9XbLyKVVd3wJnKQRCo4ktc",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "9nQ4uGzgyP4oY9sw7wLfCa3kM66XMivqfAhiASqPhBhA",
+                "rank": 9
+            },
+            {
+                "address": "7eJXYHs8tmS8SE6GzJ3XsSbJSbetowJbuKa71jsYAz2",
+                "amount": 1000000000,
+                "decimals": 6,
+                "owner": "84FUj4dHFNSgbieFzroNViFWcybVXMtT9UYjbqQEjbAg",
+                "rank": 10
+            }
+        ]
+    }
+}

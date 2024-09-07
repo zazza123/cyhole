@@ -28,7 +28,8 @@ from ...solscan.v2.schema import (
     GetTokenMarketsResponse,
     GetTokenListResponse,
     GetTokenTrendingResponse,
-    GetTokenPriceResponse
+    GetTokenPriceResponse,
+    GetTokenHoldersResponse
 )
 
 if TYPE_CHECKING:
@@ -160,6 +161,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_price(True, token, time_range)
 
+    def get_token_holders(self, token: str, amount_range: tuple[int, int] | None = None, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetTokenHoldersResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_holders`][cyhole.solscan.interaction.v2.Solscan._get_token_holders].
+        """
+        return self._interaction._get_token_holders(True, token, amount_range, page, page_size)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -285,3 +293,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_price`][cyhole.solscan.interaction.v2.Solscan._get_token_price].
         """
         return await self._interaction._get_token_price(False, token, time_range)
+
+    async def get_token_holders(self, token: str, amount_range: tuple[int, int] | None = None, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetTokenHoldersResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_holders`][cyhole.solscan.interaction.v2.Solscan._get_token_holders].
+        """
+        return await self._interaction._get_token_holders(False, token, amount_range, page, page_size)

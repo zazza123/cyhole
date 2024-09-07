@@ -597,3 +597,28 @@ class GetTokenPriceResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Price](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-price)** of **V2** API endpoint.
     """
     data: list[GetTokenPriceData]
+
+# GET - Token Holders
+# Response
+class GetTokenHoldersHolder(BaseModel):
+    """
+        Model used to parse the holder data of the GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** of **V2** API endpoint.
+    """
+    address: str
+    amount: int
+    decimals: int
+    owner: str
+    rank: int
+
+class GetTokenHoldersData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** of **V2** API endpoint.
+    """
+    total_holders: int = Field(alias = "total")
+    holders: list[GetTokenHoldersHolder] = Field(alias = "items")
+
+class GetTokenHoldersResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Holders](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-holders)** of **V2** API endpoint.
+    """
+    data: GetTokenHoldersData
