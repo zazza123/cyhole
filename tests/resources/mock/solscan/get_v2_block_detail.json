@@ -1,0 +1,13 @@
+{
+    "success": true,
+    "data": {
+        "blockhash": "2fVkFr4FMHxD4U4vrKuvyFQTU8M1Wdc5UJR5rkGU3Di4",
+        "fee_rewards": 28442403,
+        "transactions_count": 960,
+        "block_height": 247152357,
+        "block_time": 1716420162,
+        "time": "2024-05-22T23:22:42Z",
+        "parent_slot": 267385260,
+        "previous_block_hash": "9zgvyyEAXBSmfHYLLMknbu6JzKo2LrP113Uk5dxfqEwL"
+    }
+}

@@ -1174,3 +1174,24 @@ class GetBlockTransactionsResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-transactions)** of **V2** API endpoint.
     """
     data: GetBlockTransactionsData
+
+# GET - Block Detail
+# Response
+class GetBlockDetailData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Block Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-detail)** of **V2** API endpoint.
+    """
+    block_id: str = Field(alias = "blockhash")
+    fee_rewards: int
+    transactions_count: int
+    block_height: int
+    block_time_unix_utc: int = Field(alias = "block_time")
+    time: datetime
+    parent_slot: int
+    previous_block_id: str = Field(alias = "previous_block_hash")
+
+class GetBlockDetailResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Block Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-detail)** of **V2** API endpoint.
+    """
+    data: GetBlockDetailData
