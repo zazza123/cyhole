@@ -647,3 +647,84 @@ class GetTokenMetaResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Meta](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-meta)** of **V2** API endpoint.
     """
     data: GetTokenMetaData
+
+# GET - NFT News
+# Response
+class GetNFTNewsNftInfoMetaAttribute(BaseModel):
+    trait_type: str
+    value: str
+
+class GetNFTNewsNftInfoMetaCollection(BaseModel):
+    name: str
+    family: str
+
+class GetNFTNewsNftInfoMetaFile(BaseModel):
+    uri: str
+    type: str
+
+class GetNFTNewsNftInfoMetaCreator(BaseModel):
+    address: str
+    share: int
+
+class GetNFTNewsNftInfoMetaProperty(BaseModel):
+    files: list[GetNFTNewsNftInfoMetaFile]
+    category: str | None = None
+    creators: list[GetNFTNewsNftInfoMetaCreator] | None = None
+
+class GetNFTNewsNftInfoMeta(BaseModel):
+    name: str
+    symbol: str | None = None
+    description: str
+    seller_fee_basis_points: int | None = None
+    image: str
+    animation_url: str | None = None
+    external_url: str | None = None
+    attributes: list[GetNFTNewsNftInfoMetaAttribute] | None = None
+    tags: list[str] | None = None
+    collection: GetNFTNewsNftInfoMetaCollection | None = None
+    properties: GetNFTNewsNftInfoMetaProperty | None = None
+    edition: int | None = None
+    creators: list[GetNFTNewsNftInfoMetaCreator] | None = None
+    compiler: str | None = None
+    dna: str | None = None
+    date: int | None = None
+    process_video: str | None = Field(default = None, alias = "processVideo")
+
+class GetNFTNewsNftInfoDataCreator(BaseModel):
+    address: str
+    verified: int
+    share: int
+
+class GetNFTNewsNftInfoData(BaseModel):
+    name: str
+    symbol: str
+    uri: str
+    seller_fee_basis_points: int = Field(alias = "sellerFeeBasisPoints")
+    creators: list[GetNFTNewsNftInfoDataCreator]
+    id: int
+
+class GetNFTNewsNftInfo(BaseModel):
+    address: str
+    created_time_unix_utc: int = Field(alias = "createdTime")
+    mint_transaction: str = Field(alias = "mintTx")
+    collection: str
+    collection_id: str = Field(alias = "collectionId")
+    collection_key: str | None = Field(default = None, alias = "collectionKey")
+    data: GetNFTNewsNftInfoData
+    meta: GetNFTNewsNftInfoMeta
+
+class GetNFTNewsNft(BaseModel):
+    info: GetNFTNewsNftInfo
+
+class GetNFTNewsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[NFT News](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-news)** of **V2** API endpoint.
+    """
+    nfts: list[GetNFTNewsNft] = Field(alias = "data")
+    total: int
+
+class GetNFTNewsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[NFT News](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-news)** of **V2** API endpoint.
+    """
+    data: GetNFTNewsData

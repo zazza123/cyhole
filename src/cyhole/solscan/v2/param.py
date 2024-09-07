@@ -30,6 +30,17 @@ class SolscanPageSizeType(CyholeParam):
     SIZE_100 = 100
     """Export only 100 items per page."""
 
+class SolscanNFTPageSizeType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's NFT page size types.
+    """
+    SIZE_12 = 12
+    """Export only 12 items per page."""
+    SIZE_24 = 24
+    """Export only 24 items per page."""
+    SIZE_36 = 36
+    """Export only 36 items per page."""
+
 class SolscanReturnLimitType(CyholeParam):
     """
         Enum class to get the supported Solscan's return limit types.

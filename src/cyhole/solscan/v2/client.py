@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, cast
 from ...core.client import APIClient, AsyncAPIClient
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
+    SolscanNFTPageSizeType,
     SolscanPageSizeType,
     SolscanOrderType,
     SolscanSortType
@@ -30,7 +31,8 @@ from ...solscan.v2.schema import (
     GetTokenTrendingResponse,
     GetTokenPriceResponse,
     GetTokenHoldersResponse,
-    GetTokenMetaResponse
+    GetTokenMetaResponse,
+    GetNFTNewsResponse
 )
 
 if TYPE_CHECKING:
@@ -176,6 +178,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_meta(True, token)
 
+    def get_nft_news(self, filter: str = "created_time", page: int = 1, page_size: int = SolscanNFTPageSizeType.SIZE_12.value) -> GetNFTNewsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT News](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-news)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_news`][cyhole.solscan.interaction.v2.Solscan._get_nft_news].
+        """
+        return self._interaction._get_nft_news(True, filter, page, page_size)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -315,3 +324,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_meta`][cyhole.solscan.interaction.v2.Solscan._get_token_meta].
         """
         return await self._interaction._get_token_meta(False, token)
+
+    async def get_nft_news(self, filter: str = "created_time", page: int = 1, page_size: int = SolscanNFTPageSizeType.SIZE_12.value) -> GetNFTNewsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT News](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-news)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_news`][cyhole.solscan.interaction.v2.Solscan._get_nft_news].
+        """
+        return await self._interaction._get_nft_news(False, filter, page, page_size)

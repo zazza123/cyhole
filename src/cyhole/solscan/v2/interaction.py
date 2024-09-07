@@ -9,6 +9,7 @@ from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v2.exception import SolscanInvalidTimeRange, SolscanInvalidAmountRange
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
+    SolscanNFTPageSizeType,
     SolscanPageSizeType,
     SolscanAccountType,
     SolscanOrderType,
@@ -35,7 +36,8 @@ from ...solscan.v2.schema import (
     GetTokenTrendingResponse,
     GetTokenPriceResponse,
     GetTokenHoldersResponse,
-    GetTokenMetaResponse
+    GetTokenMetaResponse,
+    GetNFTNewsResponse
 )
 
 class Solscan(Interaction):
@@ -786,5 +788,45 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenMetaResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_nft_news(self, sync: Literal[True], filter: str = "created_time", page: int = 1, page_size: int = SolscanNFTPageSizeType.SIZE_12.value) -> GetNFTNewsResponse: ...
+
+    @overload
+    def _get_nft_news(self, sync: Literal[False], filter: str = "created_time", page: int = 1, page_size: int = SolscanNFTPageSizeType.SIZE_12.value) -> Coroutine[None, None, GetNFTNewsResponse]: ...
+
+    def _get_nft_news(self, sync: bool, filter: str = "created_time", page: int = 1, page_size: int = SolscanNFTPageSizeType.SIZE_12.value) -> GetNFTNewsResponse | Coroutine[None, None, GetNFTNewsResponse]:
+        """
+            This function refers to the GET **[NFT News](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-news)** of **V2** API endpoint, 
+            and it is used to get the latest NFT news.
+
+            Parameters:
+                filter: The filter to be used.
+                page: The page number.
+                page_size: The number of NFT per page.
+                    The supported types are available on [`SolscanNFTPageSizeType`][cyhole.solscan.v2.param.SolscanNFTPageSizeType].
+
+            Returns:
+                List of NFT news.
+        """
+        # check param consistency
+        SolscanNFTPageSizeType.check(page_size)
+
+        # set params
+        url = self.base_url + "nft/news"
+        api_params = {
+            "filter": filter,
+            "page": page,
+            "page_size": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetNFTNewsResponse,
             params = api_params
         )

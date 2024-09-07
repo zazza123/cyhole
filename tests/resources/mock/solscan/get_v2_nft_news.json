@@ -1,0 +1,250 @@
+{
+    "success": true,
+    "data": {
+        "data": [
+            {
+                "info": {
+                    "address": "C1RVKL9EdyA4r8qh5Lmf29BBGWrF5LfHF8D83ziJ5Aep",
+                    "createdTime": 1725723606,
+                    "mintTx": "5RY4H35RtePaeWriJNtUH3qfAKYFHBKJvuW8MJvSXAdVpS1ZqJMprFCpx87R2m3SeqobSQ1XKTadcMFkyNVb9kXQ",
+                    "collection": "STEPN Sneaker",
+                    "collectionId": "3979797df6672c6d19a2d56fc9d941e86da2b21e683407ce526079e5d3e0327b",
+                    "collectionKey": null,
+                    "data": {
+                        "name": "STEPNNFT",
+                        "symbol": "",
+                        "uri": "https://api.stepn.com/run/nftjson/103/64434724525",
+                        "sellerFeeBasisPoints": 400,
+                        "creators": [
+                            {
+                                "address": "STEPNq2UGeGSzCyGVr2nMQAzf8xuejwqebd84wcksCK",
+                                "verified": 1,
+                                "share": 100
+                            }
+                        ],
+                        "id": 277166729
+                    },
+                    "meta": {
+                        "name": "Sneaker #277166729",
+                        "symbol": "",
+                        "description": "NFT Sneaker, use it in STEPN to move2earn",
+                        "seller_fee_basis_points": 400,
+                        "image": "https://res.stepn.com/imgOut/9/4/m2186f9_ad7c02908d9bd7a533d66e9f8d5cb367cfde_67_chain.png",
+                        "animation_url": null,
+                        "external_url": "https://stepn.com",
+                        "attributes": [
+                            {
+                                "trait_type": "Sneaker type",
+                                "value": "Jogger"
+                            },
+                            {
+                                "trait_type": "Sneaker quality",
+                                "value": "Uncommon"
+                            },
+                            {
+                                "trait_type": "Level",
+                                "value": "5"
+                            },
+                            {
+                                "trait_type": "Optimal Speed",
+                                "value": "4.0-10.0km/h"
+                            },
+                            {
+                                "trait_type": "Shoe-minting Count",
+                                "value": "2/7"
+                            },
+                            {
+                                "trait_type": "Efficiency",
+                                "value": "15.5"
+                            },
+                            {
+                                "trait_type": "Luck",
+                                "value": "12.4"
+                            },
+                            {
+                                "trait_type": "Comfortability",
+                                "value": "9.2"
+                            },
+                            {
+                                "trait_type": "Resilience",
+                                "value": "8.4"
+                            },
+                            {
+                                "trait_type": "Durability",
+                                "value": "100/100"
+                            },
+                            {
+                                "trait_type": "Socket 1",
+                                "value": "Comfort/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Socket 2",
+                                "value": "Durability/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Socket 3",
+                                "value": "Luck/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Socket 4",
+                                "value": "Efficiency/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Badge",
+                                "value": "None"
+                            }
+                        ],
+                        "tags": null,
+                        "collection": {
+                            "name": "STEPN Sneaker",
+                            "family": "STEPN"
+                        },
+                        "properties": {
+                            "files": [
+                                {
+                                    "uri": "https://res.stepn.com/imgOut/9/4/m2186f9_ad7c02908d9bd7a533d66e9f8d5cb367cfde_67_chain.png",
+                                    "type": "image/png"
+                                }
+                            ],
+                            "category": "image",
+                            "creators": [
+                                {
+                                    "address": "STEPNq2UGeGSzCyGVr2nMQAzf8xuejwqebd84wcksCK",
+                                    "share": 100
+                                }
+                            ]
+                        },
+                        "edition": null,
+                        "creators": null,
+                        "compiler": null,
+                        "dna": null,
+                        "date": null,
+                        "processVideo": null
+                    }
+                }
+            },
+            {
+                "info": {
+                    "address": "HcPgZ4xprpcvC433v8jzwPWvgTDmP2vygxn7Vti4c35R",
+                    "createdTime": 1725723589,
+                    "mintTx": "1uCdMPby8HiWdTiaSt2e1KmaDFskBHQznPKGgETskwY1gxCgr41AuDWmz3iq4UrgpSk4dAXXf9bR4ebgeyKXqyB",
+                    "collection": "STEPN Sneaker",
+                    "collectionId": "3979797df6672c6d19a2d56fc9d941e86da2b21e683407ce526079e5d3e0327b",
+                    "collectionKey": null,
+                    "data": {
+                        "name": "STEPNNFT",
+                        "symbol": "",
+                        "uri": "https://api.stepn.com/run/nftjson/103/144453960175",
+                        "sellerFeeBasisPoints": 400,
+                        "creators": [
+                            {
+                                "address": "STEPNq2UGeGSzCyGVr2nMQAzf8xuejwqebd84wcksCK",
+                                "verified": 1,
+                                "share": 100
+                            }
+                        ],
+                        "id": 873713887
+                    },
+                    "meta": {
+                        "name": "Sneaker #873713887",
+                        "symbol": "",
+                        "description": "NFT Sneaker, use it in STEPN to move2earn",
+                        "seller_fee_basis_points": 400,
+                        "image": "https://res.stepn.com/imgOut/20/49/m2186fe_8add3640f40510812b1d91ce3c1d260111b2_67_chain.png",
+                        "animation_url": null,
+                        "external_url": "https://stepn.com",
+                        "attributes": [
+                            {
+                                "trait_type": "Sneaker type",
+                                "value": "Jogger"
+                            },
+                            {
+                                "trait_type": "Sneaker quality",
+                                "value": "Uncommon"
+                            },
+                            {
+                                "trait_type": "Level",
+                                "value": "5"
+                            },
+                            {
+                                "trait_type": "Optimal Speed",
+                                "value": "4.0-10.0km/h"
+                            },
+                            {
+                                "trait_type": "Shoe-minting Count",
+                                "value": "2/7"
+                            },
+                            {
+                                "trait_type": "Efficiency",
+                                "value": "17.8"
+                            },
+                            {
+                                "trait_type": "Luck",
+                                "value": "8.1"
+                            },
+                            {
+                                "trait_type": "Comfortability",
+                                "value": "15.3"
+                            },
+                            {
+                                "trait_type": "Resilience",
+                                "value": "11.3"
+                            },
+                            {
+                                "trait_type": "Durability",
+                                "value": "100/100"
+                            },
+                            {
+                                "trait_type": "Socket 1",
+                                "value": "Comfort/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Socket 2",
+                                "value": "Comfort/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Socket 3",
+                                "value": "Durability/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Socket 4",
+                                "value": "Luck/unknown/empty"
+                            },
+                            {
+                                "trait_type": "Badge",
+                                "value": "None"
+                            }
+                        ],
+                        "tags": null,
+                        "collection": {
+                            "name": "STEPN Sneaker",
+                            "family": "STEPN"
+                        },
+                        "properties": {
+                            "files": [
+                                {
+                                    "uri": "https://res.stepn.com/imgOut/20/49/m2186fe_8add3640f40510812b1d91ce3c1d260111b2_67_chain.png",
+                                    "type": "image/png"
+                                }
+                            ],
+                            "category": "image",
+                            "creators": [
+                                {
+                                    "address": "STEPNq2UGeGSzCyGVr2nMQAzf8xuejwqebd84wcksCK",
+                                    "share": 100
+                                }
+                            ]
+                        },
+                        "edition": null,
+                        "creators": null,
+                        "compiler": null,
+                        "dna": null,
+                        "date": null,
+                        "processVideo": null
+                    }
+                }
+            }
+        ],
+        "total": 100
+    }
+}
