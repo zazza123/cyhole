@@ -20,7 +20,9 @@ from ...solscan.v2.schema import (
     GetAccountDetailResponse,
     GetAccountRewardsExportResponse,
     GetTokenTransferParam,
-    GetTokenTransferResponse
+    GetTokenTransferResponse,
+    GetTokenDefiActivitiesParam,
+    GetTokenDefiActivitiesResponse
 )
 
 if TYPE_CHECKING:
@@ -105,6 +107,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_transfer(True, token, params)
 
+    def get_token_defi_activities(self, token: str, params: GetTokenDefiActivitiesParam = GetTokenDefiActivitiesParam()) -> GetTokenDefiActivitiesResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_defi_activities`][cyhole.solscan.interaction.v2.Solscan._get_token_defi_activities].
+        """
+        return self._interaction._get_token_defi_activities(True, token, params)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -183,3 +192,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_transfer`][cyhole.solscan.interaction.v2.Solscan._get_token_transfer].
         """
         return await self._interaction._get_token_transfer(False, token, params)
+
+    async def get_token_defi_activities(self, token: str, params: GetTokenDefiActivitiesParam = GetTokenDefiActivitiesParam()) -> GetTokenDefiActivitiesResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_defi_activities`][cyhole.solscan.interaction.v2.Solscan._get_token_defi_activities].
+        """
+        return await self._interaction._get_token_defi_activities(False, token, params)

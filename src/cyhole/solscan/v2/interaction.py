@@ -25,6 +25,8 @@ from ...solscan.v2.schema import (
     GetAccountRewardsExportResponse,
     GetTokenTransferParam,
     GetTokenTransferResponse,
+    GetTokenDefiActivitiesParam,
+    GetTokenDefiActivitiesResponse
 )
 
 class Solscan(Interaction):
@@ -444,5 +446,41 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenTransferResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_defi_activities(self, sync: Literal[True], token: str, params: GetTokenDefiActivitiesParam = GetTokenDefiActivitiesParam()) -> GetTokenDefiActivitiesResponse: ...
+
+    @overload
+    def _get_token_defi_activities(self, sync: Literal[False], token: str, params: GetTokenDefiActivitiesParam = GetTokenDefiActivitiesParam()) -> Coroutine[None, None, GetTokenDefiActivitiesResponse]: ...
+
+    def _get_token_defi_activities(self, sync: bool, token: str, params: GetTokenDefiActivitiesParam = GetTokenDefiActivitiesParam()) -> GetTokenDefiActivitiesResponse | Coroutine[None, None, GetTokenDefiActivitiesResponse]:
+        """
+            This function refers to the GET **[Token DeFi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** of **V2** API endpoint, 
+            and it is used to get the DeFi activities of a token.
+
+            Parameters:
+                token: The token address.
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of DeFi activities of the token.
+        """
+        # set params
+        url = self.base_url + "token/defi/activities"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+        api_params["address"] = token
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenDefiActivitiesResponse,
             params = api_params
         )

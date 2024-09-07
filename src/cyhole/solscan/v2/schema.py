@@ -113,6 +113,92 @@ class SolscanTransferData(BaseModel):
     amount: int
     time: datetime
 
+class SolscanDefiActivitiesParam(BaseModel):
+    """
+        Model used to identify the parameters of the Solscan defi activities (Account/Token).
+    """
+
+    activity_type: str | list[str] | None = Field(default = None, serialization_alias = "activity_type[]")
+    """
+        Activity type of the account defi activities.
+        The supported types are available on [`SolscanActivityDefiType`][cyhole.solscan.v2.param.SolscanActivityDefiType].
+    """
+
+    from_address: str | None = Field(default = None, serialization_alias = "from")
+    """From address to filter."""
+
+    platform_address: str | list[str] | None = Field(default = None, serialization_alias = "platform[]")
+    """Platform addresses to filter."""
+
+    source_address: str | list[str] | None = Field(default = None, serialization_alias = "source[]")
+    """Source addresses to filter."""
+
+    time_range: tuple[datetime, datetime] | None = Field(default = None, serialization_alias = "block_time[]")
+    """Block times to filter by (from, to)."""
+
+    page: int = Field(default = 1, ge = 1)
+    """Page number to get the account transfers."""
+
+    page_size: int = Field(default = SolscanPageSizeType.SIZE_10.value)
+    """
+        Number of account defi activities per page. 
+        The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+    """
+
+    @field_validator("activity_type")
+    @classmethod
+    def validate_activity_type(cls, value: list[str] | str | None) -> str | list[str] | None:
+        if isinstance(value, str):
+            SolscanActivityDefiType.check(value)
+        elif isinstance(value, list):
+            for item in value:
+                SolscanActivityDefiType.check(item)
+        return value
+
+    @field_validator("page_size")
+    @classmethod
+    def validate_page_size(cls, value: int) -> int:
+        SolscanPageSizeType.check(value)
+        return value
+
+    @field_validator("time_range")
+    @classmethod
+    def validate_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[datetime, datetime] | None:
+        if value and value[0] > value[1]:
+            raise SolscanAccountTransferInvalidTimeRange(f"Invalid time range: {value}")
+        return value
+
+    @field_serializer("time_range")
+    @classmethod
+    def serialize_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[int, int] | None:
+        if value:
+            return (int(value[0].timestamp()), int(value[1].timestamp()))
+        return
+
+class SolscanDefiActivitiesChildRoute(BaseModel):
+    token_1: str = Field(alias = "token1")
+    token_1_decimals: int = Field(alias = "token1_decimals")
+    amount_1: int = Field(alias= "amount1")
+    token_2: str | None = Field(default = None, alias = "token2")
+    token_2_decimals: int | None = Field(default = None, alias = "token2_decimals")
+    amount_2: int | None = Field(default = None, alias = "amount2")
+
+class SolscanDefiActivitiesRoute(SolscanDefiActivitiesChildRoute):
+    child_routes: list[SolscanDefiActivitiesChildRoute] | None = None
+
+class SolscanDefiActivitiesData(BaseModel):
+    """
+        Model used to parse the data of the Solscan defi activities (Account/Token).
+    """
+    block_id: int
+    transaction_id: str = Field(alias = "trans_id")
+    block_time_unix_utc: int = Field(alias = "block_time")
+    activity_type: str
+    from_address: str
+    source_addresses: list[str] = Field(alias = "sources")
+    platform_address: str = Field(alias = "platform")
+    routes: list[SolscanDefiActivitiesRoute] | None = None
+    time: datetime
 
 # GET - Account Transfer
 # Param
@@ -174,99 +260,18 @@ class GetAccountTokenNFTAccountResponse(SolscanBaseResponse):
 
 # GET - Account Defi Activities
 # Param
-class GetAccountDefiActivitiesParam(BaseModel):
+class GetAccountDefiActivitiesParam(SolscanDefiActivitiesParam):
     """
         Model used to identify the parameters of the GET **[Account Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** of **V2** API endpoint.
     """
-
-    activity_type: str | list[str] | None = Field(default = None, serialization_alias = "activity_type[]")
-    """
-        Activity type of the account defi activities.
-        The supported types are available on [`SolscanActivityDefiType`][cyhole.solscan.v2.param.SolscanActivityDefiType].
-    """
-
-    from_address: str | None = Field(default = None, serialization_alias = "from")
-    """From address to filter."""
-
-    platform_address: str | list[str] | None = Field(default = None, serialization_alias = "platform[]")
-    """Platform addresses to filter."""
-
-    source_address: str | list[str] | None = Field(default = None, serialization_alias = "source[]")
-    """Source addresses to filter."""
-
-    time_range: tuple[datetime, datetime] | None = Field(default = None, serialization_alias = "block_time[]")
-    """Block times to filter by (from, to)."""
-
-    page: int = Field(default = 1, ge = 1)
-    """Page number to get the account transfers."""
-
-    page_size: int = Field(default = SolscanPageSizeType.SIZE_10.value)
-    """
-        Number of account defi activities per page. 
-        The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
-    """
-
-    @field_validator("activity_type")
-    @classmethod
-    def validate_activity_type(cls, value: list[str] | str | None) -> str | list[str] | None:
-        if isinstance(value, str):
-            SolscanActivityDefiType.check(value)
-        elif isinstance(value, list):
-            for item in value:
-                SolscanActivityDefiType.check(item)
-        return value
-
-    @field_validator("page_size")
-    @classmethod
-    def validate_page_size(cls, value: int) -> int:
-        SolscanPageSizeType.check(value)
-        return value
-
-    @field_validator("time_range")
-    @classmethod
-    def validate_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[datetime, datetime] | None:
-        if value and value[0] > value[1]:
-            raise SolscanAccountTransferInvalidTimeRange(f"Invalid time range: {value}")
-        return value
-
-    @field_serializer("time_range")
-    @classmethod
-    def serialize_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[int, int] | None:
-        if value:
-            return (int(value[0].timestamp()), int(value[1].timestamp()))
-        return
+    pass
 
 # Response
-class GetAccountDefiActivitiesChildRoute(BaseModel):
-    """
-        Model used to parse the route of the GET **[Account Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** of **V2** API endpoint.
-    """
-    token_1: str = Field(alias = "token1")
-    token_1_decimals: int = Field(alias = "token1_decimals")
-    amount_1: int = Field(alias= "amount1")
-    token_2: str | None = Field(default = None, alias = "token2")
-    token_2_decimals: int | None = Field(default = None, alias = "token2_decimals")
-    amount_2: int | None = Field(default = None, alias = "amount2")
-
-class GetAccountDefiActivitiesRoute(GetAccountDefiActivitiesChildRoute):
-    """
-        Model used to parse the route of the GET **[Account Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** of **V2** API endpoint.
-    """
-    child_routes: list[GetAccountDefiActivitiesChildRoute] | None = None
-
-class GetAccountDefiActivitiesData(BaseModel):
+class GetAccountDefiActivitiesData(SolscanDefiActivitiesData):
     """
         Model used to parse the data of the GET **[Account Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-defi-activities)** of **V2** API endpoint.
     """
-    block_id: int
-    transaction_id: str = Field(alias = "trans_id")
-    block_time_unix_utc: int = Field(alias = "block_time")
-    activity_type: str
-    from_address: str
-    source_addresses: list[str] = Field(alias = "sources")
-    platform_address: str = Field(alias = "platform")
-    routes: list[GetAccountDefiActivitiesRoute] | None = None
-    time: datetime
+    pass
 
 class GetAccountDefiActivitiesResponse(SolscanBaseResponse):
     """
@@ -478,3 +483,26 @@ class GetTokenTransferResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** of **V2** API endpoint.
     """
     data: list[GetTokenTransferData]
+
+# Get - Token Defi Activities
+# Param
+class GetTokenDefiActivitiesParam(SolscanDefiActivitiesParam):
+    """
+        Model used to identify the parameters of the GET **[Token Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** of **V2** API endpoint.
+    """
+
+    token_address: str | None = Field(default = None, serialization_alias = "token")
+    """Token address to filter."""
+
+# Response
+class GetTokenDefiActivitiesData(SolscanDefiActivitiesData):
+    """
+        Model used to parse the data of the GET **[Token Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** of **V2** API endpoint.
+    """
+    pass
+
+class GetTokenDefiActivitiesResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** of **V2** API endpoint.
+    """
+    data: list[GetTokenDefiActivitiesData]
