@@ -6,6 +6,7 @@ from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
 from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
+from ...solscan.v2.exception import SolscanInvalidTimeRange
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
     SolscanPageSizeType,
@@ -31,7 +32,8 @@ from ...solscan.v2.schema import (
     GetTokenDefiActivitiesResponse,
     GetTokenMarketsResponse,
     GetTokenListResponse,
-    GetTokenTrendingResponse
+    GetTokenTrendingResponse,
+    GetTokenPriceResponse
 )
 
 class Solscan(Interaction):
@@ -650,5 +652,51 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenTrendingResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_price(self, sync: Literal[True], token: str, time_range: datetime | tuple[datetime, datetime] = datetime.now()) -> GetTokenPriceResponse: ...
+
+    @overload
+    def _get_token_price(self, sync: Literal[False], token: str, time_range: datetime | tuple[datetime, datetime] = datetime.now()) -> Coroutine[None, None, GetTokenPriceResponse]: ...
+
+    def _get_token_price(self, sync: bool, token: str, time_range: datetime | tuple[datetime, datetime] = datetime.now()) -> GetTokenPriceResponse | Coroutine[None, None, GetTokenPriceResponse]:
+        """
+            This function refers to the GET **[Token Price](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-price)** of **V2** API endpoint, 
+            and it is used to get the price of a token.
+
+            Parameters:
+                token: The token address.
+                time_range: The time range.
+                    It can be a single datetime object or a tuple of two datetime objects.
+
+            Returns:
+                Price of the token.
+        """
+        # check consistency and convert to string
+        time_range_str: list[str]
+        if isinstance(time_range, tuple):
+            # check consistency
+            if time_range[0] > time_range[1]:
+                raise SolscanInvalidTimeRange("the start time is greater than the end time.")
+            # convert to string
+            time_range_str = [time_range[0].strftime("%Y%m%d"), time_range[1].strftime("%Y%m%d")]
+        else:
+            time_range_str = [time_range.strftime("%Y%m%d")]
+
+        # set params
+        url = self.base_url + "token/price"
+        api_params = {
+            "address": token,
+            "time[]": time_range_str
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenPriceResponse,
             params = api_params
         )

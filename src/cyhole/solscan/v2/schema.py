@@ -7,7 +7,7 @@ from ...solscan.v2.param import (
     SolscanPageSizeType,
     SolscanFlowType
 )
-from ...solscan.v2.exception import SolscanAccountTransferInvalidAmountRange, SolscanAccountTransferInvalidTimeRange
+from ...solscan.v2.exception import SolscanInvalidAmountRange, SolscanInvalidTimeRange
 
 # General
 
@@ -73,14 +73,14 @@ class SolscanTransferParam(BaseModel):
     @classmethod
     def validate_amount_range(cls, value: tuple[int, int] | None) -> tuple[int, int] | None:
         if value and value[0] > value[1]:
-            raise SolscanAccountTransferInvalidAmountRange(f"Invalid amount range: {value}")
+            raise SolscanInvalidAmountRange(f"Invalid amount range: {value}")
         return value
 
     @field_validator("time_range")
     @classmethod
     def validate_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[datetime, datetime] | None:
         if value and value[0] > value[1]:
-            raise SolscanAccountTransferInvalidTimeRange(f"Invalid time range: {value}")
+            raise SolscanInvalidTimeRange(f"Invalid time range: {value}")
         return value
 
     # Serializers
@@ -165,7 +165,7 @@ class SolscanDefiActivitiesParam(BaseModel):
     @classmethod
     def validate_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[datetime, datetime] | None:
         if value and value[0] > value[1]:
-            raise SolscanAccountTransferInvalidTimeRange(f"Invalid time range: {value}")
+            raise SolscanInvalidTimeRange(f"Invalid time range: {value}")
         return value
 
     @field_serializer("time_range")
@@ -325,7 +325,7 @@ class GetAccountBalanceChangeActivitiesParam(BaseModel):
     @classmethod
     def validate_amount_range(cls, value: tuple[int, int] | None) -> tuple[int, int] | None:
         if value and value[0] > value[1]:
-            raise SolscanAccountTransferInvalidAmountRange(f"Invalid amount range: {value}")
+            raise SolscanInvalidAmountRange(f"Invalid amount range: {value}")
         return value
 
     @field_validator("page_size")
@@ -338,7 +338,7 @@ class GetAccountBalanceChangeActivitiesParam(BaseModel):
     @classmethod
     def validate_time_range(cls, value: tuple[datetime, datetime] | None) -> tuple[datetime, datetime] | None:
         if value and value[0] > value[1]:
-            raise SolscanAccountTransferInvalidTimeRange(f"Invalid time range: {value}")
+            raise SolscanInvalidTimeRange(f"Invalid time range: {value}")
         return value
 
     # Serializers
@@ -568,3 +568,32 @@ class GetTokenTrendingResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Trending](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-trending)** of **V2** API endpoint.
     """
     data: list[GetTokenTrendingData]
+
+# GET - Token Price
+# Response
+class GetTokenPriceData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Token Price](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-price)** of **V2** API endpoint.
+    """
+    date: datetime = Field(strict = True)
+    price: float
+
+    # Validators
+    @field_validator("date", mode = "before")
+    @classmethod
+    def validate_date(cls, value: int | datetime) -> datetime:
+        if isinstance(value, int):
+            return datetime.strptime(str(value), "%Y%m%d")
+        return value
+
+    # Serializers
+    @field_serializer("date")
+    @classmethod
+    def serialize_date(cls, value: datetime) -> int:
+        return int(value.strftime("%Y%m%d"))
+
+class GetTokenPriceResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Price](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-price)** of **V2** API endpoint.
+    """
+    data: list[GetTokenPriceData]

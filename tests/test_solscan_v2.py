@@ -30,7 +30,8 @@ from cyhole.solscan.v2.schema import (
     GetTokenDefiActivitiesResponse,
     GetTokenMarketsResponse,
     GetTokenListResponse,
-    GetTokenTrendingResponse
+    GetTokenTrendingResponse,
+    GetTokenPriceResponse
 )
 
 # load test config
@@ -679,3 +680,50 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetTokenTrendingResponse)
+
+    def test_get_token_price_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Price" on V2 API for synchronous logic.
+
+            Mock Response File: get_v2_token_price.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_token_price"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenPriceResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.solscan.client.get_token_price(
+            token = JUP,
+            time_range = (datetime(2024, 8, 1), datetime(2024, 8, 10))
+        )
+
+        # actual test
+        assert isinstance(response, GetTokenPriceResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_price_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Price" on V2 API for asynchronous logic.
+
+            Mock Response File: get_v2_token_price.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_token_price"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            response = await client.get_token_price(JUP)
+
+        # actual test
+        assert isinstance(response, GetTokenPriceResponse)

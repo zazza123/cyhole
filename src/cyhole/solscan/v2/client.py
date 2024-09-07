@@ -27,7 +27,8 @@ from ...solscan.v2.schema import (
     GetTokenDefiActivitiesResponse,
     GetTokenMarketsResponse,
     GetTokenListResponse,
-    GetTokenTrendingResponse
+    GetTokenTrendingResponse,
+    GetTokenPriceResponse
 )
 
 if TYPE_CHECKING:
@@ -152,6 +153,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_trending(True, limit)
 
+    def get_token_price(self, token: str, time_range: datetime | tuple[datetime, datetime] = datetime.now()) -> GetTokenPriceResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Price](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-price)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_price`][cyhole.solscan.interaction.v2.Solscan._get_token_price].
+        """
+        return self._interaction._get_token_price(True, token, time_range)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -270,3 +278,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_trending`][cyhole.solscan.interaction.v2.Solscan._get_token_trending].
         """
         return await self._interaction._get_token_trending(False, limit)
+
+    async def get_token_price(self, token: str, time_range: datetime | tuple[datetime, datetime] = datetime.now()) -> GetTokenPriceResponse:                
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Price](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-price)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_price`][cyhole.solscan.interaction.v2.Solscan._get_token_price].
+        """
+        return await self._interaction._get_token_price(False, token, time_range)
