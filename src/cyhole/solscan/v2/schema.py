@@ -506,3 +506,26 @@ class GetTokenDefiActivitiesResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token Defi Activities](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-defi-activities)** of **V2** API endpoint.
     """
     data: list[GetTokenDefiActivitiesData]
+
+# GET - Token Markets
+# Response
+class GetTokenMarketsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Token Markets](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-markets)** of **V2** API endpoint.
+    """
+    pool_id: str
+    program_id: str
+    token_1: str
+    token_2: str
+    token_account_1: str
+    token_account_2: str
+    total_trades_24h: int
+    total_trades_prev_24h: int
+    total_volume_24h: int
+    total_volume_prev_24h: int
+
+class GetTokenMarketsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Markets](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-markets)** of **V2** API endpoint.
+    """
+    data: list[GetTokenMarketsData]

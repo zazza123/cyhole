@@ -22,7 +22,8 @@ from ...solscan.v2.schema import (
     GetTokenTransferParam,
     GetTokenTransferResponse,
     GetTokenDefiActivitiesParam,
-    GetTokenDefiActivitiesResponse
+    GetTokenDefiActivitiesResponse,
+    GetTokenMarketsResponse
 )
 
 if TYPE_CHECKING:
@@ -114,6 +115,19 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_defi_activities(True, token, params)
 
+    def get_token_markets(
+        self,
+        tokens: str | list[str],
+        program_address: str | list[str] | None  = None,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenMarketsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Markets](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-markets)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_markets`][cyhole.solscan.interaction.v2.Solscan._get_token_markets].
+        """
+        return self._interaction._get_token_markets(True, tokens, program_address, page, page_size)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -199,3 +213,16 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_defi_activities`][cyhole.solscan.interaction.v2.Solscan._get_token_defi_activities].
         """
         return await self._interaction._get_token_defi_activities(False, token, params)
+
+    async def get_token_markets(
+        self,
+        tokens: str | list[str],
+        program_address: str | list[str] | None  = None,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenMarketsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Markets](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-markets)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_markets`][cyhole.solscan.interaction.v2.Solscan._get_token_markets].
+        """
+        return await self._interaction._get_token_markets(False, tokens, program_address, page, page_size)

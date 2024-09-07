@@ -26,7 +26,8 @@ from ...solscan.v2.schema import (
     GetTokenTransferParam,
     GetTokenTransferResponse,
     GetTokenDefiActivitiesParam,
-    GetTokenDefiActivitiesResponse
+    GetTokenDefiActivitiesResponse,
+    GetTokenMarketsResponse
 )
 
 class Solscan(Interaction):
@@ -482,5 +483,65 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenDefiActivitiesResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_markets(
+        self,
+        sync: Literal[True],
+        tokens: str | list[str],
+        program_address: str | list[str] | None  = None,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenMarketsResponse: ...
+
+    @overload
+    def _get_token_markets(
+        self,
+        sync: Literal[False],
+        tokens: str | list[str],
+        program_address: str | list[str] | None  = None,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> Coroutine[None, None, GetTokenMarketsResponse]: ...
+
+    def _get_token_markets(
+        self,
+        sync: bool,
+        tokens: str | list[str],
+        program_address: str | list[str] | None  = None,
+        page: int = 1,
+        page_size: int = SolscanPageSizeType.SIZE_10.value
+    ) -> GetTokenMarketsResponse | Coroutine[None, None, GetTokenMarketsResponse]:
+        """
+            This function refers to the GET **[Token Markets](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-markets)** of **V2** API endpoint, 
+            and it is used to get the markets data of a set of tokens.
+
+            Parameters:
+                tokens: The token address or list of token addresses.
+                program_address: The program address or list of program addresses.
+                page: The page number.
+                page_size: The number of markets per page.
+                    The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+
+            Returns:
+                List of markets of the token.
+        """
+        # set params
+        url = self.base_url + "token/markets"
+        api_params = {
+            "token[]": tokens,
+            "program[]": program_address,
+            "page": page,
+            "page_size": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenMarketsResponse,
             params = api_params
         )
