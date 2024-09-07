@@ -1125,6 +1125,7 @@ class GetTransactionActionsResponse(SolscanBaseResponse):
     data: GetTransactionActionsData
 
 # GET - Block Last
+# Response
 class GetBlockLastData(BaseModel):
     """
         Model used to parse the data of the GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-last)** of **V2** API endpoint.
@@ -1144,3 +1145,32 @@ class GetBlockLastResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-last)** of **V2** API endpoint.
     """
     data: list[GetBlockLastData]
+
+# GET - Block Transactions
+# Response
+class GetBlockTransactionsInstruction(GetAccountTransactionsInstruction):
+    pass
+
+class GetBlockTransactionsDataTransaction(BaseModel):
+    slot: int
+    fee: int
+    status: str
+    signer: list[str]
+    block_time_unix_utc: int = Field(alias = "block_time")
+    transaction_id: str = Field(alias = "tx_hash")
+    parsed_instructions: list[GetBlockTransactionsInstruction]
+    program_ids: list[str]
+    time: datetime
+
+class GetBlockTransactionsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-transactions)** of **V2** API endpoint.
+    """
+    total: int
+    transactions: list[GetBlockTransactionsDataTransaction]
+
+class GetBlockTransactionsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-transactions)** of **V2** API endpoint.
+    """
+    data: GetBlockTransactionsData

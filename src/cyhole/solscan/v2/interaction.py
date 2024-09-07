@@ -47,7 +47,8 @@ from ...solscan.v2.schema import (
     GetNFTCollectionItemsResponse,
     GetTransactionLastResponse,
     GetTransactionActionsResponse,
-    GetBlockLastResponse
+    GetBlockLastResponse,
+    GetBlockTransactionsResponse
 )
 
 class Solscan(Interaction):
@@ -1079,5 +1080,45 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetBlockLastResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_block_transactions(self, sync: Literal[True], block: int, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetBlockTransactionsResponse: ...
+
+    @overload
+    def _get_block_transactions(self, sync: Literal[False], block: int, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> Coroutine[None, None, GetBlockTransactionsResponse]: ...
+
+    def _get_block_transactions(self, sync: bool, block: int, page: int = 1, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetBlockTransactionsResponse | Coroutine[None, None, GetBlockTransactionsResponse]:
+        """
+            This function refers to the GET **[Block Transactions](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-transactions)** of **V2** API endpoint, 
+            and it is used to get the transactions of a block.
+
+            Parameters:
+                block: The block number.
+                page: The page number.
+                page_size: The number of transactions per page.
+                    The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+
+            Returns:
+                List of transactions of the block.
+        """
+        # check param consistency
+        SolscanPageSizeType.check(page_size)
+
+        # set params
+        url = self.base_url + "block/transactions"
+        api_params = {
+            "block": block,
+            "page": page,
+            "page_size": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetBlockTransactionsResponse,
             params = api_params
         )
