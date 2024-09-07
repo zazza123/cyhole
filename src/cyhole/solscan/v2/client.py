@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, cast
 from ...core.client import APIClient, AsyncAPIClient
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
+    SolscanNFTItemSortType,
     SolscanNFTPageSizeType,
     SolscanPageSizeType,
     SolscanOrderType,
@@ -36,7 +37,8 @@ from ...solscan.v2.schema import (
     GetNFTActivitiesParam,
     GetNFTActivitiesResponse,
     GetNFTCollectionListsParam,
-    GetNFTCollectionListsResponse
+    GetNFTCollectionListsResponse,
+    GetNFTCollectionItemsResponse
 )
 
 if TYPE_CHECKING:
@@ -203,6 +205,19 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_nft_collection_lists(True, params)
 
+    def get_nft_collection_items(
+        self,
+        collection: str,
+        sort_by: str = SolscanNFTItemSortType.LAST_TRADE.value,
+        page: int = 1,
+        page_size: int = SolscanNFTPageSizeType.SIZE_12.value
+    ) -> GetNFTCollectionItemsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT Collection Items](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-items)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_collection_items`][cyhole.solscan.interaction.v2.Solscan._get_nft_collection_items].
+        """
+        return self._interaction._get_nft_collection_items(True, collection, sort_by, page, page_size)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -363,3 +378,16 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_nft_collection_lists`][cyhole.solscan.interaction.v2.Solscan._get_nft_collection_lists].
         """
         return await self._interaction._get_nft_collection_lists(False, params)
+
+    async def get_nft_collection_items(
+        self,
+        collection: str,
+        sort_by: str = SolscanNFTItemSortType.LAST_TRADE.value,
+        page: int = 1,
+        page_size: int = SolscanNFTPageSizeType.SIZE_12.value
+    ) -> GetNFTCollectionItemsResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[NFT Collection Items](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-items)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_nft_collection_items`][cyhole.solscan.interaction.v2.Solscan._get_nft_collection_items].
+        """
+        return await self._interaction._get_nft_collection_items(False, collection, sort_by, page, page_size)

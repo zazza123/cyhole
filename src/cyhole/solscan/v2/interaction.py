@@ -9,6 +9,7 @@ from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v2.exception import SolscanInvalidTimeRange, SolscanInvalidAmountRange
 from ...solscan.v2.param import (
     SolscanReturnLimitType,
+    SolscanNFTItemSortType,
     SolscanNFTPageSizeType,
     SolscanPageSizeType,
     SolscanAccountType,
@@ -42,6 +43,7 @@ from ...solscan.v2.schema import (
     GetNFTActivitiesResponse,
     GetNFTCollectionListsParam,
     GetNFTCollectionListsResponse,
+    GetNFTCollectionItemsResponse
 )
 
 class Solscan(Interaction):
@@ -900,5 +902,70 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetNFTCollectionListsResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_nft_collection_items(
+        self,
+        sync: Literal[True],
+        collection: str,
+        sort_by: str = SolscanNFTItemSortType.LAST_TRADE.value,
+        page: int = 1,
+        page_size: int = SolscanNFTPageSizeType.SIZE_12.value
+    ) -> GetNFTCollectionItemsResponse: ...
+
+    @overload
+    def _get_nft_collection_items(
+        self,
+        sync: Literal[False],
+        collection: str,
+        sort_by: str = SolscanNFTItemSortType.LAST_TRADE.value,
+        page: int = 1,
+        page_size: int = SolscanNFTPageSizeType.SIZE_12.value
+    ) -> Coroutine[None, None, GetNFTCollectionItemsResponse]: ...
+
+    def _get_nft_collection_items(
+        self,
+        sync: bool,
+        collection: str,
+        sort_by: str = SolscanNFTItemSortType.LAST_TRADE.value,
+        page: int = 1,
+        page_size: int = SolscanNFTPageSizeType.SIZE_12.value
+    ) -> GetNFTCollectionItemsResponse | Coroutine[None, None, GetNFTCollectionItemsResponse]:
+        """
+            This function refers to the GET **[NFT Collection Items](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-items)** of **V2** API endpoint, 
+            and it is used to get the items of a NFT collection.
+
+            Parameters:
+                collection: The collection address.
+                sort_by: The sorting method.
+                    The supported types are available on [`SolscanNFTItemSortType`][cyhole.solscan.v2.param.SolscanNFTItemSortType].
+                page: The page number.
+                page_size: The number of items per page.
+                    The supported types are available on [`SolscanNFTPageSizeType`][cyhole.solscan.v2.param.SolscanNFTPageSizeType].
+
+            Returns:
+                List of NFT items of the collection.
+        """
+        # check param consistency
+        SolscanNFTPageSizeType.check(page_size)
+        SolscanNFTItemSortType.check(sort_by)
+
+        # set params
+        url = self.base_url + "nft/collection/items"
+        api_params = {
+            "collection": collection,
+            "sort_by": sort_by,
+            "page": page,
+            "page_size": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetNFTCollectionItemsResponse,
             params = api_params
         )

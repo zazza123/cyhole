@@ -657,7 +657,7 @@ class GetTokenMetaResponse(SolscanBaseResponse):
 # Response
 class GetNFTNewsNftInfoMetaAttribute(BaseModel):
     trait_type: str
-    value: str
+    value: str | int
 
 class GetNFTNewsNftInfoMetaCollection(BaseModel):
     name: str
@@ -927,3 +927,43 @@ class GetNFTCollectionListsResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[NFT Collection Lists](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-lists)** of **V2** API endpoint.
     """
     data: list[GetNFTCollectionListsData]
+
+# GET - NFT Collection Items
+# Response
+class GetNFTCollectionItemData(GetNFTNewsNftInfoData):
+    pass
+
+class GetNFTCollectionItemMeta(GetNFTNewsNftInfoMeta):
+    pass
+
+class GetNFTCollectionItemInfo(BaseModel):
+    address: str
+    token_name: str
+    token_symbol: str
+    collection_id: str
+    data: GetNFTCollectionItemData
+    meta: GetNFTCollectionItemMeta
+
+class GetNFTCollectionItemStats(BaseModel):
+    trade_time_unix_utc: int = Field(alias = "trade_time")
+    signature: str
+    market_id: str
+    type: str
+    price: int
+    currency_token: str
+    currency_decimals: int
+    seller: str
+    buyer: str
+
+class GetNFTCollectionItemsData(BaseModel):
+    """
+        Model used to parse the data of the GET **[NFT Collection Items](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-items)** of **V2** API endpoint.
+    """
+    info: GetNFTCollectionItemInfo
+    stats: GetNFTCollectionItemStats
+
+class GetNFTCollectionItemsResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[NFT Collection Items](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-nft-collection-items)** of **V2** API endpoint.
+    """
+    data: list[GetNFTCollectionItemsData]

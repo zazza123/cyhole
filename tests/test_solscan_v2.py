@@ -43,7 +43,8 @@ from cyhole.solscan.v2.schema import (
     GetNFTActivitiesParam,
     GetNFTActivitiesResponse,
     GetNFTCollectionListsParam,
-    GetNFTCollectionListsResponse
+    GetNFTCollectionListsResponse,
+    GetNFTCollectionItemsResponse
 )
 
 # load test config
@@ -971,3 +972,49 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetNFTCollectionListsResponse)
+
+    def test_get_nft_collection_items_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "NFT Collection Items" on V2 API for synchronous logic.
+
+            Mock Response File: get_v2_nft_collection_items.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_nft_collection_items"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNFTCollectionItemsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        collection = "fc8dd31116b25e6690d83f6fb102e67ac6a9364dc2b96285d636aed462c4a983"
+        response = self.solscan.client.get_nft_collection_items(collection)
+
+        # actual test
+        assert isinstance(response, GetNFTCollectionItemsResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_nft_collection_items_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "NFT Collection Items" on V2 API for asynchronous logic.
+
+            Mock Response File: get_v2_nft_collection_items.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_nft_collection_items"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNFTCollectionItemsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.solscan.async_client as client:
+            collection = "fc8dd31116b25e6690d83f6fb102e67ac6a9364dc2b96285d636aed462c4a983"
+            response = await client.get_nft_collection_items(collection)
+
+        # actual test
+        assert isinstance(response, GetNFTCollectionItemsResponse)

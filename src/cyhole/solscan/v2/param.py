@@ -160,6 +160,15 @@ class SolscanNFTSortType(CyholeParam):
     VOLUMES = "volumes"
     """Sort by volumes."""
 
+class SolscanNFTItemSortType(CyholeParam):
+    """
+        Enum class to get the supported Solscan's NFT item sorting types.
+    """
+    LAST_TRADE = "last_trade"
+    """Sort by last trade."""
+    LISTING_PRICE = "listing_price"
+    """Sort by listing price."""
+
 class SolscanNFTDaysRangeType(CyholeParam):
     """
         Enum class to get the supported Solscan's NFT days range types.
