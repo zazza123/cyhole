@@ -26,7 +26,8 @@ from ...solscan.v2.schema import (
     GetTokenDefiActivitiesParam,
     GetTokenDefiActivitiesResponse,
     GetTokenMarketsResponse,
-    GetTokenListResponse
+    GetTokenListResponse,
+    GetTokenTrendingResponse
 )
 
 if TYPE_CHECKING:
@@ -144,6 +145,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_token_list(True, sort_by, order_by, page, page_size)
 
+    def get_token_trending(self, limit: int = 10) -> GetTokenTrendingResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Trending](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-trending)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_trending`][cyhole.solscan.interaction.v2.Solscan._get_token_trending].
+        """
+        return self._interaction._get_token_trending(True, limit)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -255,3 +263,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_token_list`][cyhole.solscan.interaction.v2.Solscan._get_token_list].
         """
         return await self._interaction._get_token_list(False, sort_by, order_by, page, page_size)
+
+    async def get_token_trending(self, limit: int = 10) -> GetTokenTrendingResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Trending](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-trending)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_trending`][cyhole.solscan.interaction.v2.Solscan._get_token_trending].
+        """
+        return await self._interaction._get_token_trending(False, limit)

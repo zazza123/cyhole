@@ -30,7 +30,8 @@ from ...solscan.v2.schema import (
     GetTokenDefiActivitiesParam,
     GetTokenDefiActivitiesResponse,
     GetTokenMarketsResponse,
-    GetTokenListResponse
+    GetTokenListResponse,
+    GetTokenTrendingResponse
 )
 
 class Solscan(Interaction):
@@ -616,5 +617,38 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTokenListResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_token_trending(self, sync: Literal[True], limit: int = 10) -> GetTokenTrendingResponse: ...
+
+    @overload
+    def _get_token_trending(self, sync: Literal[False], limit: int = 10) -> Coroutine[None, None, GetTokenTrendingResponse]: ...
+
+    def _get_token_trending(self, sync: bool, limit: int = 10) -> GetTokenTrendingResponse | Coroutine[None, None, GetTokenTrendingResponse]:
+        """
+            This function refers to the GET **[Token Trending](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-trending)** of **V2** API endpoint, 
+            and it is used to get the trending tokens on Solscan.
+
+            Parameters:
+                limit: The number of trending tokens to be returned.
+
+            Returns:
+                List of trending tokens.
+        """
+
+        # set params
+        url = self.base_url + "token/trending"
+        api_params = {
+            "limit": limit
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenTrendingResponse,
             params = api_params
         )

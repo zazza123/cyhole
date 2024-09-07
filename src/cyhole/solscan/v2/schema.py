@@ -551,3 +551,20 @@ class GetTokenListResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Token List](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-list)** of **V2** API endpoint.
     """
     data: list[GetTokenListData]
+
+# GET - Token Trending
+# Response
+class GetTokenTrendingData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Token Trending](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-trending)** of **V2** API endpoint.
+    """
+    address: str
+    decimals: int
+    name: str | None = None
+    symbol: str | None = None
+
+class GetTokenTrendingResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Trending](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-trending)** of **V2** API endpoint.
+    """
+    data: list[GetTokenTrendingData]
