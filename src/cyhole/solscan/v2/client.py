@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
@@ -16,7 +17,8 @@ from ...solscan.v2.schema import (
     GetAccountBalanceChangeActivitiesResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeResponse,
-    GetAccountDetailResponse
+    GetAccountDetailResponse,
+    GetAccountRewardsExportResponse
 )
 
 if TYPE_CHECKING:
@@ -87,6 +89,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_detail(True, account)
 
+    def get_account_rewards_export(self, account: str, dt_from: datetime, dt_to: datetime) -> GetAccountRewardsExportResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Rewards Export](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-reward-export)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_rewards_export`][cyhole.solscan.interaction.v2.Solscan._get_account_rewards_export].
+        """
+        return self._interaction._get_account_rewards_export(True, account, dt_from, dt_to)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -151,3 +160,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_detail`][cyhole.solscan.interaction.v2.Solscan._get_account_detail].
         """
         return await self._interaction._get_account_detail(False, account)
+
+    async def get_account_rewards_export(self, account: str, dt_from: datetime, dt_to: datetime) -> GetAccountRewardsExportResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Account Rewards Export](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-reward-export)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_account_rewards_export`][cyhole.solscan.interaction.v2.Solscan._get_account_rewards_export].
+        """
+        return await self._interaction._get_account_rewards_export(False, account, dt_from, dt_to)

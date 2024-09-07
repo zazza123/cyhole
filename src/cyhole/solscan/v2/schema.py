@@ -428,3 +428,10 @@ class GetAccountDetailResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-detail)** of **V2** API endpoint.
     """
     data: GetAccountDetailData
+
+# GET - Account Rewards Export
+class GetAccountRewardsExportResponse(BaseModel):
+    """
+        This class refers to the response model of GET **[Account ExportRewards](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-reward-export)** of **V2** API endpoint.
+    """
+    csv: str

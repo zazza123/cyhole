@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import Coroutine, Literal, overload
 
 from ...core.param import RequestType
@@ -20,7 +21,8 @@ from ...solscan.v2.schema import (
     GetAccountBalanceChangeActivitiesResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeResponse,
-    GetAccountDetailResponse
+    GetAccountDetailResponse,
+    GetAccountRewardsExportResponse
 )
 
 class Solscan(Interaction):
@@ -364,3 +366,45 @@ class Solscan(Interaction):
             response_model = GetAccountDetailResponse,
             params = api_params
         )
+
+    @overload
+    def _get_account_rewards_export(self, sync: Literal[True], account: str, dt_from: datetime, dt_to: datetime) -> GetAccountRewardsExportResponse: ...
+
+    @overload
+    def _get_account_rewards_export(self, sync: Literal[False], account: str, dt_from: datetime, dt_to: datetime) -> Coroutine[None, None, GetAccountRewardsExportResponse]: ...
+
+    def _get_account_rewards_export(self, sync: bool, account: str, dt_from: datetime, dt_to: datetime) -> GetAccountRewardsExportResponse | Coroutine[None, None, GetAccountRewardsExportResponse]:
+        """
+            This function refers to the GET **[Account Rewards Export](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-reward-export)** of **V2** API endpoint, 
+            and it is used to get export rewards of an account in CSV format.
+
+            !!! info
+                The limit of the export rewards is 5000 for request. 
+                Moreover, it is possible to execute the request **only** 1 time for every minute.
+
+            Parameters:
+                account: The account address.
+                dt_from: The start time.
+                dt_to: The end time.
+
+            Returns:
+                List of export rewards of the account.
+        """
+
+        # set params
+        url = self.base_url + f"account/reward/export"
+        api_params = {
+            "address": account,
+            "time_from": int(dt_from.timestamp()),
+            "time_to": int(dt_to.timestamp())
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = api_params)
+            return GetAccountRewardsExportResponse(csv = content_raw.text)
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
+                return GetAccountRewardsExportResponse(csv = content_raw.text)
+            return async_request()
