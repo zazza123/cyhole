@@ -408,3 +408,23 @@ class GetAccountStakeResponse(SolscanBaseResponse):
         Model used to parse the response of the GET **[Account Stake](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-stake)** of **V2** API endpoint.
     """
     data: list[GetAccountStakeData]
+
+# GET - Account Detail
+# Response
+class GetAccountDetailData(BaseModel):
+    """
+        Model used to parse the data of the GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-detail)** of **V2** API endpoint.
+    """
+    account: str
+    lamports: int
+    type: str
+    executable: bool
+    owner_program: str
+    rent_epoch: int
+    is_oncurve: bool
+
+class GetAccountDetailResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-detail)** of **V2** API endpoint.
+    """
+    data: GetAccountDetailData

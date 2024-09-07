@@ -19,7 +19,8 @@ from ...solscan.v2.schema import (
     GetAccountBalanceChangeActivitiesParam,
     GetAccountBalanceChangeActivitiesResponse,
     GetAccountTransactionsResponse,
-    GetAccountStakeResponse
+    GetAccountStakeResponse,
+    GetAccountDetailResponse
 )
 
 class Solscan(Interaction):
@@ -329,5 +330,37 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetAccountStakeResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_account_detail(self, sync: Literal[True], account: str) -> GetAccountDetailResponse: ...
+
+    @overload
+    def _get_account_detail(self, sync: Literal[False], account: str) -> Coroutine[None, None, GetAccountDetailResponse]: ...
+
+    def _get_account_detail(self, sync: bool, account: str) -> GetAccountDetailResponse | Coroutine[None, None, GetAccountDetailResponse]:
+        """
+            This function refers to the GET **[Account Detail](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-detail)** of **V2** API endpoint, 
+            and it is used to get the detail of an account.
+
+            Parameters:
+                account: The account address.
+
+            Returns:
+                Detail of the account.
+        """
+        # set params
+        url = self.base_url + "account/detail"
+        api_params = {
+            "address": account
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetAccountDetailResponse,
             params = api_params
         )
