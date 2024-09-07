@@ -46,7 +46,8 @@ from ...solscan.v2.schema import (
     GetNFTCollectionListsResponse,
     GetNFTCollectionItemsResponse,
     GetTransactionLastResponse,
-    GetTransactionActionsResponse
+    GetTransactionActionsResponse,
+    GetBlockLastResponse
 )
 
 class Solscan(Interaction):
@@ -1042,5 +1043,41 @@ class Solscan(Interaction):
             type = RequestType.GET.value,
             url = url,
             response_model = GetTransactionActionsResponse,
+            params = api_params
+        )
+
+    @overload
+    def _get_block_last(self, sync: Literal[True], page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetBlockLastResponse: ...
+
+    @overload
+    def _get_block_last(self, sync: Literal[False], page_size: int = SolscanPageSizeType.SIZE_10.value) -> Coroutine[None, None, GetBlockLastResponse]: ...
+
+    def _get_block_last(self, sync: bool, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetBlockLastResponse | Coroutine[None, None, GetBlockLastResponse]:
+        """
+            This function refers to the GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-last)** of **V2** API endpoint, 
+            and it is used to get the latest blocks.
+
+            Parameters:
+                page_size: The number of blocks to be returned.
+                    The supported types are available on [`SolscanPageSizeType`][cyhole.solscan.v2.param.SolscanPageSizeType].
+
+            Returns:
+                List of latest blocks.
+        """
+        # check param consistency
+        SolscanPageSizeType.check(page_size)
+
+        # set params
+        url = self.base_url + "block/last"
+        api_params = {
+            "limit": page_size
+        }
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetBlockLastResponse,
             params = api_params
         )

@@ -41,7 +41,8 @@ from ...solscan.v2.schema import (
     GetNFTCollectionListsResponse,
     GetNFTCollectionItemsResponse,
     GetTransactionLastResponse,
-    GetTransactionActionsResponse
+    GetTransactionActionsResponse,
+    GetBlockLastResponse
 )
 
 if TYPE_CHECKING:
@@ -235,6 +236,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_transaction_actions(True, transaction)
 
+    def get_block_last(self, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetBlockLastResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-last)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_block_last`][cyhole.solscan.interaction.v2.Solscan._get_block_last].
+        """
+        return self._interaction._get_block_last(True, page_size)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -422,3 +430,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_transaction_actions`][cyhole.solscan.interaction.v2.Solscan._get_transaction_actions].
         """
         return await self._interaction._get_transaction_actions(False, transaction)
+
+    async def get_block_last(self, page_size: int = SolscanPageSizeType.SIZE_10.value) -> GetBlockLastResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Block Last](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-block-last)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_block_last`][cyhole.solscan.interaction.v2.Solscan._get_block_last].
+        """
+        return await self._interaction._get_block_last(False, page_size)
