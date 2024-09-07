@@ -22,7 +22,9 @@ from ...solscan.v2.schema import (
     GetAccountTransactionsResponse,
     GetAccountStakeResponse,
     GetAccountDetailResponse,
-    GetAccountRewardsExportResponse
+    GetAccountRewardsExportResponse,
+    GetTokenTransferParam,
+    GetTokenTransferResponse,
 )
 
 class Solscan(Interaction):
@@ -408,3 +410,39 @@ class Solscan(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetAccountRewardsExportResponse(csv = content_raw.text)
             return async_request()
+
+    @overload
+    def _get_token_transfer(self, sync: Literal[True], token: str, params: GetTokenTransferParam = GetTokenTransferParam()) -> GetTokenTransferResponse: ...
+
+    @overload
+    def _get_token_transfer(self, sync: Literal[False], token: str, params: GetTokenTransferParam = GetTokenTransferParam()) -> Coroutine[None, None, GetTokenTransferResponse]: ...
+
+    def _get_token_transfer(self, sync: bool, token: str, params: GetTokenTransferParam = GetTokenTransferParam()) -> GetTokenTransferResponse | Coroutine[None, None, GetTokenTransferResponse]:
+        """
+            This function refers to the GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** of **V2** API endpoint, 
+            and it is used to get transfers of a token.
+
+            Parameters:
+                token: The token address.
+                params: The parameters to be used in the request.
+                    More details in the object definition.
+
+            Returns:
+                List of transfers of the token.
+        """
+        # set params
+        url = self.base_url + "token/transfer"
+        api_params = params.model_dump(
+            by_alias = True,
+            exclude_defaults = True
+        )
+        api_params["address"] = token
+
+        # execute request
+        return  self.api_return_model(
+            sync = sync,
+            type = RequestType.GET.value,
+            url = url,
+            response_model = GetTokenTransferResponse,
+            params = api_params
+        )

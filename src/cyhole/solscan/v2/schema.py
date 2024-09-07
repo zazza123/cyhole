@@ -9,17 +9,17 @@ from ...solscan.v2.param import (
 )
 from ...solscan.v2.exception import SolscanAccountTransferInvalidAmountRange, SolscanAccountTransferInvalidTimeRange
 
+# General
+
 class SolscanBaseResponse(BaseModel):
     """
         Model used to identify the base response of the Solscan API.
     """
     success: bool
 
-# GET - Account Transfer
-# Param
-class GetAccountTransferParam(BaseModel):
+class SolscanTransferParam(BaseModel):
     """
-        Model used to identify the parameters of the GET **[Account Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transfer)** of **V2** API endpoint.
+        Model used to identify the parameters of the Solscan transfer (Account/Token).
     """
 
     activity_type: str | list[str] | None = Field(default = None, serialization_alias = "activity_type[]")
@@ -28,17 +28,11 @@ class GetAccountTransferParam(BaseModel):
         The supported types are available on [`SolscanActivityTransferType`][cyhole.solscan.v2.param.SolscanActivityTransferType].
     """
 
-    token_account: str | None = None
-    """Token account address to filter."""
-
     from_address: str | None = Field(default = None, serialization_alias = "from")
     """From address to filter."""
 
     to_address: str | None = Field(default = None, serialization_alias = "to")
     """To address to filter."""
-
-    token_address: str | None = Field(default = None, serialization_alias = "token")
-    """Token address to filter."""
 
     amount_range: tuple[int, int] | None = Field(default = None, serialization_alias = "amount[]")
     """Amount range to filter for the account transfers (from, to)."""
@@ -48,12 +42,6 @@ class GetAccountTransferParam(BaseModel):
 
     exclude_amount_zero: bool | None = None
     """Exclude transfers with zero amount."""
-
-    flow_direction: str | None = Field(default = None, serialization_alias = "flow")
-    """
-        Flow direction to filter.
-        The supported types are available on [`SolscanFlowType`][cyhole.solscan.v2.param.SolscanFlowType].
-    """
 
     page: int = Field(default = 1, ge = 1)
     """Page number to get the account transfers."""
@@ -73,13 +61,6 @@ class GetAccountTransferParam(BaseModel):
         elif isinstance(value, list):
             for item in value:
                 SolscanActivityTransferType.check(item)
-        return value
-
-    @field_validator("flow_direction")
-    @classmethod
-    def validate_flow_direction(cls, value: str | None) -> str | None:
-        if value:
-            SolscanFlowType.check(value)
         return value
 
     @field_validator("page_size")
@@ -110,10 +91,16 @@ class GetAccountTransferParam(BaseModel):
             return (int(value[0].timestamp()), int(value[1].timestamp()))
         return
 
-# Response
-class GetAccountTransferData(BaseModel):
+    @field_serializer("exclude_amount_zero")
+    @classmethod
+    def serialize_exclude_amount_zero(cls, value: bool | None) -> str | None:
+        if value:
+            return "true" if value else "false"
+        return
+
+class SolscanTransferData(BaseModel):
     """
-        Model used to parse the data of the GET **[Account Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transfer)** of **V2** API endpoint.
+        Model used to parse the data of the Solscan transfer (Account/Token).
     """
     block_id: int
     transaction_id: str = Field(alias = "trans_id")
@@ -124,8 +111,43 @@ class GetAccountTransferData(BaseModel):
     token_address: str
     token_decimals: int
     amount: int
-    flow_type: str = Field(alias = "flow")
     time: datetime
+
+
+# GET - Account Transfer
+# Param
+class GetAccountTransferParam(SolscanTransferParam):
+    """
+        Model used to identify the parameters of the GET **[Account Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transfer)** of **V2** API endpoint.
+    """
+
+    token_account: str | None = None
+    """Token account address to filter."""
+
+    token_address: str | None = Field(default = None, serialization_alias = "token")
+    """Token address to filter."""
+
+    flow_direction: str | None = Field(default = None, serialization_alias = "flow")
+    """
+        Flow direction to filter.
+        The supported types are available on [`SolscanFlowType`][cyhole.solscan.v2.param.SolscanFlowType].
+    """
+
+    # Validators
+
+    @field_validator("flow_direction")
+    @classmethod
+    def validate_flow_direction(cls, value: str | None) -> str | None:
+        if value:
+            SolscanFlowType.check(value)
+        return value
+
+# Response
+class GetAccountTransferData(SolscanTransferData):
+    """
+        Model used to parse the data of the GET **[Account Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-transfer)** of **V2** API endpoint.
+    """
+    flow_type: str = Field(alias = "flow")
 
 class GetAccountTransferResponse(SolscanBaseResponse):
     """
@@ -435,3 +457,24 @@ class GetAccountRewardsExportResponse(BaseModel):
         This class refers to the response model of GET **[Account ExportRewards](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-account-reward-export)** of **V2** API endpoint.
     """
     csv: str
+
+# GET - Token Transfer
+# Param
+class GetTokenTransferParam(SolscanTransferParam):
+    """
+        Model used to identify the parameters of the GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** of **V2** API endpoint.
+    """
+    pass
+
+# Response
+class GetTokenTransferData(SolscanTransferData):
+    """
+        Model used to parse the data of the GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** of **V2** API endpoint.
+    """
+    pass
+
+class GetTokenTransferResponse(SolscanBaseResponse):
+    """
+        Model used to parse the response of the GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** of **V2** API endpoint.
+    """
+    data: list[GetTokenTransferData]

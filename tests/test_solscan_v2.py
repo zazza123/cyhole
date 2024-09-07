@@ -4,6 +4,7 @@ from pathlib import Path
 
 from pytest_mock import MockerFixture
 
+from cyhole.core.address.solana import JUP
 from cyhole.solscan.v2 import Solscan
 from cyhole.solscan.v2.param import (
     SolscanActivityTransferType,
@@ -22,7 +23,9 @@ from cyhole.solscan.v2.schema import (
     GetAccountTransactionsResponse,
     GetAccountStakeResponse,
     GetAccountDetailResponse,
-    GetAccountRewardsExportResponse
+    GetAccountRewardsExportResponse,
+    GetTokenTransferParam,
+    GetTokenTransferResponse,
 )
 
 # load test config
@@ -432,3 +435,59 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetAccountRewardsExportResponse)
+
+    def test_get_token_transfer_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Transfer" on V2 API for synchronous logic.
+
+            Mock Response File: get_v2_token_transfer.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_token_transfer"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTransferResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        param = GetTokenTransferParam(
+            activity_type = SolscanActivityTransferType.SPL_TRANSFER.value,
+            time_range = (datetime(2024, 8, 1), datetime(2024, 8, 31)),
+            amount_range = (1, 100_000_000),
+            exclude_amount_zero = True
+        )
+        response = self.solscan.client.get_token_transfer(JUP, param)
+
+        # actual test
+        assert isinstance(response, GetTokenTransferResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.solscan.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_transfer_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Token Transfer" on V2 API for asynchronous logic.
+
+            Mock Response File: get_v2_token_transfer.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_token_transfer"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTransferResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        param = GetTokenTransferParam(
+            activity_type = SolscanActivityTransferType.SPL_TRANSFER.value,
+            time_range = (datetime(2024, 8, 1), datetime(2024, 8, 31)),
+            amount_range = (1, 100_000_000),
+            exclude_amount_zero = True
+        )
+        async with self.solscan.async_client as client:
+            response = await client.get_token_transfer(JUP, param)
+
+        # actual test
+        assert isinstance(response, GetTokenTransferResponse)

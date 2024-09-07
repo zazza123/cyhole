@@ -18,7 +18,9 @@ from ...solscan.v2.schema import (
     GetAccountTransactionsResponse,
     GetAccountStakeResponse,
     GetAccountDetailResponse,
-    GetAccountRewardsExportResponse
+    GetAccountRewardsExportResponse,
+    GetTokenTransferParam,
+    GetTokenTransferResponse
 )
 
 if TYPE_CHECKING:
@@ -96,6 +98,13 @@ class SolscanClient(APIClient):
         """
         return self._interaction._get_account_rewards_export(True, account, dt_from, dt_to)
 
+    def get_token_transfer(self, token: str, params: GetTokenTransferParam = GetTokenTransferParam()) -> GetTokenTransferResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** for synchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_transfer`][cyhole.solscan.interaction.v2.Solscan._get_token_transfer].
+        """
+        return self._interaction._get_token_transfer(True, token, params)
+
 class SolscanAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Solscan` interaction on **V2** API.
@@ -167,3 +176,10 @@ class SolscanAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Solscan._get_account_rewards_export`][cyhole.solscan.interaction.v2.Solscan._get_account_rewards_export].
         """
         return await self._interaction._get_account_rewards_export(False, account, dt_from, dt_to)
+
+    async def get_token_transfer(self, token: str, params: GetTokenTransferParam = GetTokenTransferParam()) -> GetTokenTransferResponse:
+        """
+            Call the Solscan's **V2** API endpoint GET **[Token Transfer](https://pro-api.solscan.io/pro-api-docs/v2.0/reference/v2-token-transfer)** for asynchronous logic. 
+            All the API endopint details are available on [`Solscan._get_token_transfer`][cyhole.solscan.interaction.v2.Solscan._get_token_transfer].
+        """
+        return await self._interaction._get_token_transfer(False, token, params)
