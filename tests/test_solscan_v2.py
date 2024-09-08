@@ -5,6 +5,7 @@ from pathlib import Path
 from pytest_mock import MockerFixture
 
 from cyhole.core.address.solana import JUP, SOL
+from cyhole.core.exception import MissingAPIKeyError
 from cyhole.solscan.v2 import Solscan
 from cyhole.solscan.v2.param import (
     SolscanNFTCollectionPageSizeType,
@@ -68,6 +69,13 @@ class TestSolscanV2:
     """
     solscan = Solscan(api_key = config.solscan.api_v2_key)
     mocker = MockerManager(mock_path)
+
+    def test_missing_api_key(self) -> None:
+        """
+            Unit Test to correcty identify a missing/wrong API Key.
+        """
+        with pytest.raises(MissingAPIKeyError):
+            Solscan()
 
     def test_get_account_transfers_sync(self, mocker: MockerFixture) -> None:
         """
