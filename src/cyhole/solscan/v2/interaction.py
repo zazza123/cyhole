@@ -419,7 +419,7 @@ class Solscan(Interaction):
         """
 
         # set params
-        url = self.base_url + f"account/reward/export"
+        url = self.base_url + "account/reward/export"
         api_params = {
             "address": account,
             "time_from": int(dt_from.timestamp()),

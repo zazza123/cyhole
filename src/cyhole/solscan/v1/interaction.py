@@ -100,7 +100,7 @@ class Solscan(Interaction):
                 List of tokens balances of the account.
         """
         # set params
-        url = self.base_url + f"account/tokens"
+        url = self.base_url + "account/tokens"
         api_params = {
             "account": account
         }
@@ -135,7 +135,7 @@ class Solscan(Interaction):
                 List of transactions of the account.
         """
         # set params
-        url = self.base_url + f"account/transactions"
+        url = self.base_url + "account/transactions"
         api_params = {
             "account": account,
             "beforeHash": before_hash,
@@ -170,7 +170,7 @@ class Solscan(Interaction):
                 List of stake accounts of the account.
         """
         # set params
-        url = self.base_url + f"account/stakeAccounts"
+        url = self.base_url + "account/stakeAccounts"
         api_params = {
             "account": account
         }
@@ -231,7 +231,7 @@ class Solscan(Interaction):
                 List of spl transfers of the account.
         """
         # set params
-        url = self.base_url + f"account/splTransfers"
+        url = self.base_url + "account/splTransfers"
         api_params = {
             "account": account,
             "fromTime": utc_from_unix_time,
@@ -295,7 +295,7 @@ class Solscan(Interaction):
                 List of sol transfers of the account.
         """
         # set params
-        url = self.base_url + f"account/solTransfers"
+        url = self.base_url + "account/solTransfers"
         api_params = {
             "account": account,
             "fromTime": utc_from_unix_time,
@@ -342,7 +342,7 @@ class Solscan(Interaction):
         SolscanExportType.check(export_type)
 
         # set params
-        url = self.base_url + f"account/exportTransactions"
+        url = self.base_url + "account/exportTransactions"
         api_params = {
             "account": account,
             "type": export_type,
@@ -385,7 +385,7 @@ class Solscan(Interaction):
         """
 
         # set params
-        url = self.base_url + f"account/exportRewards"
+        url = self.base_url + "account/exportRewards"
         api_params = {
             "account": account,
             "fromTime": int(dt_from.timestamp()),
@@ -476,7 +476,7 @@ class Solscan(Interaction):
                 List of token holders of the token.
         """
         # set params
-        url = self.base_url + f"token/holders"
+        url = self.base_url + "token/holders"
         api_params = {
             "tokenAddress": token,
             "limit": limit,
@@ -512,7 +512,7 @@ class Solscan(Interaction):
                 Meta of the token.
         """
         # set params
-        url = self.base_url + f"token/meta"
+        url = self.base_url + "token/meta"
         api_params = {
             "tokenAddress": token
         }
@@ -568,7 +568,7 @@ class Solscan(Interaction):
                 List of token transfers of the token.
         """
         # set params
-        url = self.base_url + f"token/transfer"
+        url = self.base_url + "token/transfer"
         api_params = {
             "tokenAddress": token,
             "address": account,
@@ -625,7 +625,7 @@ class Solscan(Interaction):
                 List of tokens.
         """
         # set params
-        url = self.base_url + f"token/list"
+        url = self.base_url + "token/list"
         api_params = {
             "sortBy": sort_by,
             "direction": order_by,
@@ -695,7 +695,7 @@ class Solscan(Interaction):
                 Last transactions.
         """
         # set params
-        url = self.base_url + f"transaction/last"
+        url = self.base_url + "transaction/last"
         api_params = {
             "limit": limit
         }
@@ -756,7 +756,7 @@ class Solscan(Interaction):
                 Last block.
         """
         # set params
-        url = self.base_url + f"block/last"
+        url = self.base_url + "block/last"
         api_params = {
             "limit": limit
         }
@@ -837,7 +837,7 @@ class Solscan(Interaction):
                 List of transactions of the block.
         """
         # set params
-        url = self.base_url + f"block/transactions"
+        url = self.base_url + "block/transactions"
         api_params = {
             "block": block_id,
             "limit": limit,
