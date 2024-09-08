@@ -11,8 +11,8 @@
             "token_address": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
             "token_decimals": 6,
             "amount": 21000000,
-            "flow": "in",
-            "time": "2024-08-28T10:07:57Z"
+            "time": "2024-08-28T10:07:57Z",
+            "flow": "in"
         },
         {
             "block_id": 285742566,
@@ -24,8 +24,8 @@
             "token_address": "GvKDdv8YSUUKhLUoGfdft2J4YrzPunRbrePPaXQNjKcm",
             "token_decimals": 6,
             "amount": 320834,
-            "flow": "in",
-            "time": "2024-08-25T12:28:17Z"
+            "time": "2024-08-25T12:28:17Z",
+            "flow": "in"
         },
         {
             "block_id": 284627188,
@@ -37,8 +37,8 @@
             "token_address": "So11111111111111111111111111111111111111111",
             "token_decimals": 9,
             "amount": 22906392,
-            "flow": "in",
-            "time": "2024-08-19T21:53:06Z"
+            "time": "2024-08-19T21:53:06Z",
+            "flow": "in"
         },
         {
             "block_id": 283767956,
@@ -50,8 +50,8 @@
             "token_address": "58YnUYAopPepK1VkzTe4boK3S3M3JGrVfMHvJZEtEudM",
             "token_decimals": 6,
             "amount": 100000000,
-            "flow": "in",
-            "time": "2024-08-15T14:26:03Z"
+            "time": "2024-08-15T14:26:03Z",
+            "flow": "in"
         },
         {
             "block_id": 283158840,
@@ -63,8 +63,8 @@
             "token_address": "So11111111111111111111111111111111111111111",
             "token_decimals": 9,
             "amount": 1970000,
-            "flow": "in",
-            "time": "2024-08-12T14:31:45Z"
+            "time": "2024-08-12T14:31:45Z",
+            "flow": "in"
         },
         {
             "block_id": 283010856,
@@ -76,8 +76,8 @@
             "token_address": "So11111111111111111111111111111111111111111",
             "token_decimals": 9,
             "amount": 11300000,
-            "flow": "in",
-            "time": "2024-08-11T21:15:55Z"
+            "time": "2024-08-11T21:15:55Z",
+            "flow": "in"
         },
         {
             "block_id": 282962412,
@@ -89,8 +89,8 @@
             "token_address": "So11111111111111111111111111111111111111111",
             "token_decimals": 9,
             "amount": 2000000,
-            "flow": "in",
-            "time": "2024-08-11T15:35:21Z"
+            "time": "2024-08-11T15:35:21Z",
+            "flow": "in"
         },
         {
             "block_id": 282653351,
@@ -102,8 +102,8 @@
             "token_address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             "token_decimals": 6,
             "amount": 24703971,
-            "flow": "in",
-            "time": "2024-08-10T03:39:18Z"
+            "time": "2024-08-10T03:39:18Z",
+            "flow": "in"
         },
         {
             "block_id": 281994780,
@@ -115,8 +115,8 @@
             "token_address": "So11111111111111111111111111111111111111111",
             "token_decimals": 9,
             "amount": 1000000,
-            "flow": "in",
-            "time": "2024-08-06T22:36:39Z"
+            "time": "2024-08-06T22:36:39Z",
+            "flow": "in"
         },
         {
             "block_id": 281825060,
@@ -128,8 +128,8 @@
             "token_address": "So11111111111111111111111111111111111111111",
             "token_decimals": 9,
             "amount": 1000,
-            "flow": "in",
-            "time": "2024-08-06T02:42:02Z"
+            "time": "2024-08-06T02:42:02Z",
+            "flow": "in"
         }
     ]
 }
