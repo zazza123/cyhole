@@ -24,6 +24,19 @@ class SolscanBaseResponse(BaseModel):
     """
     success: bool
 
+# class used on Solscan HTTPErrors
+class SolscanError(BaseModel):
+    code: int
+    message: str
+
+class SolscanHTTPError(SolscanBaseResponse):
+    """
+        Solscan API returns an error schema on failed request 
+        that can be used to investigated the error. This schema 
+        is used to strandardise the HTTPErrors.
+    """
+    errors: SolscanError
+
 class SolscanTransferParam(BaseModel):
     """
         Model used to identify the parameters of the Solscan transfer (Account/Token).
@@ -1090,11 +1103,11 @@ class GetTransactionActionsActivityDataCreateAccount(BaseModel):
 
 # Data Type Alias
 GetTransactionActionsActivityData: TypeAlias = \
-      GetTransactionActionsActivityDataUnitLimit \
+      GetTransactionActionsActivityDataSplMintBurn \
+    | GetTransactionActionsActivityDataUnitLimit \
     | GetTransactionActionsActivityDataUnitPrice \
     | GetTransactionActionsActivityDataSplCommon \
     | GetTransactionActionsActivityDataTokenSwap \
-    | GetTransactionActionsActivityDataSplMintBurn \
     | GetTransactionActionsActivityDataCreateAccount
 
 class GetTransactionActionsActivity(BaseModel):

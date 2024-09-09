@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime
+from requests import Response, HTTPError
 from typing import TYPE_CHECKING, Any, cast
 
 from ...core.client import APIClient, AsyncAPIClient
@@ -58,6 +59,13 @@ class SolscanClient(APIClient):
     def __init__(self, interaction: Solscan, headers: Any | None = None) -> None:
         super().__init__(interaction, headers)
         self._interaction = cast('Solscan', self._interaction)
+
+    def api(self, type: str, url: str, *args: tuple, **kwargs: dict[str, Any]) -> Response:
+        # overide function to manage client specific exceptions
+        try:
+            return super().api(type, url, *args, **kwargs)
+        except HTTPError as e:
+            raise self._interaction._raise(e)
 
     def get_account_transfers(self, account: str, params: GetAccountTransferParam = GetAccountTransferParam()) -> GetAccountTransferResponse:
         """
@@ -267,6 +275,13 @@ class SolscanAsyncClient(AsyncAPIClient):
     def __init__(self, interaction: Solscan, headers: Any | None = None) -> None:
         super().__init__(interaction, headers)
         self._interaction = cast('Solscan', self._interaction)
+
+    async def api(self, type: str, url: str, *args: tuple, **kwargs: dict[str, Any]) -> Response:
+        # overide function to manage client specific exceptions
+        try:
+            return await super().api(type, url, *args, **kwargs)
+        except HTTPError as e:
+            raise self._interaction._raise(e)
 
     async def get_account_transfers(self, account: str, params: GetAccountTransferParam = GetAccountTransferParam()) -> GetAccountTransferResponse:
         """

@@ -1,12 +1,13 @@
 import os
 from datetime import datetime
+from requests import HTTPError
 from typing import Coroutine, Literal, overload
 
 from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
 from ...solscan.v2.client import SolscanClient, SolscanAsyncClient
-from ...solscan.v2.exception import SolscanInvalidTimeRange, SolscanInvalidAmountRange
+from ...solscan.v2.exception import SolscanInvalidTimeRange, SolscanInvalidAmountRange, SolscanException
 from ...solscan.v2.param import (
     SolscanTransactionFilterType,
     SolscanReturnLimitType,
@@ -18,6 +19,7 @@ from ...solscan.v2.param import (
     SolscanSortType
 )
 from ...solscan.v2.schema import (
+    SolscanHTTPError,
     GetAccountTransferParam,
     GetAccountTransferResponse,
     GetAccountTokenNFTAccountResponse,
@@ -1155,3 +1157,20 @@ class Solscan(Interaction):
             response_model = GetBlockDetailResponse,
             params = api_params
         )
+
+    def _raise(self, exception: HTTPError) -> SolscanException:
+        """
+            Internal function used to raise the manage 
+            the exceptions raised by the API.
+
+            Parameters:
+                exception: the HTTP error returned from Solscan API.
+
+            Raises:
+                SolscanException: general exception raised when an unknown error is found.
+        """
+        try:
+            error = SolscanHTTPError(**exception.response.json())
+            return SolscanException(f"Code: {error.errors.code}, Message: {error.errors.message}")
+        except Exception:
+            return SolscanException(exception.response.content.decode())

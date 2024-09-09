@@ -1,0 +1,7 @@
+{
+    "success": false,
+    "errors": {
+      "code": -32004,
+      "message": "Block not available for slot 123456789123"
+    }
+  }

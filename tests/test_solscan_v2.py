@@ -7,6 +7,7 @@ from pytest_mock import MockerFixture
 from cyhole.core.address.solana import JUP, SOL
 from cyhole.core.exception import MissingAPIKeyError
 from cyhole.solscan.v2 import Solscan
+from cyhole.solscan.v2.exception import SolscanException
 from cyhole.solscan.v2.param import (
     SolscanNFTCollectionPageSizeType,
     SolscanActivityTransferType,
@@ -19,6 +20,7 @@ from cyhole.solscan.v2.param import (
     SolscanFlowType
 )
 from cyhole.solscan.v2.schema import (
+    SolscanHTTPError,
     GetAccountTransferParam,
     GetAccountTransferResponse,
     GetAccountTokenNFTAccountResponse,
@@ -76,6 +78,46 @@ class TestSolscanV2:
         """
         with pytest.raises(MissingAPIKeyError):
             Solscan()
+
+    def test_get_error_response_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check an error response schema
+             of an endpoint on V2 API in synchronous mode.
+
+            Mock Response File: get_v2_error.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_error"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, SolscanHTTPError)
+            mock_response.status_code = 500
+
+            mocker.patch("requests.get", return_value = mock_response)
+
+        # execute request
+        with pytest.raises(SolscanException):
+            self.solscan.client.get_block_detail(123456789123)
+
+    @pytest.mark.asyncio
+    async def test_get_error_response_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check an error response schema
+            of an endpoint on V2 API in asynchronous mode.
+            
+            Mock Response File: get_v2_error.json
+        """
+        # load mock response
+        mock_file_name = "get_v2_error"
+        if config.mock_response or config.solscan.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, SolscanHTTPError)
+            mock_response.status_code = 500
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient._to_requests_response", return_value = mock_response)
+
+        # execute request
+        with pytest.raises(SolscanException):
+            async with self.solscan.async_client as client:
+                await client.get_block_detail(123456789123)
 
     def test_get_account_transfers_sync(self, mocker: MockerFixture) -> None:
         """
