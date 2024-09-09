@@ -1,6 +1,19 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, field_validator
 
+# class used on Solscan HTTPErrors
+class SolscanError(BaseModel):
+    message: str
+
+class SolscanHTTPError(BaseModel):
+    """
+        Solscan API returns an error schema on failed request 
+        that can be used to investigated the error. This schema 
+        is used to strandardise the HTTPErrors.
+    """
+    status: int
+    error: SolscanError
+
 # GET - Account Tokens
 class GetAccountTokensTokenAmount(BaseModel):
     """

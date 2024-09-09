@@ -1,13 +1,16 @@
 import os
 from datetime import datetime
+from requests import HTTPError
 from typing import Coroutine, Literal, overload
 
 from ...core.param import RequestType
 from ...core.interaction import Interaction
 from ...core.exception import MissingAPIKeyError
+from ...solscan.v1.exception import SolscanException
 from ...solscan.v1.client import SolscanClient, SolscanAsyncClient
 from ...solscan.v1.param import SolscanExportType, SolscanSort, SolscanOrder
 from ...solscan.v1.schema import (
+    SolscanHTTPError,
     GetAccountTokensResponse,
     GetAccountTransactionsResponse,
     GetAccountStakeAccountsResponse,
@@ -853,3 +856,20 @@ class Solscan(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = api_params)
                 return GetBlockTransactionsResponse(transactions = content_raw.json())
             return async_request()
+
+    def _raise(self, exception: HTTPError) -> SolscanException:
+        """
+            Internal function used to raise the manage 
+            the exceptions raised by the API.
+
+            Parameters:
+                exception: the HTTP error returned from Solscan API.
+
+            Raises:
+                SolscanException: general exception raised when an unknown error is found.
+        """
+        try:
+            error = SolscanHTTPError(**exception.response.json())
+            return SolscanException(f"Code: {error.status}, Message: {error.error.message}")
+        except Exception:
+            return SolscanException(exception.response.content.decode())
