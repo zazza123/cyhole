@@ -7,7 +7,11 @@ from pytest_mock import MockerFixture
 from cyhole.core.address.solana import JUP, SOL
 from cyhole.core.exception import MissingAPIKeyError
 from cyhole.solscan.v2 import Solscan
-from cyhole.solscan.v2.exception import SolscanException
+from cyhole.solscan.v2.exception import (
+    SolscanInvalidAmountRange,
+    SolscanInvalidTimeRange,
+    SolscanException
+)
 from cyhole.solscan.v2.param import (
     SolscanNFTCollectionPageSizeType,
     SolscanActivityTransferType,
@@ -796,6 +800,19 @@ class TestSolscanV2:
         # actual test
         assert isinstance(response, GetTokenPriceResponse)
 
+    def test_get_token_price_invalid_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Token Price" on V2 API when the time range is 
+            invalid for synchronous logic.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidTimeRange):
+            self.solscan.client.get_token_price(
+                token = JUP,
+                time_range = (datetime(2024, 8, 10), datetime(2024, 8, 1))
+            )
+
     def test_get_token_holders_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint 
@@ -839,6 +856,19 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetTokenHoldersResponse)
+
+    def test_get_token_holders_invalid_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Token Holders" on V2 API when the amount range 
+            is invalid for synchronous logic.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidAmountRange):
+            self.solscan.client.get_token_holders(
+                token = JUP,
+                amount_range = (1_000_000, 1)
+            )
 
     def test_get_token_meta_sync(self, mocker: MockerFixture) -> None:
         """
