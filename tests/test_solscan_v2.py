@@ -18,6 +18,7 @@ from cyhole.solscan.v2.param import (
     SolscanNFTDaysRangeType,
     SolscanActivityDefiType,
     SolscanActivityNFTType,
+    SolscanPageSizeType,
     SolscanNFTSortType,
     SolscanAccountType,
     SolscanOrderType,
@@ -141,7 +142,8 @@ class TestSolscanV2:
             activity_type = SolscanActivityTransferType.SPL_TRANSFER.value,
             flow_direction = SolscanFlowType.INCOMING.value,
             time_range = (datetime(2024, 8, 1), datetime(2024, 8, 31)),
-            amount_range = (1, 100_000_000)
+            amount_range = (1, 100_000_000),
+            page_size = SolscanPageSizeType.SIZE_10.value
         )
         response = self.solscan.client.get_account_transfers(SOLSCAN_DONATION_ADDRESS, param)
 
@@ -317,6 +319,31 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetAccountBalanceChangeActivitiesResponse)
+
+    def test_get_account_balance_change_activities_invalid_amount_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Account Balance Change Activities" on V2 API 
+            when the amount range is invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidAmountRange):
+            GetAccountBalanceChangeActivitiesParam(
+                amount_range = (100_000_000, 1),
+                page_size = SolscanPageSizeType.SIZE_10.value
+            )
+
+    def test_get_account_balance_change_activities_invalid_time_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Account Balance Change Activities" on V2 API 
+            when the time range is invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidTimeRange):
+            GetAccountBalanceChangeActivitiesParam(
+                time_range = (datetime(2024, 8, 31), datetime(2024, 8, 1))
+            )
 
     def test_get_account_transactions_sync(self, mocker: MockerFixture) -> None:
         """
@@ -570,6 +597,31 @@ class TestSolscanV2:
         # actual test
         assert isinstance(response, GetTokenTransferResponse)
 
+    def test_get_token_transfer_invalid_time_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Token Transfer" on V2 API when the time range is 
+            invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidTimeRange):
+            GetTokenTransferParam(
+                activity_type = [SolscanActivityTransferType.SPL_TRANSFER.value],
+                time_range = (datetime(2024, 8, 31), datetime(2024, 8, 1))
+            )
+
+    def test_get_token_transfer_invalid_amount_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Token Transfer" on V2 API when the amount range is 
+            invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidAmountRange):
+            GetTokenTransferParam(
+                amount_range = (100_000_000, 1)
+            )
+
     def test_get_token_defi_activities_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint 
@@ -620,6 +672,20 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetTokenDefiActivitiesResponse)
+
+    def test_get_token_defi_activities_invalid_time_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "Token Defi Activities" on V2 API when the time range is 
+            invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidTimeRange):
+            GetTokenDefiActivitiesParam(
+                activity_type = SolscanActivityDefiType.SPL_TOKEN_UNSTAKE.value,
+                time_range = (datetime(2024, 8, 31), datetime(2024, 8, 1)),
+                page_size = SolscanPageSizeType.SIZE_10.value
+            )
 
     def test_get_token_markets_sync(self, mocker: MockerFixture) -> None:
         """
@@ -1007,6 +1073,30 @@ class TestSolscanV2:
 
         # actual test
         assert isinstance(response, GetNFTActivitiesResponse)
+
+    def test_get_nft_activities_invalid_amount_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "NFT Activities" on V2 API when the amount range is invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidAmountRange):
+            GetNFTActivitiesParam(
+                amount_range = (100_000_000, 1),
+                page_size = SolscanPageSizeType.SIZE_20.value
+            )
+
+    def test_get_nft_activities_invalid_time_range(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response from endpoint 
+            GET "NFT Activities" on V2 API when the time range is invalid.
+        """
+        # execute request
+        with pytest.raises(SolscanInvalidTimeRange):
+            GetNFTActivitiesParam(
+                activity_type = [SolscanActivityNFTType.SOLD.value],
+                time_range = (datetime(2024, 8, 31), datetime(2024, 8, 1))
+            )
 
     def test_get_nft_collectin_lists_sync(self, mocker: MockerFixture) -> None:
         """

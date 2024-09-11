@@ -601,10 +601,8 @@ class GetTokenPriceData(BaseModel):
     # Validators
     @field_validator("date", mode = "before")
     @classmethod
-    def validate_date(cls, value: int | datetime) -> datetime:
-        if isinstance(value, int):
-            return datetime.strptime(str(value), "%Y%m%d")
-        return value
+    def validate_date(cls, value: int) -> datetime:
+        return datetime.strptime(str(value), "%Y%m%d")
 
     # Serializers
     @field_serializer("date")
