@@ -1,4 +1,4 @@
-# :simple-airplayaudio: - Solscan (v2 API)
+# :fontawesome-regular-circle-dot: - Solscan (v2 API)
 
 Solscan ([https://solscan.io/](https://solscan.io/)) is one of the most widly used platform for analysing Solana blockchain. It robustness is provided by its API services that are easy to use and well documented. Currently, there are two versions of the API available, v1 and v2; this documentation covers the v2 API (see [here](../v1/index.md) for v1 API documentation).
 
