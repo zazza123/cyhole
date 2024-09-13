@@ -1,0 +1,17 @@
+{
+    "success": true,
+    "data": {
+        "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+        "name": "Jupiter",
+        "symbol": "JUP",
+        "icon": "https://static.jup.ag/jup/icon.png",
+        "decimals": 6,
+        "price": 0.702883,
+        "volume_24h": 108991836,
+        "market_cap": 945579833,
+        "market_cap_rank": 72,
+        "price_change_24h": 0.08904,
+        "supply": 9999979509672900,
+        "holder": 800216
+    }
+}

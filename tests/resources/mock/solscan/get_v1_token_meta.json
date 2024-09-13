@@ -1,0 +1,12 @@
+{
+    "name": "Jupiter",
+    "symbol": "JUP",
+    "icon": "https://static.jup.ag/jup/icon.png",
+    "price": 0.731791,
+    "volume": 96861522,
+    "decimals": 6,
+    "tokenAuthority": null,
+    "supply": "9999979509503358",
+    "type": "token_address",
+    "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+}

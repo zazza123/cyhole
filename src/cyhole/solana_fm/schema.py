@@ -172,12 +172,10 @@ class GetAccountTransactionsFeesData(BaseModel):
     tx_fees: int
     time: datetime
 
-    @field_validator("time")
+    @field_serializer("time")
     @classmethod
-    def parse_time(cls, time: str | datetime) -> datetime:
-        if isinstance(time, str):
-            return datetime.strptime(time, "%Y-%m-%d")
-        return time
+    def serialize_time(cls, time: datetime) -> str:
+        return time.strftime("%Y-%m-%d")
 
 class GetAccountTransactionsFeesResponse(BaseModel):
     """
@@ -306,10 +304,8 @@ class GetSolanaDailyTransactionFeesResult(BaseModel):
 
     @field_validator("date")
     @classmethod
-    def parse_date(cls, dt: str | datetime) -> datetime:
-        if isinstance(dt, str):
-            return datetime.strptime(dt, "%d-%m-%Y")
-        return dt
+    def parse_date(cls, dt: str) -> datetime:
+        return datetime.strptime(dt, "%d-%m-%Y")
 
     @field_serializer("date")
     @classmethod

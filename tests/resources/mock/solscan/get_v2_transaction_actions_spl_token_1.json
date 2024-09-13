@@ -1,0 +1,75 @@
+{
+    "success": true,
+    "data": {
+        "tx_hash": "59UUQj6iYTxbh2yeVfEuJjtSSfsbx8Z6NWB1dYNV7XCmQMMb1EPDftF7RoiJCCZcomUSioFGExpwxaZafYr5B6mi",
+        "block_id": 287609673,
+        "block_time": 1725392989,
+        "time": "2024-09-03T19:49:49Z",
+        "fee": 70000,
+        "transfers": [
+            {
+                "source_owner": "2heaPWCt1BqJJSg6ZDpZBGu4kVpTEow4mW32hQuiQ1G8",
+                "source": "GRSGnVkNtB5BRGrYDPEEj6yLSC64aykhzPPQ6BNYHF6b",
+                "destination_owner": "3pfrgddeQ5ipTFWocDNcevGtA35Kj2L6JE1NepwVe55b",
+                "destination": "FnigWdkVU9tsQi8zbdjt8EzrrFyijeKcyhk8J8AaVsPK",
+                "transfer_type": "ACTIVITY_SPL_TRANSFER",
+                "token_address": "qr2mXshAQuQ3bak1v5iyUtUpnap1ybk4ceH27zFpump",
+                "decimals": 8,
+                "amount_str": "1561143734055",
+                "amount": 1561143734055,
+                "program_id": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "outer_program_id": null,
+                "ins_index": 1,
+                "outer_ins_index": -1
+            },
+            {
+                "source_owner": "2heaPWCt1BqJJSg6ZDpZBGu4kVpTEow4mW32hQuiQ1G8",
+                "source": "2heaPWCt1BqJJSg6ZDpZBGu4kVpTEow4mW32hQuiQ1G8",
+                "destination_owner": "3pfrgddeQ5ipTFWocDNcevGtA35Kj2L6JE1NepwVe55b",
+                "destination": "3pfrgddeQ5ipTFWocDNcevGtA35Kj2L6JE1NepwVe55b",
+                "transfer_type": "ACTIVITY_SPL_TRANSFER",
+                "token_address": "So11111111111111111111111111111111111111111",
+                "decimals": 9,
+                "amount_str": "12029280",
+                "amount": 12029280,
+                "program_id": "11111111111111111111111111111111",
+                "outer_program_id": null,
+                "ins_index": 3,
+                "outer_ins_index": -1
+            }
+        ],
+        "activities": [
+            {
+                "name": "ComputeBudget",
+                "activity_type": "ACTIVITY_COMPUTE_UNIT_PRICE",
+                "program_id": "ComputeBudget111111111111111111111111111111",
+                "data": {
+                    "compute_unit_price_by_microlamport": "100000"
+                },
+                "ins_index": 0,
+                "outer_ins_index": -1,
+                "outer_program_id": null
+            },
+            {
+                "name": "closeAccount",
+                "activity_type": "ACTIVITY_SPL_COMMON",
+                "program_id": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "data": {
+                    "amount": 2039280,
+                    "amount_str": "2039280",
+                    "token_address": "So11111111111111111111111111111111111111111",
+                    "token_decimals": 9,
+                    "closed_account": "GRSGnVkNtB5BRGrYDPEEj6yLSC64aykhzPPQ6BNYHF6b",
+                    "authority": "2heaPWCt1BqJJSg6ZDpZBGu4kVpTEow4mW32hQuiQ1G8",
+                    "destination": "2heaPWCt1BqJJSg6ZDpZBGu4kVpTEow4mW32hQuiQ1G8",
+                    "sync_account": null,
+                    "init_account": null,
+                    "owner": null
+                },
+                "ins_index": 2,
+                "outer_ins_index": -1,
+                "outer_program_id": null
+            }
+        ]
+    }
+}

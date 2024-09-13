@@ -1,0 +1,17 @@
+{
+    "success": true,
+    "data": [
+        {
+            "address": "GswoGbzKmtqywFkJZzAoc7QSMM84MX1Wotu9zHJjriAK",
+            "decimals": 6,
+            "name": "Trilly",
+            "symbol": "TRILLY"
+        },
+        {
+            "address": "AtqctySWMGnTcieThrdBvnTCjaNEZNSnPLas1eDxpump",
+            "decimals": 6,
+            "name": "Kamala",
+            "symbol": "Kamala"
+        }
+    ]
+}

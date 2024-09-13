@@ -12,7 +12,11 @@
                     {
                         "extension": "transferFeeAmount",
                         "state": {
-                            "withheldAmount": 20000000
+                            "newerTransferFee": null,
+                            "olderTransferFee": null,
+                            "withheldAmount": 20000000,
+                            "withdrawWithheldAuthority": null,
+                            "transferFeeConfigAuthority": null
                         }
                     }
                 ],

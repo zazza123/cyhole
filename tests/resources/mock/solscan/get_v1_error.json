@@ -1,0 +1,6 @@
+{
+    "status": 400,
+    "error": {
+        "message": "Block not available for slot 123456789123"
+    }
+}

@@ -1,0 +1,47 @@
+{
+    "priceUsdt": 0.732325,
+    "volumeUsdt": 91883655,
+    "marketCapFD": 988903984,
+    "marketCapRank": 71,
+    "priceChange24h": -1.30628,
+    "markets": [
+        {
+            "address": "C1MgLojNLWBKADvu9BHdtgzz1oZX4dZ5zGdGcgvvW8Wz",
+            "ammId": "C1MgLojNLWBKADvu9BHdtgzz1oZX4dZ5zGdGcgvvW8Wz",
+            "base": {
+                "symbol": "JUP",
+                "decimals": 6,
+                "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+            },
+            "baseTokenAccount": "HVJuVW2dRbZ2fynWEY2JK6Ak2YTfVpji73sHZMCqiXSb",
+            "name": "JUP-SOL",
+            "quote": {
+                "symbol": "SOL",
+                "decimals": 9,
+                "address": "So11111111111111111111111111111111111111112"
+            },
+            "source": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+            "quoteTokenAccount": "8MFbZEaXp8Ky8ufhZRgphgMgKVwsjhDhZtNqmEPcxvQK",
+            "volume24h": 6339210
+        },
+        {
+            "address": "7qt1qBnQ5CNNpMH1no6jYAzuyazP5QWXsUZB7dot5kga",
+            "ammId": "7qt1qBnQ5CNNpMH1no6jYAzuyazP5QWXsUZB7dot5kga",
+            "base": {
+                "symbol": "JUP",
+                "decimals": 6,
+                "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"
+            },
+            "baseTokenAccount": "HoL4xqoB9LteY7TdVjUVpw2B8YAN1wnqsbEryNRdvmuP",
+            "name": "JUP-SOL",
+            "quote": {
+                "symbol": "SOL",
+                "decimals": 9,
+                "address": "So11111111111111111111111111111111111111112"
+            },
+            "source": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
+            "quoteTokenAccount": "9zXV3Ju93iaMK36NHQ7kvRp7SfkprHJhAw8FFBQn2P9M",
+            "volume24h": 4120324
+        }
+    ]
+}

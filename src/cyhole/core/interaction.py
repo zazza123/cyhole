@@ -30,7 +30,7 @@ class Interaction:
 
         return
 
-    def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: dict[str, Any]) -> ResponseModel | Coroutine[None, None, ResponseModel]:
+    def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
         """
             This function is used to execute a request to the API by forwarding the call to the 
             corresponding client (synchronous or asynchronous) according to the `sync` parameter.

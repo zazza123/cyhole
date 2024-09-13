@@ -1,0 +1,36 @@
+{
+    "tokens": [
+        {
+            "tokenAccount": "EveCZCmbV5B3ELhTv6TQMsnsic1anKDY16dqn6KXd5ub",
+            "tokenAddress": "SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa",
+            "tokenSymbol": "SEND",
+            "tokenName": "Send",
+            "tokenIcon": "https://tgnrqry5tpxb5imfstlqu2mdqpm3zwmmaxrrakjxuinvpwhkanca.arweave.net/mZsYRx2b7h6hhZTXCmmDg9m82YwF4xApN6IbV9jqA0Q",
+            "tokenAmount": {
+                "amount": "100000000000",
+                "decimals": 6,
+                "uiAmount": 100000.0,
+                "uiAmountString": "100000"
+            },
+            "decimals": 6,
+            "rentEpoch": 18446744073709552000,
+            "lamports": 2039280
+        },
+        {
+            "tokenAccount": "6QE4BqKgWh5AQM6Lf43iHyZZ9gsGPNkWqtjTxBQ81sh7",
+            "tokenAddress": "ESBjVXywFF17sGSdnQc7PW5QcgANaDLAepbrMNEC3bmk",
+            "tokenSymbol": "PATRUK",
+            "tokenName": "Patruk Mahumes",
+            "tokenIcon": "https://ipfs.io/ipfs/QmNbE6jXooASatHtmvRxGH7hbuVqcysFXnPZshHjy1YqsU",
+            "tokenAmount": {
+                "amount": "100000000000000",
+                "decimals": 9,
+                "uiAmount": 100000.0,
+                "uiAmountString": "100000"
+            },
+            "decimals": 9,
+            "rentEpoch": 18446744073709552000,
+            "lamports": 2039280
+        }
+    ]
+}

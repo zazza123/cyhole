@@ -1,0 +1,66 @@
+{
+    "blockTime": 1725393336,
+    "slot": 287610472,
+    "txHash": "4TQYuua7nVABnCEj6re7QBb5PTKZDZzKhwi4yEntLYiacoT38HKdAbay5iB54dHbMc9JQ9vJgE1bzjkk1qZGpyuU",
+    "fee": 5000,
+    "status": "Success",
+    "lamport": 0,
+    "signer": [
+        "G72oBA9cRYUzR8Q9oLvJcNRx5ovcDGFvHsbZKp1BT75W"
+    ],
+    "logMessage": [
+        "Program Vote111111111111111111111111111111111111111 invoke [1]",
+        "Program Vote111111111111111111111111111111111111111 success"
+    ],
+    "inputAccount": [
+        {
+            "account": "G72oBA9cRYUzR8Q9oLvJcNRx5ovcDGFvHsbZKp1BT75W",
+            "signer": true,
+            "writable": true,
+            "preBalance": 1866965727215,
+            "postBalance": 1866965722215
+        },
+        {
+            "account": "HAu1TuW2T3mBQYbQdQ7edzVhKxirqT2k7jwUcFxSJGWX",
+            "signer": false,
+            "writable": true,
+            "preBalance": 2050484358517,
+            "postBalance": 2050484358517
+        },
+        {
+            "account": "Vote111111111111111111111111111111111111111",
+            "signer": false,
+            "writable": false,
+            "preBalance": 1,
+            "postBalance": 1
+        }
+    ],
+    "recentBlockhash": "2gALJNYxgFEgrqP348h8cEv6pKXDzwWw1QG78LNazGrK",
+    "innerInstructions": [],
+    "tokenBalances": [],
+    "parsedInstruction": [
+        {
+            "programId": "Vote111111111111111111111111111111111111111",
+            "program": "vote",
+            "data": "0c00000047962411000000001f011f011e011d011c011b011a0119011801170116011501140113011201110110010f010e010d010c010b010a01090108010701060105010401030102010146a9e16fcfc71e26d127df78cea82dd5ce057b037bea414cb8960886b8c6cce301b769d76600000000",
+            "dataEncode": "Fk63PYwAmpfPfJ6bFwfGD9AvC5KNePr6yYGgbKUEKJXHZxSSavYwrMAs1WZYDAHWsMhVAgNfXa5jfJe1hMSoJ2sWGw1Yk2j6qatzXZkuRSVDLr1EvP7CvvjxEwMUyxYr9F3akFmrF2Sy6CbBsCtdVdN222eoBD",
+            "type": "vote",
+            "name": "Vote",
+            "params": {
+                "voteAccount": "HAu1TuW2T3mBQYbQdQ7edzVhKxirqT2k7jwUcFxSJGWX",
+                "voteAuthority": "G72oBA9cRYUzR8Q9oLvJcNRx5ovcDGFvHsbZKp1BT75W",
+                "voteHash": "5kqnN3cmBwfn69U4aHZh68YyGicowD4xGWJScxvCHgkS",
+                "root": 287610439,
+                "timestamp": 1725393335
+            },
+            "extra": null
+        }
+    ],
+    "confirmations": null,
+    "version": "legacy",
+    "tokenTransfers": [],
+    "solTransfers": [],
+    "serumTransactions": [],
+    "raydiumTransactions": [],
+    "unknownTransfers": []
+}

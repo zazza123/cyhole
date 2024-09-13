@@ -1,0 +1,39 @@
+{
+    "success": true,
+    "data": [
+        {
+            "amount": 62251236049,
+            "role": [
+                "staker",
+                "withdrawer"
+            ],
+            "status": "active",
+            "type": "active",
+            "voter": "27MtjMSAQ2BGkXNuJEJkxFyCJT8dugGAaHJ9T7Gc6x4x",
+            "active_stake_amount": 62251236049,
+            "delegated_stake_amount": 62251236049,
+            "sol_balance": 62630223273,
+            "total_reward": "3253518929",
+            "stake_account": "3QTWp29qaduKsXFGU9hSjBzqeHj6j5a2XNYzVn1tT61i",
+            "activation_epoch": 543,
+            "stake_type": 543
+        },
+        {
+            "amount": 3049293839293,
+            "role": [
+                "staker",
+                "withdrawer"
+            ],
+            "status": "active",
+            "type": "active",
+            "voter": "27MtjMSAQ2BGkXNuJEJkxFyCJT8dugGAaHJ9T7Gc6x4x",
+            "active_stake_amount": 3049293839293,
+            "delegated_stake_amount": 3049293839293,
+            "sol_balance": 3068054652193,
+            "total_reward": "356257927501",
+            "stake_account": "HNs78RnF6vDdg8ti1G6g9xxoEeF4TUBKEccWpxLz6mne",
+            "activation_epoch": 372,
+            "stake_type": 372
+        }
+    ]
+}

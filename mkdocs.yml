@@ -111,6 +111,21 @@ nav:
       - Parameters: interactions/solana_fm/param.md
       - Response Schema: interactions/solana_fm/schema.md
       - Exceptions: interactions/solana_fm/exception.md
+    - Solscan:
+      - v1:
+        - interactions/solscan/v1/index.md
+        - Interaction: interactions/solscan/v1/interaction.md
+        - Client: interactions/solscan/v1/client.md
+        - Parameters: interactions/solscan/v1/param.md
+        - Response Schema: interactions/solscan/v1/schema.md
+        - Exceptions: interactions/solscan/v1/exception.md
+      - v2:
+        - interactions/solscan/v2/index.md
+        - Interaction: interactions/solscan/v2/interaction.md
+        - Client: interactions/solscan/v2/client.md
+        - Parameters: interactions/solscan/v2/param.md
+        - Response Schema: interactions/solscan/v2/schema.md
+        - Exceptions: interactions/solscan/v2/exception.md
   - Development:
     - development/index.md
     - development/new-interaction.md

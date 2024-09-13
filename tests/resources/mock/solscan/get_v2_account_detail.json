@@ -1,0 +1,12 @@
+{
+    "success": true,
+    "data": {
+        "account": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK",
+        "lamports": 2628131404,
+        "type": "system_account",
+        "executable": false,
+        "owner_program": "11111111111111111111111111111111",
+        "rent_epoch": 18446744073709552000,
+        "is_oncurve": true
+    }
+}

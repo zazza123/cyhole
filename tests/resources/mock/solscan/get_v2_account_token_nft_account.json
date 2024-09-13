@@ -1,0 +1,75 @@
+{
+    "success": true,
+    "data": [
+        {
+            "token_account": "HfirWp5B6A2KxahbbhTP3mjJhM3QbUgZwPXFEPwoiYxp",
+            "token_address": "H2CDf9ZS3HW1dsHMaepzMFf4gjsdyQedn7gcsV9K6VJF",
+            "amount": 2000000000000000,
+            "token_decimals": 4,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "76yumStt5vkvoo15Dg9JDRjC1H7SxxA1dz7yWUE6UZhD",
+            "token_address": "2adFTbyzVwMwPtgV68DUnrfdwB6tTAJiiVxJ6D8nwiEG",
+            "amount": 109188123353539,
+            "token_decimals": 4,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "3MWRaDXtAaHg8mWZETkFXGGDcBjv5vMxoaFLzB7mS5Lp",
+            "token_address": "FoesbFb3RZQuXha5fhuDxTnfJrbVJ2aXTx1nVacJVbWw",
+            "amount": 1000000000000000,
+            "token_decimals": 6,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "664iZEZ1BNc1bMLiLGTcvs8x5zLYWU4oGvmCDRg4coSu",
+            "token_address": "B4ZB3icdWF48y8asooxrkafkNRWmLhLNNfhAxoqpySdw",
+            "amount": 1000000000000000,
+            "token_decimals": 6,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "Brt6Mzfjzzg16Nnp8ogV2nHYzwnfRa8ov4hyhVNeUZJQ",
+            "token_address": "2qQtFaMaHKF2oMkkSwsjzKFNVDTcPK2bJwLBHxQPzNm3",
+            "amount": 899999999999991800,
+            "token_decimals": 9,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "EVvU3e6SUn3taSU31gbYkXZHPDFTKdUB5YEm6eQ1hx1s",
+            "token_address": "FvkkQU7TpH6uqCsxfVkbgfwK7snLHLAXjB9UsqcHKTS",
+            "amount": 244623379298097000,
+            "token_decimals": 9,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "4j8Yskjn1diJ1SJG2PTCbM1EsSUoHwNGaPeq3ek38mYu",
+            "token_address": "7yjWAASx7Qc5N5Ezg8Nqd2prjm4zPFK93tf2GJTp3GpN",
+            "amount": 6696695999999100,
+            "token_decimals": 9,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "5CJHr4iDTSfyJ3LJU7GYgtMddySStzTjaY9S7egSRbNA",
+            "token_address": "CKvhEVDx6cJmvhNnVHYcB3YSmLr3pBy2gLNagrLCSJtg",
+            "amount": 5000000000000000,
+            "token_decimals": 9,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "Cw7hBvS2YewGT39xk6sKsCu5RyY7kM9UZnbXAeYj8BqA",
+            "token_address": "2cr4z2NEPdoAZFFtVGi7gWZTpn9BSuDSWS2F9aWdz5Sb",
+            "amount": 500000000000,
+            "token_decimals": 5,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        },
+        {
+            "token_account": "6znrBZD94KA5g8NgvuDuD3uRbCA94n1SdDzKJbXAnUt",
+            "token_address": "CUz8fAPkEQ8TPx5owx5RdkCM2kposkLAdtQp9hc7YNUL",
+            "amount": 3951570881721766,
+            "token_decimals": 9,
+            "owner": "D27DgiipBR5dRdij2L6NQ27xwyiLK5Q2DsEM5ML5EuLK"
+        }
+    ]
+}
