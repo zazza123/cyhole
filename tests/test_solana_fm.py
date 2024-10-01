@@ -6,6 +6,7 @@ from pytest_mock import MockerFixture
 
 from cyhole.solana_fm import SolanaFM
 from cyhole.solana_fm.schema import (
+    GetAccountTransactionsParam,
     GetAccountTransactionsResponse,
     GetAccountTransfersParam,
     GetAccountTransfersResponse,
@@ -59,9 +60,18 @@ class TestSolanaFM:
         if config.mock_response or config.solana_fm.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransactionsResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-            
+
+        # set params
+        params = GetAccountTransactionsParam(
+            inflow = True,
+            outflow = False
+        )
+        raw_params = params.model_dump(by_alias = True, exclude_defaults = True)
+        assert raw_params["inflow"] == "true"
+        assert raw_params["outflow"] == "false"
+
         # execute request
-        response = self.solana_fm.client.get_account_transactions(JUP)
+        response = self.solana_fm.client.get_account_transactions(JUP, params = params)
 
         # actual test
         assert isinstance(response, GetAccountTransactionsResponse)

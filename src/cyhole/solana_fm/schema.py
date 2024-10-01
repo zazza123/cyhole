@@ -60,6 +60,13 @@ class GetAccountTransactionsParam(BaseModel):
     def serialize_str_list_input(cls, str_input: str | list[str] | None) -> str | None:
         return ",".join(str_input) if str_input else None
 
+    @field_serializer("outflow", "inflow")
+    @classmethod
+    def serialize_flows(cls, value: bool | None) -> str | None:
+        if value is not None:
+            return "true" if value else "false"
+        return
+
 # Response
 class GetAccountTransactionsData(BaseModel):
     """
@@ -116,6 +123,13 @@ class GetAccountTransfersParam(BaseModel):
     @classmethod
     def serialize_str_list_input(cls, str_input: str | list[str] | None) -> str | None:
         return ",".join(str_input) if str_input else None
+
+    @field_serializer("outflow", "inflow")
+    @classmethod
+    def serialize_flows(cls, value: bool | None) -> str | None:
+        if value:
+            return "true" if value else "false"
+        return
 
 # Response
 class GetAccountTransfersData(BaseModel):
