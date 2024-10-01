@@ -114,7 +114,7 @@ class SolscanTransferParam(BaseModel):
     @field_serializer("exclude_amount_zero")
     @classmethod
     def serialize_exclude_amount_zero(cls, value: bool | None) -> str | None:
-        if value:
+        if value is not None:
             return "true" if value else "false"
         return
 
@@ -372,7 +372,7 @@ class GetAccountBalanceChangeActivitiesParam(BaseModel):
     @field_serializer("remove_spam")
     @classmethod
     def serialize_remove_spam(cls, value: bool | None) -> str | None:
-        if value:
+        if value is not None:
             return "true" if value else "false"
         return
 

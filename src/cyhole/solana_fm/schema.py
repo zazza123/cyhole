@@ -127,7 +127,7 @@ class GetAccountTransfersParam(BaseModel):
     @field_serializer("outflow", "inflow")
     @classmethod
     def serialize_flows(cls, value: bool | None) -> str | None:
-        if value:
+        if value is not None:
             return "true" if value else "false"
         return
 
