@@ -49,7 +49,7 @@ class GetAccountTransactionsParam(BaseModel):
     programs: str | list[str] | None = None
     """The program ID(s) to filter by."""
 
-    limit: int = Field(default = 1, le = 1000, gt = 0)
+    limit: int | None = Field(default = None, le = 1000, gt = 0)
     """The number of transactions to return."""
 
     page: int = Field(default = 1, gt = 0)
@@ -113,7 +113,7 @@ class GetAccountTransfersParam(BaseModel):
     mint: str | list[str] | None = None
     """The mint ID(s) to filter by."""
 
-    limit: int = Field(default = 1, le = 100, gt = 0)
+    limit: int | None = Field(default = None, le = 100, gt = 0)
     """The number of transactions to return."""
 
     page: int = Field(default = 1, gt = 0)
