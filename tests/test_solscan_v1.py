@@ -53,7 +53,7 @@ class TestSolscanV1:
             Unit Test to correcty identify a missing/wrong API Key.
         """
         with pytest.raises(MissingAPIKeyError):
-            monkeypatch.delenv("SOLSCAN_API_V1_KEY")
+            monkeypatch.delenv("SOLSCAN_API_V1_KEY", raising = False)
             Solscan()
 
     def test_get_error_response_sync(self, mocker: MockerFixture) -> None:
