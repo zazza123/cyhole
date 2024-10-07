@@ -1,5 +1,6 @@
 import pytest
 
+from cyhole.core.token.solana import SOL
 from cyhole.core.interaction import Interaction
 from cyhole.core.client import APIClient, AsyncAPIClient
 from cyhole.core.param import CyholeParam, RequestType
@@ -171,3 +172,9 @@ def test_param_unknown() -> None:
 
     with pytest.raises(ParamUnknownError):
         ParamTest.check("xxx")
+
+def test_token_int_to_float() -> None:
+    """
+        Unit Test for `CyholeToken.int_to_float` function.
+    """
+    assert SOL.int_to_float(1_011_000_000) == 1.011

@@ -41,20 +41,20 @@ class Jupiter(Interaction):
         ```python
         import asyncio
         from cyhole.jupiter import Jupiter
-        from cyhole.core.address.solana import JUP
+        from cyhole.core.token.solana import JUP
 
         jupiter = Jupiter()
 
         # Get current price of JUP on Solana
         # synchronous
-        response = jupiter.client.get_price([JUP])
-        print("Current JUP/USDC:", response.data[JUP].price)
+        response = jupiter.client.get_price([JUP.address])
+        print("Current JUP/USDC:", response.data[JUP.address].price)
 
         # asynchronous
         async def main() -> None:
             async with jupiter.async_client as client:
-                response = await client.get_price([JUP])
-                print("Current JUP/USDC:", response.data[JUP].price)
+                response = await client.get_price([JUP.address])
+                print("Current JUP/USDC:", response.data[JUP.address].price)
 
         asyncio.run(main())
         ```

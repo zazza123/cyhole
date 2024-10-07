@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pytest_mock import MockerFixture
 
-from cyhole.core.address.solana import JUP, SOL
+from cyhole.core.token.solana import JUP, WSOL
 from cyhole.core.exception import MissingAPIKeyError
 from cyhole.solscan.v1 import Solscan
 from cyhole.solscan.v1.param import SolscanExportType
@@ -48,11 +48,12 @@ class TestSolscanV1:
     solscan = Solscan(api_key = config.solscan.api_v1_key)
     mocker = MockerManager(mock_path)
 
-    def test_missing_api_key(self) -> None:
+    def test_missing_api_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
             Unit Test to correcty identify a missing/wrong API Key.
         """
         with pytest.raises(MissingAPIKeyError):
+            monkeypatch.delenv("SOLSCAN_API_V1_KEY")
             Solscan()
 
     def test_get_error_response_sync(self, mocker: MockerFixture) -> None:
@@ -547,7 +548,7 @@ class TestSolscanV1:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_token_holders(JUP, limit = 2)
+        response = self.solscan.client.get_token_holders(JUP.address, limit = 2)
 
         # actual test
         assert isinstance(response, GetTokenHoldersResponse)
@@ -573,7 +574,7 @@ class TestSolscanV1:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_holders(JUP, limit = 2)
+            response = await client.get_token_holders(JUP.address, limit = 2)
 
         # actual test
         assert isinstance(response, GetTokenHoldersResponse)
@@ -593,7 +594,7 @@ class TestSolscanV1:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_token_meta(JUP)
+        response = self.solscan.client.get_token_meta(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenMetaResponse)
@@ -619,7 +620,7 @@ class TestSolscanV1:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_meta(JUP)
+            response = await client.get_token_meta(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenMetaResponse)
@@ -639,7 +640,7 @@ class TestSolscanV1:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_token_transfer(token = SOL, account = SOLSCAN_DONATION_ADDRESS, limit = 2)
+        response = self.solscan.client.get_token_transfer(token = WSOL.address, account = SOLSCAN_DONATION_ADDRESS, limit = 2)
 
         # actual test
         assert isinstance(response, GetTokenTransferResponse)
@@ -665,7 +666,7 @@ class TestSolscanV1:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_transfer(token = SOL, account = SOLSCAN_DONATION_ADDRESS, limit = 2)
+            response = await client.get_token_transfer(token = WSOL.address, account = SOLSCAN_DONATION_ADDRESS, limit = 2)
 
         # actual test
         assert isinstance(response, GetTokenTransferResponse)
@@ -731,7 +732,7 @@ class TestSolscanV1:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_market_token_detail(JUP, limit = 2)
+        response = self.solscan.client.get_market_token_detail(JUP.address, limit = 2)
 
         # actual test
         assert isinstance(response, GetMarketTokenDetailResponse)
@@ -757,7 +758,7 @@ class TestSolscanV1:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_market_token_detail(JUP, limit = 2)
+            response = await client.get_market_token_detail(JUP.address, limit = 2)
 
         # actual test
         assert isinstance(response, GetMarketTokenDetailResponse)

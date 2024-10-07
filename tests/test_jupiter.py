@@ -23,8 +23,8 @@ from cyhole.jupiter.schema import (
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException
-from cyhole.core.address.solana import SOL, JUP, USDC, BONK
-from cyhole.core.address.ethereum import WETH
+from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
+from cyhole.core.token.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
 
 # load test config
@@ -57,11 +57,11 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.jupiter.client.get_price([JUP])
+        response = self.jupiter.client.get_price([JUP.address])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert JUP in response.data
+        assert JUP.address in response.data
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -84,11 +84,11 @@ class TestJupiter:
             
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_price([JUP])
+            response = await client.get_price([JUP.address])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert JUP in response.data
+        assert JUP.address in response.data
 
     def test_get_price_token_symbol_sync(self, mocker: MockerFixture) -> None:
         """
@@ -155,11 +155,11 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.jupiter.client.get_price([JUP, SOL])
+        response = self.jupiter.client.get_price([JUP.address, WSOL.address])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert (JUP in response.data) and (SOL in response.data)
+        assert (JUP.address in response.data) and (WSOL.address in response.data)
 
     @pytest.mark.asyncio
     async def test_get_price_multiple_token_address_async(self, mocker: MockerFixture) -> None:
@@ -178,11 +178,11 @@ class TestJupiter:
             
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_price([JUP, SOL])
+            response = await client.get_price([JUP.address, WSOL.address])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert (JUP in response.data) and (SOL in response.data)
+        assert (JUP.address in response.data) and (WSOL.address in response.data)
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -203,12 +203,12 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.jupiter.client.get_price([SOL], vs_address = JUP)
+        response = self.jupiter.client.get_price([WSOL.address], vs_address = JUP.address)
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert SOL in response.data
-        assert response.data[SOL].vs_token == JUP
+        assert WSOL.address in response.data
+        assert response.data[WSOL.address].vs_token == JUP.address
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -231,12 +231,12 @@ class TestJupiter:
             
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_price([SOL], vs_address = JUP)
+            response = await client.get_price([WSOL.address], vs_address = JUP.address)
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert SOL in response.data
-        assert response.data[SOL].vs_token == JUP
+        assert WSOL.address in response.data
+        assert response.data[WSOL.address].vs_token == JUP.address
 
     def test_get_price_unknown_address_sync(self, mocker: MockerFixture) -> None:
         """
@@ -253,7 +253,7 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.jupiter.client.get_price([WETH])
+        response = self.jupiter.client.get_price([WETH.address])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -280,7 +280,7 @@ class TestJupiter:
             
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_price([WETH])
+            response = await client.get_price([WETH.address])
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -302,8 +302,8 @@ class TestJupiter:
         amount = 1000
         # execute request
         input = GetQuoteInput(
-            input_token = SOL,
-            output_token = JUP,
+            input_token = WSOL.address,
+            output_token = JUP.address,
             amount = amount
         )
         response = self.jupiter.client.get_quote(input)
@@ -311,8 +311,8 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetQuoteResponse)
         assert response.input_amount == str(amount)
-        assert response.input_token == SOL
-        assert response.output_token == JUP
+        assert response.input_token == WSOL.address
+        assert response.output_token == JUP.address
 
     @pytest.mark.asyncio
     async def test_get_quote_async(self, mocker: MockerFixture) -> None:
@@ -331,8 +331,8 @@ class TestJupiter:
         amount = 1000
         # execute request
         input = GetQuoteInput(
-            input_token = SOL,
-            output_token = JUP,
+            input_token = WSOL.address,
+            output_token = JUP.address,
             amount = amount
         )
         async with self.jupiter.async_client as client:
@@ -341,8 +341,8 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetQuoteResponse)
         assert response.input_amount == str(amount)
-        assert response.input_token == SOL
-        assert response.output_token == JUP
+        assert response.input_token == WSOL.address
+        assert response.output_token == JUP.address
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -365,8 +365,8 @@ class TestJupiter:
         amount = 1000
         # execute request
         input = GetQuoteInput(
-            input_token = SOL,
-            output_token = JUP,
+            input_token = WSOL.address,
+            output_token = JUP.address,
             amount = amount,
             dexes = [JupiterSwapDex.METEORA_DLMM.value],
             swap_mode = JupiterSwapMode.EXACT_IN.value
@@ -398,8 +398,8 @@ class TestJupiter:
         amount = 1000
         # execute request
         input = GetQuoteInput(
-            input_token = SOL,
-            output_token = JUP,
+            input_token = WSOL.address,
+            output_token = JUP.address,
             amount = amount,
             dexes = [JupiterSwapDex.METEORA_DLMM.value],
             swap_mode = JupiterSwapMode.EXACT_IN.value
@@ -419,8 +419,8 @@ class TestJupiter:
 
         # define input
         input = GetQuoteInput(
-            input_token = SOL,
-            output_token = JUP,
+            input_token = WSOL.address,
+            output_token = JUP.address,
             amount = 1
         )
 
@@ -437,8 +437,8 @@ class TestJupiter:
 
         # define input
         input = GetQuoteInput(
-            input_token = SOL,
-            output_token = JUP,
+            input_token = WSOL.address,
+            output_token = JUP.address,
             amount = 1
         )
 
@@ -456,8 +456,8 @@ class TestJupiter:
         # actual test
         with pytest.raises(ParamUnknownError):
             GetQuoteInput(
-                input_token = SOL,
-                output_token = JUP,
+                input_token = WSOL.address,
+                output_token = JUP.address,
                 amount = 1000,
                 dexes = ["XXX"]
             )
@@ -471,8 +471,8 @@ class TestJupiter:
         # actual test
         with pytest.raises(ParamUnknownError):
             GetQuoteInput(
-                input_token = SOL,
-                output_token = JUP,
+                input_token = WSOL.address,
+                output_token = JUP.address,
                 amount = 1000,
                 swap_mode = "XXX"
             )
@@ -741,9 +741,9 @@ class TestJupiter:
         # execute request
         body = PostLimitOrderCreateBody(
             user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
-            input_token = USDC,
+            input_token = USDC.address,
             input_amount = 100_000,
-            output_token = JUP,
+            output_token = JUP.address,
             output_amount = 100_000,
             base = "5pVyoAeURQHNMVU7DmfMHvCDNmTEYXWfEwc136GYhTKG"
         )
@@ -774,9 +774,9 @@ class TestJupiter:
         # execute request
         body = PostLimitOrderCreateBody(
             user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
-            input_token = USDC,
+            input_token = USDC.address,
             input_amount = 100_000,
-            output_token = JUP,
+            output_token = JUP.address,
             output_amount = 100_000,
             base = "5pVyoAeURQHNMVU7DmfMHvCDNmTEYXWfEwc136GYhTKG"
         )
@@ -804,7 +804,7 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
         else:
             # find open orders
-            open_orders = self.jupiter.client.get_limit_order_open(input_token = JUP, output_token = BONK)
+            open_orders = self.jupiter.client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
             order = open_orders.orders[0]
 
             # set inputs
@@ -849,7 +849,7 @@ class TestJupiter:
                 mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             else:
                 # find open orders
-                open_orders = await client.get_limit_order_open(input_token = JUP, output_token = BONK)
+                open_orders = await client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
                 order = open_orders.orders[0]
 
                 # set inputs
@@ -918,7 +918,7 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_limit_order_open(input_token = JUP, output_token = BONK)
+        response = self.jupiter.client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
 
         # actual test
         assert isinstance(response, GetLimitOrderOpenResponse)
@@ -950,7 +950,7 @@ class TestJupiter:
 
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_limit_order_open(input_token = JUP, output_token = BONK)
+            response = await client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
 
         # actual test
         assert isinstance(response, GetLimitOrderOpenResponse)

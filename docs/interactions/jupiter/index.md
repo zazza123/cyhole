@@ -13,14 +13,14 @@ Extract the latest `JUP` buy price over `USDC` in few lines of code by using [`g
 ```py
 import asyncio
 from cyhole.jupiter import Jupiter
-from cyhole.core.address.solana import JUP
+from cyhole.core.token.solana import JUP
 
 # get current price of JUP on Solana
 async def main() -> None:
     jupiter = Jupiter()
     async with jupiter.async_client as client:
-        response = await client.get_price([JUP])
-        print("Current JUP/USDC:", response.data[JUP].price)
+        response = await client.get_price([JUP.address])
+        print("Current JUP/USDC:", response.data[JUP.address].price)
 
 asyncio.run(main())
 ```
@@ -34,7 +34,7 @@ from solders.keypair import Keypair
 
 from cyhole.jupiter import Jupiter
 from cyhole.jupiter.schema import PostLimitOrderCreateBody
-from cyhole.core.address.solana import JUP, USDC
+from cyhole.core.token.solana import JUP, USDC
 
 jupiter = Jupiter()
 
@@ -44,8 +44,8 @@ body = PostLimitOrderCreateBody(
     user_public_key = "YOUR-WALLET-PUBLIC-KEY",
     input_amount = 100_000,
     output_amount = 100_000,
-    input_token = USDC,
-    output_token = JUP,
+    input_token = USDC.address,
+    output_token = JUP.address,
     base = str(key.pubkey())
 )
 

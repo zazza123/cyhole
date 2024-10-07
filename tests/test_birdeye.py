@@ -24,8 +24,8 @@ from cyhole.birdeye.schema import (
 )
 from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
-from cyhole.core.address.solana import SOL, USDC, BONK
-from cyhole.core.address.ethereum import WETH
+from cyhole.core.token.solana import WSOL, USDC, BONK
+from cyhole.core.token.ethereum import WETH
 
 # load test config
 from .config import load_config, MockerManager
@@ -114,7 +114,7 @@ class TestBirdeyePublic:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.get_price(address = SOL)
+        response = self.birdeye.client.get_price(address = WSOL.address)
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -140,7 +140,7 @@ class TestBirdeyePublic:
             
         # execute request
         async with self.birdeye.async_client as client:
-            response = await client.get_price(address = SOL)
+            response = await client.get_price(address = WSOL.address)
 
         # actual test
         assert isinstance(response, GetPriceResponse)
@@ -161,7 +161,7 @@ class TestBirdeyePublic:
             
         # execute request
         response = self.birdeye.client.get_price_historical(
-            address = SOL,
+            address = WSOL.address,
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1)
@@ -192,7 +192,7 @@ class TestBirdeyePublic:
         # execute request
         async with self.birdeye.async_client as client:
             response = await client.get_price_historical(
-                address = SOL,
+                address = WSOL.address,
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() - timedelta(hours = 1)
@@ -210,7 +210,7 @@ class TestBirdeyePublic:
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
             self.birdeye.client.get_price_historical(
-                address = SOL,
+                address = WSOL.address,
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
@@ -227,7 +227,7 @@ class TestBirdeyePublic:
             # execute request
             async with self.birdeye.async_client as client:
                 await client.get_price_historical(
-                    address = SOL,
+                    address = WSOL.address,
                     address_type = BirdeyeAddressType.TOKEN.value,
                     timeframe = BirdeyeTimeFrame.MIN15.value,
                     dt_from = datetime.now() + timedelta(hours = 1)
@@ -247,7 +247,7 @@ class TestBirdeyePrivate:
         """
         birdeye = Birdeye(api_key = "xxx-xxx-xxx")
         with pytest.raises(BirdeyeAuthorisationError):
-            birdeye.client.get_token_creation_info(address = SOL)
+            birdeye.client.get_token_creation_info(address = WSOL.address)
 
     @pytest.mark.asyncio
     async def test_not_authorised_api_async(self) -> None:
@@ -258,7 +258,7 @@ class TestBirdeyePrivate:
         birdeye = Birdeye(api_key = "xxx-xxx-xxx")
         with pytest.raises(BirdeyeAuthorisationError):
             async with birdeye.async_client as client:
-                await client.get_token_creation_info(address = SOL)
+                await client.get_token_creation_info(address = WSOL.address)
 
     def test_get_price_multiple_sync(self, mocker: MockerFixture) -> None:
         """
@@ -275,7 +275,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        tokens_ca = [SOL, USDC]
+        tokens_ca = [WSOL.address, USDC.address]
         response = self.birdeye.client.get_price_multiple(list_address = tokens_ca)
 
         # actual test
@@ -301,7 +301,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             
         # execute request
-        tokens_ca = [SOL, USDC]
+        tokens_ca = [WSOL.address, USDC.address]
         async with self.birdeye.async_client as client:
             response = await client.get_price_multiple(list_address = tokens_ca)
 
@@ -323,7 +323,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.get_price_volume_single(address = SOL)
+        response = self.birdeye.client.get_price_volume_single(address = WSOL.address)
 
         # actual test
         assert isinstance(response, GetPriceVolumeSingleResponse)
@@ -349,7 +349,7 @@ class TestBirdeyePrivate:
             
         # execute request
         async with self.birdeye.async_client as client:
-            response = await client.get_price_volume_single(address = SOL)
+            response = await client.get_price_volume_single(address = WSOL.address)
 
         # actual test
         assert isinstance(response, GetPriceVolumeSingleResponse)
@@ -369,7 +369,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.post_price_volume_multi(list_address = [SOL, BONK])
+        response = self.birdeye.client.post_price_volume_multi(list_address = [WSOL.address, BONK.address])
 
         # actual test
         assert isinstance(response, PostPriceVolumeMultiResponse)
@@ -395,7 +395,7 @@ class TestBirdeyePrivate:
             
         # execute request
         async with self.birdeye.async_client as client:
-            response = await client.post_price_volume_multi(list_address = [SOL, BONK])
+            response = await client.post_price_volume_multi(list_address = [WSOL.address, BONK.address])
 
         # actual test
         assert isinstance(response, PostPriceVolumeMultiResponse)
@@ -415,7 +415,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.get_token_creation_info(address = SOL)
+        response = self.birdeye.client.get_token_creation_info(address = WSOL.address)
 
         # actual test
         assert isinstance(response, GetTokenCreationInfoResponse)
@@ -441,7 +441,7 @@ class TestBirdeyePrivate:
             
         # execute request
         async with self.birdeye.async_client as client:
-            response = await client.get_token_creation_info(address = SOL)
+            response = await client.get_token_creation_info(address = WSOL.address)
 
         # actual test
         assert isinstance(response, GetTokenCreationInfoResponse)
@@ -551,7 +551,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_solana.json
         """
-        token_address = SOL
+        token_address = WSOL.address
 
         # load mock response
         mock_file_name = "get_token_overview_solana"
@@ -578,7 +578,7 @@ class TestBirdeyePrivate:
 
             Mock Response File: get_token_overview_solana.json
         """
-        token_address = SOL
+        token_address = WSOL.address
 
         # load mock response
         mock_file_name = "get_token_overview_solana"
@@ -602,7 +602,7 @@ class TestBirdeyePrivate:
             Mock Response File: get_token_overview_ethereum.json
         """
         birdeye = Birdeye(api_key = config.birdeye.api_key, chain = BirdeyeChain.ETHEREUM.value)
-        token_address = WETH
+        token_address = WETH.address
 
         # load mock response
         mock_file_name = "get_token_overview_ethereum"
@@ -630,7 +630,7 @@ class TestBirdeyePrivate:
             Mock Response File: get_token_overview_ethereum.json
         """
         birdeye = Birdeye(api_key = config.birdeye.api_key, chain = BirdeyeChain.ETHEREUM.value)
-        token_address = WETH
+        token_address = WETH.address
 
         # load mock response
         mock_file_name = "get_token_overview_ethereum"
@@ -661,7 +661,7 @@ class TestBirdeyePrivate:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
             
         # execute request
-        response = self.birdeye.client.get_trades_token(SOL)
+        response = self.birdeye.client.get_trades_token(WSOL.address)
 
         # actual test
         assert isinstance(response, GetTradesTokenResponse)
@@ -687,7 +687,7 @@ class TestBirdeyePrivate:
             
         # execute request
         async with self.birdeye.async_client as client:
-            response = await client.get_trades_token(SOL)
+            response = await client.get_trades_token(WSOL.address)
 
         # actual test
         assert isinstance(response, GetTradesTokenResponse)
@@ -745,7 +745,7 @@ class TestBirdeyePrivate:
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
             self.birdeye.client.get_ohlcv(
-                address = SOL,
+                address = WSOL.address,
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
@@ -762,7 +762,7 @@ class TestBirdeyePrivate:
             # execute request
             async with self.birdeye.async_client as client:
                 await client.get_ohlcv(
-                    address = SOL,
+                    address = WSOL.address,
                     address_type = BirdeyeAddressType.TOKEN.value,
                     timeframe = BirdeyeTimeFrame.MIN15.value,
                     dt_from = datetime.now() + timedelta(hours = 1)
@@ -784,7 +784,7 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.birdeye.client.get_ohlcv(
-            address = SOL,
+            address = WSOL.address,
             address_type = BirdeyeAddressType.TOKEN.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1),
@@ -816,7 +816,7 @@ class TestBirdeyePrivate:
         # execute request
         async with self.birdeye.async_client as client:
             response = await client.get_ohlcv(
-                address = SOL,
+                address = WSOL.address,
                 address_type = BirdeyeAddressType.TOKEN.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() - timedelta(hours = 1),
@@ -842,7 +842,7 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.birdeye.client.get_ohlcv(
-            address = SOL,
+            address = WSOL.address,
             address_type = BirdeyeAddressType.PAIR.value,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1),
@@ -874,7 +874,7 @@ class TestBirdeyePrivate:
         # execute request
         async with self.birdeye.async_client as client:
             response = await client.get_ohlcv(
-                address = SOL,
+                address = WSOL.address,
                 address_type = BirdeyeAddressType.PAIR.value,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() - timedelta(hours = 1),
@@ -893,8 +893,8 @@ class TestBirdeyePrivate:
         with pytest.raises(BirdeyeTimeRangeError):
             # execute request
             self.birdeye.client.get_ohlcv_base_quote(
-                base_address = SOL,
-                quote_address = USDC,
+                base_address = WSOL.address,
+                quote_address = USDC.address,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() + timedelta(hours = 1)
             )
@@ -910,8 +910,8 @@ class TestBirdeyePrivate:
             # execute request
             async with self.birdeye.async_client as client:
                 await client.get_ohlcv_base_quote(
-                    base_address = SOL,
-                    quote_address = USDC,
+                    base_address = WSOL.address,
+                    quote_address = USDC.address,
                     timeframe = BirdeyeTimeFrame.MIN15.value,
                     dt_from = datetime.now() + timedelta(hours = 1)
                 )
@@ -932,8 +932,8 @@ class TestBirdeyePrivate:
             
         # execute request
         response = self.birdeye.client.get_ohlcv_base_quote(
-            base_address = SOL,
-            quote_address = USDC,
+            base_address = WSOL.address,
+            quote_address = USDC.address,
             timeframe = BirdeyeTimeFrame.MIN15.value,
             dt_from = datetime.now() - timedelta(hours = 1),
             dt_to = datetime.now()
@@ -964,8 +964,8 @@ class TestBirdeyePrivate:
         # execute request
         async with self.birdeye.async_client as client:
             response = await client.get_ohlcv_base_quote(
-                base_address = SOL,
-                quote_address = USDC,
+                base_address = WSOL.address,
+                quote_address = USDC.address,
                 timeframe = BirdeyeTimeFrame.MIN15.value,
                 dt_from = datetime.now() - timedelta(hours = 1),
                 dt_to = datetime.now()

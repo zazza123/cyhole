@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pytest_mock import MockerFixture
 
-from cyhole.core.address.solana import JUP, SOL
+from cyhole.core.token.solana import JUP, WSOL
 from cyhole.core.exception import MissingAPIKeyError
 from cyhole.solscan.v2 import Solscan
 from cyhole.solscan.v2.exception import (
@@ -77,11 +77,12 @@ class TestSolscanV2:
     solscan = Solscan(api_key = config.solscan.api_v2_key)
     mocker = MockerManager(mock_path)
 
-    def test_missing_api_key(self) -> None:
+    def test_missing_api_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
             Unit Test to correcty identify a missing/wrong API Key.
         """
         with pytest.raises(MissingAPIKeyError):
+            monkeypatch.delenv("SOLSCAN_API_V2_KEY")
             Solscan()
 
     def test_get_error_response_sync(self, mocker: MockerFixture) -> None:
@@ -561,7 +562,7 @@ class TestSolscanV2:
             amount_range = (1, 100_000_000),
             exclude_amount_zero = True
         )
-        response = self.solscan.client.get_token_transfer(JUP, param)
+        response = self.solscan.client.get_token_transfer(JUP.address, param)
 
         # actual test
         assert isinstance(response, GetTokenTransferResponse)
@@ -592,7 +593,7 @@ class TestSolscanV2:
             exclude_amount_zero = True
         )
         async with self.solscan.async_client as client:
-            response = await client.get_token_transfer(JUP, param)
+            response = await client.get_token_transfer(JUP.address, param)
 
         # actual test
         assert isinstance(response, GetTokenTransferResponse)
@@ -643,7 +644,7 @@ class TestSolscanV2:
             ],
             time_range = (datetime(2024, 6, 1), datetime(2024, 8, 31))
         )
-        response = self.solscan.client.get_token_defi_activities(JUP, param)
+        response = self.solscan.client.get_token_defi_activities(JUP.address, param)
 
         # actual test
         assert isinstance(response, GetTokenDefiActivitiesResponse)
@@ -668,7 +669,7 @@ class TestSolscanV2:
 
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_defi_activities(JUP)
+            response = await client.get_token_defi_activities(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenDefiActivitiesResponse)
@@ -701,7 +702,7 @@ class TestSolscanV2:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_token_markets([JUP, SOL])
+        response = self.solscan.client.get_token_markets([JUP.address, WSOL.address])
 
         # actual test
         assert isinstance(response, GetTokenMarketsResponse)
@@ -726,7 +727,7 @@ class TestSolscanV2:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_markets([JUP, SOL])
+            response = await client.get_token_markets([JUP.address, WSOL.address])
 
         # actual test
         assert isinstance(response, GetTokenMarketsResponse)
@@ -834,7 +835,7 @@ class TestSolscanV2:
 
         # execute request
         response = self.solscan.client.get_token_price(
-            token = JUP,
+            token = JUP.address,
             time_range = (datetime(2024, 8, 1), datetime(2024, 8, 10))
         )
 
@@ -861,7 +862,7 @@ class TestSolscanV2:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_price(JUP)
+            response = await client.get_token_price(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenPriceResponse)
@@ -875,7 +876,7 @@ class TestSolscanV2:
         # execute request
         with pytest.raises(SolscanInvalidTimeRange):
             self.solscan.client.get_token_price(
-                token = JUP,
+                token = JUP.address,
                 time_range = (datetime(2024, 8, 10), datetime(2024, 8, 1))
             )
 
@@ -893,7 +894,7 @@ class TestSolscanV2:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_token_holders(JUP, amount_range = (1, 1_000_000_000))
+        response = self.solscan.client.get_token_holders(JUP.address, amount_range = (1, 1_000_000_000))
 
         # actual test
         assert isinstance(response, GetTokenHoldersResponse)
@@ -918,7 +919,7 @@ class TestSolscanV2:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_holders(JUP)
+            response = await client.get_token_holders(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenHoldersResponse)
@@ -932,7 +933,7 @@ class TestSolscanV2:
         # execute request
         with pytest.raises(SolscanInvalidAmountRange):
             self.solscan.client.get_token_holders(
-                token = JUP,
+                token = JUP.address,
                 amount_range = (1_000_000, 1)
             )
 
@@ -950,7 +951,7 @@ class TestSolscanV2:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solscan.client.get_token_meta(JUP)
+        response = self.solscan.client.get_token_meta(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenMetaResponse)
@@ -975,7 +976,7 @@ class TestSolscanV2:
             
         # execute request
         async with self.solscan.async_client as client:
-            response = await client.get_token_meta(JUP)
+            response = await client.get_token_meta(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenMetaResponse)
@@ -1041,7 +1042,7 @@ class TestSolscanV2:
         param = GetNFTActivitiesParam(
             activity_type = SolscanActivityNFTType.SOLD.value,
             time_range = (datetime(2023, 12, 31), datetime(2024, 6, 30)),
-            currency_token_address = SOL,
+            currency_token_address = WSOL.address,
             amount_range = (1, 1_000_000_000)
         )
         response = self.solscan.client.get_nft_activities(param)

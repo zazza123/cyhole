@@ -30,7 +30,7 @@ from cyhole.solana_fm.schema import (
     PostMultipleTransferTransactionsResponse,
     GetAllTransferActionsResponse
 )
-from cyhole.core.address.solana import JUP, USDC, SOL
+from cyhole.core.token.solana import JUP, USDC, WSOL
 
 # load test config
 from .config import load_config, MockerManager
@@ -71,7 +71,7 @@ class TestSolanaFM:
         assert raw_params["outflow"] == "false"
 
         # execute request
-        response = self.solana_fm.client.get_account_transactions(JUP, params = params)
+        response = self.solana_fm.client.get_account_transactions(JUP.address, params = params)
 
         # actual test
         assert isinstance(response, GetAccountTransactionsResponse)
@@ -97,7 +97,7 @@ class TestSolanaFM:
             
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.get_account_transactions(JUP)
+            response = await client.get_account_transactions(JUP.address)
 
         # actual test
         assert isinstance(response, GetAccountTransactionsResponse)
@@ -122,7 +122,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.get_account_transactions_fees(JUP, dt_from = datetime(2024, 8, 15), dt_to = datetime(2024, 8, 20))
+        response = self.solana_fm.client.get_account_transactions_fees(JUP.address, dt_from = datetime(2024, 8, 15), dt_to = datetime(2024, 8, 20))
 
         # actual test
         assert isinstance(response, GetAccountTransactionsFeesResponse)
@@ -153,7 +153,7 @@ class TestSolanaFM:
             
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.get_account_transactions_fees(JUP, dt_from = datetime(2024, 8, 15), dt_to = datetime(2024, 8, 20))
+            response = await client.get_account_transactions_fees(JUP.address, dt_from = datetime(2024, 8, 15), dt_to = datetime(2024, 8, 20))
 
         # actual test
         assert isinstance(response, GetAccountTransactionsFeesResponse)
@@ -563,7 +563,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.get_token_info_v0(USDC)
+        response = self.solana_fm.client.get_token_info_v0(USDC.address)
 
         # actual test
         assert isinstance(response, GetTokenInfoV0Response)
@@ -589,7 +589,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.get_token_info_v0(USDC)
+            response = await client.get_token_info_v0(USDC.address)
 
         # actual test
         assert isinstance(response, GetTokenInfoV0Response)
@@ -609,7 +609,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.post_token_multiple_info_v0([USDC, SOL])
+        response = self.solana_fm.client.post_token_multiple_info_v0([USDC.address, WSOL.address])
 
         # actual test
         assert isinstance(response, PostTokenMultipleInfoV0Response)
@@ -635,7 +635,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.post_token_multiple_info_v0([USDC, SOL])
+            response = await client.post_token_multiple_info_v0([USDC.address, WSOL.address])
 
         # actual test
         assert isinstance(response, PostTokenMultipleInfoV0Response)
@@ -655,7 +655,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.get_token_info_v1(JUP)
+        response = self.solana_fm.client.get_token_info_v1(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenInfoV1Response)
@@ -681,7 +681,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.get_token_info_v1(JUP)
+            response = await client.get_token_info_v1(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenInfoV1Response)
@@ -706,7 +706,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.post_token_multiple_info_v1([JUP, USDC])
+        response = self.solana_fm.client.post_token_multiple_info_v1([JUP.address, USDC.address])
 
         # actual test
         assert isinstance(response, PostTokenMultipleInfoV1Response)
@@ -737,7 +737,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.post_token_multiple_info_v1([JUP, USDC])
+            response = await client.post_token_multiple_info_v1([JUP.address, USDC.address])
 
         # actual test
         assert isinstance(response, PostTokenMultipleInfoV1Response)
@@ -757,7 +757,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.post_user_token_accounts(JUP)
+        response = self.solana_fm.client.post_user_token_accounts(JUP.address)
 
         # actual test
         assert isinstance(response, PostUserTokenAccountsResponse)
@@ -783,7 +783,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.post_user_token_accounts(JUP)
+            response = await client.post_user_token_accounts(JUP.address)
 
         # actual test
         assert isinstance(response, PostUserTokenAccountsResponse)
@@ -803,7 +803,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.get_mint_token_accounts(JUP, page_size = 2)
+        response = self.solana_fm.client.get_mint_token_accounts(JUP.address, page_size = 2)
 
         # actual test
         assert isinstance(response, GetMintTokenAccountsResponse)
@@ -829,7 +829,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.get_mint_token_accounts(JUP, page_size = 2)
+            response = await client.get_mint_token_accounts(JUP.address, page_size = 2)
 
         # actual test
         assert isinstance(response, GetMintTokenAccountsResponse)
@@ -897,7 +897,7 @@ class TestSolanaFM:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.solana_fm.client.get_token_supply(JUP)
+        response = self.solana_fm.client.get_token_supply(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenSupplyResponse)
@@ -923,7 +923,7 @@ class TestSolanaFM:
 
         # execute request
         async with self.solana_fm.async_client as client:
-            response = await client.get_token_supply(JUP)
+            response = await client.get_token_supply(JUP.address)
 
         # actual test
         assert isinstance(response, GetTokenSupplyResponse)
