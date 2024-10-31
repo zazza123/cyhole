@@ -138,6 +138,7 @@ nav:
       - Client: development/core/client.md
       - Parameters: development/core/param.md
       - Exceptions: development/core/exception.md
+      - Token: development/core/token.md
 
 extra_css:
   - config/css/mkdocstrings.css
