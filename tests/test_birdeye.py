@@ -46,11 +46,12 @@ class TestBirdeyePublic:
     birdeye = Birdeye(api_key = config.birdeye.api_key)
     mocker = MockerManager(mock_path)
 
-    def test_missing_api_key(self) -> None:
+    def test_missing_api_key(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """
             Unit Test to correcty identify a missing/wrong API Key.
         """
         with pytest.raises(MissingAPIKeyError):
+            monkeypatch.delenv("BIRDEYE_API_KEY", raising = False)
             Birdeye()
 
     def test_get_token_list_sync(self, mocker: MockerFixture) -> None:
