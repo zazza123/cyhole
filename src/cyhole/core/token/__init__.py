@@ -16,11 +16,14 @@ class CyholeToken(BaseModel):
     def __str__(self) -> str:
         return self.address
 
-    def int_to_float(self, amount: int) -> float:
+    def to_decimals(self, amount: int) -> float:
         """
-            Convert the amount of token from integer to float according to decimals.
+            Convert the amount of token from integer to float according to its decimals.
 
             Parameters:
                 amount: amount of token in integer.
+
+            Returns:
+                The amount of token in float.
         """
         return amount / 10 ** self.decimals

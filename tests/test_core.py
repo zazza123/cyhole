@@ -173,8 +173,8 @@ def test_param_unknown() -> None:
     with pytest.raises(ParamUnknownError):
         ParamTest.check("xxx")
 
-def test_token_int_to_float() -> None:
+def test_token_to_decimals() -> None:
     """
-        Unit Test for `CyholeToken.int_to_float` function.
+        Unit Test for `CyholeToken.to_decimals` function.
     """
-    assert SOL.int_to_float(1_011_000_000) == 1.011
+    assert SOL.to_decimals(1_011_000_000) == 1.011
