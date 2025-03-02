@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, field_validator
 class GetTokenListInfo(BaseModel):
     name: str | None                = None
     symbol: str | None              = None
+    price: float
     address: str
     decimals: int
     liquidity: float
@@ -17,7 +18,7 @@ class GetTokenListInfo(BaseModel):
     logo_uri: str  | None           = Field(alias = "logoURI", default = None)
 
 class GetTokenListData(BaseModel):
-    total: int
+    total: int | None = None
     update_time: datetime = Field(alias = "updateTime")
     update_unix_time: int = Field(alias = "updateUnixTime")
     tokens: list[GetTokenListInfo]
