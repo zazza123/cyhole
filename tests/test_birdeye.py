@@ -1,3 +1,4 @@
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -86,7 +87,8 @@ class TestBirdeyePublic:
 
             Mock Response File: get_token_list.json
         """
-    
+        time.sleep(1)
+
         # load mock response
         mock_file_name = "get_token_list"
         if config.mock_response or config.birdeye.mock_response_public:
@@ -107,6 +109,7 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price.json
         """
+        time.sleep(1)
 
         # load mock response
         mock_file_name = "get_price"
@@ -132,6 +135,7 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price.json
         """
+        time.sleep(1)
 
         # load mock response
         mock_file_name = "get_price"
@@ -153,6 +157,7 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price_historical.json
         """
+        time.sleep(1)
 
         # load mock response
         mock_file_name = "get_price_historical"
@@ -183,6 +188,7 @@ class TestBirdeyePublic:
 
             Mock Response File: get_price_historical.json
         """
+        time.sleep(1)
 
         # load mock response
         mock_file_name = "get_price_historical"
