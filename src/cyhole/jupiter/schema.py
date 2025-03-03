@@ -17,16 +17,14 @@ class JupiterHTTPError(BaseModel):
 # classes used on GET "Price" endpoint
 class GetPriceData(BaseModel):
     id: str
-    mint_symbol: str = Field(alias = "mintSymbol")
-    vs_token: str = Field(alias = "vsToken")
-    vs_token_symbol: str = Field(alias = "vsTokenSymbol")
-    price: float
+    type: str
+    price: str
 
 class GetPriceResponse(BaseModel):
     """
         Model used to represent the **Price** endpoint from Jupiter API.
     """
-    data: dict[str, GetPriceData]
+    data: dict[str, GetPriceData | None]
     time_taken: float = Field(alias = "timeTaken")
 
 # classes used on GET "Quote" endpoint

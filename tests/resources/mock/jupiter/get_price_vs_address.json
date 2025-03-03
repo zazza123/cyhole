@@ -1,12 +1,20 @@
 {
     "data": {
+        "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263": {
+            "id": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+            "type": "derivedPrice",
+            "price": "0.000018498165219726123"
+        },
         "So11111111111111111111111111111111111111112": {
             "id": "So11111111111111111111111111111111111111112",
-            "mintSymbol": "SOL",
-            "vsToken": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-            "vsTokenSymbol": "JUP",
-            "price": 152.433785414
+            "type": "derivedPrice",
+            "price": "214.19375692775853"
+        },
+        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
+            "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "type": "derivedPrice",
+            "price": "1"
         }
     },
-    "timeTaken": 0.0002737700124271214
+    "timeTaken": 0.005156532
 }

@@ -68,7 +68,7 @@ class Jupiter(Interaction):
         self.async_client = JupiterAsyncClient(self)
 
         # API urls
-        self.url_api_price = "https://price.jup.ag/v6/price"
+        self.url_api_price = "https://api.jup.ag/price/v2"
         self.url_api_quote = "https://quote-api.jup.ag/v6/"
         self.url_api_token = "https://token.jup.ag/"
         self.url_api_limit = "https://jup.ag/api/limit/v1/"
@@ -82,21 +82,22 @@ class Jupiter(Interaction):
 
     def _get_price(self, sync: bool, address: list[str], vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://station.jup.ag/docs/apis/price-api)** API endpoint, 
-            and it is used to get the current price of a list of tokens on Solana chain with respect to another token. 
+            This function refers to the GET **[Price](https://station.jup.ag/docs/utility/price-api)** API endpoint, 
+            and it is used to get the current price of a list of tokens on Solana chain with respect to another token
+            taken from [Jupiter Swap](https://jup.ag).
 
             The API returns the unit buy price for the tokens; by default, the price is provided according to 
             the value of `USDC` token. It is also possible to provide another comparison token in the request.
 
             !!! info
-                Observe that when the token address/symbol or comparison token address/symbol are not found, 
-                the response provided will have an empty `data` object.
+                Observe that when the token address or comparison token address are not found, 
+                the response provided will have a `data` object with the token address as key and
+                the value will be `None`.
 
             Parameters:
-                address: list of tokens involved in the request.
-                    It is possible to provide the Solana tokens' addresses or their symbols. 
-                    For example, `SOL` is equivalent to `So11111111111111111111111111111111111111112`.
-                vs_address: comparison token address/symbol.
+                address: list of tokens addresses to get the price.
+                    For example, `So11111111111111111111111111111111111111112`.
+                vs_address: comparison token address.
                     Default Value: `None` (`USDC`)
 
             Returns:
