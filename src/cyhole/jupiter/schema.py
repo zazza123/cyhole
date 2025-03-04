@@ -15,10 +15,61 @@ class JupiterHTTPError(BaseModel):
     msg: str = Field(alias = "error")
 
 # classes used on GET "Price" endpoint
+class GetPriceDepthValues(BaseModel):
+    """Depth values."""
+
+    amount_10_sol: float = Field(alias = "10")
+    amount_100_sol: float = Field(alias = "100")
+    amount_1000_sol: float = Field(alias = "1000")
+
+class GetPriceDepthRatio(BaseModel):
+    """Depth ratio information."""
+
+    timestamp_unix: int = Field(alias = "timestamp")
+    depth: GetPriceDepthValues
+
+class GetPriceDepth(BaseModel):
+    """Depth information."""
+
+    buy_price_impact_ratio: GetPriceDepthRatio | None = Field(default = None, alias = "buyPriceImpactRatio")
+    sell_price_impact_ratio: GetPriceDepthRatio | None = Field(default = None, alias = "sellPriceImpactRatio")
+
+class GetPriceLastSwappedPrice(BaseModel):
+    """Last swapped price information."""
+
+    last_jupiter_sell_at_unix: int = Field(alias = "lastJupiterSellAt")
+    last_jupiter_sell_price: str = Field(alias = "lastJupiterSellPrice")
+    last_jupiter_buy_at_unix: int = Field(alias = "lastJupiterBuyAt")
+    last_jupiter_buy_price: str = Field(alias = "lastJupiterBuyPrice")
+
+class GetPriceQuotedPrice(BaseModel):
+    """Last quoted price information."""
+
+    buy_price: str = Field(alias = "buyPrice")
+    buy_at_unix: int = Field(alias = "buyAt")
+    sell_price: str | None = Field(default = None, alias = "sellPrice")
+    sell_at_unix: int | None = Field(default = None, alias = "sellAt")
+
+class GetPriceExtraInfo(BaseModel):
+    """Extra information about the price."""
+
+    last_swapped_price: GetPriceLastSwappedPrice | None = Field(default = None, alias = "lastSwappedPrice")
+    quoted_price: GetPriceQuotedPrice = Field(alias = "quotedPrice")
+    confidence_level: str = Field(alias = "confidenceLevel")
+    depth: GetPriceDepth
+
 class GetPriceData(BaseModel):
     id: str
+    """Chain address of the token."""
+
     type: str
+    """The type of the token."""
+
     price: str
+    """The price of the token."""
+
+    extra_info: None | GetPriceExtraInfo = Field(default = None, alias = "extraInfo")
+    """Extra information about the price. Only available if request param `extra_info` is set to `True`."""
 
 class GetPriceResponse(BaseModel):
     """

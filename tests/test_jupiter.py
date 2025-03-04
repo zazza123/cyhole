@@ -245,6 +245,62 @@ class TestJupiter:
         assert isinstance(response, GetPriceResponse)
         assert response.data[WETH.address] == None
 
+    def test_get_price_with_extra_info_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for synchronous logic. Set extra info to True.
+
+            Mock Response File: get_price_with_extra_info.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_with_extra_info"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            
+        # execute request
+        response = self.jupiter.client.get_price([JUP.address], extra_info = True)
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+
+        # check extra info
+        jup_data = response.data[JUP.address]
+        assert jup_data is not None
+        assert jup_data.extra_info is not None
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_price_with_extra_info_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price" 
+            for asynchronous logic. Set extra info to True.
+
+            Mock Response File: get_price_with_extra_info.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_with_extra_info"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([JUP.address], extra_info = True)
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+
+        # check extra info
+        jup_data = response.data[JUP.address]
+        assert jup_data is not None
+        assert jup_data.extra_info is not None
+
     def test_get_quote_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Quote" for synchronous logic.

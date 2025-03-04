@@ -75,12 +75,12 @@ class Jupiter(Interaction):
         return
 
     @overload
-    def _get_price(self, sync: Literal[True], address: list[str], vs_address: str | None = None) -> GetPriceResponse: ...
+    def _get_price(self, sync: Literal[True], address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse: ...
 
     @overload
-    def _get_price(self, sync: Literal[False], address: list[str], vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]: ...
+    def _get_price(self, sync: Literal[False], address: list[str], extra_info: bool = False, vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]: ...
 
-    def _get_price(self, sync: bool, address: list[str], vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
+    def _get_price(self, sync: bool, address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
             This function refers to the GET **[Price](https://station.jup.ag/docs/utility/price-api)** API endpoint, 
             and it is used to get the current price of a list of tokens on Solana chain with respect to another token
@@ -97,16 +97,25 @@ class Jupiter(Interaction):
             Parameters:
                 address: list of tokens addresses to get the price.
                     For example, `So11111111111111111111111111111111111111112`.
+                extra_info: flag to include extra information in the response
+                    that could be useful fot analysis (e.g., last swap, current quote price).
+                    More important, if activated, then `vs_address` is ignored.
                 vs_address: comparison token address.
                     Default Value: `None` (`USDC`)
 
             Returns:
                 tokens' prices.
         """
+
+        # extra_info consistency
+        if extra_info:
+            vs_address = None
+
         # set params
         params = {
             "ids": ",".join(address),
-            "vsToken": vs_address
+            "vsToken": vs_address,
+            "showExtraInfo": "true" if extra_info else "false"
         }
 
         # execute request
