@@ -10,6 +10,7 @@ from ..jupiter.schema import (
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
+    GetTokenInfoResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -67,6 +68,13 @@ class JupiterClient(APIClient):
             All the API endopint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap].
         """
         return self._interaction._post_swap(True, body)
+
+    def get_token_info(self, address: str) -> GetTokenInfoResponse:
+        """
+            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-information)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
+        """
+        return self._interaction._get_token_info(True, address)
 
     def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """
@@ -172,6 +180,13 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
         """
         return await self._interaction._post_swap(False, body)
+
+    async def get_token_info(self, address: str) -> GetTokenInfoResponse:
+        """
+            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-information)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
+        """
+        return await self._interaction._get_token_info(False, address)
 
     async def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """

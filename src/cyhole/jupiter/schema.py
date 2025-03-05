@@ -229,6 +229,26 @@ class PostSwapResponse(BaseModel):
     last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
     prioritization_fee_lamports: int = Field(default = 0, alias = "prioritizationFeeLamports")
 
+# classes used on GET "Token Info" endpoint
+class GetTokenInfoResponse(BaseModel):
+    """
+        Model used to represent the **Token** endpoint from Jupiter API
+        focused on retrieving information about a token.
+    """
+    name: str
+    address: str
+    symbol: str
+    decimals: int
+    created_at: str
+    logoURI: str | None = None
+    tags: list[str] | None = None
+    daily_volume: float | None = None
+    freeze_authority: str | None = None
+    mint_authority: str | None = None
+    minted_at: str | None = None
+    permanent_delegate: str | None = None
+    extensions: dict[str, str] | None = None
+
 # classes used on GET "Token List" endpoint
 class GetTokenListToken(BaseModel):
     address: str

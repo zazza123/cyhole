@@ -13,6 +13,7 @@ from ..jupiter.schema import (
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
+    GetTokenInfoResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -70,7 +71,7 @@ class Jupiter(Interaction):
         # API urls
         self.url_api_price = "https://api.jup.ag/price/v2"
         self.url_api_quote = "https://quote-api.jup.ag/v6/"
-        self.url_api_token = "https://token.jup.ag/"
+        self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_limit = "https://jup.ag/api/limit/v1/"
         return
 
@@ -274,6 +275,37 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostSwapResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_info(self, sync: Literal[True], address: str) -> GetTokenInfoResponse: ...
+
+    @overload
+    def _get_token_info(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetTokenInfoResponse]: ...
+
+    def _get_token_info(self, sync: bool, address: str) -> GetTokenInfoResponse | Coroutine[None, None, GetTokenInfoResponse]:
+        """
+            This function refers to the GET **[Token](https://station.jup.ag/docs/api/token-information)** API endpoint,
+            with a specific focus on retrieving the information of a token given its address.
+
+            Parameters:
+                address: address of the token to check.
+                    For example, `So11111111111111111111111111111111111111112`.
+
+            Returns:
+                Information of the token.
+        """
+        # set url
+        url = self.url_api_token + address
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetTokenInfoResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetTokenInfoResponse(**content_raw.json())
             return async_request()
 
     @overload
