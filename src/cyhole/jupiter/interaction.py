@@ -15,6 +15,7 @@ from ..jupiter.schema import (
     PostSwapResponse,
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
+    GetTokenTaggedResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -29,7 +30,7 @@ from ..jupiter.exception import (
     JupiterNoRouteFoundError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenListType
+from ..jupiter.param import JupiterTokenListType, JupiterTokenTagType
 
 class Jupiter(Interaction):
     """
@@ -337,6 +338,42 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url)
                 return GetTokenMarketMintsResponse(mints = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_tagged(self, sync: Literal[True], tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse: ...
+
+    @overload
+    def _get_token_tagged(self, sync: Literal[False], tag: str | JupiterTokenTagType) -> Coroutine[None, None, GetTokenTaggedResponse]: ...
+
+    def _get_token_tagged(self, sync: bool, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse | Coroutine[None, None, GetTokenTaggedResponse]:
+        """
+            This function refers to the GET **[Tagged Token]https://station.jup.ag/docs/api/tagged)** API endpoint, 
+            and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
+            Choose the tokens list according to `tag` field.
+
+            Parameters:
+                tag: Jupiter manages the tradable tokens through a set of tags in order to guarantee its 
+                    core values and provide a secure service. The supported tages are available on [`JupiterTokenTagType`][cyhole.jupiter.param.JupiterTokenTagType].
+
+            Returns:
+                List of Jupiter's tokens list.
+        """
+        # check param consistency
+        tag_str = tag if isinstance(tag, str) else tag.value
+        JupiterTokenTagType.check(tag_str)
+
+        # set params
+        url = self.url_api_token + "tagged/" + tag_str
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetTokenTaggedResponse(tokens = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetTokenTaggedResponse(tokens = content_raw.json())
             return async_request()
 
     @overload

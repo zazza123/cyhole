@@ -70,3 +70,22 @@ class JupiterLimitOrderState(CyholeParam):
     """The limit order is completed."""
     CANCELLED = "Cancelled"
     """The limit order was cancelled."""
+
+class JupiterTokenTagType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's token tag types.
+    """
+    MOONSHOT = "moonshot"
+    """A list of tokens minted via Moonshot."""
+    PUMPFUN = "pump"
+    """	A list of tokens minted via Pump.fun."""
+    TOKEN_2022 = "token-2022"
+    """A list of all token-2022 tokens."""
+    LIQUID_STAKED = "lst"
+    """A list of liquid staked tokens, maintained with Sanctum."""
+    VERIFIED = "verified"
+    """
+        A list of verified tokens, consisting of community-verified tokens 
+        via [catdetlist.jup.ag](https://catdetlist.jup.ag/) and the previous 
+        standard of Jupiter Strict.
+    """

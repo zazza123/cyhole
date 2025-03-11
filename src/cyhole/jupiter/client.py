@@ -12,6 +12,7 @@ from ..jupiter.schema import (
     PostSwapResponse,
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
+    GetTokenTaggedResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -21,7 +22,7 @@ from ..jupiter.schema import (
     GetLimitOrderHistoryResponse,
     GetLimitOrderTradeHistoryResponse
 )
-from ..jupiter.param import JupiterTokenListType
+from ..jupiter.param import JupiterTokenListType, JupiterTokenTagType
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -83,6 +84,13 @@ class JupiterClient(APIClient):
             All the API endopint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
         """
         return self._interaction._get_token_market_mints(True, address)
+
+    def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
+        """
+            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/tagged)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
+        """
+        return self._interaction._get_token_tagged(True, tag)
 
     def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """
@@ -202,6 +210,13 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
         """
         return await self._interaction._get_token_market_mints(False, address)
+
+    async def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
+        """
+            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/tagged)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
+        """
+        return await self._interaction._get_token_tagged(False, tag)
 
     async def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """

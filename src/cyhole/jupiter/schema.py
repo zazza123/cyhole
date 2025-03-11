@@ -256,6 +256,16 @@ class GetTokenMarketMintsResponse(BaseModel):
     """
     mints: list[str]
 
+# classes used on GET "Token Tagged" endpoint
+class GetTokenTaggedToken(GetTokenInfoResponse):
+    pass
+
+class GetTokenTaggedResponse(BaseModel):
+    """
+        Model used to represent the **Token Tagged** endpoint from Jupiter API.
+    """
+    tokens: list[GetTokenTaggedToken]
+
 # classes used on GET "Token List" endpoint
 class GetTokenListToken(BaseModel):
     address: str
