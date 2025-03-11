@@ -11,6 +11,7 @@ from ..jupiter.schema import (
     PostSwapBody,
     PostSwapResponse,
     GetTokenInfoResponse,
+    GetTokenMarketMintsResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -75,6 +76,13 @@ class JupiterClient(APIClient):
             All the API endopint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
         """
         return self._interaction._get_token_info(True, address)
+
+    def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
+        """
+            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/mints-in-market)** API for synchronous logic.
+            All the API endopint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
+        """
+        return self._interaction._get_token_market_mints(True, address)
 
     def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """
@@ -187,6 +195,13 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
         """
         return await self._interaction._get_token_info(False, address)
+
+    async def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
+        """
+            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/mints-in-market)** API for asynchronous logic.
+            All the API endopint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
+        """
+        return await self._interaction._get_token_market_mints(False, address)
 
     async def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """

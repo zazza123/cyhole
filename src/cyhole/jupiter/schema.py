@@ -249,6 +249,13 @@ class GetTokenInfoResponse(BaseModel):
     permanent_delegate: str | None = None
     extensions: dict[str, str] | None = None
 
+# classes used on GET "Token Market Mints" endpoint
+class GetTokenMarketMintsResponse(BaseModel):
+    """
+        Model used to represent the **Token Market Mints** endpoint from Jupiter API.
+    """
+    mints: list[str]
+
 # classes used on GET "Token List" endpoint
 class GetTokenListToken(BaseModel):
     address: str

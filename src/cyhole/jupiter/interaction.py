@@ -14,6 +14,7 @@ from ..jupiter.schema import (
     PostSwapBody,
     PostSwapResponse,
     GetTokenInfoResponse,
+    GetTokenMarketMintsResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -306,6 +307,36 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url)
                 return GetTokenInfoResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_market_mints(self, sync: Literal[True], address: str) -> GetTokenMarketMintsResponse: ...
+
+    @overload
+    def _get_token_market_mints(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetTokenMarketMintsResponse]: ...
+
+    def _get_token_market_mints(self, sync: bool, address: str) -> GetTokenMarketMintsResponse | Coroutine[None, None, GetTokenMarketMintsResponse]:
+        """
+            This function refers to the GET **[Token Market Mints](https://station.jup.ag/docs/api/mints-in-market)** API endpoint,
+            and can be used to retrieve the list of token addresses that belong to a market/pool address.
+
+            Parameters:
+                address: address of the market/pool to check.
+
+            Returns:
+                List of token addresses.
+        """
+        # set url
+        url = self.url_api_token + f"market/{address}/mints"
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetTokenMarketMintsResponse(mints = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetTokenMarketMintsResponse(mints = content_raw.json())
             return async_request()
 
     @overload
