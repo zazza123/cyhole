@@ -16,6 +16,7 @@ from ..jupiter.schema import (
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
+    GetTokenNewResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -348,7 +349,7 @@ class Jupiter(Interaction):
 
     def _get_token_tagged(self, sync: bool, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse | Coroutine[None, None, GetTokenTaggedResponse]:
         """
-            This function refers to the GET **[Tagged Token]https://station.jup.ag/docs/api/tagged)** API endpoint, 
+            This function refers to the GET **[Tagged Token](https://station.jup.ag/docs/api/tagged)** API endpoint, 
             and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
             Choose the tokens list according to `tag` field.
 
@@ -374,6 +375,41 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url)
                 return GetTokenTaggedResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_new(self, sync: Literal[True], limit: int = 10, offset: int | None = None) -> GetTokenNewResponse: ...
+
+    @overload
+    def _get_token_new(self, sync: Literal[False], limit: int = 10, offset: int | None = None) -> Coroutine[None, None, GetTokenNewResponse]: ...
+
+    def _get_token_new(self, sync: bool, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse | Coroutine[None, None, GetTokenNewResponse]:
+        """
+            This function refers to the GET **[New Token](https://station.jup.ag/docs/api/new)** API endpoint, 
+            and it is used to retrieved the list of new tokens managed by Jupiter.
+
+            Parameters:
+                limit: number of tokens to retrieve.
+                offset: number of tokens to skip.
+
+            Returns:
+                List of Jupiter's tokens list.
+        """
+        # set params
+        url = self.url_api_token + "new"
+        params = {
+            "limit": limit,
+            "offset": offset
+        }
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetTokenNewResponse(tokens = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetTokenNewResponse(tokens = content_raw.json())
             return async_request()
 
     @overload

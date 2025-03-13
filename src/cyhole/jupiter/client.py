@@ -13,6 +13,7 @@ from ..jupiter.schema import (
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
+    GetTokenNewResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -84,6 +85,13 @@ class JupiterClient(APIClient):
             All the API endopint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
         """
         return self._interaction._get_token_market_mints(True, address)
+
+    def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
+        """
+            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/new)** API endpoint for synchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
+        """
+        return self._interaction._get_token_new(True, limit, offset)
 
     def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
         """
@@ -217,6 +225,13 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
         """
         return await self._interaction._get_token_tagged(False, tag)
+
+    async def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
+        """
+            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/new)** API endpoint for asynchronous logic. 
+            All the API endopint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
+        """
+        return await self._interaction._get_token_new(False, limit, offset)
 
     async def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
         """

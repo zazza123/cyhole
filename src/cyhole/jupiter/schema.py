@@ -266,6 +266,26 @@ class GetTokenTaggedResponse(BaseModel):
     """
     tokens: list[GetTokenTaggedToken]
 
+# classes used on GET "Token New" endpoint
+class GetTokenNewToken(BaseModel):
+    """Model used to represent a token information on the **Token New** endpoint."""
+    mint: str
+    name: str
+    symbol: str
+    decimals: int
+    created_at: str
+    known_markets: list[str]
+    metadata_updated_at: int
+    logo_uri: str | None = None
+    mint_authority: str | None = None
+    freeze_authority: str | None = None
+
+class GetTokenNewResponse(BaseModel):
+    """
+        Model used to represent the **Token New** endpoint from Jupiter API.
+    """
+    tokens: list[GetTokenNewToken]
+
 # classes used on GET "Token List" endpoint
 class GetTokenListToken(BaseModel):
     address: str

@@ -15,6 +15,7 @@ from cyhole.jupiter.schema import (
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
+    GetTokenNewResponse,
     GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
@@ -845,6 +846,63 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetTokenTaggedResponse)
+
+    def test_get_token_new_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "New Token" 
+            for synchronous logic.
+
+            Mock Response File: get_token_new.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_new"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenNewResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_token_new()
+
+        # actual test
+        assert isinstance(response, GetTokenNewResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.tokens = response.tokens[0:2]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_new_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "New Token" 
+            for asynchronous logic.
+
+            Mock Response File: get_token_new.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_new"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenNewResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_token_new()
+
+        # actual test
+        assert isinstance(response, GetTokenNewResponse)
 
     def test_get_token_list_sync(self, mocker: MockerFixture) -> None:
         """

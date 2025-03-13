@@ -1,0 +1,18 @@
+{
+    "tokens": [
+        {
+            "mint": "BauZSgsiovDZtgXZSevrrXnRnujfGs6eH6mnf686pump",
+            "name": "The European Union",
+            "symbol": "Sickle",
+            "decimals": 6,
+            "created_at": "1741905147",
+            "known_markets": [
+                "EFxrxW5Afos3jz2eoxKoSmxxQjkT2X7KFGRE4ovduufw"
+            ],
+            "metadata_updated_at": 1741905156,
+            "logo_uri": "https://ipfs.io/ipfs/QmWKJeZw24p3dtxcW3cHY3HjXPMMRhJVsrRcuKHuVvdMqf",
+            "mint_authority": null,
+            "freeze_authority": null
+        }
+    ]
+}
