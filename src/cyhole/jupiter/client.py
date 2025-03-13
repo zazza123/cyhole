@@ -14,7 +14,6 @@ from ..jupiter.schema import (
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
-    GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
     PostLimitOrderCancelBody,
@@ -23,7 +22,7 @@ from ..jupiter.schema import (
     GetLimitOrderHistoryResponse,
     GetLimitOrderTradeHistoryResponse
 )
-from ..jupiter.param import JupiterTokenListType, JupiterTokenTagType
+from ..jupiter.param import JupiterTokenTagType
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -99,13 +98,6 @@ class JupiterClient(APIClient):
             All the API endopint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
         """
         return self._interaction._get_token_tagged(True, tag)
-
-    def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
-        """
-            Call the Jupiter's GET **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint for synchronous logic. 
-            All the API endopint details are available on [`Jupiter._get_token_list`][cyhole.jupiter.interaction.Jupiter._get_token_list].
-        """
-        return self._interaction._get_token_list(True, type, banned)
 
     def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
         """
@@ -232,13 +224,6 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
         """
         return await self._interaction._get_token_new(False, limit, offset)
-
-    async def get_token_list(self, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse:
-        """
-            Call the Jupiter's GET **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint for asynchronous logic. 
-            All the API endopint details are available on [`Jupiter._get_token_list`][cyhole.jupiter.interaction.Jupiter._get_token_list].
-        """
-        return await self._interaction._get_token_list(False, type, banned)
 
     async def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
         """

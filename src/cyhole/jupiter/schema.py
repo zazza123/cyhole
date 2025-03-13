@@ -286,23 +286,6 @@ class GetTokenNewResponse(BaseModel):
     """
     tokens: list[GetTokenNewToken]
 
-# classes used on GET "Token List" endpoint
-class GetTokenListToken(BaseModel):
-    address: str
-    chain_id: int = Field(alias = "chainId")
-    decimals: int
-    name: str
-    symbol: str
-    logo_uri: str = Field(alias = "logoURI")
-    tags: list[str]
-    extensions: dict[str, str] | None = None
-
-class GetTokenListResponse(BaseModel):
-    """
-        Model used to represent the **Token List** endpoint from Jupiter API.
-    """
-    tokens: list[GetTokenListToken]
-
 # classes used on POST "Limit Order Create" endpoint
 # Body
 class PostLimitOrderCreateBody(BaseModel):

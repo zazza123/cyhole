@@ -17,7 +17,6 @@ from ..jupiter.schema import (
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
-    GetTokenListResponse,
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
     PostLimitOrderCancelBody,
@@ -31,7 +30,7 @@ from ..jupiter.exception import (
     JupiterNoRouteFoundError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenListType, JupiterTokenTagType
+from ..jupiter.param import JupiterTokenTagType
 
 class Jupiter(Interaction):
     """
@@ -410,48 +409,6 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetTokenNewResponse(tokens = content_raw.json())
-            return async_request()
-
-    @overload
-    def _get_token_list(self, sync: Literal[True], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse: ...
-
-    @overload
-    def _get_token_list(self, sync: Literal[False], type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> Coroutine[None, None, GetTokenListResponse]: ...
-
-    def _get_token_list(self, sync: bool, type: str = JupiterTokenListType.STRICT.value, banned: None | bool = None) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
-        """
-            This function refers to the GET **[Token List](https://station.jup.ag/docs/token-list/token-list-api)** API endpoint, 
-            and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
-            Choose the tokens list according to `type` field.
-
-            Parameters:
-                type: Jupiter manages the tradable tokens through a set of tags in order to guarantee its 
-                    core values and provide a secure service. There are two types of lists currently available:  
-                    - Strict the most secure list that includes only the tokens with tags `old-registry`, `community`, or `wormhole`.
-                    - All all the tokens are included expect the banned ones.
-                    The supported types are available on [`JupiterTokenListType`][cyhole.jupiter.param.JupiterTokenListType].
-                banned: this flag can be used **only** on `All` type, and it enables the inclusion of banned tokens.
-
-            Returns:
-                List of Jupiter's tokens list.
-        """
-        # check param consistency
-        JupiterTokenListType.check(type)
-
-        # set params
-        url = self.url_api_token + type
-        params = {
-            "includeBanned" : banned
-        }
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenListResponse(tokens = content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenListResponse(tokens = content_raw.json())
             return async_request()
 
     @overload

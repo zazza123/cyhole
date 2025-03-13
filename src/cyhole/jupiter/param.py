@@ -51,15 +51,6 @@ class JupiterSwapDex(CyholeParam):
     TOKEN_SWAP = "Token Swap"
     WHIRLPOOL = "Whirlpool"
 
-class JupiterTokenListType(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's token lists.
-    """
-    STRICT = "strict"
-    """Extract only the tokens with tags `old-registry`, `community`, or `wormhole` verified"""
-    ALL = "all"
-    """Extract **all** non banned tokens."""
-
 class JupiterLimitOrderState(CyholeParam):
     """
         Enum class to get the supported Jupiter's limit order states.
