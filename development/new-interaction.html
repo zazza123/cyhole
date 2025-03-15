@@ -1,0 +1,2559 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="index.html">
+      
+      
+        <link rel="next" href="bugs-improvements.html">
+      
+      
+      <link rel="icon" href="../config/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.8">
+    
+    
+      
+        <title>New Interaction - cyhole</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="https://unpkg.com/iframe-worker/shim"></script>
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../config/css/mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#new-interaction" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="cyhole" class="md-header__button md-logo" aria-label="cyhole" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 6.7 1.45 3.85L17.3 12l-3.85 1.45L12 17.3l-1.45-3.85L6.7 12l3.85-1.45zM12 1 9 9l-8 3 8 3 3 8 3-8 8-3-8-3z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            cyhole
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              New Interaction
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to Dark Mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to Dark Mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.768 3.96zl-.002-.005a9 9 0 0 0-.218-.779c-.13-.394.21-.8.602-.67q.435.144.855.328l.01.005A10.002 10.002 0 0 1 12 22a10 10 0 0 1-9.162-5.985l-.004-.01a10 10 0 0 1-.329-.855c-.13-.392.277-.732.67-.602q.386.126.78.218l.004.002A9 9 0 0 0 14.999 6a9 9 0 0 0-.231-2.04M16.5 6c0 5.799-4.701 10.5-10.5 10.5q-.64 0-1.26-.075A8.5 8.5 0 1 0 16.425 4.74q.075.62.075 1.259Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="white" data-md-color-accent="indigo"  aria-label="Switch to Light Mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to Light Mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14m0-1.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 1 0 0 11m-5.657.157a.75.75 0 0 1 0 1.06l-1.768 1.768a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.767-1.768a.75.75 0 0 1 1.061 0M3.515 3.515a.75.75 0 0 1 1.06 0l1.768 1.768a.749.749 0 0 1-.326 1.275.75.75 0 0 1-.734-.215L3.515 4.575a.75.75 0 0 1 0-1.06M12 0a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 12 0M4 12a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 4 12m8 8a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 12 20m12-8a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 24 12m-6.343 5.657a.75.75 0 0 1 1.06 0l1.768 1.768a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-1.768-1.767a.75.75 0 0 1 0-1.061m2.828-14.142a.75.75 0 0 1 0 1.06l-1.768 1.768a.75.75 0 0 1-1.042-.018.75.75 0 0 1-.018-1.042l1.767-1.768a.75.75 0 0 1 1.061 0"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zazza123/cyhole" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zazza123/cyhole
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.html" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../interactions/index.html" class="md-tabs__link">
+          
+  
+    
+  
+  Interactions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
+          
+  
+    
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="cyhole" class="md-nav__button md-logo" aria-label="cyhole" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 6.7 1.45 3.85L17.3 12l-3.85 1.45L12 17.3l-1.45-3.85L6.7 12l3.85-1.45zM12 1 9 9l-8 3 8 3 3 8 3-8 8-3-8-3z"/></svg>
+
+    </a>
+    cyhole
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zazza123/cyhole" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zazza123/cyhole
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Interactions
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Interactions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/birdeye/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Birdeye
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Birdeye
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/jupiter/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Jupiter
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Jupiter
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/solana_fm/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    SolanaFM
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            SolanaFM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Solscan
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Solscan
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/solscan/v1/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    v1
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_1" id="__nav_2_5_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            v1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/solscan/v2/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    v2
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_2" id="__nav_2_5_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            v2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    New Interaction
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="new-interaction.html" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    New Interaction
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#folders-organisation" class="md-nav__link">
+        <span class="md-ellipsis">
+            Folders Organisation
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#core" class="md-nav__link">
+        <span class="md-ellipsis">
+            Core
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label="Core">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#__init__py" class="md-nav__link">
+        <span class="md-ellipsis">
+            __init__.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#interactionpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            interaction.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#clientpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            client.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#schemapy" class="md-nav__link">
+        <span class="md-ellipsis">
+            schema.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#parampy" class="md-nav__link">
+        <span class="md-ellipsis">
+            param.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#exceptionpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            exception.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#tests" class="md-nav__link">
+        <span class="md-ellipsis">
+            Tests
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#documentation" class="md-nav__link">
+        <span class="md-ellipsis">
+            Documentation
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#example" class="md-nav__link">
+        <span class="md-ellipsis">
+            Example
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bugs-improvements.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bugs &amp; Improvements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="testing.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pull-requests.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pull Requests
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="core/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Core
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Core
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/token.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Token
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#folders-organisation" class="md-nav__link">
+        <span class="md-ellipsis">
+            Folders Organisation
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#core" class="md-nav__link">
+        <span class="md-ellipsis">
+            Core
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label="Core">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#__init__py" class="md-nav__link">
+        <span class="md-ellipsis">
+            __init__.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#interactionpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            interaction.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#clientpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            client.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#schemapy" class="md-nav__link">
+        <span class="md-ellipsis">
+            schema.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#parampy" class="md-nav__link">
+        <span class="md-ellipsis">
+            param.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#exceptionpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            exception.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#tests" class="md-nav__link">
+        <span class="md-ellipsis">
+            Tests
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#documentation" class="md-nav__link">
+        <span class="md-ellipsis">
+            Documentation
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#example" class="md-nav__link">
+        <span class="md-ellipsis">
+            Example
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="new-interaction">New <code>Interaction</code><a class="headerlink" href="#new-interaction" title="Permanent link">&para;</a></h1>
+<p>This section is dedicated to all the people who wants to create a new <code>Interaction</code>. Since these objects are the building blocks of the library, it is important to define a set of rules to follow to standardise their creation.</p>
+<p>First, it is highly suggested to read the introduction on what an <a href="../interactions/index.html"><code>Interaction</code></a> is, and to have a look on the <a href="core/index.html">Core</a> section.</p>
+<p>Second, fork the repository and create a dedicated branch with the corresponding pattern name: <code>{name}-new-interaction</code>, where <code>{name}</code> should be replaced with the name of the new interaction.</p>
+<h2 id="folders-organisation">Folders Organisation<a class="headerlink" href="#folders-organisation" title="Permanent link">&para;</a></h2>
+<p>This section is dedicated to explain the folders' organisation inside the library (including tests and documentation).</p>
+<ul>
+<li><strong>Library</strong>: inside <code>src/cyhole</code> it is necessary to create a new folder called <code>{name}</code> that will have all the required files to manage the new interaction.</li>
+<li><strong>Tests</strong>: inside <code>tests/resources</code> it is necessary to create a new folder called <code>{name}</code> that will store the JSON files with the responses of the API endpoints used by the mocker during the tests executions.</li>
+<li><strong>Documentation</strong>: inside <code>docs/interactions</code> it is necessary to create a new folder called <code>{name}</code> that will provide all the Markdown files necessary for the documentations.</li>
+</ul>
+<p>The structure will look similar to this:</p>
+<div class="highlight"><pre><span></span><code>.
+├─ docs/
+│  ├─ interactions/
+<span class="hll">│  │  ├─ {name}/
+</span><span class="hll">│  │  │  └─ ...
+</span>│  │  └─ ...
+│  └─ ...
+├─ src/
+│  ├─ cyhole/
+<span class="hll">│  │  ├─ {name}/
+</span><span class="hll">│  │  │  └─ ...
+</span>│  │  └─ ...
+│  └─ ...
+├─ tests/
+│  │  └─ resources/
+<span class="hll">│  │     ├─ {name}/
+</span><span class="hll">│  │     │  └─ ...
+</span>│  │     └─ ...
+│  ├─ ...
+└─ ...
+</code></pre></div>
+<h2 id="core">Core<a class="headerlink" href="#core" title="Permanent link">&para;</a></h2>
+<p>This section is dedicated to explain the rules to follow during the creation of a new <code>Interaction</code>.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>The actual code <strong>must</strong> be available inside the folder <code>src/cyhole/{name}</code>.</li>
+<li>Inside the code's folder there <strong>must</strong> be the following files:<ul>
+<li><code>__init__.py</code>: the actual entry point in the library.</li>
+<li><code>client.py</code>: API client classes.</li>
+<li><code>exception.py</code>: dedicated exceptions.</li>
+<li><code>interaction.py</code>: interaction class.</li>
+<li><code>param.py</code>: possible parameters required by the endopints.</li>
+<li><code>schema.py</code>: response and body schemas to use in the endpoints.</li>
+</ul>
+</li>
+</ul>
+</div>
+<p>We now proceed to further analyse every required file.</p>
+<h3 id="__init__py"><code>__init__.py</code><a class="headerlink" href="#__init__py" title="Permanent link">&para;</a></h3>
+<p>This file should recall <strong>only</strong> the new <code>Interaction</code> class from the <code>interaction.py</code> file.</p>
+<div class="highlight"><span class="filename">__init__.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="p">{</span><span class="n">name</span><span class="p">}</span><span class="o">.</span><span class="n">interaction</span> <span class="kn">import</span><span class="w"> </span><span class="p">{</span><span class="n">Name</span><span class="p">}</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;</span><span class="si">{Name}</span><span class="s2">&quot;</span>
+<span class="p">]</span>
+</code></pre></div>
+<h3 id="interactionpy"><code>interaction.py</code><a class="headerlink" href="#interactionpy" title="Permanent link">&para;</a></h3>
+<p>This is the most important file because the new <code>Interaction</code>'s class is defined here.</p>
+<p>The box below provides all the assumptions to follow during the creation of a new <code>Interaction</code>.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>The <code>Interaction</code> class <strong>must</strong> inherits from <a href="core/interaction.html#cyhole.core.interaction.Interaction"><code>cyhole.core.interaction.Interaction</code></a> class.</li>
+<li>The name of the interaction should refers univocally to the external API site; e.g. it is usually the site name.</li>
+<li>The attributes <code>client</code> and <code>async_client</code> are initiated inside the <code>__init__</code> method and defined in <code>client.py</code> file.</li>
+<li>
+<p>Every endpoint is identified by <strong>one private</strong> method with the following assumptions:</p>
+<ul>
+<li>The name should recall univocally the endpoint and the type of the request. The naming convention is <code>_{request_type}_{endpoint_name}</code>, where <code>{request_type}</code> reflects the request's type (get, post, ...) and <code>{endpoint_name}</code> recalls the name of the original endpoint.</li>
+<li>The <strong>first</strong> parameter is called <code>sync</code> of type <code>bool</code> and is used to define the synchronous/asynchronous behavior of the method.</li>
+<li>The output/input schema of an endpoint is defined by a <code>pydantic.BaseModel</code> inside the <code>schema.py</code> file.</li>
+<li>The naming convention of an output/input schema should recall univocally the corresponding endpoint. The naming convention is <code>{request_type}{endpoint_name}Response/Body</code>, where <code>{request_type}</code> and <code>{endpoint_name}</code> recalls the name of the original endpoint, and they are concatenated using the camel case syntax.</li>
+<li>To manage the <code>sync</code> and <code>async</code> behavior, the output of the method must be of type <code>{output_schema_response} | Coroutine[None, None, {output_schema_response}]</code>, where <code>{output_schema_response}</code> is the output schema.</li>
+<li>
+<p>Above the method definition is required to include two <code>@overload</code> definitions to specify the output type according to the value of <code>sync</code> parameter:</p>
+<ul>
+<li><code>True</code>: the output should be <code>{output_schema_response}</code>.</li>
+<li><code>False</code>: the output should be <code>Coroutine[None, None, {output_schema_response}]</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h3 id="clientpy"><code>client.py</code><a class="headerlink" href="#clientpy" title="Permanent link">&para;</a></h3>
+<p>In this file are defined the Clients used by the <code>Interaction</code> to perform the actual calls to the external API endpoints.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>
+<p>An <code>Interaction</code> requires two Clients:</p>
+<ul>
+<li>The Client in charge to perform the <strong>synchronous</strong> logic must inherits from <a href="core/client.html#cyhole.core.client.APIClient"><code>cyhole.core.client.APIClient</code></a>, and its name should follow the naming convention <code>{name}Client</code>, where <code>{name}</code> is the name of the new interaction.</li>
+<li>The Client in charge to perform the <strong>asynchronous</strong> logic must inherits from <a href="core/client.html#cyhole.core.client.AsyncAPIClient"><code>cyhole.core.client.AsyncAPIClient</code></a>, and its name should follow the naming convention <code>{name}AsyncClient</code>, where <code>{name}</code> is the name of the new interaction.</li>
+</ul>
+</li>
+<li>
+<p>As described in the previous section, every endpoint is identified inside the <code>Interaction</code> class by a private function. Since the clients are responsable for the <em>actual</em> interaction with the external API, it is required to implement on <strong>both</strong> clients, a <strong>public</strong> version of the method; one for <code>sync</code> logic and one for <code>async</code>. The method's name should be the same for both clients, and it must be equals the private method's name without the <code>_</code> prefix. Hence, we should obtain the following situation:</p>
+<ul>
+<li><code>_get_example</code> method defined in the <code>Interaction</code> class with the actual endpoint's logic.</li>
+<li><code>get_example</code> method defined inside the <strong>synchronous</strong> client and recalling the <code>_get_example</code> method with <code>sync</code> equals <code>True</code>.</li>
+<li><code>async get_example</code> method defined inside the <strong>asynchronous</strong> client and recalling the <code>_get_example</code> method with <code>sync</code> equals <code>False</code>.</li>
+</ul>
+</li>
+</ul>
+</div>
+<h3 id="schemapy"><code>schema.py</code><a class="headerlink" href="#schemapy" title="Permanent link">&para;</a></h3>
+<p>Inside this file are defined all the classes used to standardise the input/output schemas required by all the implemented enpoints.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>Every schema <strong>must</strong> inherits from <code>pydantic.BaseModel</code> class.</li>
+<li>Every schema and sub-schema name <strong>must</strong> recall the corresponding endpoint. The naming convention to use is <code>{endpoint_method_name}{type}</code>, where the <code>{endpoint_method_name}</code> is the name of the endpoint function using the camel-case syntax, and <code>{type}</code> depends on the situation:<ul>
+<li><code>Response</code>: if the schema refers to the actual response of the endpoint.</li>
+<li><code>Body</code>: if the schema refers to the input body required by a POST endpoint.</li>
+<li>Other names can be used for intermediate schemas.</li>
+</ul>
+</li>
+</ul>
+</div>
+<h3 id="parampy"><code>param.py</code><a class="headerlink" href="#parampy" title="Permanent link">&para;</a></h3>
+<p>It could happen that the external endpoints require parameters (<code>params</code>) coming from specific value lists. To help as much as possible the users and avoid wrong values, this file stores all the <code>Enum</code> classes identifing the <code>params</code> with value lists.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>Every param <strong>must</strong> inherits from <a href="core/param.html#cyhole.core.param.CyholeParam"><code>cyhole.core.param.CyholeParam</code></a> class.</li>
+<li>The naming convention <strong>must</strong> be <code>{name}{param_name}</code>, where <code>{name}</code> is the name of the new interaction, and <code>{param_name}</code> a set of words that identify the param univocally.</li>
+</ul>
+</div>
+<h3 id="exceptionpy"><code>exception.py</code><a class="headerlink" href="#exceptionpy" title="Permanent link">&para;</a></h3>
+<p>All the exceptions dedicated to this extension are defined inside this file.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>There should be a general <code>Exception</code> extension specific. This exception <strong>must</strong> inherits from <a href="core/exception.html#cyhole.core.exception.CyholeException"><code>cyhole.core.exception.CyholeException</code></a>, and its name should follow the naming convention <code>{name}Exception</code>, where <code>{name}</code> is the name of the new interaction.</li>
+<li>All other exceptions <strong>must</strong> inherits from the <code>{name}Exception</code> class.</li>
+</ul>
+</div>
+<h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
+<p>The implementation of proper tests is crucial for the maintenance of the library, for this reason this section describes the test's management for a new <code>Interaction</code>. It is also suggested to check <a href="testing.html">Testing</a> chapter for more details on test's management.</p>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>All the tests <strong>must</strong> be available in a file called <code>test_{name}.py</code> inside <code>tests</code> folder, where <code>{name}</code> is the name of the new interaction.</li>
+<li>Every endpoint <strong>must</strong> have at least one basic test to ensure the response schema consistency.</li>
+<li>Every test that call an endpoint <strong>must</strong> be available for both <em>synchronous</em> (test's name ends with <code>_sync</code>) and <em>asynchronous</em> (test's name ends with <code>_async</code>) logic.</li>
+<li>The mock responses <strong>must</strong> be available inside the <code>tests/resources/{name}</code> folder.</li>
+<li>Every endpoint <strong>must</strong> have at least one mock response JSON file, and the naming convention is <code>{endpoint_method_name}_{info}.json</code>, where the <code>{endpoint_method_name}</code> is the name of the endpoint function using the camel-case syntax, and <code>{info}</code> provides additional information to the test.</li>
+<li>The test's configuration (<code>tests/config.py</code>) <strong>must</strong> be extended to manage at least <code>mock_response</code> and <code>mock_folder</code> variables, and the corresponding <code>tets.default.ini</code> configuration must be updated as well.</li>
+<li>Every test involving a call to an endopint and checking the respoonse <strong>must</strong> implement the <code>mocker</code> functionlity to ensure the test's execution also in offline mode.</li>
+</ul>
+</div>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">&para;</a></h2>
+<p>As a final step in the implementation of a new <code>Interaction</code>, it is required to create the proper documentation to ensure its usability.</p>
+<p>The <em>default</em> documentation structure is described below:</p>
+<div class="highlight"><pre><span></span><code>.
+├─ docs/
+│  ├─ interactions/
+<span class="hll">│  │  ├─ {name}/
+</span><span class="hll">│  │  │  ├─ client.md
+</span><span class="hll">│  │  │  ├─ exception.md
+</span><span class="hll">│  │  │  ├─ index.md
+</span><span class="hll">│  │  │  ├─ interaction.md
+</span><span class="hll">│  │  │  ├─ param.md
+</span><span class="hll">│  │  │  └─ schema.md
+</span>│  │  └─ ...
+│  └─ ...
+└─ ...
+</code></pre></div>
+<p>where:</p>
+<ul>
+<li><code>client.md</code>: this file is entitled <em>Client</em>, and recalls the source code of <code>client.py</code> file.</li>
+<li><code>exception.md</code>: this file is entitled <em>Exceptions</em>, and recalls the source code of <code>exception.py</code> file.</li>
+<li><code>index.md</code>: this file is used to introduce the new <code>Interaction</code> by providing a description, some examples and the links to the other sections.</li>
+<li><code>interaction.md</code>: this file is entitled <em>Interaction</em>, and recalls the source code of <code>__init__.py</code> file.</li>
+<li><code>param.md</code>: this file is entitled <em>Parameters</em>, and recalls the source code of <code>param.py</code> file.</li>
+<li><code>schema.md</code>: this file is entitled <em>Schema</em>, and recalls the source code of <code>schema.py</code> file.</li>
+</ul>
+<div class="admonition abstract">
+<p class="admonition-title">Assumptions</p>
+<ul>
+<li>The above structure <strong>must</strong> be always available, and can be integrated with additional chapters and sections if required.</li>
+<li>To ensure the correct visualisation of the new section, it is also necessary to include them inside the <code>mkdocs.yml</code> file in <code>nav.Interactions</code> list.</li>
+</ul>
+</div>
+<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
+<p>Since the best way to understand a topic is through examples, in the following part we will provide all the previous sections contextualised in the situation of a hypothetical <code>Interaction</code> for a site called <em>sun.net</em> with only one API endpoint of type GET <code>sun.net/prices</code>.</p>
+<ul>
+<li>The GitHub brench will be called <code>sun-new-interaction</code>.</li>
+<li>The main class will be <code>Sun</code> inside <code>cyhole.sun.interaction</code>.</li>
+<li>The new brench will have the following new folders and files (highlighted):
+    <div class="highlight"><pre><span></span><code>.
+├─ docs/
+│  ├─ interactions/
+│  │  ├─ ...
+<span class="hll">│  │  ├─ sun/
+</span><span class="hll">│  │  │  ├─ client.md
+</span><span class="hll">│  │  │  ├─ exception.md
+</span><span class="hll">│  │  │  ├─ index.md
+</span><span class="hll">│  │  │  ├─ interaction.md
+</span><span class="hll">│  │  │  ├─ param.md
+</span><span class="hll">│  │  │  └─ schema.md
+</span>│  │  └─ index.md
+│  └─ ...
+├─ src/
+│  ├─ cyhole/
+<span class="hll">│  │  ├─ sun/
+</span><span class="hll">│  │  │  ├─ __init__.py
+</span><span class="hll">│  │  │  ├─ client.py
+</span><span class="hll">│  │  │  ├─ exception.py
+</span><span class="hll">│  │  │  ├─ interaction.py
+</span><span class="hll">│  │  │  ├─ param.py
+</span><span class="hll">│  │  │  └─ schema.py
+</span>│  │  └─ __init__.py
+│  └─ requirements.txt
+├─ tests/
+│  │  └─ resources/
+<span class="hll">│  │     ├─ sun/
+</span><span class="hll">│  │     │  └─ get_price.json
+</span>│  │     └─ ...
+│  ├─ ...
+<span class="hll">│  └─ test_sun.py
+</span>└─ mkdocs.yml
+</code></pre></div></li>
+</ul>
+<p>In more details, we are going to have the core of the extension defined inside the <code>sun/interaction.py</code> with the <code>Sun</code> class.</p>
+<div class="highlight"><span class="filename">interaction.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..core.param</span><span class="w"> </span><span class="kn">import</span> <span class="n">RequestType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.interaction</span><span class="w"> </span><span class="kn">import</span> <span class="n">Interaction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sun.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">SunClient</span><span class="p">,</span> <span class="n">SunAsyncClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sun.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetPriceResponse</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Sun</span><span class="p">(</span><span class="n">Interaction</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class used to connect [Sun](https://sun.net) API.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="c1"># clients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">SunClient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">async_client</span> <span class="o">=</span> <span class="n">SunAsyncClient</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># API urls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url_api</span> <span class="o">=</span> <span class="s2">&quot;https://sun.net/&quot;</span>
+        <span class="k">return</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sync</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">GetPriceResponse</span><span class="p">:</span> <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sync</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">GetPriceResponse</span><span class="p">]:</span> <span class="o">...</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sync</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetPriceResponse</span> <span class="o">|</span> <span class="n">Coroutine</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">GetPriceResponse</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            This function refers to the **Price** API endpoint.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                tokens&#39; prices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set params</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_api</span> <span class="o">+</span> <span class="s2">&quot;prices&quot;</span>
+
+        <span class="c1"># execute request</span>
+        <span class="k">if</span> <span class="n">sync</span><span class="p">:</span>
+            <span class="n">content_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="n">RequestType</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_api_price</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GetPriceResponse</span><span class="p">(</span><span class="o">**</span><span class="n">content_raw</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_request</span><span class="p">():</span>
+                <span class="n">content_raw</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">async_client</span><span class="o">.</span><span class="n">api</span><span class="p">(</span><span class="n">RequestType</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url_api_price</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">GetPriceResponse</span><span class="p">(</span><span class="o">**</span><span class="n">content_raw</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">async_request</span><span class="p">()</span>
+</code></pre></div>
+<p>The class inherits from <a href="core/interaction.html#cyhole.core.interaction.Interaction"><code>cyhole.core.interaction.Interaction</code></a> and it has attributes <code>client</code> and <code>async_client</code> that are instances of <code>sun.client.SunClient</code> and <code>sun.client.SunAsyncClient</code>.</p>
+<p>The only endopint is mapped into the private class <code>_get_price</code> that contains the actual logic for the extraction and returns a <code>GetPriceResponse</code> object in synchronous logic and a <code>Coroutine</code> returning a <code>GetPriceResponse</code> object in asynchronous case.</p>
+<p>The actual API calls are then defined inside the <code>sun/client.py</code> file:</p>
+<div class="highlight"><span class="filename">client.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..core.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIClient</span><span class="p">,</span> <span class="n">AsyncAPIClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..sun.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetPriceResponse</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">..sun.interaction</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sun</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SunClient</span><span class="p">(</span><span class="n">APIClient</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Client used for synchronous API calls for `Sun` interaction.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interaction</span><span class="p">:</span> <span class="n">Sun</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">interaction</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interaction</span><span class="p">:</span> <span class="n">Sun</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interaction</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetPriceResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Call the Sun&#39;s **Price** API endpoint for synchronous logic. </span>
+<span class="sd">            All the API endopint details are available on `Sun._get_price`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interaction</span><span class="o">.</span><span class="n">_get_price</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SunAsyncClient</span><span class="p">(</span><span class="n">AsyncAPIClient</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Client used for asynchronous API calls for `Sun` interaction.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interaction</span><span class="p">:</span> <span class="n">Sun</span><span class="p">,</span> <span class="n">headers</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">interaction</span><span class="p">,</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interaction</span><span class="p">:</span> <span class="n">Sun</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interaction</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_price</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GetPriceResponse</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Call the Sun&#39;s **Price** API endpoint for asynchronous logic. </span>
+<span class="sd">            All the API endopint details are available on `Sun._get_price`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interaction</span><span class="o">.</span><span class="n">_get_price</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>The client classes inherit from <a href="core/client.html#cyhole.core.client.APIClient"><code>cyhole.core.client.APIClient</code></a> and <a href="core/client.html#cyhole.core.client.AsyncAPIClient"><code>cyhole.core.client.AsyncAPIClient</code></a>.</p>
+<p>Finally, the <code>sun/__init__.py</code> file will recall <strong>only</strong> the main class:</p>
+<div class="highlight"><span class="filename">__init__.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">..sun.interaction</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sun</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Sun&quot;</span>
+<span class="p">]</span>
+</code></pre></div>
+<ul>
+<li>To ensure consistency of the code, all tests should be implemented; in this scenario the tests are available in <code>tests/test_sun.py</code> file. 
+The code below is only an example of test implementation according to our initial assumptions.</li>
+</ul>
+<div class="highlight"><span class="filename">test_sun.py</span><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pytest_mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockerFixture</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cyhole.sun</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sun</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cyhole.sun.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetPriceResponse</span>
+
+<span class="c1"># load test config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_config</span><span class="p">,</span> <span class="n">MockerManager</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+
+<span class="c1"># create resources folder</span>
+<span class="n">mock_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">mock_folder</span>
+<span class="n">mock_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestSun</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class grouping all unit tests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sun</span> <span class="o">=</span> <span class="n">Sun</span><span class="p">()</span>
+    <span class="n">mocker</span> <span class="o">=</span> <span class="n">MockerManager</span><span class="p">(</span><span class="n">mock_path</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_get_price_token_address_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mocker</span><span class="p">:</span> <span class="n">MockerFixture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Unit Test used to check the response schema of endpoint &quot;Price&quot; for synchronous logic.</span>
+
+<span class="sd">            Mock Response File: get_price.json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># load mock response</span>
+        <span class="n">mock_file_name</span> <span class="o">=</span> <span class="s2">&quot;get_price&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_response</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">mock_response</span><span class="p">:</span>
+            <span class="n">mock_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">load_mock_response</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">GetPriceResponse</span><span class="p">)</span>
+            <span class="n">mocker</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;cyhole.core.client.APIClient.api&quot;</span><span class="p">,</span> <span class="n">return_value</span> <span class="o">=</span> <span class="n">mock_response</span><span class="p">)</span>
+
+        <span class="c1"># execute request</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_price</span><span class="p">()</span>
+
+        <span class="c1"># actual test</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">GetPriceResponse</span><span class="p">)</span>
+
+        <span class="c1"># store request (only not mock)</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_file_overwrite</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">mock_response</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">store_mock_model</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+    <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_get_price_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mocker</span><span class="p">:</span> <span class="n">MockerFixture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Unit Test used to check the response schema of endpoint &quot;Price&quot; for asynchronous logic.</span>
+
+<span class="sd">            Mock Response File: get_price.json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># load mock response</span>
+        <span class="n">mock_file_name</span> <span class="o">=</span> <span class="s2">&quot;get_price&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_response</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">mock_response</span><span class="p">:</span>
+            <span class="n">mock_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">load_mock_response</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">GetPriceResponse</span><span class="p">)</span>
+            <span class="n">mocker</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;cyhole.core.client.AsyncAPIClient.api&quot;</span><span class="p">,</span> <span class="n">return_value</span> <span class="o">=</span> <span class="n">mock_response</span><span class="p">)</span>
+
+        <span class="c1"># execute request</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">sun</span><span class="o">.</span><span class="n">async_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_price</span><span class="p">()</span>
+
+        <span class="c1"># actual test</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">GetPriceResponse</span><span class="p">)</span>
+</code></pre></div>
+<p>It is possible to notice that we have created two tests for the end point <code>get_price</code>, the first one to test the synchronous logic and another to test the asynchronous one. 
+In addition, in order to guarantee replicability of the tests also to other developers who might not have access to the newly implemented API, the file <code>get_price.json</code> was introduced inside the new folder <code>tests/resources/sun</code> with an example of an endpoint response inside, which could be used in case of mocking calls.</p>
+<p>In order to to handle the aspect just described, the default test configuration was therefore also modified so that it could handle the mocking of Sun API calls.</p>
+<div class="highlight"><span class="filename">config.default.ini</span><pre><span></span><code><span class="c1"># WARNING</span>
+<span class="c1"># This is the default test.ini file used to configure the cyhole tests</span>
+<span class="c1"># Edit and rename it to test.ini in order to use it during the implementation fase.</span>
+
+<span class="k">[global]</span>
+<span class="c1"># configuration available for all the tests</span>
+<span class="na">mock_response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">True</span>
+<span class="na">mock_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">tests/resources/mock</span>
+<span class="na">mock_file_overwrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">False</span>
+
+<span class="hll"><span class="k">[sun]</span>
+</span><span class="hll"><span class="c1"># configuration for sun integration</span>
+</span><span class="hll"><span class="na">mock_response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">True</span>
+</span><span class="hll"><span class="na">mock_folder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">sun</span>
+</span></code></pre></div>
+<ul>
+<li>Finally, a new section was introduced in the library documentation in order to explain in all its details the new <code>Interaction</code>.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tabs", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>

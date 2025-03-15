@@ -1,0 +1,4437 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="bugs-improvements.html">
+      
+      
+        <link rel="next" href="pull-requests.html">
+      
+      
+      <link rel="icon" href="../config/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.8">
+    
+    
+      
+        <title>Testing - cyhole</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="https://unpkg.com/iframe-worker/shim"></script>
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../config/css/mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#testing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="cyhole" class="md-header__button md-logo" aria-label="cyhole" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 6.7 1.45 3.85L17.3 12l-3.85 1.45L12 17.3l-1.45-3.85L6.7 12l3.85-1.45zM12 1 9 9l-8 3 8 3 3 8 3-8 8-3-8-3z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            cyhole
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Testing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to Dark Mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to Dark Mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.768 3.96zl-.002-.005a9 9 0 0 0-.218-.779c-.13-.394.21-.8.602-.67q.435.144.855.328l.01.005A10.002 10.002 0 0 1 12 22a10 10 0 0 1-9.162-5.985l-.004-.01a10 10 0 0 1-.329-.855c-.13-.392.277-.732.67-.602q.386.126.78.218l.004.002A9 9 0 0 0 14.999 6a9 9 0 0 0-.231-2.04M16.5 6c0 5.799-4.701 10.5-10.5 10.5q-.64 0-1.26-.075A8.5 8.5 0 1 0 16.425 4.74q.075.62.075 1.259Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="white" data-md-color-accent="indigo"  aria-label="Switch to Light Mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to Light Mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14m0-1.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 1 0 0 11m-5.657.157a.75.75 0 0 1 0 1.06l-1.768 1.768a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734l1.767-1.768a.75.75 0 0 1 1.061 0M3.515 3.515a.75.75 0 0 1 1.06 0l1.768 1.768a.749.749 0 0 1-.326 1.275.75.75 0 0 1-.734-.215L3.515 4.575a.75.75 0 0 1 0-1.06M12 0a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 12 0M4 12a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 4 12m8 8a.75.75 0 0 1 .75.75v2.5a.75.75 0 0 1-1.5 0v-2.5A.75.75 0 0 1 12 20m12-8a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h2.5A.75.75 0 0 1 24 12m-6.343 5.657a.75.75 0 0 1 1.06 0l1.768 1.768a.75.75 0 0 1-.018 1.042.75.75 0 0 1-1.042.018l-1.768-1.767a.75.75 0 0 1 0-1.061m2.828-14.142a.75.75 0 0 1 0 1.06l-1.768 1.768a.75.75 0 0 1-1.042-.018.75.75 0 0 1-.018-1.042l1.767-1.768a.75.75 0 0 1 1.061 0"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zazza123/cyhole" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zazza123/cyhole
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../index.html" class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../interactions/index.html" class="md-tabs__link">
+          
+  
+    
+  
+  Interactions
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
+          
+  
+    
+  
+  Development
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="cyhole" class="md-nav__button md-logo" aria-label="cyhole" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12 6.7 1.45 3.85L17.3 12l-3.85 1.45L12 17.3l-1.45-3.85L6.7 12l3.85-1.45zM12 1 9 9l-8 3 8 3 3 8 3-8 8-3-8-3z"/></svg>
+
+    </a>
+    cyhole
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zazza123/cyhole" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zazza123/cyhole
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Interactions
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Interactions
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/birdeye/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Birdeye
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Birdeye
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/birdeye/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/jupiter/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Jupiter
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Jupiter
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/jupiter/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/solana_fm/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    SolanaFM
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_4" id="__nav_2_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            SolanaFM
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solana_fm/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_5" id="__nav_2_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Solscan
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5">
+            <span class="md-nav__icon md-icon"></span>
+            Solscan
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_1" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/solscan/v1/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    v1
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_1" id="__nav_2_5_1_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_1">
+            <span class="md-nav__icon md-icon"></span>
+            v1
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v1/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_5_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../interactions/solscan/v2/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    v2
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2_5_2" id="__nav_2_5_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_5_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            v2
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/schema.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Response Schema
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../interactions/solscan/v2/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Development
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="new-interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    New Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="bugs-improvements.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bugs &amp; Improvements
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="testing.html" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Testing
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#configuration-file" class="md-nav__link">
+        <span class="md-ellipsis">
+            Configuration File
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#mock-responses" class="md-nav__link">
+        <span class="md-ellipsis">
+            Mock Responses
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label="Mock Responses">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#example" class="md-nav__link">
+        <span class="md-ellipsis">
+            Example
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#sync-and-async" class="md-nav__link">
+        <span class="md-ellipsis">
+            sync and async
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#annex" class="md-nav__link">
+        <span class="md-ellipsis">
+            Annex
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label="Annex">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#configpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            config.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;config
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" config">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SolscanConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" SolscanConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.api_v1_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_v1_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.api_v2_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_v2_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SolanaFMConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" SolanaFMConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration.api_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.JupiterConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;JupiterConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" JupiterConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.JupiterConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.JupiterConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BirdeyeConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" BirdeyeConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.mock_response_public" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response_public
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.mock_response_private" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response_private
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.api_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TestConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" TestConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.mock_file_overwrite" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_file_overwrite
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.birdeye" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;birdeye
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.jupiter" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;jupiter
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.solana_fm" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;solana_fm
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.solscan" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;solscan
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;MockerManager
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" MockerManager">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.load_mock_model" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;load_mock_model
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.store_mock_model" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;store_mock_model
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.load_mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;load_mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.adjust_content_json" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;adjust_content_json
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.load_config" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;load_config
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="pull-requests.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pull Requests
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="core/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Core
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            Core
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/interaction.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Interaction
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/client.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Client
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/param.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Parameters
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/exception.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exceptions
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="core/token.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Token
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#configuration-file" class="md-nav__link">
+        <span class="md-ellipsis">
+            Configuration File
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#mock-responses" class="md-nav__link">
+        <span class="md-ellipsis">
+            Mock Responses
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label="Mock Responses">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#example" class="md-nav__link">
+        <span class="md-ellipsis">
+            Example
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#sync-and-async" class="md-nav__link">
+        <span class="md-ellipsis">
+            sync and async
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#annex" class="md-nav__link">
+        <span class="md-ellipsis">
+            Annex
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label="Annex">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#configpy" class="md-nav__link">
+        <span class="md-ellipsis">
+            config.py
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+        <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-module"></code>&nbsp;config
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" config">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SolscanConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" SolscanConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.api_v1_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_v1_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolscanConfiguration.api_v2_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_v2_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;SolanaFMConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" SolanaFMConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.SolanaFMConfiguration.api_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.JupiterConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;JupiterConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" JupiterConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.JupiterConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.JupiterConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;BirdeyeConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" BirdeyeConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.mock_response_public" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response_public
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.mock_response_private" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response_private
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.BirdeyeConfiguration.api_key" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;api_key
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;TestConfiguration
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" TestConfiguration">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.mock_folder" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_folder
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.mock_file_overwrite" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;mock_file_overwrite
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.birdeye" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;birdeye
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.jupiter" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;jupiter
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.solana_fm" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;solana_fm
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.TestConfiguration.solscan" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-attribute"></code>&nbsp;solscan
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-class"></code>&nbsp;MockerManager
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+    <nav class="md-nav" aria-label=" MockerManager">
+        <ul class="md-nav__list">
+            
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.load_mock_model" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;load_mock_model
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.store_mock_model" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;store_mock_model
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.load_mock_response" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;load_mock_response
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.MockerManager.adjust_content_json" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-method"></code>&nbsp;adjust_content_json
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>  
+             <!-- Solution suggested in https://github.com/squidfunk/mkdocs-material/issues/4827 -->
+<li class="md-nav__item">
+    <a href="#config.load_config" class="md-nav__link">
+        <span class="md-ellipsis">
+            <code class="doc-symbol doc-symbol-toc doc-symbol-function"></code>&nbsp;load_config
+        </span>
+    </a>
+
+    <!-- Table of contents list -->
+    
+</li>   </ul>
+    </nav>
+    
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h1>
+<p>This section is dedicated to explain how the testing phase is managed inside <code>cyhole</code> library.</p>
+<p>By assuming that the reader has downloaded locally the library (see <a href="index.html#latest-library-version">Latest Library Version</a> for more details). It is required to download also the python testing libraries:</p>
+<ul>
+<li>activate the <code>python</code> environment you want to use</li>
+<li>navigate to the <code>cyhole/tests</code> folder</li>
+<li>run the command <code>pip install -r requirements.txt</code></li>
+</ul>
+<p>This command is required to download <code>pytest</code> and its extensions used by <code>cyhole</code> for test management.</p>
+<h2 id="configuration-file">Configuration File<a class="headerlink" href="#configuration-file" title="Permanent link">&para;</a></h2>
+<p>The <code>cyhole</code> library interacts with many external APIs that sometimes require an API Key in order to extract data. Since the usage of these API Keys could be subjected to costs, a proper configuration for the tests is required.</p>
+<p>The configuration is managed by a configuration file called <code>test.ini</code>, which is loaded during the execution of the tests. By using this file will be possible to:</p>
+<ul>
+<li>manage externally API Keys</li>
+<li>enable/disable mock responses</li>
+</ul>
+<p>Check the default <code>test.default.ini</code> file inside the repository for a complete list of the available configurations.</p>
+<p>During the tests' execution the configuration is loaded into <a href="#config.TestConfiguration"><code>TestConfiguration</code></a> class.</p>
+<h2 id="mock-responses">Mock Responses<a class="headerlink" href="#mock-responses" title="Permanent link">&para;</a></h2>
+<p>During the implementation phase, could be not necessary to execute a call to the external API service, especially if the external system requires an API Key with a computational costs. For this reason, it was implementated a method to mock the external API responses and overcome this situation.</p>
+<p>The usage of the mocker is defined inside the configuration file in the global/local variables called <code>mock_response</code>. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Global <code>mock_response</code> value overwrites the local <code>mock_response</code> value.</p>
+</div>
+<p>If the mocker response functionality is enabled, then the tests will try to load a JSON file with the response schema stored from a previous call of the API. The root of the mocker files is defined inside the <code>mock_folder</code> global variable, and specificed for each <code>Interaction</code> inside the local <code>mock_folder</code> variable.</p>
+<p>Every time the tests are executed with the mock response functionality disabled, the process automatically stores the response in a JSON file into the proper resources folder. To avoid the overwrite of the JSON file use the global <code>mock_file_overwrite</code> variable.</p>
+<p>All the functionalities to load and store the mock responses are managed by the <a href="#config.MockerManager"><code>MockerManager</code></a> class.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
+<p>The code below provides a test extracted from <code>test_birdeye.py</code> to explain the mocker usage:</p>
+<div class="highlight"><span class="filename">test_birdeye.py</span><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pytest_mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockerFixture</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cyhole.birdeye</span><span class="w"> </span><span class="kn">import</span> <span class="n">Birdeye</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cyhole.birdeye.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetTokenListResponse</span>
+
+<span class="c1"># load test config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_config</span><span class="p">,</span> <span class="n">MockerManager</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+
+<span class="c1"># create resources folder</span>
+<span class="n">mock_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_folder</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TestBirdeyePublic</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class grouping all unit test associate to **PUBLIC** endpoints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">birdeye</span> <span class="o">=</span> <span class="n">Birdeye</span><span class="p">(</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
+    <span class="n">mocker</span> <span class="o">=</span> <span class="n">MockerManager</span><span class="p">(</span><span class="n">mock_path</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_get_token_list_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mocker</span><span class="p">:</span> <span class="n">MockerFixture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Unit Test used to check the response schema of endpoint &quot;Token - List&quot; </span>
+<span class="sd">            for synchronous logic.</span>
+
+<span class="sd">            Mock Response File: get_token_list.json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># load mock response</span>
+        <span class="n">mock_file_name</span> <span class="o">=</span> <span class="s2">&quot;get_token_list&quot;</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_response</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+            <span class="n">mock_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">load_mock_response</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+            <span class="n">mocker</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;cyhole.core.client.APIClient.api&quot;</span><span class="p">,</span> <span class="n">return_value</span> <span class="o">=</span> <span class="n">mock_response</span><span class="p">)</span>
+
+        <span class="c1"># execute request</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_token_list</span><span class="p">(</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># actual test</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+
+        <span class="c1"># store request (only not mock)</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_file_overwrite</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">store_mock_model</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+</code></pre></div>
+<p>By analysing the code into different blocks, we first import all the required dependencies:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">pytest_mock</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockerFixture</span>
+</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">cyhole.birdeye</span><span class="w"> </span><span class="kn">import</span> <span class="n">Birdeye</span>
+</span><span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">cyhole.birdeye.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">GetTokenListResponse</span>
+</span>
+<span class="o">...</span>
+</code></pre></div>
+<p>To hendle the mocker functionalities, we need to import the <a href="#config.MockerManager"><code>MockerManager</code></a> class from <code>pytest_mock</code> library extension of <code>pytest</code>. We also import the <a href="../interactions/birdeye/interaction.html"><code>Birdeye</code></a> class and the <a href="../interactions/birdeye/schema.html#cyhole.birdeye.schema.GetTokenListResponse"><code>GetTokenListResponse</code></a> schema from the <a href="../interactions/birdeye/index.html"><code>cyhole.birdeye</code></a> module to use them in the test.</p>
+<p>As next step, we load the configuration file by importing the <code>load_config</code> function and the <a href="#config.MockerManager"><code>MockerManager</code></a> class:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+<span class="hll"><span class="kn">from</span><span class="w"> </span><span class="nn">.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_config</span><span class="p">,</span> <span class="n">MockerManager</span>
+</span><span class="hll"><span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">()</span>
+</span>
+<span class="c1"># create resources folder</span>
+<span class="n">mock_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_folder</span>
+<span class="o">...</span>
+</code></pre></div>
+<p>For <a href="../interactions/birdeye/index.html"><code>cyhole.birdeye</code></a> extension, we decided to manage the tests in two different classes: <code>TestBirdeyePublic</code> and <code>TestBirdeyePrivate</code>. The first one is used to test the public endpoints, while the second one is used to test the private endpoints. In this case, we are testing the public endpoints, so we are using the <code>TestBirdeyePublic</code> class.</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="hll"><span class="k">class</span><span class="w"> </span><span class="nc">TestBirdeyePublic</span><span class="p">:</span>
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Class grouping all unit test associate to **PUBLIC** endpoints.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="hll">    <span class="n">birdeye</span> <span class="o">=</span> <span class="n">Birdeye</span><span class="p">(</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
+</span><span class="hll">    <span class="n">mocker</span> <span class="o">=</span> <span class="n">MockerManager</span><span class="p">(</span><span class="n">mock_path</span><span class="p">)</span>
+</span>
+<span class="o">...</span>
+</code></pre></div>
+<p>The <code>TestBirdeyePublic</code> class contains the <a href="../interactions/birdeye/interaction.html"><code>Birdeye</code></a> object and the <a href="#config.MockerManager"><code>MockerManager</code></a> that is used to load and store the mock responses. The <code>mock_path</code> variable is used to define the path where the mock responses are stored.</p>
+<p>As a final step, we define the test method:</p>
+<div class="highlight"><pre><span></span><code><span class="o">...</span>
+
+<span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">test_get_token_list_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mocker</span><span class="p">:</span> <span class="n">MockerFixture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unit Test used to check the response schema of endpoint &quot;Token - List&quot; </span>
+<span class="sd">        for synchronous logic.</span>
+
+<span class="sd">        Mock Response File: get_token_list.json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># load mock response</span>
+    <span class="n">mock_file_name</span> <span class="o">=</span> <span class="s2">&quot;get_token_list&quot;</span>
+<span class="hll">    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_response</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+</span><span class="hll">        <span class="n">mock_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">load_mock_response</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+</span><span class="hll">        <span class="n">mocker</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;cyhole.core.client.APIClient.api&quot;</span><span class="p">,</span> <span class="n">return_value</span> <span class="o">=</span> <span class="n">mock_response</span><span class="p">)</span>
+</span>
+    <span class="c1"># execute request</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_token_list</span><span class="p">(</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># actual test</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+
+    <span class="c1"># store request (only not mock)</span>
+<span class="hll">    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_file_overwrite</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+</span><span class="hll">        <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">store_mock_model</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Observe that the test method is defined with the <code>mocker</code> fixture, which is used to patch the <a href="core/client.html#cyhole.core.client.APIClientInterface.api"><code>APIClient.api</code></a> method. If the mocker response functionality is enabled, the method <code>load_mock_response</code> is used to load the mock response from the JSON file. The <code>patch</code> method is used to mock the <a href="core/client.html#cyhole.core.client.APIClientInterface.api"><code>APIClient.api</code></a> method and return the mock response. </p>
+<p>The <code>get_token_list</code> method is executed, and the response is stored in the <code>response</code> variable. The test checks if the response is an instance of the <a href="../interactions/birdeye/schema.html#cyhole.birdeye.schema.GetTokenListResponse"><code>GetTokenListResponse</code></a> schema. </p>
+<p>Finally, observe that if the <code>mock_file_overwrite</code> variable is enabled and the <code>mock_response_public</code> variable is disabled, the method <code>store_mock_model</code> is used to store the response in the JSON file.</p>
+<h2 id="sync-and-async"><code>sync</code> and <code>async</code><a class="headerlink" href="#sync-and-async" title="Permanent link">&para;</a></h2>
+<p>The <code>cyhole</code> library is designed to work with both synchronous and asynchronous logic. For this reason, every tests in charge to perform a call to an external API service should be implemented in both ways. To hendle <code>async</code> tests, the <code>pytest</code> library provides the <code>pytest-asyncio</code> extension that allows to run <code>async</code> tests in a synchronous environment.</p>
+<p>The code below provides an example of how to was implemented the test for the <a href="../interactions/birdeye/interaction.html#cyhole.birdeye.Birdeye._get_token_list"><code>get_token_list</code></a> endpoint in both <code>sync</code> and <code>async</code> logic in <a href="../interactions/birdeye/index.html"><code>cyhole.birdeye</code></a>.</p>
+<div class="highlight"><pre><span></span><code><span class="hll"><span class="k">def</span><span class="w"> </span><span class="nf">test_get_token_list_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mocker</span><span class="p">:</span> <span class="n">MockerFixture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unit Test used to check the response schema of endpoint &quot;Token - List&quot; </span>
+<span class="sd">        for synchronous logic.</span>
+
+<span class="sd">        Mock Response File: get_token_list.json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># load mock response</span>
+    <span class="n">mock_file_name</span> <span class="o">=</span> <span class="s2">&quot;get_token_list&quot;</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_response</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+        <span class="n">mock_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">load_mock_response</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+        <span class="n">mocker</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;cyhole.core.client.APIClient.api&quot;</span><span class="p">,</span> <span class="n">return_value</span> <span class="o">=</span> <span class="n">mock_response</span><span class="p">)</span>
+
+    <span class="c1"># execute request</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get_token_list</span><span class="p">(</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># actual test</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+
+    <span class="c1"># store request (only not mock)</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_file_overwrite</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">store_mock_model</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+
+<span class="hll"><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
+</span><span class="hll"><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_get_token_list_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mocker</span><span class="p">:</span> <span class="n">MockerFixture</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unit Test used to check the response schema of endpoint &quot;Token - List&quot; </span>
+<span class="sd">        for asynchronous logic.</span>
+
+<span class="sd">        Mock Response File: get_token_list.json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># load mock response</span>
+    <span class="n">mock_file_name</span> <span class="o">=</span> <span class="s2">&quot;get_token_list&quot;</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">mock_response</span> <span class="ow">or</span> <span class="n">config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">:</span>
+        <span class="n">mock_response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mocker</span><span class="o">.</span><span class="n">load_mock_response</span><span class="p">(</span><span class="n">mock_file_name</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+        <span class="n">mocker</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;cyhole.core.client.AsyncAPIClient.api&quot;</span><span class="p">,</span> <span class="n">return_value</span> <span class="o">=</span> <span class="n">mock_response</span><span class="p">)</span>
+
+    <span class="c1"># execute request</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">async_client</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get_token_list</span><span class="p">(</span><span class="n">limit</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># actual test</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">GetTokenListResponse</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="annex">Annex<a class="headerlink" href="#annex" title="Permanent link">&para;</a></h2>
+<h3 id="configpy"><code>config.py</code><a class="headerlink" href="#configpy" title="Permanent link">&para;</a></h3>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<h2 id="config" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-module"></code>            <span class="doc doc-object-name doc-module-name">config</span>
+
+
+<a href="#config" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="config.SolscanConfiguration" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">SolscanConfiguration</span>
+
+
+<a href="#config.SolscanConfiguration" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>Model in charge to manage the Solscan APIs.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolscanConfiguration.mock_response" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_response</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolscanConfiguration.mock_response" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_response</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the mock responses.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolscanConfiguration.mock_folder" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_folder</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolscanConfiguration.mock_folder" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;solscan&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Folder where the mock responses are stored.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolscanConfiguration.api_v1_key" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">api_v1_key</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolscanConfiguration.api_v1_key" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">api_v1_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>API key to access the Solscan V1 APIs.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolscanConfiguration.api_v2_key" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">api_v2_key</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolscanConfiguration.api_v2_key" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">api_v2_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>API key to access the Solscan V2 APIs.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="config.SolanaFMConfiguration" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">SolanaFMConfiguration</span>
+
+
+<a href="#config.SolanaFMConfiguration" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>Model in charge to manage the SolanaFM APIs.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolanaFMConfiguration.mock_response" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_response</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolanaFMConfiguration.mock_response" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_response</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the mock responses.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolanaFMConfiguration.mock_folder" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_folder</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolanaFMConfiguration.mock_folder" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;solana_fm&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Folder where the mock responses are stored.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.SolanaFMConfiguration.api_key" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">api_key</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.SolanaFMConfiguration.api_key" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>API key to access the SolanaFM APIs.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="config.JupiterConfiguration" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">JupiterConfiguration</span>
+
+
+<a href="#config.JupiterConfiguration" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>Model in charge to manage the Jupiter APIs.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.JupiterConfiguration.mock_response" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_response</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.JupiterConfiguration.mock_response" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_response</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the mock responses.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.JupiterConfiguration.mock_folder" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_folder</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.JupiterConfiguration.mock_folder" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;jupiter&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Folder where the mock responses are stored.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="config.BirdeyeConfiguration" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">BirdeyeConfiguration</span>
+
+
+<a href="#config.BirdeyeConfiguration" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>Model in charge to manage the birdeye APIs.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.BirdeyeConfiguration.mock_response_public" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_response_public</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.BirdeyeConfiguration.mock_response_public" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_response_public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the mock responses for the public APIs.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.BirdeyeConfiguration.mock_response_private" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_response_private</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.BirdeyeConfiguration.mock_response_private" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_response_private</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the mock responses for the private APIs.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.BirdeyeConfiguration.mock_folder" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_folder</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.BirdeyeConfiguration.mock_folder" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;birdeye&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Folder where the mock responses are stored.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.BirdeyeConfiguration.api_key" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">api_key</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.BirdeyeConfiguration.api_key" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>API key to access the birdeye APIs.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="config.TestConfiguration" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">TestConfiguration</span>
+
+
+<a href="#config.TestConfiguration" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="pydantic.BaseModel">BaseModel</span></code></p>
+
+
+        <p>Model in charge to manage the tests' configuration.</p>
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.mock_response" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_response</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.mock_response" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_response</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the mock responses.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.mock_folder" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_folder</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.mock_folder" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_folder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;tests/resources/mock&#39;</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Folder where the mock responses are stored.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.mock_file_overwrite" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">mock_file_overwrite</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.mock_file_overwrite" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">mock_file_overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Flag to enable/disable the overwrite of the mock files.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.birdeye" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">birdeye</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.birdeye" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">birdeye</span><span class="p">:</span> <span class="n">BirdeyeConfiguration</span> <span class="o">=</span> <span class="n">BirdeyeConfiguration</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Birdeye configuration.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.jupiter" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">jupiter</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.jupiter" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">jupiter</span><span class="p">:</span> <span class="n">JupiterConfiguration</span> <span class="o">=</span> <span class="n">JupiterConfiguration</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Jupiter configuration.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.solana_fm" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">solana_fm</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.solana_fm" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">solana_fm</span><span class="p">:</span> <span class="n">SolanaFMConfiguration</span> <span class="o">=</span> <span class="n">SolanaFMConfiguration</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>SolanaFM configuration.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h4 id="config.TestConfiguration.solscan" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-attribute"></code>            <span class="doc doc-object-name doc-attribute-name">solscan</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-class-attribute"><code>class-attribute</code></small>
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#config.TestConfiguration.solscan" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">solscan</span><span class="p">:</span> <span class="n">SolscanConfiguration</span> <span class="o">=</span> <span class="n">SolscanConfiguration</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Solscan configuration.</p>
+
+    </div>
+
+</div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="config.MockerManager" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">MockerManager</span>
+
+
+<a href="#config.MockerManager" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MockerManager</span><span class="p">(</span><span class="n">mock_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+        <p>Class used to manage the mock responses.</p>
+
+
+
+
+
+
+
+                  <details class="quote">
+                    <summary>Source code in <code>tests/config.py</code></summary>
+                    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mock_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># set/create resources folder</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mock_path</span> <span class="o">=</span> <span class="n">mock_path</span>
+    <span class="n">mock_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+                  </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="config.MockerManager.load_mock_model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">load_mock_model</span>
+
+
+<a href="#config.MockerManager.load_mock_model" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">load_mock_model</span><span class="p">(</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ResponseModel</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResponseModel</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Use this function to load mock response model from a file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>file_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>file name containing the response to load.
+By assumption, the file must be a JSON file and the file name should not contain the extension.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>response_model</code>
+            </td>
+            <td>
+                  <code><span title="typing.Type">Type</span>[<span title="config.ResponseModel">ResponseModel</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>objects that inherit from <code>pydantic.BaseModel</code> and describe the response object element.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>tests/config.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_mock_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ResponseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ResponseModel</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use this function to load mock response model from a file.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            file_name: file name containing the response to load.</span>
+<span class="sd">                By assumption, the file must be a JSON file and the file name should not contain the extension.</span>
+<span class="sd">            response_model: objects that inherit from `pydantic.BaseModel` and describe the response object element.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mock_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.json&quot;</span>
+    <span class="n">mock_path_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_path</span> <span class="o">/</span> <span class="n">mock_file</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mock_path_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;mock file &#39;</span><span class="si">{</span><span class="n">mock_file</span><span class="si">}</span><span class="s2">&#39; does not exist in &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mock_path</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mock_path_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">mock_response</span> <span class="o">=</span> <span class="n">response_model</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mock_response</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="config.MockerManager.store_mock_model" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">store_mock_model</span>
+
+
+<a href="#config.MockerManager.store_mock_model" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">store_mock_model</span><span class="p">(</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">BaseModel</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Use this function to store the mock response model into a file.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>file_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>file name containing the response to load.
+By assumption, the file must be a JSON file and the file name should not contain the extension.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>response</code>
+            </td>
+            <td>
+                  <code><span title="pydantic.BaseModel">BaseModel</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>objects that inherit from <code>pydantic.BaseModel</code> and describe the response object element.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>tests/config.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">store_mock_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use this function to store the mock response model into a file.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            file_name: file name containing the response to load.</span>
+<span class="sd">                By assumption, the file must be a JSON file and the file name should not contain the extension.</span>
+<span class="sd">            response: objects that inherit from `pydantic.BaseModel` and describe the response object element.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mock_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">.json&quot;</span>
+    <span class="n">mock_path_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_path</span> <span class="o">/</span> <span class="n">mock_file</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">mock_path_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">(</span><span class="n">indent</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">by_alias</span> <span class="o">=</span> <span class="kc">True</span><span class="p">))</span>
+
+    <span class="k">return</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="config.MockerManager.load_mock_response" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">load_mock_response</span>
+
+
+<a href="#config.MockerManager.load_mock_response" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">load_mock_response</span><span class="p">(</span>
+    <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ResponseModel</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Response</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Use this function to load mock response model from a file and return a dummy <code>Response</code> object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>file_name</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>file name containing the response to load.
+By assumption, the file must be a JSON file and the file name should not contain the extension.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>response_model</code>
+            </td>
+            <td>
+                  <code><span title="typing.Type">Type</span>[<span title="config.ResponseModel">ResponseModel</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>objects that inherit from <code>pydantic.BaseModel</code> and describe the response object element.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>tests/config.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_mock_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">response_model</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">ResponseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Response</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use this function to load mock response model from a file and return a dummy `Response` object.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            file_name: file name containing the response to load.</span>
+<span class="sd">                By assumption, the file must be a JSON file and the file name should not contain the extension.</span>
+<span class="sd">            response_model: objects that inherit from `pydantic.BaseModel` and describe the response object element.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mock_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_mock_model</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">response_model</span><span class="p">)</span>
+
+    <span class="c1"># create dummy response</span>
+    <span class="n">mock_response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">()</span>
+    <span class="n">mock_response</span><span class="o">.</span><span class="n">_content</span> <span class="o">=</span> <span class="n">mock_model</span><span class="o">.</span><span class="n">model_dump_json</span><span class="p">(</span><span class="n">by_alias</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">exclude_none</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+    <span class="n">mock_response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">=</span> <span class="mi">200</span>
+    <span class="n">mock_response</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span>
+
+    <span class="k">return</span> <span class="n">mock_response</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h4 id="config.MockerManager.adjust_content_json" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">adjust_content_json</span>
+
+
+<a href="#config.MockerManager.adjust_content_json" class="headerlink" title="Permanent link">&para;</a></h4>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">adjust_content_json</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Use this function to adjust an input string to ensure that 
+can be used as content for a <code>Response</code> object and paresed 
+as a JSON object.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>content</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>string to adjust.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>tests/config.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">adjust_content_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Use this function to adjust an input string to ensure that </span>
+<span class="sd">        can be used as content for a `Response` object and paresed </span>
+<span class="sd">        as a JSON object.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            content: string to adjust.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># adjustemts</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="s2">&quot;false&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="s2">&quot;null&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="config.load_config" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">load_config</span>
+
+
+<a href="#config.load_config" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">load_config</span><span class="p">(</span>
+    <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;test.ini&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestConfiguration</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>This function is used to load the test configuration file.</p>
+<p>It is <strong>strongly suggested</strong> to leave the default <code>path</code> and <code>file</code> 
+name for the test configuration file. However, if a dedicated file 
+is used, then is possible to load another file by providing the 
+necessary information in the input variables.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>path</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>path of the configuration file.</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;tests&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>file</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>name of the configuration file (with extension).</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;test.ini&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            TestConfiguration (config.TestConfiguration)" href="#config.TestConfiguration">TestConfiguration</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>pydantic model of the test's configuration.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>tests/config.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">load_config</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tests&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;test.ini&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TestConfiguration</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function is used to load the test configuration file.</span>
+
+<span class="sd">        It is **strongly suggested** to leave the default `path` and `file` </span>
+<span class="sd">        name for the test configuration file. However, if a dedicated file </span>
+<span class="sd">        is used, then is possible to load another file by providing the </span>
+<span class="sd">        necessary information in the input variables.</span>
+
+<span class="sd">        Parameters:</span>
+<span class="sd">            path: path of the configuration file.</span>
+<span class="sd">            file: name of the configuration file (with extension).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pydantic model of the test&#39;s configuration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config_path_file</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+
+    <span class="c1"># load config</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">config_path_file</span><span class="p">)</span>
+    <span class="n">test_config</span> <span class="o">=</span> <span class="n">TestConfiguration</span><span class="p">()</span>
+
+    <span class="c1"># global</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">mock_response</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;global&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_response&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">mock_response</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">mock_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;global&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_folder&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">mock_file_overwrite</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;global&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_file_overwrite&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">mock_file_overwrite</span><span class="p">)</span>
+
+    <span class="c1"># birdeye</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;birdeye&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_response_public&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_public</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_private</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;birdeye&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_response_private&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_response_private</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;birdeye&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_folder&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;birdeye&quot;</span><span class="p">,</span> <span class="s2">&quot;api_key&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">birdeye</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
+
+    <span class="c1"># jupiter</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">jupiter</span><span class="o">.</span><span class="n">mock_response</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;jupiter&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_response&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">jupiter</span><span class="o">.</span><span class="n">mock_response</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">jupiter</span><span class="o">.</span><span class="n">mock_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;jupiter&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_folder&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">jupiter</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span>
+
+    <span class="c1"># solana_fm</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solana_fm</span><span class="o">.</span><span class="n">mock_response</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;solana_fm&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_response&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solana_fm</span><span class="o">.</span><span class="n">mock_response</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solana_fm</span><span class="o">.</span><span class="n">mock_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solana_fm&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_folder&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solana_fm</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solana_fm</span><span class="o">.</span><span class="n">api_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solana_fm&quot;</span><span class="p">,</span> <span class="s2">&quot;api_key&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solana_fm</span><span class="o">.</span><span class="n">api_key</span><span class="p">)</span>
+
+    <span class="c1"># solscan</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">mock_response</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">getboolean</span><span class="p">(</span><span class="s2">&quot;solscan&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_response&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">mock_response</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">mock_folder</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solscan&quot;</span><span class="p">,</span> <span class="s2">&quot;mock_folder&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">mock_folder</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">api_v1_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solscan&quot;</span><span class="p">,</span> <span class="s2">&quot;api_v1_key&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">api_v1_key</span><span class="p">)</span>
+    <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">api_v2_key</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;solscan&quot;</span><span class="p">,</span> <span class="s2">&quot;api_v2_key&quot;</span><span class="p">,</span> <span class="n">fallback</span> <span class="o">=</span> <span class="n">test_config</span><span class="o">.</span><span class="n">solscan</span><span class="o">.</span><span class="n">api_v2_key</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">test_config</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.instant.progress", "navigation.tabs", "navigation.top", "navigation.indexes", "toc.follow", "search.suggest", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
