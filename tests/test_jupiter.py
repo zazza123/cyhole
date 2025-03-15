@@ -8,7 +8,6 @@ from cyhole.jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
     GetQuoteResponse,
-    GetQuoteTokensResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
@@ -494,60 +493,6 @@ class TestJupiter:
                 amount = 1000,
                 swap_mode = "XXX"
             )
-
-    def test_get_quote_tokens_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote/Tokens" for synchronous logic.
-
-            Mock Response File: get_quote_tokens.json
-        """
-
-        # load mock response
-        mock_file_name = "get_quote_tokens"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteTokensResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
-            mock_response._content = content
-
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_quote_tokens()
-
-        # actual test
-        assert isinstance(response, GetQuoteTokensResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_quote_tokens_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote/Tokens" for asynchronous logic.
-
-            Mock Response File: get_quote_tokens.json
-        """
-
-        # load mock response
-        mock_file_name = "get_quote_tokens"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteTokensResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
-            mock_response._content = content
-
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        async with self.jupiter.async_client as client:
-            response = await client.get_quote_tokens()
-
-        # actual test
-        assert isinstance(response, GetQuoteTokensResponse)
 
     def test_get_quote_program_id_label_sync(self, mocker: MockerFixture) -> None:
         """

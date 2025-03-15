@@ -6,7 +6,6 @@ from ..jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
     GetQuoteResponse,
-    GetQuoteTokensResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
@@ -49,13 +48,6 @@ class JupiterClient(APIClient):
             All the API endopint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return self._interaction._get_quote(True, input)
-
-    def get_quote_tokens(self) -> GetQuoteTokensResponse:
-        """
-            Call the Jupiter's GET **[Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint for synchronous logic. 
-            All the API endopint details are available on [`Jupiter._get_quote_tokens`][cyhole.jupiter.interaction.Jupiter._get_quote_tokens].
-        """
-        return self._interaction._get_quote_tokens(True)
 
     def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
         """
@@ -175,13 +167,6 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endopint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return await self._interaction._get_quote(False, input)
-
-    async def get_quote_tokens(self) -> GetQuoteTokensResponse:
-        """
-            Call the Jupiter's GET **[Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint for asynchronous logic. 
-            All the API endopint details are available on [`Jupiter._get_quote_tokens`][cyhole.jupiter.interaction.Jupiter._get_quote_tokens].
-        """
-        return await self._interaction._get_quote_tokens(False)
 
     async def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
         """

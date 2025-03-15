@@ -186,13 +186,6 @@ class GetQuoteResponse(BaseModel):
     context_slot: int = Field(alias = "contextSlot")
     time_taken: float = Field(alias = "timeTaken")
 
-# classes used on GET "Quote/Token" endpoint
-class GetQuoteTokensResponse(BaseModel):
-    """
-        Model used to represent the **Quote/Token** endpoint from Jupiter API.
-    """
-    tokens: list[str]
-
 # classes used on GET "Quote/Program ID to Label" endpoint
 class GetQuoteProgramIdLabelResponse(BaseModel):
     """

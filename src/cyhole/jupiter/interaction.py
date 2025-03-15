@@ -9,7 +9,6 @@ from ..jupiter.schema import (
     GetPriceResponse,
     GetQuoteInput,
     GetQuoteResponse,
-    GetQuoteTokensResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
@@ -171,33 +170,6 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return GetQuoteResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _get_quote_tokens(self, sync: Literal[True]) -> GetQuoteTokensResponse: ...
-
-    @overload
-    def _get_quote_tokens(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteTokensResponse]: ...
-
-    def _get_quote_tokens(self, sync: bool) -> GetQuoteTokensResponse | Coroutine[None, None, GetQuoteTokensResponse]:
-        """
-            This function refers to the GET **[Quote Tokens](https://station.jup.ag/api-v6/get-tokens)** API endpoint, 
-            and it is used to get the list of the current supported tradable tokens. 
-
-            Returns:
-                List of tradable tokens.
-        """
-        # set params
-        url = self.url_api_quote + "tokens"
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetQuoteTokensResponse(tokens = content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetQuoteTokensResponse(tokens = content_raw.json())
             return async_request()
 
     @overload
