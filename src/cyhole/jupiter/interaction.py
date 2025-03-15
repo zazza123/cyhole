@@ -208,7 +208,7 @@ class Jupiter(Interaction):
 
     def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
         """
-            This function refers to the GET **[Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint, 
+            This function refers to the GET **[Quote Program ID to Label](https://api.jup.ag/swap/v1/program-id-to-label)** API endpoint, 
             and it is used to get the list of supported DEXes to use in quote endpoint. 
 
             Returns:
