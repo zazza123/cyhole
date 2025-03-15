@@ -93,11 +93,11 @@ class GetQuoteInput(BaseModel):
     """The address of the output token on the chain."""
 
     amount: int
-    """The amount to swap, factoring in the token decimals."""
+    """The amount to swap, factoring in the token decimals.
+        For example, if the token has 6 decimals, then `1.0` = `1_000_000`."""
 
     slippage_base_points: int = Field(default = 50, serialization_alias = "slippageBps")
-    """Slippage tolerance in basis points (the default is used unless `auto_slippage` is set to `True`).  
-        Observe that if the slippage exeeded this value, then the swap will fail."""
+    """Slippage tolerance in basis points. Observe that if the slippage exeeded this value, then the swap will fail."""
 
     swap_mode: str = Field(default = JupiterSwapMode.EXACT_IN.value, serialization_alias = "swapMode")
     """Define if the slippage is on the input or output token."""
@@ -111,7 +111,7 @@ class GetQuoteInput(BaseModel):
         See [`JupiterSwapDex`][cyhole.jupiter.param.JupiterSwapDex] for all the supported DEXs"""
 
     restrict_intermediate_tokens: bool | None = Field(default = None, serialization_alias = "restrictIntermediateTokens")
-    """Restrict to a top token set for stable liquidity."""
+    """Restrict to a top token set for stable liquidity. This will help to reduce exposure to potential high slippage routes."""
 
     only_direct_routes: bool = Field(default = False, serialization_alias = "onlyDirectRoutes")
     """Limit to single hop routes only."""
@@ -123,17 +123,7 @@ class GetQuoteInput(BaseModel):
     """Fee to charge. The value is in percent and taken from output token."""
 
     max_accounts: int | None = Field(default = None, serialization_alias = "maxAccounts")
-    """Max accounts to be used for the quote."""
-
-    auto_slippage: bool = Field(default = False, serialization_alias = "autoSlippage")
-    """Enable smart/auto slippage proposed by API."""
-
-    max_auto_slippage_base_points: int | None = Field(default = None, serialization_alias = "maxAutoSlippageBps")
-    """Max slippage for smart/auto slippage."""
-
-    auto_slippage_collision_usd_value: int | None = Field(default = None, serialization_alias = "autoSlippageCollisionUsdValue")
-    """Custom USD value for calculating slippage impact.  
-        By default, the API sets 1000 USD if `auto_slippage` is set to `True`."""
+    """Max accounts to be used for the quote. Jupiter Frontend uses a maxAccounts of 64."""
 
     @field_validator("dexes", "exclude_dexes")
     @classmethod
@@ -152,6 +142,13 @@ class GetQuoteInput(BaseModel):
     def validator_swap_mode(cls, mode: str) -> str:
         JupiterSwapMode.check(mode)
         return mode
+
+    @field_serializer("restrict_intermediate_tokens", "only_direct_routes", "as_legacy_transaction")
+    @classmethod
+    def serialize_flows(cls, value: bool | None) -> str | None:
+        if value is not None:
+            return "true" if value else "false"
+        return
 
 # Output
 class GetQuotePlatformFees(BaseModel):

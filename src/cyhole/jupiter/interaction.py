@@ -72,7 +72,7 @@ class Jupiter(Interaction):
 
         # API urls
         self.url_api_price = "https://api.jup.ag/price/v2"
-        self.url_api_quote = "https://quote-api.jup.ag/v6/"
+        self.url_api_quote = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_limit = "https://jup.ag/api/limit/v1/"
         return
@@ -139,9 +139,9 @@ class Jupiter(Interaction):
 
     def _get_quote(self, sync: bool, input: GetQuoteInput) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
         """
-            This function refers to the GET **[Quote](https://station.jup.ag/api-v6/get-quote)** API endpoint, 
+            This function refers to the GET **[Quote](https://station.jup.ag/docs/api/quote)** API endpoint, 
             and it is used to get a quote for swapping a specific amount of tokens.  
-            The function can be combined with the `post_swap` to implement a payment mechanism.
+            The function can be combined with the `post_swap` enpdpoint to implement a payment mechanism.
 
             Parameters:
                 input: an input schema used to describe the request.
