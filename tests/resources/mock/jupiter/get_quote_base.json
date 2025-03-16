@@ -2,8 +2,8 @@
     "inputMint": "So11111111111111111111111111111111111111112",
     "inAmount": "1000",
     "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-    "outAmount": "175",
-    "otherAmountThreshold": "175",
+    "outAmount": "1220",
+    "otherAmountThreshold": "1214",
     "swapMode": "ExactIn",
     "slippageBps": 50,
     "platformFee": null,
@@ -11,12 +11,12 @@
     "routePlan": [
         {
             "swapInfo": {
-                "ammKey": "5WGx6mE9Xww3ocYzSenGVQMJLCVVwK7ePnYV6cXcpJtK",
-                "label": "Raydium",
+                "ammKey": "4ka8BrmspaG6oPoCrLy7q9yJ2X9aUW2JbVfAESA2cYia",
+                "label": "Pump.fun Amm",
                 "inputMint": "So11111111111111111111111111111111111111112",
                 "inAmount": "1000",
-                "outputMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
-                "outAmount": "123975",
+                "outputMint": "61V8vBaqAGMpgDQi4JcAwo1dmBGHsyhzodcPqnEVpump",
+                "outAmount": "9728",
                 "feeMint": "So11111111111111111111111111111111111111112",
                 "feeAmount": "2"
             },
@@ -24,18 +24,18 @@
         },
         {
             "swapInfo": {
-                "ammKey": "8B3vxiUio75gKxzwB2BwZJYQLxQUC6KK2B22u8LaBjnE",
+                "ammKey": "6Y8ii6CKWWnJdAXByYkXQ3FEVNnGoskvzXqLWjQHgySj",
                 "label": "Meteora DLMM",
-                "inputMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
-                "inAmount": "123975",
+                "inputMint": "61V8vBaqAGMpgDQi4JcAwo1dmBGHsyhzodcPqnEVpump",
+                "inAmount": "9728",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": "175",
-                "feeMint": "WENWENvqqNya429ubCdR81ZmD69brwQaaBYY6p3LCpk",
-                "feeAmount": "496"
+                "outAmount": "1220",
+                "feeMint": "61V8vBaqAGMpgDQi4JcAwo1dmBGHsyhzodcPqnEVpump",
+                "feeAmount": "487"
             },
             "percent": 100
         }
     ],
-    "contextSlot": 273032758,
-    "timeTaken": 0.011590022
+    "contextSlot": 327209156,
+    "timeTaken": 0.004172698
 }

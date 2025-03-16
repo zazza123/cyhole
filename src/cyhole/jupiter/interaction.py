@@ -180,7 +180,7 @@ class Jupiter(Interaction):
 
     def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
         """
-            This function refers to the GET **[Quote Program ID to Label](https://api.jup.ag/swap/v1/program-id-to-label)** API endpoint, 
+            This function refers to the GET **[Quote Program ID to Label](https://station.jup.ag/docs/api/program-id-to-label)** API endpoint, 
             and it is used to get the list of supported DEXes to use in quote endpoint. 
 
             Returns:
@@ -207,7 +207,7 @@ class Jupiter(Interaction):
 
     def _post_swap(self, sync: bool, body: PostSwapBody) -> PostSwapResponse | Coroutine[None, None, PostSwapResponse]:
         """
-            This function refers to the POST **[Swap](https://station.jup.ag/api-v6/post-swap)** API endpoint, 
+            This function refers to the POST **[Swap](https://station.jup.ag/docs/api/swap)** API endpoint, 
             and it is used to recive the transaction to perform the swap initialised from `get_quote` 
             endopoint for the desired pair.  
             The function should be combined with the `get_quote` endpoint.

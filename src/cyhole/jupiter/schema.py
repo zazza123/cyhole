@@ -143,13 +143,6 @@ class GetQuoteInput(BaseModel):
         JupiterSwapMode.check(mode)
         return mode
 
-    @field_serializer("restrict_intermediate_tokens", "only_direct_routes", "as_legacy_transaction")
-    @classmethod
-    def serialize_flows(cls, value: bool | None) -> str | None:
-        if value is not None:
-            return "true" if value else "false"
-        return
-
 # Output
 class GetQuotePlatformFees(BaseModel):
     amount: str
@@ -195,23 +188,85 @@ class GetQuoteProgramIdLabelResponse(BaseModel):
 
 # classes used on POST "Swap" endpoint
 # Body
+class PostSwapPriorityLevelWithMaxLamports(BaseModel):
+    """
+        Model used to identify the priority level with max lamports.
+    """
+    priority_level: int = Field(default = None, alias = "priorityLevel")
+    """Priority level."""
+
+    max_lamports: int = Field(default = None, alias = "maxLamports")
+    """Max lamports."""
+
+class PostSwapPrioritizationFeeLamports(BaseModel):
+    """
+        Model used to identify the prioritization fee lamports.
+    """
+    priority_level_with_max_lamports: PostSwapPriorityLevelWithMaxLamports = Field(default = None, alias = "priorityLevelWithMaxLamports")
+    """Priority level with max lamports."""
+
+    jito_tip_lamports: int = Field(default = None, alias = "jitoTipLamports")
+    """Exact amount of tip to use in a tip instruction.  
+        Estimate how much to set using Jito tip percentiles endpoint.  
+        It has to be used together with a connection to a Jito RPC"""
+
 class PostSwapBody(BaseModel):
     """
         Model used to identify the body required by a POST **Swap** request.
     """
+
     user_public_key: str = Field(serialization_alias = "userPublicKey")
-    wrap_unwrap_sol: bool = Field(default = None, serialization_alias = "wrapAndUnwrapSol")
-    use_shared_accounts: bool= Field(default = None, serialization_alias = "useSharedAccounts")
-    fee_account: str = Field(default = None, serialization_alias = "feeAccount")
-    tracking_account: str = Field(default = None, serialization_alias = "trackingAccount")
-    compute_unit_price_micro_lamports: int = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
-    prioritization_fee_lamports: int = Field(default = None, serialization_alias = "prioritizationFeeLamports")
-    as_legacy_transaction: bool = Field(default = None, serialization_alias = "asLegacyTransaction")
-    use_token_ledger: bool = Field(default = None, serialization_alias = "useTokenLedger")
-    destination_token_account: str = Field(default = None, serialization_alias = "destinationTokenAccount")
-    dynamic_compute_unit_limit: bool = Field(default = None, serialization_alias = "dynamicComputeUnitLimit")
-    skip_user_accounts_rpc_calls: bool = Field(default = None, serialization_alias = "skipUserAccountsRpcCalls")
+    """Public Key of the User wallet"""
+
     quote_response: GetQuoteResponse = Field(serialization_alias = "quoteResponse")
+    """The quote response object from the quote endpoint."""
+
+    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
+    """To automatically wrap/unwrap SOL in the transaction.  
+        Parameter will be ignored if `destination_token_account` is set because it may belong to a 
+        different user that Jupitere has no authority to close."""
+
+    use_shared_accounts: bool= Field(default = True, serialization_alias = "useSharedAccounts")
+    """This enables the usage of shared program accounts, it is essential as complex routing 
+        will require multiple intermediate token accounts which the user might not have."""
+
+    fee_account: str = Field(default = None, serialization_alias = "feeAccount")
+    """An Associated Token Address (ATA) of specific mints depending on SwapMode to collect fees."""
+
+    tracking_account: str = Field(default = None, serialization_alias = "trackingAccount")
+    """Specify any public key that belongs to you to track the transactions.  
+        Useful for integrators to get all the swap transactions from this public key."""
+
+    compute_unit_price_micro_lamports: int = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
+    """This number is used to specify a compute unit price to calculate priority fee; 
+        `computeUnitLimit` (1400000) * `compute_unit_price_micro_lamports`.  
+        Jupiter recommends using `prioritization_fee_lamports` and `dynamic_compute_unit_limit` instead of passing in a compute unit price."""
+
+    prioritization_fee_lamports: PostSwapPrioritizationFeeLamports = Field(default = None, serialization_alias = "prioritizationFeeLamports")
+    """This object is used to specify a level or amount of additional fees to prioritize the transaction.
+        It can be used for EITHER priority fee OR Jito tip."""
+
+    as_legacy_transaction: bool = Field(default = False, serialization_alias = "asLegacyTransaction")
+    """Request a legacy transaction rather than the default versioned transaction.  
+        Used together with `GetQuoteInput.as_legacy_transaction` in quote, otherwise the transaction might be too large."""
+
+    destination_token_account: str = Field(default = None, serialization_alias = "destinationTokenAccount")
+    """Public key of a token account that will be used to receive the token out of the swap.  
+        If not provided, the signer's ATA will be used. If provided, Jupiter assumes that the token account is already initialized."""
+
+    dynamic_compute_unit_limit: bool = Field(default = False, serialization_alias = "dynamicComputeUnitLimit")
+    """When enabled, it will do a swap simulation to get the compute unit used and set it in ComputeBudget's compute unit limit.  
+        This will increase latency slightly since there will be one extra RPC call to simulate this.  
+        This can be useful to estimate compute unit correctly and reduce priority fees needed or have higher chance to be included in a block."""
+
+    skip_user_accounts_rpc_calls: bool = Field(default = False, serialization_alias = "skipUserAccountsRpcCalls")
+    """When enabled, it will not do any additional RPC calls to check on user's accounts.  
+        Enable it only when you already setup all the accounts needed for the trasaction, 
+        like wrapping or unwrapping sol, or destination account is already created."""
+
+    dynamic_slippage: bool = Field(default = False, serialization_alias = "dynamicSlippage")
+    """When enabled, it estimates slippage and apply it in the swap transaction directly, 
+        overwriting the `GetQuoteResponse.slippage_base_points` parameter in the quote response."""
 
 # Output
 class PostSwapResponse(BaseModel):
