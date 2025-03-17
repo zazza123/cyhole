@@ -270,9 +270,35 @@ class PostSwapBody(BaseModel):
 
 # Output
 class PostSwapResponse(BaseModel):
+    """
+        Model used to represent the **Swap** endpoint response from Jupiter API.
+    """
     swap_transaction: str = Field(alias = "swapTransaction")
     last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
     prioritization_fee_lamports: int = Field(default = 0, alias = "prioritizationFeeLamports")
+
+# Output (Instructions)
+class PostSwapAccount(BaseModel):
+    public_key: str = Field(alias = "pubkey")
+    is_signer: bool = Field(alias = "isSigner")
+    is_writable: bool = Field(alias = "isWritable")
+
+class PostSwapInstruction(BaseModel):
+    program_id: str = Field(alias = "programId")
+    accounts: list[PostSwapAccount]
+    data: str
+
+class PostSwapInstructionsResponse(BaseModel):
+    """
+        Model used to represent the **Swap Instructions** endpoint response from 
+        Jupiter API in the case of instructions are requested.
+    """
+    swap: PostSwapInstruction = Field(alias = "swapInstruction")
+    setup: list[PostSwapInstruction] = Field(alias = "setupInstructions")
+    compute_budget: list[PostSwapInstruction] = Field(alias = "computeBudgetInstructions")
+    cleanup: PostSwapInstruction = Field(default = None, alias = "cleanupInstruction")
+    other: list[PostSwapInstruction] = Field(default = None, alias = "otherInstructions")
+    address_lookup_table_addresses: list[str] = Field(alias = "addressLookupTableAddresses")
 
 # classes used on GET "Token Info" endpoint
 class GetTokenInfoResponse(BaseModel):

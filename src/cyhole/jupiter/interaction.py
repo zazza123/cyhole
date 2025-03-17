@@ -12,6 +12,7 @@ from ..jupiter.schema import (
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
+    PostSwapInstructionsResponse,
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
@@ -200,30 +201,51 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _post_swap(self, sync: Literal[True], body: PostSwapBody) -> PostSwapResponse: ...
+    def _post_swap(self, sync: Literal[True], body: PostSwapBody, with_instructions: Literal[False]) -> PostSwapResponse: ...
 
     @overload
-    def _post_swap(self, sync: Literal[False], body: PostSwapBody) -> Coroutine[None, None, PostSwapResponse]: ...
+    def _post_swap(self, sync: Literal[True], body: PostSwapBody, with_instructions: Literal[True]) -> PostSwapInstructionsResponse: ...
 
-    def _post_swap(self, sync: bool, body: PostSwapBody) -> PostSwapResponse | Coroutine[None, None, PostSwapResponse]:
+    @overload
+    def _post_swap(self, sync: Literal[False], body: PostSwapBody, with_instructions: Literal[False]) -> Coroutine[None, None, PostSwapResponse]: ...
+
+    @overload
+    def _post_swap(self, sync: Literal[False], body: PostSwapBody, with_instructions: Literal[True]) -> Coroutine[None, None, PostSwapInstructionsResponse]: ...
+
+    def _post_swap(self, sync: bool, body: PostSwapBody, with_instructions: bool = False) -> PostSwapResponse | PostSwapInstructionsResponse | Coroutine[None, None, PostSwapResponse | PostSwapInstructionsResponse]:
         """
             This function refers to the POST **[Swap](https://station.jup.ag/docs/api/swap)** API endpoint, 
-            and it is used to recive the transaction to perform the swap initialised from `get_quote` 
-            endopoint for the desired pair.  
-            The function should be combined with the `get_quote` endpoint.
+            and it is used to recive the transaction to perform the swap initialised from Jupiter client 
+            `get_quote` endpoint for the desired pair; for this reason the function should be combined 
+            with the `get_quote` endpoint.
+
+            Jupiter API provides also the possibility to retrieve only the instructions to perform the swap 
+            without the transaction. This is useful to check the instructions before performing the swap, 
+            and in case of need, to modify the instructions before sending the transaction. This behaviour 
+            can be activated by setting the `with_instructions` flag to `True`. Observe that in this case, 
+            the response will be different from the standard swap response. In Jupiter's API documentation,
+            this endpoint is referred to the POST **[Swap Instructions](https://station.jup.ag/docs/api/swap-instructions)**.
 
             Parameters:
                 body: the body to sent to Jupiter API that describe the swap.
                     More details in the object definition.
+                with_instructions: flag to receive only the instructions to perform the swap.
 
             Returns:
-                Transaction found by Jupiter API.
+                Transaction found by Jupiter API in case `with_instructions` is `False`, 
+                otherwise instructions to perform the swap.
         """
         # set params
         url = self.url_api_quote + "swap"
+        response_model_class = PostSwapResponse
         headers = {
             "Content-Type": "application/json"
         }
+
+        # check instructions
+        if with_instructions:
+            url += "-instructions"
+            response_model_class = PostSwapInstructionsResponse
 
         # execute request
         if sync:
@@ -236,7 +258,7 @@ class Jupiter(Interaction):
                 )
             except HTTPError as e:
                 raise self._raise(e)
-            return PostSwapResponse(**content_raw.json())
+            return response_model_class(**content_raw.json())
         else:
             async def async_request():
                 try:
@@ -248,7 +270,7 @@ class Jupiter(Interaction):
                     )
                 except HTTPError as e:
                     raise self._raise(e)
-                return PostSwapResponse(**content_raw.json())
+                return response_model_class(**content_raw.json())
             return async_request()
 
     @overload
