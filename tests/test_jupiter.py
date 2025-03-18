@@ -21,8 +21,7 @@ from cyhole.jupiter.schema import (
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse,
-    GetLimitOrderTradeHistoryResponse
+    GetLimitOrderHistoryResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException
@@ -1180,62 +1179,3 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetLimitOrderHistoryResponse)
-
-    def test_get_limit_order_trade_history_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Limit Order - Trade History" 
-            for synchronous logic.
-
-            Mock Response File: get_limit_order_trade_history.json
-        """
-
-        # load mock response
-        mock_file_name = "get_limit_order_trade_history"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderTradeHistoryResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
-            mock_response._content = content
-
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_limit_order_trade_history(
-            wallet = "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
-            take = 1
-        )
-
-        # actual test
-        assert isinstance(response, GetLimitOrderTradeHistoryResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            response.orders = [response.orders[0]]
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_limit_order_trade_history_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Limit Order - Trade History" 
-            for asynchronous logic.
-
-            Mock Response File: get_limit_order_trade_history.json
-        """
-
-        # load mock response
-        mock_file_name = "get_limit_order_trade_history"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderTradeHistoryResponse)
-
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        async with self.jupiter.async_client as client:
-            response = await client.get_limit_order_trade_history(
-                wallet = "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
-                take = 1
-            )
-
-        # actual test
-        assert isinstance(response, GetLimitOrderTradeHistoryResponse)
