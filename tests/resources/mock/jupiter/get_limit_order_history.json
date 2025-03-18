@@ -1,21 +1,64 @@
 {
     "orders": [
         {
-            "id": 25375157,
-            "maker": "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
+            "userPubkey": "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
             "orderKey": "5FJWUomWd3cMgTS7yLUvxAZEbhxmUAbHfdgdpT8MFFcB",
             "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-            "inAmount": "0",
+            "makingAmount": 242.499318,
+            "rawMakingAmount": 242499318,
+            "remainingMakingAmount": 0.0,
+            "rawRemainingMakingAmount": 0,
             "outputMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-            "outAmount": "0",
-            "oriInAmount": "242499318",
-            "oriOutAmount": "1125495767196",
+            "takingAmount": 11254957.67196,
+            "rawTakingAmount": 1125495767196,
+            "remainingTakingAmount": 0.0,
+            "rawRemainingTakingAmount": 0,
+            "slippageBps": "0",
             "expiredAt": null,
-            "state": "Completed",
-            "createTxid": "32KDpAWjBLeTGKcLrz99mmsjeRBhfREWVXRTDpRQZWbkMSfiac6FfSoHoPYXbRuWmenmdp2S4ht1M7BS91fqRGGD",
-            "cancelTxid": null,
-            "updatedAt": "2024-04-05T09:37:38.809000Z",
-            "createdAt": "2024-03-26T14:35:02Z"
+            "createdAt": "2024-03-26T14:35:02Z",
+            "updatedAt": "2024-04-05T09:37:10Z",
+            "status": "Completed",
+            "openTx": "32KDpAWjBLeTGKcLrz99mmsjeRBhfREWVXRTDpRQZWbkMSfiac6FfSoHoPYXbRuWmenmdp2S4ht1M7BS91fqRGGD",
+            "closeTx": "4jYpXarGKpRuxCKynUucEcTSZEVHuQcYyVSdtgJdFAJ7azY8cQV9ajzjQJ9s7n3CCYYPzTDEKWrmWy5Wxq7meVwN",
+            "programVersion": "jupoNjAxXgZ4rjzxzPMP4oxduvQsQtZzyknqvzYNrNu",
+            "trades": [
+                {
+                    "orderKey": "5FJWUomWd3cMgTS7yLUvxAZEbhxmUAbHfdgdpT8MFFcB",
+                    "keeper": "EccxYg7rViwYfn9EMoNu7sUaV82QGyFt6ewiQaH1GYjv",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 240.559324,
+                    "rawInputAmount": 240559324,
+                    "outputMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                    "outputAmount": 11164918.03583,
+                    "rawOutputAmount": 1116491803583,
+                    "feeMint": "2LQEKHm23VwBjG1K3xni9Y2HPwiah2bTVmsohw1mBKki",
+                    "feeAmount": 11164.91803,
+                    "rawFeeAmount": 1116491803,
+                    "txId": "4jYpXarGKpRuxCKynUucEcTSZEVHuQcYyVSdtgJdFAJ7azY8cQV9ajzjQJ9s7n3CCYYPzTDEKWrmWy5Wxq7meVwN",
+                    "confirmedAt": "2024-04-05T09:37:10Z",
+                    "action": "Fill"
+                },
+                {
+                    "orderKey": "5FJWUomWd3cMgTS7yLUvxAZEbhxmUAbHfdgdpT8MFFcB",
+                    "keeper": "71WDyyCsZwyEYDV91Qrb212rdg6woCHYQhFnmZUBxiJ6",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 1.939994,
+                    "rawInputAmount": 1939994,
+                    "outputMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                    "outputAmount": 90039.63613,
+                    "rawOutputAmount": 9003963613,
+                    "feeMint": "2LQEKHm23VwBjG1K3xni9Y2HPwiah2bTVmsohw1mBKki",
+                    "feeAmount": 90.03963,
+                    "rawFeeAmount": 9003963,
+                    "txId": "3ERbDEN8LHoFT5LCAJ8RQYpVBAXRqH71DbomU2oh3andCrWRAd4Ty1EhvPHkAdeu77ZJMhQxtPbzpnpB1SecDj8V",
+                    "confirmedAt": "2024-04-05T09:11:18Z",
+                    "action": "Fill"
+                }
+            ]
         }
-    ]
+    ],
+    "hasMoreData": true,
+    "user": "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
+    "page": 1,
+    "totalPages": 2
 }

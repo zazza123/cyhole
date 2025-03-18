@@ -74,7 +74,7 @@ class Jupiter(Interaction):
         self.url_api_price = "https://api.jup.ag/price/v2"
         self.url_api_quote = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
-        self.url_api_limit = "https://jup.ag/api/limit/v1/"
+        self.url_api_limit = "https://api.jup.ag/limit/v2/"
         return
 
     @overload
@@ -568,42 +568,19 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_limit_order_history(
-        self,
-        sync: Literal[True],
-        wallet: str,
-        cursor: int | None = None,
-        skip: int | None = None,
-        take: int | None = None
-    ) -> GetLimitOrderHistoryResponse: ...
+    def _get_limit_order_history(self, sync: Literal[True], wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse: ...
 
     @overload
-    def _get_limit_order_history(
-        self,
-        sync: Literal[False],
-        wallet: str,
-        cursor: int | None = None,
-        skip: int | None = None,
-        take: int | None = None
-    ) -> Coroutine[None, None, GetLimitOrderHistoryResponse]: ...
+    def _get_limit_order_history(self, sync: Literal[False], wallet: str, page: int = 1) -> Coroutine[None, None, GetLimitOrderHistoryResponse]: ...
 
-    def _get_limit_order_history(
-        self,
-        sync: bool,
-        wallet: str,
-        cursor: int | None = None,
-        skip: int | None = None,
-        take: int | None = None
-    ) -> GetLimitOrderHistoryResponse | Coroutine[None, None, GetLimitOrderHistoryResponse]:
+    def _get_limit_order_history(self, sync: bool, wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse | Coroutine[None, None, GetLimitOrderHistoryResponse]:
         """
-            This function refers to the GET **[Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            This function refers to the GET **[Limit Order - History](https://station.jup.ag/docs/swap-api/limit-order-api#view-order-history)** 
             API endpoint, and it is used to retrieve the history of Limit Orders associated to a wallet via Jupiter API. 
 
             Parameters:
                 wallet: address of the wallet to check.
-                cursor: specify which 'page' of orders to return.
-                skip: specify the number of order to skip (from the top).
-                take: specify the number of orders to return.
+                page: specify which 'page' of orders to return.
 
             Returns:
                 History of limit orders associated to the input wallet.
@@ -612,19 +589,17 @@ class Jupiter(Interaction):
         url = self.url_api_limit + "orderHistory"
         params = {
             "wallet": wallet,
-            "cursor": cursor,
-            "skip": skip,
-            "take": take
+            "page": page
         }
 
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetLimitOrderHistoryResponse(orders = content_raw.json())
+            return GetLimitOrderHistoryResponse(**content_raw.json())
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetLimitOrderHistoryResponse(orders = content_raw.json())
+                return GetLimitOrderHistoryResponse(**content_raw.json())
             return async_request()
 
     @overload

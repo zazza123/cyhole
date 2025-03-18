@@ -1146,18 +1146,10 @@ class TestJupiter:
         mock_file_name = "get_limit_order_history"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderHistoryResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
-            mock_response._content = content
-
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_limit_order_history(
-            wallet = "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
-            take = 1
-        )
+        response = self.jupiter.client.get_limit_order_history("Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG")
 
         # actual test
         assert isinstance(response, GetLimitOrderHistoryResponse)
@@ -1180,19 +1172,11 @@ class TestJupiter:
         mock_file_name = "get_limit_order_history"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderHistoryResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
-            mock_response._content = content
-
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_limit_order_history(
-                wallet = "Hq9YQ2sz6A318tdNbFWMpML6AjWX3wDTLPVx26m719qG",
-                take = 1
-            )
+            response = await client.get_limit_order_history("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
 
         # actual test
         assert isinstance(response, GetLimitOrderHistoryResponse)
@@ -1243,10 +1227,6 @@ class TestJupiter:
         mock_file_name = "get_limit_order_trade_history"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetLimitOrderTradeHistoryResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["orders"]))
-            mock_response._content = content
 
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 

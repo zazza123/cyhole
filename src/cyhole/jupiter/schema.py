@@ -442,22 +442,66 @@ class GetLimitOrderOpenResponse(BaseModel):
     orders: list[GetLimitOrderOpen]
 
 # classes used on GET "Limit Order History" endpoint
-class GetLimitOrderHistory(BaseModel):
-    id: int
-    maker: str
+class GetLimitOrderHistoryTrade(BaseModel):
+    order_key: str = Field(alias = "orderKey")
+    keeper: str
+    input_token: str = Field(alias = "inputMint")
+    input_amount: float = Field(alias = "inputAmount")
+    input_amount_raw: int = Field(alias = "rawInputAmount")
+    output_token: str = Field(alias = "outputMint")
+    output_amount: float = Field(alias = "outputAmount")
+    output_amount_raw: int = Field(alias = "rawOutputAmount")
+    fee_token: str = Field(alias = "feeMint")
+    fee_amount: float = Field(alias = "feeAmount")
+    fee_amount_raw: int = Field(alias = "rawFeeAmount")
+    transaction_id: str = Field(alias = "txId")
+    confirmed_at: datetime = Field(alias = "confirmedAt")
+    action: str
+
+    @field_validator("input_amount", "output_amount", "fee_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "output_amount_raw", "fee_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
+
+    @field_validator("confirmed_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+class GetLimitOrderHistoryOrder(BaseModel):
+    user_public_key: str = Field(alias = "userPubkey")
     order_key: str = Field(alias = "orderKey")
     input_token: str = Field(alias = "inputMint")
-    input_amount: str = Field(alias = "inAmount")
+    input_amount: float = Field(alias = "makingAmount")
+    input_amount_raw: int = Field(alias = "rawMakingAmount")
+    input_remaining_token: float = Field(alias = "remainingMakingAmount")
+    input_remaining_token_raw: int = Field(alias = "rawRemainingMakingAmount")
     output_token: str = Field(alias = "outputMint")
-    output_amount: str = Field(alias = "outAmount")
-    ori_input_token: str = Field(alias = "oriInAmount")
-    ori_output_amount: str = Field(alias = "oriOutAmount")
+    output_amount: float = Field(alias = "takingAmount")
+    output_amount_raw: int = Field(alias = "rawTakingAmount")
+    output_remaining_amount: float = Field(alias = "remainingTakingAmount")
+    output_remaining_amount_raw: int = Field(alias = "rawRemainingTakingAmount")
+    slippage_base_points: str = Field(alias = "slippageBps")
     expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
-    state: str
-    create_transaction_id: str = Field(alias = "createTxid")
-    cancel_transaction_id: str | None = Field(default = None, alias = "cancelTxid")
-    updated_at: datetime = Field(alias = "updatedAt")
     created_at: datetime = Field(alias = "createdAt")
+    updated_at: datetime = Field(alias = "updatedAt")
+    status: JupiterLimitOrderState
+    open_transaction_id: str = Field(alias = "openTx")
+    close_transaction_id: str | None = Field(default = None, alias = "closeTx")
+    program_version_id: str = Field(alias = "programVersion")
+    trades: list[GetLimitOrderHistoryTrade]
+
+    @field_validator("input_amount", "input_remaining_token", "output_amount", "output_remaining_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "input_remaining_token_raw", "output_amount_raw", "output_remaining_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
 
     @field_validator("created_at", "updated_at")
     def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
@@ -465,17 +509,23 @@ class GetLimitOrderHistory(BaseModel):
             return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
         return datetime_raw
 
-    @field_validator("state")
+    @field_validator("status")
     @classmethod
-    def validator_state(cls, state: str) -> str:
-        JupiterLimitOrderState.check(state)
-        return state
+    def validator_status(cls, status_raw: str | JupiterLimitOrderState) -> JupiterLimitOrderState:
+        if isinstance(status_raw, str):
+            JupiterLimitOrderState.check(status_raw)
+            return JupiterLimitOrderState[status_raw]
+        return status_raw
 
 class GetLimitOrderHistoryResponse(BaseModel):
     """
         Model used to represent the **Limit Order History** endpoint from Jupiter API.
     """
-    orders: list[GetLimitOrderHistory]
+    orders: list[GetLimitOrderHistoryOrder]
+    has_more_data: bool = Field(alias = "hasMoreData")
+    user_public_key: str = Field(alias = "user")
+    page: int
+    total_pages: int = Field(alias = "totalPages")
 
 # classes used on GET "Limit Order Trade History" endpoint
 class GetLimitOrderTradeHistoryOrder(BaseModel):

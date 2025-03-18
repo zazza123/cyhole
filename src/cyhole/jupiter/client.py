@@ -127,18 +127,12 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_limit_order_open(True, wallet, input_token, output_token)
 
-    def get_limit_order_history(
-        self,
-        wallet: str,
-        cursor: int | None = None,
-        skip: int | None = None,
-        take: int | None = None
-    ) -> GetLimitOrderHistoryResponse:
+    def get_limit_order_history(self, wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse:
         """
-            Call the Jupiter's GET **[Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Limit Order - History](https://station.jup.ag/docs/swap-api/limit-order-api#view-order-history)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
         """
-        return self._interaction._get_limit_order_history(True, wallet, cursor, skip, take)
+        return self._interaction._get_limit_order_history(True, wallet, page)
 
     def get_limit_order_trade_history(
         self,
@@ -255,18 +249,12 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_limit_order_open(False, wallet, input_token, output_token)
 
-    async def get_limit_order_history(
-        self,
-        wallet: str,
-        cursor: int | None = None,
-        skip: int | None = None,
-        take: int | None = None
-    ) -> GetLimitOrderHistoryResponse:
+    async def get_limit_order_history(self, wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse:
         """
-            Call the Jupiter's GET **[Limit Order - History](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Limit Order - History](https://station.jup.ag/docs/swap-api/limit-order-api#view-order-history)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
         """
-        return await self._interaction._get_limit_order_history(False, wallet, cursor, skip, take)
+        return await self._interaction._get_limit_order_history(False, wallet, page)
 
     async def get_limit_order_trade_history(
         self,
