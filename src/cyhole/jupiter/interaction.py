@@ -508,37 +508,16 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_limit_order_open(
-            self,
-            sync: Literal[True],
-            wallet: str | None = None,
-            input_token: str | None = None,
-            output_token: str | None = None
-        ) -> GetLimitOrderOpenResponse: ...
+    def _get_limit_order_open(self, sync: Literal[True], wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse: ...
 
     @overload
-    def _get_limit_order_open(
-            self,
-            sync: Literal[False],
-            wallet: str | None = None,
-            input_token: str | None = None,
-            output_token: str | None = None
-        ) -> Coroutine[None, None, GetLimitOrderOpenResponse]: ...
+    def _get_limit_order_open(self, sync: Literal[False], wallet: str, input_token: str | None = None, output_token: str | None = None) -> Coroutine[None, None, GetLimitOrderOpenResponse]: ...
 
-    def _get_limit_order_open(
-        self,
-        sync: bool,
-        wallet: str | None = None,
-        input_token: str | None = None,
-        output_token: str | None = None
-    ) -> GetLimitOrderOpenResponse | Coroutine[None, None, GetLimitOrderOpenResponse]:
+    def _get_limit_order_open(self, sync: bool, wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse | Coroutine[None, None, GetLimitOrderOpenResponse]:
         """
-            This function refers to the GET **[Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** 
+            This function refers to the GET **[Limit Order - Open](https://station.jup.ag/docs/swap-api/limit-order-api#view-open-orders)** 
             API endpoint, and it is used to receive the current open limit orders related to a wallet, input token 
             or output token via Jupiter API. 
-
-            Observe that all the input parameters are optional; if for example, only the `input_token` is provided, 
-            then **all** the limit orders having that input token address are returned (if available).
 
             Parameters:
                 wallet: address of the wallet to check.

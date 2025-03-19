@@ -114,14 +114,9 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_limit_order_cancel(True, body)
 
-    def get_limit_order_open(
-            self,
-            wallet: str | None = None,
-            input_token: str | None = None,
-            output_token: str | None = None
-        ) -> GetLimitOrderOpenResponse:
+    def get_limit_order_open(self, wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse:
         """
-            Call the Jupiter's GET **[Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Limit Order - Open](https://station.jup.ag/docs/swap-api/limit-order-api#view-open-orders)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_limit_order_open`][cyhole.jupiter.interaction.Jupiter._get_limit_order_open].
         """
         return self._interaction._get_limit_order_open(True, wallet, input_token, output_token)
@@ -221,14 +216,9 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._post_limit_order_cancel(False, body)
 
-    async def get_limit_order_open(
-            self,
-            wallet: str | None = None,
-            input_token: str | None = None,
-            output_token: str | None = None
-        ) -> GetLimitOrderOpenResponse:
+    async def get_limit_order_open(self, wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse:
         """
-            Call the Jupiter's GET **[Limit Order - Open](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Limit Order - Open](https://station.jup.ag/docs/swap-api/limit-order-api#view-open-orders)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_limit_order_open`][cyhole.jupiter.interaction.Jupiter._get_limit_order_open].
         """
         return await self._interaction._get_limit_order_open(False, wallet, input_token, output_token)

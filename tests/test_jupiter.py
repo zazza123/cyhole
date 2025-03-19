@@ -982,7 +982,7 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
         else:
             # find open orders
-            open_orders = self.jupiter.client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
+            open_orders = self.jupiter.client.get_limit_order_open(wallet = "", input_token = JUP.address, output_token = BONK.address)
             order = open_orders.orders[0]
 
             # set inputs
@@ -1027,7 +1027,7 @@ class TestJupiter:
                 mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             else:
                 # find open orders
-                open_orders = await client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
+                open_orders = await client.get_limit_order_open(wallet = "", input_token = JUP.address, output_token = BONK.address)
                 order = open_orders.orders[0]
 
                 # set inputs
@@ -1096,7 +1096,7 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
+        response = self.jupiter.client.get_limit_order_open(wallet = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF", output_token = WSOL.address)
 
         # actual test
         assert isinstance(response, GetLimitOrderOpenResponse)
@@ -1128,7 +1128,7 @@ class TestJupiter:
 
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_limit_order_open(input_token = JUP.address, output_token = BONK.address)
+            response = await client.get_limit_order_open(wallet = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF", output_token = WSOL.address)
 
         # actual test
         assert isinstance(response, GetLimitOrderOpenResponse)

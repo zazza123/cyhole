@@ -421,15 +421,25 @@ class PostLimitOrderCancelResponse(BaseModel):
 
 # classes used on GET "Limit Order Opens" endpoint
 class GetLimitOrderOpenAccount(BaseModel):
-    maker: str
-    input_token: str = Field(alias = "inputMint")
-    input_amount: str = Field(alias = "inAmount")
-    output_token: str = Field(alias = "outputMint")
-    output_amount: str = Field(alias = "outAmount")
-    ori_input_token: str = Field(alias = "oriInAmount")
-    ori_output_amount: str = Field(alias = "oriOutAmount")
+    unique_id: int = Field(alias = "uniqueId")
+    created_at: datetime = Field(alias = "createdAt")
+    update_at: datetime = Field(alias = "updatedAt")
     expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
-    base: str
+    input_token: str = Field(alias = "inputMint")
+    input_token_reserve: str = Field(alias = "inputMintReserve")
+    input_token_program: str = Field(alias = "inputTokenProgram")
+    input_amount_raw: int = Field(alias = "makingAmount")
+    input_amount_ori_raw: int = Field(alias = "oriMakingAmount")
+    input_amount_borrow_making: int = Field(alias = "borrowMakingAmount")
+    output_token: str = Field(alias = "outputMint")
+    output_token_program: str = Field(alias = "outputTokenProgram")
+    output_amount_raw: int = Field(alias = "takingAmount")
+    output_amount_ori_raw: int = Field(alias = "oriTakingAmount")
+    fee_account: str = Field(alias = "feeAccount")
+    fee_base_points: int = Field(alias = "feeBps")
+    bump: int
+    maker: str
+    slippage_base_points: int = Field(alias = "slippageBps")
 
 class GetLimitOrderOpen(BaseModel):
     public_key: str = Field(alias = "publicKey")
