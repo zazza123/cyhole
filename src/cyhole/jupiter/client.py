@@ -102,14 +102,14 @@ class JupiterClient(APIClient):
 
     def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
         """
-            Call the Jupiter's POST **[Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            Call the Jupiter's POST **[Limit Order - Create](https://station.jup.ag/docs/swap-api/limit-order-api#create-limit-order-transaction)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_limit_order_create`][cyhole.jupiter.interaction.Jupiter._post_limit_order_create].
         """
         return self._interaction._post_limit_order_create(True, body)
 
     def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
         """
-            Call the Jupiter's POST **[Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for synchronous logic. 
+            Call the Jupiter's POST **[Limit Order - Cancel](https://station.jup.ag/docs/swap-api/limit-order-api#cancel-limit-order-transaction)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_limit_order_cancel`][cyhole.jupiter.interaction.Jupiter._post_limit_order_cancel].
         """
         return self._interaction._post_limit_order_cancel(True, body)
@@ -204,14 +204,14 @@ class JupiterAsyncClient(AsyncAPIClient):
 
     async def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
         """
-            Call the Jupiter's POST **[Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            Call the Jupiter's POST **[Limit Order - Create](https://station.jup.ag/docs/swap-api/limit-order-api#create-limit-order-transaction)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_limit_order_create`][cyhole.jupiter.interaction.Jupiter._post_limit_order_create].
         """
         return await self._interaction._post_limit_order_create(False, body)
 
     async def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
         """
-            Call the Jupiter's POST **[Limit Order - Cancel](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint for asynchronous logic. 
+            Call the Jupiter's POST **[Limit Order - Cancel](https://station.jup.ag/docs/swap-api/limit-order-api#cancel-limit-order-transaction)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_limit_order_cancel`][cyhole.jupiter.interaction.Jupiter._post_limit_order_cancel].
         """
         return await self._interaction._post_limit_order_cancel(False, body)

@@ -976,7 +976,6 @@ class TestJupiter:
             Mock Response File: post_limit_order_cancel.json
         """
         user_public_key = ""
-        fee_payer_public_key = ""
         orders = []
 
         # load mock response
@@ -986,18 +985,16 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
         else:
             # find open orders
-            open_orders = self.jupiter.client.get_limit_order_open(wallet = "", input_token = JUP.address, output_token = BONK.address)
+            open_orders = self.jupiter.client.get_limit_order_open(wallet = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF", output_token = WSOL.address)
             order = open_orders.orders[0]
 
             # set inputs
             user_public_key = order.account.maker
-            fee_payer_public_key = order.account.maker
             orders = [order.public_key]
 
         # create input
         body = PostLimitOrderCancelBody(
             user_public_key = user_public_key,
-            fee_payer_public_key = fee_payer_public_key,
             orders = orders
         )
 
@@ -1020,7 +1017,6 @@ class TestJupiter:
             Mock Response File: post_limit_order_cancel.json
         """
         user_public_key = ""
-        fee_payer_public_key = ""
         orders = []
 
         async with self.jupiter.async_client as client:
@@ -1031,18 +1027,16 @@ class TestJupiter:
                 mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
             else:
                 # find open orders
-                open_orders = await client.get_limit_order_open(wallet = "", input_token = JUP.address, output_token = BONK.address)
+                open_orders = await client.get_limit_order_open(wallet = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF", output_token = WSOL.address)
                 order = open_orders.orders[0]
 
                 # set inputs
                 user_public_key = order.account.maker
-                fee_payer_public_key = order.account.maker
                 orders = [order.public_key]
 
             # create input
             body = PostLimitOrderCancelBody(
                 user_public_key = user_public_key,
-                fee_payer_public_key = fee_payer_public_key,
                 orders = orders
             )
 
@@ -1059,7 +1053,6 @@ class TestJupiter:
         """
         body = PostLimitOrderCancelBody(
             user_public_key = "",
-            fee_payer_public_key = "",
             orders = []
         )
         with pytest.raises(JupiterException):
@@ -1073,7 +1066,6 @@ class TestJupiter:
         """
         body = PostLimitOrderCancelBody(
             user_public_key = "",
-            fee_payer_public_key = "",
             orders = []
         )
         with pytest.raises(JupiterException):
