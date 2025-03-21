@@ -359,35 +359,64 @@ class GetTokenNewResponse(BaseModel):
 
 # classes used on POST "Limit Order Create" endpoint
 # Body
-class PostLimitOrderCreateBody(BaseModel):
+class PostLimitOrderCreateParams(BaseModel):
     """
-        Model used to identify the body required by a POST **Limit Order Create** request.
+        Model used to identify the amounts required by a POST **Limit Order Create** request.  
+        Observe that the amounts are in raw format (integer values without decimals).
     """
-    user_public_key: str = Field(serialization_alias = "owner")
-    """Public Key of the Owner wallet"""
 
-    input_token: str = Field(serialization_alias = "inputMint")
-    """The address of the input token on the chain used to buy."""
+    input_amount: int = Field(serialization_alias = "makingAmount")
+    """Amount of input token to sell in the limit order."""
 
-    input_amount: int = Field(serialization_alias = "inAmount")
-    """The amount of input token to use for the limit order."""
-
-    output_token: str = Field(serialization_alias = "outputMint")
-    """The address of the output token on the chain that will bought."""
-
-    output_amount: int = Field(serialization_alias = "outAmount")
-    """The amount of output token to buy in the limit order."""
-
-    base: str
-    """Public Key used to initiate the Limit Order"""
+    output_amount: int = Field(serialization_alias = "takingAmount")
+    """Amount of output token to buy in the limit order."""
 
     expired_at_unix_time: int | None = Field(default = None, serialization_alias = "expiredAt")
     """Expiring date for the Limit Order expressed in UNIX time"""
 
-    referral_public_key: str | None = Field(default = None, serialization_alias = "referralAccount")
+    fee_base_points: int | None = Field(default = None, serialization_alias = "feeBps")
+    """Amount of fee that the `referral_public_key` collects."""
+
+    @field_serializer("input_amount", "output_amount", "fee_base_points", "expired_at_unix_time", when_used = "unless-none")
+    @classmethod
+    def serialize_amounts(cls, amount_raw: int | None) -> str | None:
+        if amount_raw is not None:
+            return str(amount_raw)
+
+class PostLimitOrderCreateBody(BaseModel):
+    """
+        Model used to identify the body required by a POST **Limit Order Create** request.
+    """
+
+    maker_wallet_key: str = Field(serialization_alias = "maker")
+    """Wallet address of the user who wants to create an order."""
+
+    payer_wallet_key: str = Field(serialization_alias = "payer")
+    """Wallet address of who is paying to open an order (usually the `maker` wallet)."""
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """The address of the output token on the chain that will bought."""
+
+    params: PostLimitOrderCreateParams
+    """The amounts of output-to-buy and input-to-sell tokens in the limit order."""
+
+    compute_unit_price: str = Field(default = "auto", serialization_alias = "computeUnitPrice")
+    """Used to determine a transaction's prioritization fee. Defaults to `auto`."""
+
+    referral_public_key: str | None = Field(default = None, serialization_alias = "referral")
     """The address of the account used to get referral fees."""
 
-    referral_name: str | None = Field(default = None, serialization_alias = "referralName")
+    input_token_program: str | None = Field(default = None, serialization_alias = "inputTokenProgram")
+    """Default to token program if empty or specify e.g. token2022 program"""
+
+    output_token_program: str | None = Field(default = None, serialization_alias = "outputTokenProgram")
+    """Default to token program if empty or specify e.g. token2022 program"""
+
+    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
+    """To automatically wrap/unwrap SOL in the transaction."""
 
 # Output
 class PostLimitOrderCreateResponse(BaseModel):
@@ -395,7 +424,7 @@ class PostLimitOrderCreateResponse(BaseModel):
         Model used to represent the **Limit Order Create** endpoint from Jupiter API.
     """
     transaction: str = Field(alias = "tx")
-    order_public_key: str = Field(alias = "orderPubkey")
+    order_public_key: str = Field(alias = "order")
 
 # classes used on POST "Limit Order Cancel" endpoint
 # Body

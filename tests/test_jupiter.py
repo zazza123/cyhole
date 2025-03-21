@@ -16,7 +16,7 @@ from cyhole.jupiter.schema import (
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
-    PostLimitOrderCreateBody,
+    PostLimitOrderCreateBody, PostLimitOrderCreateParams,
     PostLimitOrderCreateResponse,
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
@@ -918,12 +918,14 @@ class TestJupiter:
 
         # execute request
         body = PostLimitOrderCreateBody(
-            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            maker_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            payer_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            params = PostLimitOrderCreateParams(
+                input_amount = USDC.from_decimals(10),
+                output_amount = JUP.from_decimals(10)
+            ),
             input_token = USDC.address,
-            input_amount = 100_000,
-            output_token = JUP.address,
-            output_amount = 100_000,
-            base = "5pVyoAeURQHNMVU7DmfMHvCDNmTEYXWfEwc136GYhTKG"
+            output_token = JUP.address
         )
         response = self.jupiter.client.post_limit_order_create(body)
 
@@ -951,12 +953,14 @@ class TestJupiter:
 
         # execute request
         body = PostLimitOrderCreateBody(
-            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            maker_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            payer_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            params = PostLimitOrderCreateParams(
+                input_amount = USDC.from_decimals(10),
+                output_amount = JUP.from_decimals(10)
+            ),
             input_token = USDC.address,
-            input_amount = 100_000,
-            output_token = JUP.address,
-            output_amount = 100_000,
-            base = "5pVyoAeURQHNMVU7DmfMHvCDNmTEYXWfEwc136GYhTKG"
+            output_token = JUP.address
         )
         async with self.jupiter.async_client as client:
             response = await client.post_limit_order_create(body)

@@ -412,7 +412,7 @@ class Jupiter(Interaction):
 
     def _post_limit_order_create(self, sync: bool, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse | Coroutine[None, None, PostLimitOrderCreateResponse]:
         """
-            This function refers to the POST **[Limit Order - Create](https://station.jup.ag/docs/limit-order/limit-order-api)** API endpoint, 
+            This function refers to the POST **[Limit Order - Create]https://station.jup.ag/docs/swap-api/limit-order-api#create-limit-order-transaction)** API endpoint, 
             and it is used to receive the transaction to perform the creation of a Limit Order via Jupiter API.
 
             Parameters:
@@ -436,7 +436,7 @@ class Jupiter(Interaction):
                     type = RequestType.POST.value,
                     url = url,
                     headers = headers,
-                    json = body.model_dump(by_alias = True, exclude_defaults = True)
+                    json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
                 )
             except HTTPError as e:
                 raise self._raise(e)
@@ -448,7 +448,7 @@ class Jupiter(Interaction):
                         type = RequestType.POST.value,
                         url = url,
                         headers = headers,
-                        json = body.model_dump(by_alias = True, exclude_defaults = True)
+                        json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
                     )
                 except HTTPError as e:
                     raise self._raise(e)
