@@ -27,3 +27,15 @@ class CyholeToken(BaseModel):
                 The amount of token in float.
         """
         return amount / 10 ** self.decimals
+
+    def from_decimals(self, amount: float) -> int:
+        """
+            Convert the amount of token from float to integer according to its decimals.
+
+            Parameters:
+                amount: amount of token in float.
+
+            Returns:
+                The amount of token in integer.
+        """
+        return int(amount * 10 ** self.decimals)
