@@ -218,7 +218,7 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert response.data[WETH.address]
+        assert response.data[WETH.address] is None
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -245,7 +245,7 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetPriceResponse)
-        assert response.data[WETH.address]
+        assert response.data[WETH.address] is None
 
     def test_get_price_with_extra_info_sync(self, mocker: MockerFixture) -> None:
         """
