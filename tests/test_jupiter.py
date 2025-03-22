@@ -25,7 +25,7 @@ from cyhole.jupiter.schema import (
     GetUltraOrderResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType
-from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException
+from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
 from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
 from cyhole.core.token.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
@@ -443,7 +443,7 @@ class TestJupiter:
         )
 
         # actual test
-        with pytest.raises(JupiterNoRouteFoundError):
+        with pytest.raises((JupiterNoRouteFoundError, JupiterComputeAmountThresholdError)):
             self.jupiter.client.get_quote(input)
 
     @pytest.mark.asyncio
@@ -457,11 +457,11 @@ class TestJupiter:
         input = GetQuoteInput(
             input_token = WSOL.address,
             output_token = JUP.address,
-            amount = 5
+            amount = 1
         )
 
         # actual test
-        with pytest.raises(JupiterNoRouteFoundError):
+        with pytest.raises((JupiterNoRouteFoundError, JupiterComputeAmountThresholdError)):
             async with self.jupiter.async_client as client:
                 await client.get_quote(input)
 

@@ -29,6 +29,7 @@ from ..jupiter.schema import (
 from ..jupiter.exception import (
     JupiterException,
     JupiterNoRouteFoundError,
+    JupiterComputeAmountThresholdError,
     JupiterInvalidRequest
 )
 from ..jupiter.param import JupiterTokenTagType
@@ -703,6 +704,8 @@ class Jupiter(Interaction):
             match error.code:
                 case "COULD_NOT_FIND_ANY_ROUTE":
                     return JupiterNoRouteFoundError(error.msg)
+                case "CANNOT_COMPUTE_OTHER_AMOUNT_THRESHOLD":
+                    return JupiterComputeAmountThresholdError(error.msg)
                 case "INVALID_REQUEST":
                     return JupiterInvalidRequest(error.msg)
                 case _:

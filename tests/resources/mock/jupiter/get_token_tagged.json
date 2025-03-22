@@ -1,43 +1,43 @@
 {
     "tokens": [
         {
-            "name": "St Patrick's Day",
-            "address": "H8RVqh36uir2jjaF4tQsRpi6zuVgrLt1UD5z7Ux5moon",
-            "symbol": "STPATRICK",
+            "name": "MEMDEX100",
+            "address": "83iBDw3ZpxqJ3pEzrbttr9fGA57tttehDAxoFyR1moon",
+            "symbol": "MEMDEX",
             "decimals": 9,
-            "created_at": "2025-02-26T05:59:51.352478Z",
-            "logoURI": "https://cdn.dexscreener.com/cms/images/T4jKATIfl_t2i2oR",
+            "created_at": "2025-01-11T03:14:04.720066Z",
+            "logoURI": "https://cdn.dexscreener.com/cms/images/pCJPyyEDw2KCc424",
             "tags": [
-                "birdeye-trending",
                 "moonshot",
                 "unknown"
             ],
-            "daily_volume": 124953.3233400436,
+            "daily_volume": 680417.2883650785,
             "freeze_authority": null,
             "mint_authority": null,
-            "minted_at": "2025-02-26T05:59:50Z",
-            "permanent_delegate": null,
-            "extensions": {}
-        },
-        {
-            "name": "HELIO AI",
-            "address": "E5vSaRkSUDe3ob3KTAzXa6gmCndknzutn4hNtf2Qmoon",
-            "symbol": "HELIO",
-            "decimals": 9,
-            "created_at": "2025-01-29T02:17:15.720285Z",
-            "logoURI": "https://cdn.dexscreener.com/cms/images/3ho1Oa54cUtIyWOP",
-            "tags": [
-                "community",
-                "moonshot",
-                "verified"
-            ],
-            "daily_volume": 41830.33043122597,
-            "freeze_authority": null,
-            "mint_authority": null,
-            "minted_at": "2025-01-29T02:16:07Z",
+            "minted_at": "2025-01-11T03:14:03Z",
             "permanent_delegate": null,
             "extensions": {
-                "coingeckoId": "helio-2"
+                "coingeckoId": "memdex100"
+            }
+        },
+        {
+            "name": "Chadette",
+            "address": "3pGyE8coXwBy8rx71zjtHDRrSA5TvKmuRgqwhK3Xmoon",
+            "symbol": "CHADETTE",
+            "decimals": 9,
+            "created_at": "2025-02-13T16:22:26.091602Z",
+            "logoURI": "https://cdn.dexscreener.com/cms/images/mwG9UmA4QngWn8L1",
+            "tags": [
+                "moonshot",
+                "unknown"
+            ],
+            "daily_volume": 93625.34419941453,
+            "freeze_authority": null,
+            "mint_authority": null,
+            "minted_at": "2025-02-13T16:22:25Z",
+            "permanent_delegate": null,
+            "extensions": {
+                "coingeckoId": "chadette"
             }
         }
     ]

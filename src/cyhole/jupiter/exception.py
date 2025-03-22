@@ -9,3 +9,6 @@ class JupiterNoRouteFoundError(JupiterException):
 
 class JupiterInvalidRequest(JupiterException):
     pass
+
+class JupiterComputeAmountThresholdError(JupiterException):
+    pass
