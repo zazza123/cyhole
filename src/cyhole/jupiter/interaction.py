@@ -22,7 +22,8 @@ from ..jupiter.schema import (
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse
+    GetLimitOrderHistoryResponse,
+    GetUltraOrderResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -74,6 +75,7 @@ class Jupiter(Interaction):
         self.url_api_quote = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_limit = "https://api.jup.ag/limit/v2/"
+        self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
         return
 
     @overload
@@ -577,6 +579,57 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetLimitOrderHistoryResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_ultra_order(self, sync: Literal[True], input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse: ...
+
+    @overload
+    def _get_ultra_order(self, sync: Literal[False], input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> Coroutine[None, None, GetUltraOrderResponse]: ...
+
+    def _get_ultra_order(self, sync: bool, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse | Coroutine[None, None, GetUltraOrderResponse]:
+        """
+            This function refers to the GET **[Ultra Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint, 
+            and it is used to create a swap order using the Jupiter Ultra API. This API was designed to facilitate 
+            the creation of a swap order without the need to use the `get_quote` endpoint. In fact, the Ultra API 
+            was created over the Swap API to provide a more direct way to create a swap order. This endpoint 
+            can be then combined with the `post_ultra_execute_order` endpoint to perform the swap.
+
+            Parameters:
+                input_token: address of the input token.
+                output_token: address of the output token.
+                input_amount: amount of input token to swap.
+                    The amount to swap **must** be factored in the token decimals. 
+                    For example, if the token has 6 decimals, then `1.0` = `1_000_000`.
+                taker_wallet_key: address of the taker wallet. 
+                    If the `taker_wallet_key` is not provided, then the response will have `transaction_id` equals `None`.
+
+            Returns:
+                Ultra order found by Jupiter API.
+        """
+        # set params
+        url = self.url_api_ultra + "order"
+        params = {
+            "inputMint": input_token,
+            "outputMint": output_token,
+            "amount": input_amount,
+            "taker": taker_wallet_key
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            except HTTPError as e:
+                raise self._raise(e)
+            return GetUltraOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return GetUltraOrderResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

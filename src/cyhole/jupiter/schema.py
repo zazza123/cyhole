@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer
 
-from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState
+from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType
 
 # class used on Jupiter HTTPErrors
 class JupiterHTTPError(BaseModel):
@@ -565,3 +565,52 @@ class GetLimitOrderHistoryResponse(BaseModel):
     user_public_key: str = Field(alias = "user")
     page: int
     total_pages: int = Field(alias = "totalPages")
+
+# classes used on GET "Ultra - Order" endpoint
+class GetUltraOrderDynamicSlippageReport(BaseModel):
+    """
+        Model used to represent the **Ultra - Order** endpoint dynamic slippage report from Jupiter API.
+    """
+    amplification_ratio: str | None = Field(default = None, alias = "amplificationRatio")
+    other_amount: int = Field(alias = "otherAmount")
+    simulated_incurred_slippage_base_points: int = Field(alias = "simulatedIncurredSlippageBps")
+    slippage_base_points: int = Field(alias = "slippageBps")
+    category_name: str
+    heuristic_max_slippage_base_points: int = Field(alias = "heuristicMaxSlippageBps")
+
+class GetUltraOrderPlatformFee(GetQuotePlatformFees):
+    pass
+
+class GetUltraOrderRoutePlan(GetQuoteRoutePlan):
+    pass
+
+class GetUltraOrderResponse(BaseModel):
+    """
+        Model used to represent the **Ultra - Order** endpoint response from Jupiter API.
+    """
+    swap_type: JupiterSwapType = Field(alias = "swapType")
+    environment: JupiterEnvironmentType | None = None
+    request_id: str = Field(alias = "requestId")
+    input_amount_raw: int = Field(alias = "inAmount")
+    output_amount_raw: int = Field(alias = "outAmount")
+    other_amount_threshold_raw: int = Field(alias = "otherAmountThreshold")
+    swap_mode: JupiterSwapMode = Field(alias = "swapMode")
+    slippage_base_points: int = Field(alias = "slippageBps")
+    price_impact_percent: float = Field(alias = "priceImpactPct")
+    route_plan: list[GetUltraOrderRoutePlan] = Field(alias = "routePlan")
+    input_token: str = Field(alias = "inputMint")
+    output_token: str = Field(alias = "outputMint")
+    fee_base_points: int = Field(alias = "feeBps")
+    taker_wallet_key: str | None = Field(default = None, alias = "taker")
+    gasless: bool
+    transaction_id: str | None = Field(default = None, alias = "transaction")
+    prioritization_type: JupiterPrioritizationType = Field(alias = "prioritizationType")
+    prioritization_fee_lamports: int = Field(alias = "prioritizationFeeLamports")
+    last_valid_block_height: int | None = Field(default = None, alias = "lastValidBlockHeight")
+    context_slot: int | None = Field(default = None, alias = "contextSlot")
+    total_time: int = Field(alias = "totalTime")
+    quote_id: str | None = Field(default = None, alias = "quoteId")
+    maker_wallet_key: str | None = Field(default = None, alias = "maker")
+    expire_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
+    platform_fee: GetUltraOrderPlatformFee | None = Field(default = None, alias = "platformFee")
+    dynamic_slippage_report: GetUltraOrderDynamicSlippageReport | None = Field(default = None, alias = "dynamicSlippageReport")

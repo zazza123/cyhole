@@ -19,7 +19,8 @@ from ..jupiter.schema import (
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse
+    GetLimitOrderHistoryResponse,
+    GetUltraOrderResponse
 )
 from ..jupiter.param import JupiterTokenTagType
 
@@ -128,6 +129,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_limit_order_history(True, wallet, page)
 
+    def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
+        """
+            Call the Jupiter's GET **[Ultra Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
+        """
+        return self._interaction._get_ultra_order(True, input_token, output_token, input_amount, taker_wallet_key)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -229,3 +237,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
         """
         return await self._interaction._get_limit_order_history(False, wallet, page)
+
+    async def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
+        """
+            Call the Jupiter's GET **[Ultra Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
+        """
+        return await self._interaction._get_ultra_order(False, input_token, output_token, input_amount, taker_wallet_key)

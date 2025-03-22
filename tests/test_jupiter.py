@@ -21,7 +21,8 @@ from cyhole.jupiter.schema import (
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse
+    GetLimitOrderHistoryResponse,
+    GetUltraOrderResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException
@@ -1175,3 +1176,57 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetLimitOrderHistoryResponse)
+
+    def test_get_ultra_order_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Ultra Order" 
+            for synchronous logic.
+
+            Mock Response File: get_ultra_order.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_order"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraOrderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_ultra_order(
+            input_token = USDC.address,
+            output_token = JUP.address,
+            input_amount = USDC.from_decimals(10),
+        )
+
+        # actual test
+        assert isinstance(response, GetUltraOrderResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_ultra_order_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Ultra Order" 
+            for asynchronous logic.
+
+            Mock Response File: get_ultra_order.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_order"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraOrderResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_ultra_order(
+                input_token = USDC.address,
+                output_token = JUP.address,
+                input_amount = USDC.from_decimals(10),
+            )
+
+        # actual test
+        assert isinstance(response, GetUltraOrderResponse)

@@ -1,0 +1,68 @@
+{
+    "swapType": "aggregator",
+    "environment": null,
+    "requestId": "88d2dbff-f190-4e23-a585-22dcf48038b4",
+    "inAmount": 10000000,
+    "outAmount": 19012883,
+    "otherAmountThreshold": 18451724,
+    "swapMode": "ExactIn",
+    "slippageBps": 300,
+    "priceImpactPct": 0.000402678751688513,
+    "routePlan": [
+        {
+            "swapInfo": {
+                "ammKey": "CN8M75cH57DuZNzW5wSUpTXtMrSfXBFScJoQxVCgAXes",
+                "label": "Whirlpool",
+                "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "inAmount": "10000000",
+                "outputMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+                "outAmount": "19051816",
+                "feeMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "feeAmount": "3900"
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "D6NdKrKNQPmRZCCnG1GqXtF7MMoHB7qR6GU5TkG59Qz1",
+                "label": "Whirlpool",
+                "inputMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+                "inAmount": "19051816",
+                "outputMint": "So11111111111111111111111111111111111111112",
+                "outAmount": "77568740",
+                "feeMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
+                "feeAmount": "990"
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "EgcgMpmGnGvU3Wa8T6gvmEN6pfSXXSxPTbYNEHVh8cZk",
+                "label": "Whirlpool",
+                "inputMint": "So11111111111111111111111111111111111111112",
+                "inAmount": "77568740",
+                "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "outAmount": "19022395",
+                "feeMint": "So11111111111111111111111111111111111111112",
+                "feeAmount": "16134"
+            },
+            "percent": 100
+        }
+    ],
+    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "feeBps": 5,
+    "taker": null,
+    "gasless": false,
+    "transaction": null,
+    "prioritizationType": "None",
+    "prioritizationFeeLamports": 0,
+    "lastValidBlockHeight": null,
+    "contextSlot": null,
+    "totalTime": 288,
+    "quoteId": null,
+    "maker": null,
+    "expiredAt": null,
+    "platformFee": null,
+    "dynamicSlippageReport": null
+}

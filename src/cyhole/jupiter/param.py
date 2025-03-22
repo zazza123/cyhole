@@ -7,6 +7,28 @@ class JupiterSwapMode(CyholeParam):
     EXACT_IN = "ExactIn"
     EXACT_OUT = "ExactOut"
 
+class JupiterSwapType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's swap types.
+    """
+    AGGREGATOR = "aggregator"
+    RFQ = "rfq"
+
+class JupiterEnvironmentType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's environment types.
+    """
+    PRODUCTION = "production"
+    CANARY = "canary"
+
+class JupiterPrioritizationType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's prioritization types.
+    """
+    NONE = "None"
+    COMPUTE_BUDGET = "ComputeBudget"
+    JITO = "Jito"
+
 class JupiterSwapDex(CyholeParam):
     """
         Enum class to get the supported Jupiter's swap DEXes.
