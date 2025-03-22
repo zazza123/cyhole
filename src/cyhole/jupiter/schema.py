@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer
 
-from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType
+from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus
 
 # class used on Jupiter HTTPErrors
 class JupiterHTTPError(BaseModel):
@@ -572,10 +572,10 @@ class GetUltraOrderDynamicSlippageReport(BaseModel):
         Model used to represent the **Ultra - Order** endpoint dynamic slippage report from Jupiter API.
     """
     amplification_ratio: str | None = Field(default = None, alias = "amplificationRatio")
-    other_amount: int = Field(alias = "otherAmount")
-    simulated_incurred_slippage_base_points: int = Field(alias = "simulatedIncurredSlippageBps")
+    other_amount: int | None = Field(default = None, alias = "otherAmount")
+    simulated_incurred_slippage_base_points: int | None = Field(default = None, alias = "simulatedIncurredSlippageBps")
     slippage_base_points: int = Field(alias = "slippageBps")
-    category_name: str
+    category_name: str = Field(alias = "categoryName")
     heuristic_max_slippage_base_points: int = Field(alias = "heuristicMaxSlippageBps")
 
 class GetUltraOrderPlatformFee(GetQuotePlatformFees):
@@ -614,3 +614,23 @@ class GetUltraOrderResponse(BaseModel):
     expire_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
     platform_fee: GetUltraOrderPlatformFee | None = Field(default = None, alias = "platformFee")
     dynamic_slippage_report: GetUltraOrderDynamicSlippageReport | None = Field(default = None, alias = "dynamicSlippageReport")
+
+# classes used on POST "Ultra - Execute Order" endpoint
+class PostUltraExecuteOrderSwapEvent(BaseModel):
+    input_token: str = Field(alias = "inputMint")
+    input_amount_raw: int = Field(alias = "inputAmount")
+    output_token: str = Field(alias = "outputMint")
+    output_amount_raw: int = Field(alias = "outputAmount")
+
+class PostUltraExecuteOrderResponse(BaseModel):
+    """
+        Model used to identify the body required by a POST **Ultra - Execute Order** request.
+    """
+    status: JupiterSwapExecutionStatus
+    code: int
+    signature_transaction_id: str | None = Field(default = None, alias = "signature")
+    slot: int | None = None
+    input_amount_result_raw: int | None = Field(default = None, alias = "inputAmountResult")
+    output_amount_result_raw: int | None = Field(default = None, alias = "outputAmountResult")
+    swap_events: PostUltraExecuteOrderSwapEvent | None = Field(default = None, alias = "swapEvents")
+    error: str | None = None

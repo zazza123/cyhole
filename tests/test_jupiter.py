@@ -457,7 +457,7 @@ class TestJupiter:
         input = GetQuoteInput(
             input_token = WSOL.address,
             output_token = JUP.address,
-            amount = 1
+            amount = 5
         )
 
         # actual test

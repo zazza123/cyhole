@@ -23,7 +23,8 @@ from ..jupiter.schema import (
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
-    GetUltraOrderResponse
+    GetUltraOrderResponse,
+    PostUltraExecuteOrderResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -589,7 +590,7 @@ class Jupiter(Interaction):
 
     def _get_ultra_order(self, sync: bool, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse | Coroutine[None, None, GetUltraOrderResponse]:
         """
-            This function refers to the GET **[Ultra Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint, 
+            This function refers to the GET **[Ultra - Get Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint, 
             and it is used to create a swap order using the Jupiter Ultra API. This API was designed to facilitate 
             the creation of a swap order without the need to use the `get_quote` endpoint. In fact, the Ultra API 
             was created over the Swap API to provide a more direct way to create a swap order. This endpoint 
@@ -605,7 +606,7 @@ class Jupiter(Interaction):
                     If the `taker_wallet_key` is not provided, then the response will have `transaction_id` equals `None`.
 
             Returns:
-                Ultra order found by Jupiter API.
+                Order information provided by Jupiter API.
         """
         # set params
         url = self.url_api_ultra + "order"
@@ -630,6 +631,55 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return GetUltraOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_ultra_execute_order(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse: ...
+
+    @overload
+    def _post_ultra_execute_order(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostUltraExecuteOrderResponse]: ...
+
+    def _post_ultra_execute_order(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse | Coroutine[None, None, PostUltraExecuteOrderResponse]:
+        """
+            This function refers to the POST **[Ultra - Execute Order](https://station.jup.ag/docs/ultra-api/execute-order)** API endpoint, 
+            and it is used to execute a swap order created using the Jupiter Ultra API "GET Order" endpoint (`get_ultra_order`). 
+
+            First, it is required to initialize a swap order using the `get_ultra_order` endpoint. From the response, 
+            is possible to get the Request ID (`GetUltraOrderResponse.request_id`) and the transaction ID (`GetUltraOrderResponse.transaction_id`).
+            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be then used
+            to execute the swap order.
+
+            Parameters:
+                signed_transaction_id: the transaction ID coming from the `get_ultra_order` response **signed** by the payer wallet.
+                request_id: the same request ID coming from the `get_ultra_order` response.
+
+            Returns:
+                Swap order execution information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_ultra + "execute"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "signedTransaction": signed_transaction_id,
+            "requestId": request_id
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostUltraExecuteOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostUltraExecuteOrderResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

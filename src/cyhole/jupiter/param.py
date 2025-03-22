@@ -14,6 +14,13 @@ class JupiterSwapType(CyholeParam):
     AGGREGATOR = "aggregator"
     RFQ = "rfq"
 
+class JupiterSwapExecutionStatus(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's swap execution statuses.
+    """
+    SUCCESS = "Success"
+    FAILED = "Failed"
+
 class JupiterEnvironmentType(CyholeParam):
     """
         Enum class to get the supported Jupiter's environment types.
