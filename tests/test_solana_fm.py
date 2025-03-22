@@ -1,4 +1,5 @@
 import pytest
+from time import sleep
 from pathlib import Path
 from datetime import datetime
 
@@ -251,6 +252,8 @@ class TestSolanaFM:
 
             Mock Response File: get_account_transfers_csv_export.json
         """
+        # wait to avoid rate limit
+        sleep(3)
 
         # load mock response
         mock_file_name = "get_account_transfers_csv_export"

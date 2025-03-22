@@ -94,7 +94,11 @@ class GetQuoteInput(BaseModel):
 
     amount: int
     """The amount to swap, factoring in the token decimals.
-        For example, if the token has 6 decimals, then `1.0` = `1_000_000`."""
+        For example, if the token has 6 decimals, then `1.0` = `1_000_000`. 
+        The amount refers to the input/output token depending on the `swap_mode` 
+        parameter. Since by default the `swap_mode` is set to `EXACT_IN`, then 
+        the amount refers to the **input** token if not specified.
+    """
 
     slippage_base_points: int = Field(default = 50, serialization_alias = "slippageBps")
     """Slippage tolerance in basis points. Observe that if the slippage exeeded this value, then the swap will fail."""
@@ -296,7 +300,7 @@ class PostSwapInstructionsResponse(BaseModel):
     swap: PostSwapInstruction = Field(alias = "swapInstruction")
     setup: list[PostSwapInstruction] = Field(alias = "setupInstructions")
     compute_budget: list[PostSwapInstruction] = Field(alias = "computeBudgetInstructions")
-    cleanup: PostSwapInstruction = Field(default = None, alias = "cleanupInstruction")
+    cleanup: PostSwapInstruction | None = Field(default = None, alias = "cleanupInstruction")
     other: list[PostSwapInstruction] = Field(default = None, alias = "otherInstructions")
     address_lookup_table_addresses: list[str] = Field(alias = "addressLookupTableAddresses")
 
