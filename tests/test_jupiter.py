@@ -565,13 +565,14 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
-        # execute request
-        body = PostSwapBody(
-            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+        else:
             quote_response = self.jupiter.client.get_quote(
-                    input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
-                )
-        )
+                input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
+            )
+
+        # execute request
+        body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
         response = self.jupiter.client.post_swap(body)
 
         # actual test
@@ -589,22 +590,22 @@ class TestJupiter:
 
             Mock Response File: post_swap.json
         """
-
-        # load mock response
-        mock_file_name = "post_swap"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
         async with self.jupiter.async_client as client:
-            body = PostSwapBody(
-                user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+
+            # load mock response
+            mock_file_name = "post_swap"
+            if config.mock_response or config.jupiter.mock_response:
+                mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
+                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+                quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+            else:
                 quote_response = await client.get_quote(
                     input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
                 )
-            )
 
             # execute request
+            body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
             response = await client.post_swap(body)
 
         # actual test
@@ -650,13 +651,14 @@ class TestJupiter:
             mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapInstructionsResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
-        # execute request
-        body = PostSwapBody(
-            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+        else:
             quote_response = self.jupiter.client.get_quote(
-                    input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
-                )
-        )
+                input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
+            )
+
+        # execute request
+        body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
         response = self.jupiter.client.post_swap_instructions(body)
 
         # actual test
@@ -674,21 +676,22 @@ class TestJupiter:
 
             Mock Response File: post_swap_instructions.json
         """
-
-        # load mock response
-        mock_file_name = "post_swap_instructions"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapInstructionsResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
         async with self.jupiter.async_client as client:
-            body = PostSwapBody(
-                user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+
+            # load mock response
+            mock_file_name = "post_swap_instructions"
+            if config.mock_response or config.jupiter.mock_response:
+                mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapInstructionsResponse)
+                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+                quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
+            else:
                 quote_response = await client.get_quote(
                     input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
                 )
-            )
+
             # execute request
+            body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
             response = await client.post_swap_instructions(body)
 
         # actual test

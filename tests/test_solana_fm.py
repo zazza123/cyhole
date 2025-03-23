@@ -253,7 +253,7 @@ class TestSolanaFM:
             Mock Response File: get_account_transfers_csv_export.json
         """
         # wait to avoid rate limit
-        sleep(3)
+        sleep(5)
 
         # load mock response
         mock_file_name = "get_account_transfers_csv_export"

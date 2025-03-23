@@ -3,7 +3,8 @@
         "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
             "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
             "type": "derivedPrice",
-            "price": "0.726425"
+            "price": "0.726425",
+            "extraInfo": null
         }
     },
     "timeTaken": 0.004443787
