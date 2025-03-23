@@ -2,8 +2,8 @@
     "inputMint": "So11111111111111111111111111111111111111112",
     "inAmount": "1000",
     "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-    "outAmount": "1220",
-    "otherAmountThreshold": "1214",
+    "outAmount": "318",
+    "otherAmountThreshold": "317",
     "swapMode": "ExactIn",
     "slippageBps": 50,
     "platformFee": null,
@@ -11,31 +11,31 @@
     "routePlan": [
         {
             "swapInfo": {
-                "ammKey": "4ka8BrmspaG6oPoCrLy7q9yJ2X9aUW2JbVfAESA2cYia",
-                "label": "Pump.fun Amm",
+                "ammKey": "BQR6JJFyMWxnUERqbCRCCy1ietW2yq8RTKDx9odzruha",
+                "label": "Stabble Weighted Swap",
                 "inputMint": "So11111111111111111111111111111111111111112",
                 "inAmount": "1000",
-                "outputMint": "61V8vBaqAGMpgDQi4JcAwo1dmBGHsyhzodcPqnEVpump",
-                "outAmount": "9728",
-                "feeMint": "So11111111111111111111111111111111111111112",
-                "feeAmount": "2"
+                "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "outAmount": "171",
+                "feeMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "feeAmount": "3"
             },
             "percent": 100
         },
         {
             "swapInfo": {
-                "ammKey": "6Y8ii6CKWWnJdAXByYkXQ3FEVNnGoskvzXqLWjQHgySj",
-                "label": "Meteora DLMM",
-                "inputMint": "61V8vBaqAGMpgDQi4JcAwo1dmBGHsyhzodcPqnEVpump",
-                "inAmount": "9728",
+                "ammKey": "1amiJLvkVHjPz7t8dwBsWHknHitcpqwPPuuUCfHyzjB",
+                "label": "ZeroFi",
+                "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "inAmount": "171",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": "1220",
-                "feeMint": "61V8vBaqAGMpgDQi4JcAwo1dmBGHsyhzodcPqnEVpump",
-                "feeAmount": "487"
+                "outAmount": "318",
+                "feeMint": "11111111111111111111111111111111",
+                "feeAmount": "0"
             },
             "percent": 100
         }
     ],
-    "contextSlot": 327209156,
-    "timeTaken": 0.004172698
+    "contextSlot": 328700578,
+    "timeTaken": 0.005489073
 }

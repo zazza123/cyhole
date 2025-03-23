@@ -16,7 +16,7 @@
                         "maximumFee": 99999999999999904,
                         "transferFeeBasisPoints": 400
                     },
-                    "withheldAmount": 46160361979077257,
+                    "withheldAmount": 46248129847566657,
                     "withdrawWithheldAuthority": null,
                     "transferFeeConfigAuthority": null
                 }
@@ -25,8 +25,8 @@
         "freezeAuthority": null,
         "isInitialized": true,
         "mintAuthority": null,
-        "supply": "99994921564360750"
+        "supply": "99994126884785265"
     },
-    "slot": 286559234,
+    "slot": 321007316,
     "type": null
 }

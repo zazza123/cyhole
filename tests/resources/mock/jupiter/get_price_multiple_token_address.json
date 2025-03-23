@@ -3,15 +3,15 @@
         "So11111111111111111111111111111111111111112": {
             "id": "So11111111111111111111111111111111111111112",
             "type": "derivedPrice",
-            "price": "155.195652500",
+            "price": "131.136397500",
             "extraInfo": null
         },
         "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
             "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
             "type": "derivedPrice",
-            "price": "0.725620",
+            "price": "0.537121",
             "extraInfo": null
         }
     },
-    "timeTaken": 0.001975468
+    "timeTaken": 0.00209763
 }

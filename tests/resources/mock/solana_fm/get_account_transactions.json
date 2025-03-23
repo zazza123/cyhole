@@ -1,17 +1,8 @@
 {
     "status": "success",
-    "message": "Retrieved 1 transactions",
+    "message": "Retrieved 0 transactions",
     "result": {
-        "data": [
-            {
-                "blockTime": 1727705057,
-                "confirmationStatus": "finalized",
-                "err": null,
-                "memo": null,
-                "signature": "5rGaCZr5HmGxzHgrpPKJ9ZJaPPKLmnDak9tNGAiMJ7SZKErmZJSigDAck5Fg42y14K2DeZvUrn613SpH1GenFPvG",
-                "slot": 292899109
-            }
-        ],
+        "data": [],
         "pagination": {
             "currentPage": 1,
             "totalPages": 1

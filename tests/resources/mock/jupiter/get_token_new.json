@@ -1,16 +1,30 @@
 {
     "tokens": [
         {
-            "mint": "BauZSgsiovDZtgXZSevrrXnRnujfGs6eH6mnf686pump",
-            "name": "The European Union",
-            "symbol": "Sickle",
+            "mint": "Fk4PsG9P1kyE45mp5Mn3uugn8TgeYPzuWVtxSepQ6kC8",
+            "name": "pika",
+            "symbol": "pika",
             "decimals": 6,
-            "created_at": "1741905147",
+            "created_at": "1742753263",
             "known_markets": [
-                "EFxrxW5Afos3jz2eoxKoSmxxQjkT2X7KFGRE4ovduufw"
+                "FeXLkmfL7yG5EEefjLoVnF5FcxxZLFu9ReiguzUy2sW6"
             ],
-            "metadata_updated_at": 1741905156,
-            "logo_uri": "https://ipfs.io/ipfs/QmWKJeZw24p3dtxcW3cHY3HjXPMMRhJVsrRcuKHuVvdMqf",
+            "metadata_updated_at": 1742753264,
+            "logo_uri": "https://arweave.net/RrW6gHrt7CABd_kI_v98olCQ-ahrCI5WSCbLBhmV0ms",
+            "mint_authority": null,
+            "freeze_authority": null
+        },
+        {
+            "mint": "BZ4x6SrUsSPmjU6ivGUgFeuuAPjiALqBKJRrAJ1BDBWx",
+            "name": "Labrador",
+            "symbol": "Labrador",
+            "decimals": 9,
+            "created_at": "1742753253",
+            "known_markets": [
+                "8DmugJCTHmx4f4SnPUGQNUqX6o1tP34E2TQD7Hhik6Ss"
+            ],
+            "metadata_updated_at": 1742753253,
+            "logo_uri": null,
             "mint_authority": null,
             "freeze_authority": null
         }

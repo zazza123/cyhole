@@ -11,7 +11,7 @@
                 "moonshot",
                 "unknown"
             ],
-            "daily_volume": 680417.2883650785,
+            "daily_volume": 494337.88769220625,
             "freeze_authority": null,
             "mint_authority": null,
             "minted_at": "2025-01-11T03:14:03Z",
@@ -21,24 +21,22 @@
             }
         },
         {
-            "name": "Chadette",
-            "address": "3pGyE8coXwBy8rx71zjtHDRrSA5TvKmuRgqwhK3Xmoon",
-            "symbol": "CHADETTE",
+            "name": "CATSOLANA",
+            "address": "5guE4DUL1fuXRyfD9PNdoHSdYHkYRA4Q3Y7yB5Kqmoon",
+            "symbol": "CATS",
             "decimals": 9,
-            "created_at": "2025-02-13T16:22:26.091602Z",
-            "logoURI": "https://cdn.dexscreener.com/cms/images/mwG9UmA4QngWn8L1",
+            "created_at": "2025-03-23T03:37:19.456232Z",
+            "logoURI": "https://cdn.dexscreener.com/cms/images/BQr-vuIQgl6g50lV",
             "tags": [
                 "moonshot",
                 "unknown"
             ],
-            "daily_volume": 93625.34419941453,
+            "daily_volume": 130094.11433898842,
             "freeze_authority": null,
             "mint_authority": null,
-            "minted_at": "2025-02-13T16:22:25Z",
+            "minted_at": null,
             "permanent_delegate": null,
-            "extensions": {
-                "coingeckoId": "chadette"
-            }
+            "extensions": {}
         }
     ]
 }

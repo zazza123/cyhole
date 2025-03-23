@@ -9,13 +9,13 @@
                 "owner": "61aq585V8cR2sZBeawJFt2NPqmN7zDi1sws4KLs5xHXV",
                 "state": "initialized",
                 "tokenAmount": {
-                    "amount": 4090152116568146,
+                    "amount": 2149366668174268,
                     "decimals": 6,
-                    "uiAmount": 4090152116.568146,
-                    "uiAmountString": "4090152116.568146"
+                    "uiAmount": 2149366668.174268,
+                    "uiAmountString": "2149366668.174268"
                 }
             },
-            "slot": 286443507
+            "slot": 321003507
         },
         {
             "_id": "6G4XDSge4txj5tBkA5gZqefXXE3BRxqA37Yb1pmrHv6N",
@@ -26,14 +26,14 @@
                 "owner": "EXJHiMkj6NRFDfhWBMKccHNwdSpCT7tdvQeRf87yHm6T",
                 "state": "initialized",
                 "tokenAmount": {
-                    "amount": 3500000000001000,
+                    "amount": 1700000000001000,
                     "decimals": 6,
-                    "uiAmount": 3500000000.001,
-                    "uiAmountString": "3500000000.001"
+                    "uiAmount": 1700000000.001,
+                    "uiAmountString": "1700000000.001"
                 }
             },
-            "slot": 286547876
+            "slot": 320675876
         }
     ],
-    "totalItemCount": 1997588
+    "totalItemCount": 2091849
 }

@@ -1,50 +1,24 @@
 {
     "swapType": "aggregator",
     "environment": null,
-    "requestId": "88d2dbff-f190-4e23-a585-22dcf48038b4",
+    "requestId": "5459df2f-00b1-475a-ae97-ab8916eab9c1",
     "inAmount": 10000000,
-    "outAmount": 19012883,
-    "otherAmountThreshold": 18451724,
+    "outAmount": 18617187,
+    "otherAmountThreshold": 18067706,
     "swapMode": "ExactIn",
     "slippageBps": 300,
-    "priceImpactPct": 0.000402678751688513,
+    "priceImpactPct": 0.0,
     "routePlan": [
         {
             "swapInfo": {
-                "ammKey": "CN8M75cH57DuZNzW5wSUpTXtMrSfXBFScJoQxVCgAXes",
-                "label": "Whirlpool",
+                "ammKey": "1amiJLvkVHjPz7t8dwBsWHknHitcpqwPPuuUCfHyzjB",
+                "label": "ZeroFi",
                 "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
                 "inAmount": "10000000",
-                "outputMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
-                "outAmount": "19051816",
-                "feeMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-                "feeAmount": "3900"
-            },
-            "percent": 100
-        },
-        {
-            "swapInfo": {
-                "ammKey": "D6NdKrKNQPmRZCCnG1GqXtF7MMoHB7qR6GU5TkG59Qz1",
-                "label": "Whirlpool",
-                "inputMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
-                "inAmount": "19051816",
-                "outputMint": "So11111111111111111111111111111111111111112",
-                "outAmount": "77568740",
-                "feeMint": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
-                "feeAmount": "990"
-            },
-            "percent": 100
-        },
-        {
-            "swapInfo": {
-                "ammKey": "EgcgMpmGnGvU3Wa8T6gvmEN6pfSXXSxPTbYNEHVh8cZk",
-                "label": "Whirlpool",
-                "inputMint": "So11111111111111111111111111111111111111112",
-                "inAmount": "77568740",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": "19022395",
-                "feeMint": "So11111111111111111111111111111111111111112",
-                "feeAmount": "16134"
+                "outAmount": "18626501",
+                "feeMint": "11111111111111111111111111111111",
+                "feeAmount": "0"
             },
             "percent": 100
         }
@@ -59,7 +33,7 @@
     "prioritizationFeeLamports": 0,
     "lastValidBlockHeight": null,
     "contextSlot": null,
-    "totalTime": 288,
+    "totalTime": 285,
     "quoteId": null,
     "maker": null,
     "expiredAt": null,

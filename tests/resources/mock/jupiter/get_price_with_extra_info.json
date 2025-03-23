@@ -3,41 +3,41 @@
         "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
             "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
             "type": "derivedPrice",
-            "price": "0.652256",
+            "price": "0.537121",
             "extraInfo": {
                 "lastSwappedPrice": {
-                    "lastJupiterSellAt": 1741125894,
-                    "lastJupiterSellPrice": "0.6521828944680464",
-                    "lastJupiterBuyAt": 1741125897,
-                    "lastJupiterBuyPrice": "0.6538159976345496"
+                    "lastJupiterSellAt": 1742753271,
+                    "lastJupiterSellPrice": "0.5369898163872545",
+                    "lastJupiterBuyAt": 1742753269,
+                    "lastJupiterBuyPrice": "0.537175252728893"
                 },
                 "quotedPrice": {
-                    "buyPrice": "0.652322",
-                    "buyAt": 1741125891,
-                    "sellPrice": "0.652190",
-                    "sellAt": 1741125891
+                    "buyPrice": "0.537154",
+                    "buyAt": 1742753262,
+                    "sellPrice": "0.537088",
+                    "sellAt": 1742753263
                 },
                 "confidenceLevel": "high",
                 "depth": {
                     "buyPriceImpactRatio": {
-                        "timestamp": 1741125898,
+                        "timestamp": 1742753241,
                         "depth": {
-                            "10": 0.05863384036813992,
-                            "100": 0.1336846283154913,
-                            "1000": 0.8537713883232828
+                            "10": 0.0031630630088614027,
+                            "100": 0.017994704316123145,
+                            "1000": 0.4988210257354424
                         }
                     },
                     "sellPriceImpactRatio": {
-                        "timestamp": 1741125898,
+                        "timestamp": 1742753241,
                         "depth": {
-                            "10": 0.0282780379001327,
-                            "100": 0.0892493975389396,
-                            "1000": 0.8685202933045797
+                            "10": 0.018605675351875395,
+                            "100": 0.047718590760851394,
+                            "1000": 0.40425524027859266
                         }
                     }
                 }
             }
         }
     },
-    "timeTaken": 0.004007389
+    "timeTaken": 0.003887338
 }
