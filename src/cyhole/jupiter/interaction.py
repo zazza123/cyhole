@@ -30,7 +30,10 @@ from ..jupiter.schema import (
     # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
-    PostUltraExecuteOrderResponse
+    PostUltraExecuteOrderResponse,
+    # Trigger API
+    PostTriggerCreateOrderBody,
+    PostTriggerCreateOrderResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -84,6 +87,7 @@ class Jupiter(Interaction):
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_limit = "https://api.jup.ag/limit/v2/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
+        self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
         return
 
     @overload
@@ -717,6 +721,57 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url)
                 return GetUltraBalancesResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_trigger_create_order(self, sync: Literal[True], body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse: ...
+
+    @overload
+    def _post_trigger_create_order(self, sync: Literal[False], body: PostTriggerCreateOrderBody) -> Coroutine[None, None, PostTriggerCreateOrderResponse]: ...
+
+    def _post_trigger_create_order(self, sync: bool, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse | Coroutine[None, None, PostTriggerCreateOrderResponse]:
+        """
+            This function refers to the POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint, 
+            and it is used to receive an unsigned transaction to perform the creation of an order via Jupiter API.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the order.
+                    More details in the object definition.
+
+            Returns:
+                **Unsigned** transaction created by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_trigger + "createOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTriggerCreateOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTriggerCreateOrderResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

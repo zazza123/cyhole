@@ -570,6 +570,10 @@ class GetLimitOrderHistoryResponse(BaseModel):
     page: int
     total_pages: int = Field(alias = "totalPages")
 
+# *************
+# * Ultra API *
+# *************
+
 # classes used on GET "Ultra - Order" endpoint
 class GetUltraOrderDynamicSlippageReport(BaseModel):
     """
@@ -670,3 +674,84 @@ class GetUltraBalancesResponse(BaseModel):
         Dictionary of token balances. The key is the token address.  
         Observe that for `SOL` balance the key is `SOL` and not the address.
     """
+
+# ***************
+# * Trigger API *
+# ***************
+class PostTriggerCreateOrderParams(BaseModel):
+    """
+        Model used to identify the amounts required by a POST **Limit Order Create** request.  
+        Observe that the amounts are in raw format (integer values without decimals).
+    """
+
+    input_amount: int = Field(serialization_alias = "makingAmount")
+    """Amount of input token to sell in the limit order."""
+
+    output_amount: int = Field(serialization_alias = "takingAmount")
+    """Amount of output token to buy in the limit order."""
+
+    expired_at_unix_time: int | None = Field(default = None, serialization_alias = "expiredAt")
+    """Expiring date for the Limit Order expressed in UNIX time"""
+
+    slippage_base_points: int | None = Field(default = None, serialization_alias = "slippageBps")
+    """
+        Amount of slippage the order can be executed with.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
+    fee_base_points: int | None = Field(default = None, serialization_alias = "feeBps")
+    """
+        Amount of fee that the `referral_public_key` collects.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
+    @field_serializer("input_amount", "output_amount", "fee_base_points", "expired_at_unix_time", "slippage_base_points", when_used = "unless-none")
+    @classmethod
+    def serialize_amounts(cls, amount_raw: int | None) -> str | None:
+        if amount_raw is not None:
+            return str(amount_raw)
+
+class PostTriggerCreateOrderBody(BaseModel):
+    """
+        Model refering to the input body of the POST 
+        "**Trigger - Create Order**" endpoint from Jupiter API.
+    """
+
+    maker_wallet_key: str = Field(serialization_alias = "maker")
+    """Wallet address of the user who wants to create an order."""
+
+    payer_wallet_key: str = Field(serialization_alias = "payer")
+    """Wallet address of who is paying to open an order (usually the `maker` wallet)."""
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """The address of the output token on the chain that will bought."""
+
+    params: PostTriggerCreateOrderParams
+    """The amounts of output-to-buy and input-to-sell tokens in the limit order."""
+
+    compute_unit_price: str = Field(default = "auto", serialization_alias = "computeUnitPrice")
+    """Used to determine a transaction's prioritization fee. Defaults to `auto`."""
+
+    referral_public_key: str | None = Field(default = None, serialization_alias = "feeAccount")
+    """A token account (via the Referral Program) that will receive the fees."""
+
+    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
+    """To automatically wrap/unwrap SOL in the transaction."""
+
+class PostTriggerCreateOrderResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Trigger - Create Order**" endpoint from Jupiter API.
+    """
+
+    request_id: str = Field(alias = "requestId")
+    """Unique ID required to make a request to `post_trigger_execute`"""
+
+    transaction: str
+    """Unsigned base-64 encoded transaction."""
+
+    order_public_key: str = Field(alias = "order")
+    """Base-58 account which is the Trigger Order account."""

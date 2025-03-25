@@ -27,7 +27,10 @@ from ..jupiter.schema import (
     # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
-    PostUltraExecuteOrderResponse
+    PostUltraExecuteOrderResponse,
+    # Trigger API
+    PostTriggerCreateOrderBody,
+    PostTriggerCreateOrderResponse
 )
 from ..jupiter.param import JupiterTokenTagType
 
@@ -157,6 +160,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_ultra_balances(True, wallet_public_key)
 
+    def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
+        """
+        return self._interaction._post_trigger_create_order(True, body)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -279,3 +289,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
         """
         return await self._interaction._get_ultra_balances(False, wallet_public_key)
+
+    async def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
+        """
+        return await self._interaction._post_trigger_create_order(False, body)

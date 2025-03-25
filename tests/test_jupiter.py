@@ -16,14 +16,15 @@ from cyhole.jupiter.schema import (
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
-    PostLimitOrderCreateBody, PostLimitOrderCreateParams,
+    PostLimitOrderCreateBody, PostTriggerCreateOrderParams, PostLimitOrderCreateParams,
     PostLimitOrderCreateResponse,
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
     GetUltraOrderResponse,
-    GetUltraBalancesResponse
+    GetUltraBalancesResponse,
+    PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
@@ -1301,3 +1302,69 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetUltraBalancesResponse)
+
+    def test_post_trigger_create_order_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Trigger - Create Order" for synchronous logic.
+
+            Mock Response File: post_trigger_create_order.json
+        """
+
+        # load mock response
+        mock_file_name = "post_trigger_create_order"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCreateOrderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostTriggerCreateOrderBody(
+            maker_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            payer_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            input_token = USDC.address,
+            output_token = JUP.address,
+            params = PostTriggerCreateOrderParams(
+                input_amount = USDC.from_decimals(10),
+                output_amount = JUP.from_decimals(10)
+            )
+        )
+        response = self.jupiter.client.post_trigger_create_order(body)
+
+        # actual test
+        assert isinstance(response, PostTriggerCreateOrderResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_trigger_create_order_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Trigger - Create Order" for asynchronous logic.
+
+            Mock Response File: post_trigger_create_order.json
+        """
+
+        # load mock response
+        mock_file_name = "post_trigger_create_order"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCreateOrderResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostTriggerCreateOrderBody(
+            maker_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            payer_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            input_token = USDC.address,
+            output_token = JUP.address,
+            params = PostTriggerCreateOrderParams(
+                input_amount = USDC.from_decimals(10),
+                output_amount = JUP.from_decimals(10)
+            )
+        )
+        async with self.jupiter.async_client as client:
+            response = await client.post_trigger_create_order(body)
+
+        # actual test
+        assert isinstance(response, PostTriggerCreateOrderResponse)
