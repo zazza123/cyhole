@@ -3,24 +3,28 @@ from typing import TYPE_CHECKING, Any
 
 from ..core.client import APIClient, AsyncAPIClient
 from ..jupiter.schema import (
+    # Price API
     GetPriceResponse,
+    # Swap API
     GetQuoteParams,
     GetQuoteResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
     PostSwapInstructionsResponse,
+    # Token API
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
+    # Limit Order API
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
-    # Ultra API - Responses
+    # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
     PostUltraExecuteOrderResponse
@@ -41,7 +45,7 @@ class JupiterClient(APIClient):
 
     def get_price(self, address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse:
         """
-            Call the Jupiter's GET **[Price](https://station.jup.ag/docs/utility/price-api)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Price](https://station.jup.ag/docs/api/price-api/price)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_price`][cyhole.jupiter.interaction.Jupiter._get_price].
         """
         return self._interaction._get_price(True, address, extra_info, vs_address)
@@ -78,28 +82,28 @@ class JupiterClient(APIClient):
 
     def get_token_info(self, address: str) -> GetTokenInfoResponse:
         """
-            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-information)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-api/token-information)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
         """
         return self._interaction._get_token_info(True, address)
 
     def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
         """
-            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/mints-in-market)** API for synchronous logic.
+            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/token-api/mints-in-market)** API for synchronous logic.
             All the API endpoint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
         """
         return self._interaction._get_token_market_mints(True, address)
 
     def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
         """
-            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/new)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/token-api/new)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
         """
         return self._interaction._get_token_new(True, limit, offset)
 
     def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
         """
-            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/tagged)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/token-api/tagged)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
         """
         return self._interaction._get_token_tagged(True, tag)
@@ -164,7 +168,7 @@ class JupiterAsyncClient(AsyncAPIClient):
 
     async def get_price(self, address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse:
         """
-            Call the Jupiter's GET **[Price](https://station.jup.ag/docs/utility/price-api)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Price](https://station.jup.ag/docs/api/price-api/price)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_price`][cyhole.jupiter.interaction.Jupiter._get_price].
         """
         return await self._interaction._get_price(False, address, extra_info, vs_address)
@@ -201,28 +205,28 @@ class JupiterAsyncClient(AsyncAPIClient):
 
     async def get_token_info(self, address: str) -> GetTokenInfoResponse:
         """
-            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-information)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-api/token-information)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
         """
         return await self._interaction._get_token_info(False, address)
 
     async def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
         """
-            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/mints-in-market)** API for asynchronous logic.
+            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/token-api/mints-in-market)** API for asynchronous logic.
             All the API endpoint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
         """
         return await self._interaction._get_token_market_mints(False, address)
 
     async def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
         """
-            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/tagged)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/token-api/tagged)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
         """
         return await self._interaction._get_token_tagged(False, tag)
 
     async def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
         """
-            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/new)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/token-api/new)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
         """
         return await self._interaction._get_token_new(False, limit, offset)

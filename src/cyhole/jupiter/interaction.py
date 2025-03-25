@@ -6,24 +6,28 @@ from ..core.interaction import Interaction
 from ..jupiter.client import JupiterClient, JupiterAsyncClient
 from ..jupiter.schema import (
     JupiterHTTPError,
+    # Price API
     GetPriceResponse,
+    # Swap API
     GetQuoteParams,
     GetQuoteResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
     PostSwapResponse,
     PostSwapInstructionsResponse,
+    # Token API
     GetTokenInfoResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
+    # Limit Order API
     PostLimitOrderCreateBody,
     PostLimitOrderCreateResponse,
     PostLimitOrderCancelBody,
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
-    # Ultra API - Responses
+    # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
     PostUltraExecuteOrderResponse
@@ -90,7 +94,7 @@ class Jupiter(Interaction):
 
     def _get_price(self, sync: bool, address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://station.jup.ag/docs/utility/price-api)** API endpoint, 
+            This function refers to the GET **[Price](https://station.jup.ag/docs/api/price-api/price)** API endpoint, 
             and it is used to get the current price of a list of tokens on Solana chain with respect to another token
             taken from [Jupiter Swap](https://jup.ag).
 
@@ -286,7 +290,7 @@ class Jupiter(Interaction):
 
     def _get_token_info(self, sync: bool, address: str) -> GetTokenInfoResponse | Coroutine[None, None, GetTokenInfoResponse]:
         """
-            This function refers to the GET **[Token](https://station.jup.ag/docs/api/token-information)** API endpoint,
+            This function refers to the GET **[Token](https://station.jup.ag/docs/api/token-api/token-information)** API endpoint,
             with a specific focus on retrieving the information of a token given its address.
 
             Parameters:
@@ -317,7 +321,7 @@ class Jupiter(Interaction):
 
     def _get_token_market_mints(self, sync: bool, address: str) -> GetTokenMarketMintsResponse | Coroutine[None, None, GetTokenMarketMintsResponse]:
         """
-            This function refers to the GET **[Token Market Mints](https://station.jup.ag/docs/api/mints-in-market)** API endpoint,
+            This function refers to the GET **[Token Market Mints](https://station.jup.ag/docs/api/token-api/mints-in-market)** API endpoint,
             and can be used to retrieve the list of token addresses that belong to a market/pool address.
 
             Parameters:
@@ -347,7 +351,7 @@ class Jupiter(Interaction):
 
     def _get_token_tagged(self, sync: bool, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse | Coroutine[None, None, GetTokenTaggedResponse]:
         """
-            This function refers to the GET **[Tagged Token](https://station.jup.ag/docs/api/tagged)** API endpoint, 
+            This function refers to the GET **[Tagged Token](https://station.jup.ag/docs/api/token-api/tagged)** API endpoint, 
             and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
             Choose the tokens list according to `tag` field.
 
@@ -383,7 +387,7 @@ class Jupiter(Interaction):
 
     def _get_token_new(self, sync: bool, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse | Coroutine[None, None, GetTokenNewResponse]:
         """
-            This function refers to the GET **[New Token](https://station.jup.ag/docs/api/new)** API endpoint, 
+            This function refers to the GET **[New Token](https://station.jup.ag/docs/api/token-api/new)** API endpoint, 
             and it is used to retrieved the list of new tokens managed by Jupiter.
 
             Parameters:
