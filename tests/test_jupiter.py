@@ -22,7 +22,8 @@ from cyhole.jupiter.schema import (
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
-    GetUltraOrderResponse
+    GetUltraOrderResponse,
+    GetUltraBalancesResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
@@ -1242,3 +1243,61 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetUltraOrderResponse)
+
+    def test_get_ultra_balances_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Ultra - Balances" for synchronous logic.
+
+            Mock Response File: get_ultra_balances.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_balances"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraBalancesResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_ultra_balances("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
+
+        # actual test
+        assert isinstance(response, GetUltraBalancesResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            # store only three random balances
+            response.tokens = dict(list(response.tokens.items())[0:3])
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_ultra_balances_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Ultra - Balances" for asynchronous logic.
+
+            Mock Response File: get_ultra_balances.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_balances"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraBalancesResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_ultra_balances("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
+
+        # actual test
+        assert isinstance(response, GetUltraBalancesResponse)

@@ -23,7 +23,9 @@ from ..jupiter.schema import (
     PostLimitOrderCancelResponse,
     GetLimitOrderOpenResponse,
     GetLimitOrderHistoryResponse,
+    # Ultra API - Responses
     GetUltraOrderResponse,
+    GetUltraBalancesResponse,
     PostUltraExecuteOrderResponse
 )
 from ..jupiter.exception import (
@@ -681,6 +683,36 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostUltraExecuteOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_ultra_balances(self, sync: Literal[True], wallet_public_key: str) -> GetUltraBalancesResponse: ...
+
+    @overload
+    def _get_ultra_balances(self, sync: Literal[False], wallet_public_key: str) -> Coroutine[None, None, GetUltraBalancesResponse]: ...
+
+    def _get_ultra_balances(self, sync: bool, wallet_public_key: str) -> GetUltraBalancesResponse | Coroutine[None, None, GetUltraBalancesResponse]:
+        """
+            This function refers to the GET **[Ultra - Balances](https://station.jup.ag/docs/ultra-api/get-balances)** API endpoint, 
+            and it is used to retrieve the token's balances of a wallet using the Jupiter Ultra API.
+
+            Parameters:
+                wallet_public_key: public key of the wallet to check.
+
+            Returns:
+                Token's balances of the wallet.
+        """
+        # set params
+        url = self.url_api_ultra + f"balances/{wallet_public_key}"
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetUltraBalancesResponse(tokens = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetUltraBalancesResponse(tokens = content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

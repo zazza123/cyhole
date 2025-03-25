@@ -1,0 +1,22 @@
+{
+    "tokens": {
+        "SOL": {
+            "amount": 82517267093,
+            "uiAmount": 82.517267093,
+            "slot": 329032991,
+            "isFrozen": false
+        },
+        "4sp2EUDrQf46rZun6sYAWzjrXwUpx2T3njuoKmV766RJ": {
+            "amount": 1018454486145253,
+            "uiAmount": 1018454.486145253,
+            "slot": 329032991,
+            "isFrozen": false
+        },
+        "2Tog8pJNbxNU13SC8JxWR3VUocfcAE3sDSX8bRBtVAZU": {
+            "amount": 300000000,
+            "uiAmount": 300.0,
+            "slot": 329032991,
+            "isFrozen": false
+        }
+    }
+}
