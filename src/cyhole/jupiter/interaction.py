@@ -7,7 +7,7 @@ from ..jupiter.client import JupiterClient, JupiterAsyncClient
 from ..jupiter.schema import (
     JupiterHTTPError,
     GetPriceResponse,
-    GetQuoteInput,
+    GetQuoteParams,
     GetQuoteResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
@@ -76,7 +76,7 @@ class Jupiter(Interaction):
 
         # API urls
         self.url_api_price = "https://api.jup.ag/price/v2"
-        self.url_api_quote = "https://api.jup.ag/swap/v1/"
+        self.url_api_swap  = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_limit = "https://api.jup.ag/limit/v2/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
@@ -137,14 +137,14 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_quote(self, sync: Literal[True], input: GetQuoteInput) -> GetQuoteResponse: ...
+    def _get_quote(self, sync: Literal[True], input: GetQuoteParams) -> GetQuoteResponse: ...
 
     @overload
-    def _get_quote(self, sync: Literal[False], input: GetQuoteInput) -> Coroutine[None, None, GetQuoteResponse]: ...
+    def _get_quote(self, sync: Literal[False], input: GetQuoteParams) -> Coroutine[None, None, GetQuoteResponse]: ...
 
-    def _get_quote(self, sync: bool, input: GetQuoteInput) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
+    def _get_quote(self, sync: bool, input: GetQuoteParams) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
         """
-            This function refers to the GET **[Quote](https://station.jup.ag/docs/api/quote)** API endpoint, 
+            This function refers to the GET **[Quote](https://station.jup.ag/docs/api/swap-api/quote)** API endpoint, 
             and it is used to get a quote for swapping a specific amount of tokens.  
             The function can be combined with the `post_swap` enpdpoint to implement a payment mechanism.
 
@@ -156,7 +156,7 @@ class Jupiter(Interaction):
                 Quote found by Jupiter API.
         """
         # set params
-        url = self.url_api_quote + "quote"
+        url = self.url_api_swap + "quote"
         params = input.model_dump(
             by_alias = True, 
             exclude_defaults = True
@@ -186,14 +186,14 @@ class Jupiter(Interaction):
 
     def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
         """
-            This function refers to the GET **[Quote Program ID to Label](https://station.jup.ag/docs/api/program-id-to-label)** API endpoint, 
+            This function refers to the GET **[Quote Program ID to Label](https://station.jup.ag/docs/api/swap-api/program-id-to-label)** API endpoint, 
             and it is used to get the list of supported DEXes to use in quote endpoint. 
 
             Returns:
                 List of DEXs addresses and labels.
         """
         # set params
-        url = self.url_api_quote + "program-id-to-label"
+        url = self.url_api_swap + "program-id-to-label"
 
         # execute request
         if sync:
@@ -219,7 +219,7 @@ class Jupiter(Interaction):
 
     def _post_swap(self, sync: bool, body: PostSwapBody, with_instructions: bool = False) -> PostSwapResponse | PostSwapInstructionsResponse | Coroutine[None, None, PostSwapResponse | PostSwapInstructionsResponse]:
         """
-            This function refers to the POST **[Swap](https://station.jup.ag/docs/api/swap)** API endpoint, 
+            This function refers to the POST **[Swap](https://station.jup.ag/docs/api/swap-api/swap)** API endpoint, 
             and it is used to recive the transaction to perform the swap initialised from Jupiter client 
             `get_quote` endpoint for the desired pair; for this reason the function should be combined 
             with the `get_quote` endpoint.
@@ -229,7 +229,7 @@ class Jupiter(Interaction):
             and in case of need, to modify the instructions before sending the transaction. This behaviour 
             can be activated by setting the `with_instructions` flag to `True`. Observe that in this case, 
             the response will be different from the standard swap response. In Jupiter's API documentation,
-            this endpoint is referred to the POST **[Swap Instructions](https://station.jup.ag/docs/api/swap-instructions)**.
+            this endpoint is referred to the POST **[Swap Instructions](https://station.jup.ag/docs/api/swap-api/swap-instructions)**.
 
             Parameters:
                 body: the body to sent to Jupiter API that describe the swap.
@@ -241,7 +241,7 @@ class Jupiter(Interaction):
                 otherwise instructions to perform the swap.
         """
         # set params
-        url = self.url_api_quote + "swap"
+        url = self.url_api_swap + "swap"
         response_model_class = PostSwapResponse
         headers = {
             "Content-Type": "application/json"

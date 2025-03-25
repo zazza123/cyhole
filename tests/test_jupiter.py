@@ -6,7 +6,7 @@ from pytest_mock import MockerFixture
 from cyhole.jupiter import Jupiter
 from cyhole.jupiter.schema import (
     GetPriceResponse,
-    GetQuoteInput,
+    GetQuoteParams,
     GetQuoteResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
@@ -320,7 +320,7 @@ class TestJupiter:
 
         amount = 1000
         # execute request
-        input = GetQuoteInput(
+        input = GetQuoteParams(
             input_token = WSOL.address,
             output_token = JUP.address,
             amount = amount
@@ -349,7 +349,7 @@ class TestJupiter:
 
         amount = 1000
         # execute request
-        input = GetQuoteInput(
+        input = GetQuoteParams(
             input_token = WSOL.address,
             output_token = JUP.address,
             amount = amount
@@ -383,7 +383,7 @@ class TestJupiter:
 
         amount = 1000
         # execute request
-        input = GetQuoteInput(
+        input = GetQuoteParams(
             input_token = WSOL.address,
             output_token = JUP.address,
             amount = amount,
@@ -416,7 +416,7 @@ class TestJupiter:
 
         amount = 1000
         # execute request
-        input = GetQuoteInput(
+        input = GetQuoteParams(
             input_token = WSOL.address,
             output_token = JUP.address,
             amount = amount,
@@ -437,7 +437,7 @@ class TestJupiter:
         """
 
         # define input
-        input = GetQuoteInput(
+        input = GetQuoteParams(
             input_token = WSOL.address,
             output_token = JUP.address,
             amount = 1
@@ -455,7 +455,7 @@ class TestJupiter:
         """
 
         # define input
-        input = GetQuoteInput(
+        input = GetQuoteParams(
             input_token = WSOL.address,
             output_token = JUP.address,
             amount = 1
@@ -474,7 +474,7 @@ class TestJupiter:
 
         # actual test
         with pytest.raises(ParamUnknownError):
-            GetQuoteInput(
+            GetQuoteParams(
                 input_token = WSOL.address,
                 output_token = JUP.address,
                 amount = 1000,
@@ -489,7 +489,7 @@ class TestJupiter:
 
         # actual test
         with pytest.raises(ParamUnknownError):
-            GetQuoteInput(
+            GetQuoteParams(
                 input_token = WSOL.address,
                 output_token = JUP.address,
                 amount = 1000,
@@ -569,7 +569,7 @@ class TestJupiter:
             quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
         else:
             quote_response = self.jupiter.client.get_quote(
-                input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
+                input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
             )
 
         # execute request
@@ -602,7 +602,7 @@ class TestJupiter:
                 quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
             else:
                 quote_response = await client.get_quote(
-                    input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
+                    input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
                 )
 
             # execute request
@@ -655,7 +655,7 @@ class TestJupiter:
             quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
         else:
             quote_response = self.jupiter.client.get_quote(
-                input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
+                input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
             )
 
         # execute request
@@ -688,7 +688,7 @@ class TestJupiter:
                 quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
             else:
                 quote_response = await client.get_quote(
-                    input = GetQuoteInput(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
+                    input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
                 )
 
             # execute request

@@ -80,7 +80,7 @@ class GetPriceResponse(BaseModel):
 
 # classes used on GET "Quote" endpoint
 # Input
-class GetQuoteInput(BaseModel):
+class GetQuoteParams(BaseModel):
     """
         Model used to identify the inputs params required by 
         a GET Quote request.
@@ -252,7 +252,7 @@ class PostSwapBody(BaseModel):
 
     as_legacy_transaction: bool = Field(default = False, serialization_alias = "asLegacyTransaction")
     """Request a legacy transaction rather than the default versioned transaction.  
-        Used together with `GetQuoteInput.as_legacy_transaction` in quote, otherwise the transaction might be too large."""
+        Used together with `GetQuoteParams.as_legacy_transaction` in quote, otherwise the transaction might be too large."""
 
     destination_token_account: str = Field(default = None, serialization_alias = "destinationTokenAccount")
     """Public key of a token account that will be used to receive the token out of the swap.  

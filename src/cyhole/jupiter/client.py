@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Any
 from ..core.client import APIClient, AsyncAPIClient
 from ..jupiter.schema import (
     GetPriceResponse,
-    GetQuoteInput,
+    GetQuoteParams,
     GetQuoteResponse,
     GetQuoteProgramIdLabelResponse,
     PostSwapBody,
@@ -46,23 +46,23 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_price(True, address, extra_info, vs_address)
 
-    def get_quote(self, input: GetQuoteInput) -> GetQuoteResponse:
+    def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
         """
-            Call the Jupiter's GET **[Quote](https://station.jup.ag/api-v6/get-quote)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Quote](https://station.jup.ag/docs/api/swap-api/quote)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return self._interaction._get_quote(True, input)
 
     def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
         """
-            Call the Jupiter's GET **[Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Quote Program ID to Label](https://station.jup.ag/docs/api/swap-api/program-id-to-label)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
         """
         return self._interaction._get_quote_program_id_label(True)
 
     def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
         """
-            Call the Jupiter's POST **[Swap](https://station.jup.ag/docs/api/swap)** API endpoint for synchronous logic. 
+            Call the Jupiter's POST **[Swap](https://station.jup.ag/docs/api/swap-api/swap)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap]. 
             Observe that this method is a wrapper around the `_post_swap` method with `with_instructions` set to `False`.
         """
@@ -169,23 +169,23 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_price(False, address, extra_info, vs_address)
 
-    async def get_quote(self, input: GetQuoteInput) -> GetQuoteResponse:
+    async def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
         """
-            Call the Jupiter's GET **[Quote](https://station.jup.ag/api-v6/get-quote)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Quote](https://station.jup.ag/docs/api/swap-api/quote)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return await self._interaction._get_quote(False, input)
 
     async def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
         """
-            Call the Jupiter's GET **[Quote Program ID to Label](https://station.jup.ag/api-v6/get-program-id-to-label)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Quote Program ID to Label](https://station.jup.ag/docs/api/swap-api/program-id-to-label)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
         """
         return await self._interaction._get_quote_program_id_label(False)
 
     async def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
         """
-            Call the Jupiter's POST **[Swap](https://station.jup.ag/docs/api/swap)** API endpoint for asynchronous logic. 
+            Call the Jupiter's POST **[Swap](https://station.jup.ag/docs/api/swap-api/swap)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap].
             Observe that this method is a wrapper around the `_post_swap` method with `with_instructions` set to `False`.
         """
