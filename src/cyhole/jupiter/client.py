@@ -30,7 +30,8 @@ from ..jupiter.schema import (
     PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
-    PostTriggerCreateOrderResponse
+    PostTriggerCreateOrderResponse,
+    PostTriggerExecuteResponse
 )
 from ..jupiter.param import JupiterTokenTagType
 
@@ -167,6 +168,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_trigger_create_order(True, body)
 
+    def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_execute_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute_order].
+        """
+        return self._interaction._post_trigger_execute(True, signed_transaction_id, request_id)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -296,3 +304,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
         """
         return await self._interaction._post_trigger_create_order(False, body)
+
+    async def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_execute_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute_order].
+        """
+        return await self._interaction._post_trigger_execute(False, signed_transaction_id, request_id)

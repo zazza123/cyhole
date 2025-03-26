@@ -33,7 +33,8 @@ from ..jupiter.schema import (
     PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
-    PostTriggerCreateOrderResponse
+    PostTriggerCreateOrderResponse,
+    PostTriggerExecuteResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -772,6 +773,58 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostTriggerCreateOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_trigger_execute(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse: ...
+
+    @overload
+    def _post_trigger_execute(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostTriggerExecuteResponse]: ...
+
+    def _post_trigger_execute(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse | Coroutine[None, None, PostTriggerExecuteResponse]:
+        """
+            This function refers to the POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint, 
+            and it is used to execute an order created using the Jupiter Ultra API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
+
+            First, it is required to create a order using the `post_trigger_create_order` endpoint. From the response, 
+            is possible to get the Request ID (`PostTriggerCreateOrderResponse.request_id`) and the transaction ID (`PostTriggerCreateOrderResponse.transaction_id`).
+            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be then used
+            to execute the order.
+
+            The execute endpoint is not used only for creating an order, but it can be also used combined with `post_trigger_cancel_order` 
+            to cancel one or more orders.
+
+            Parameters:
+                signed_transaction_id: the transaction ID coming from the `post_trigger_create_order` response **signed** by the payer wallet.
+                request_id: the same request ID coming from the `post_trigger_create_order` response.
+
+            Returns:
+                Order execution information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_ultra + "execute"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "signedTransaction": signed_transaction_id,
+            "requestId": request_id
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTriggerExecuteResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTriggerExecuteResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

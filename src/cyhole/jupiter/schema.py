@@ -662,7 +662,6 @@ class GetUltraBalancesToken(BaseModel):
     is_frozen: bool = Field(alias = "isFrozen")
     """Flag indicating if the token is frozen."""
 
-
 class GetUltraBalancesResponse(BaseModel):
     """
         Model representing the response object from the 
@@ -678,6 +677,8 @@ class GetUltraBalancesResponse(BaseModel):
 # ***************
 # * Trigger API *
 # ***************
+
+# classes used on POST "Trigger - Create Order" endpoint
 class PostTriggerCreateOrderParams(BaseModel):
     """
         Model used to identify the amounts required by a POST **Limit Order Create** request.  
@@ -750,8 +751,27 @@ class PostTriggerCreateOrderResponse(BaseModel):
     request_id: str = Field(alias = "requestId")
     """Unique ID required to make a request to `post_trigger_execute`"""
 
-    transaction: str
+    transaction_id: str = Field(alias = "transaction")
     """Unsigned base-64 encoded transaction."""
 
     order_public_key: str = Field(alias = "order")
     """Base-58 account which is the Trigger Order account."""
+
+# classes used on POST "Trigger - Execute" endpoint
+class PostTriggerExecuteResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Trigger - Execute**" endpoint from Jupiter API.
+    """
+
+    status: JupiterSwapExecutionStatus
+    """Status of the order."""
+
+    code: int
+    """Code of the status."""
+
+    signature_transaction_id: str | None = Field(default = None, alias = "signature")
+    """Signature of the successful transaction."""
+
+    error: str | None = None
+    """Error message in case of failure."""
