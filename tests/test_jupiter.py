@@ -24,9 +24,11 @@ from cyhole.jupiter.schema import (
     GetLimitOrderHistoryResponse,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
-    PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse
+    PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse,
+    PostTriggerCancelOrderResponse,
+    GetTriggerOrdersResponse,
 )
-from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType
+from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterOrderStatus
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
 from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
 from cyhole.core.token.ethereum import WETH
@@ -1368,3 +1370,113 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostTriggerCreateOrderResponse)
+
+    def test_get_trigger_orders_active_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Trigger - Orders" for synchronous logic.
+
+            Mock Response File: get_trigger_orders_active.json
+        """
+
+        # load mock response
+        mock_file_name = "get_trigger_orders_active"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_trigger_orders(
+            user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+            status = JupiterOrderStatus.ACTIVE,
+            output_token = WSOL.address
+        )
+
+        # actual test
+        assert isinstance(response, GetTriggerOrdersResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.orders = response.orders[0:5]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_trigger_orders_active_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Trigger - Orders" for asynchronous logic.
+
+            Mock Response File: get_trigger_orders_active.json
+        """
+
+        # load mock response
+        mock_file_name = "get_trigger_orders_active"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_trigger_orders(
+                user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+                status = JupiterOrderStatus.ACTIVE,
+                output_token = WSOL.address
+            )
+
+        # actual test
+        assert isinstance(response, GetTriggerOrdersResponse)
+
+    def test_get_trigger_orders_history_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Trigger - Orders" for synchronous logic.
+
+            Mock Response File: get_trigger_orders_history.json
+        """
+
+        # load mock response
+        mock_file_name = "get_trigger_orders_history"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_trigger_orders(
+            user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+            status = JupiterOrderStatus.HISTORY,
+            output_token = WSOL.address
+        )
+
+        # actual test
+        assert isinstance(response, GetTriggerOrdersResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.orders = [response.orders[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_trigger_orders_history_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Trigger - Orders" for asynchronous logic.
+
+            Mock Response File: get_trigger_orders_history.json
+        """
+
+        # load mock response
+        mock_file_name = "get_trigger_orders_history"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_trigger_orders(
+                user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+                status = JupiterOrderStatus.ACTIVE,
+                output_token = WSOL.address
+            )
+
+        # actual test
+        assert isinstance(response, GetTriggerOrdersResponse)

@@ -36,6 +36,7 @@ from ..jupiter.schema import (
     PostTriggerCreateOrderResponse,
     PostTriggerExecuteResponse,
     PostTriggerCancelOrderResponse,
+    GetTriggerOrdersResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -43,7 +44,7 @@ from ..jupiter.exception import (
     JupiterComputeAmountThresholdError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenTagType
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
 
 class Jupiter(Interaction):
     """
@@ -887,6 +888,82 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostTriggerCancelOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_trigger_orders(
+        self,
+        sync: Literal[True],
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse: ...
+
+    @overload
+    def _get_trigger_orders(
+        self,
+        sync: Literal[False],
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> Coroutine[None, None, GetTriggerOrdersResponse]: ...
+
+    def _get_trigger_orders(
+        self,
+        sync: bool,
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse | Coroutine[None, None, GetTriggerOrdersResponse]:
+        """
+            This function refers to the GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint,
+            and it is used to retrieve the list of orders associated to a wallet via Jupiter API.
+
+            Parameters:
+                user_public_key: Public Key of the Owner wallet.
+                status: status of the orders to retrieve.
+                include_failed: flag to include failed orders.
+                input_token: address of the input token associated to the orders.
+                output_token: address of the output token associated to the orders.
+                page: specify which 'page' of orders to return.
+
+            Returns:
+                List of orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_trigger + "getTriggerOrders"
+        params = {
+            "user": user_public_key,
+            "orderStatus": status.value,
+            "includeFailedTx": "true" if include_failed else "false",
+            "inputMint": input_token,
+            "outputMint": output_token,
+            "page": page
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            except HTTPError as e:
+                raise self._raise(e)
+            return GetTriggerOrdersResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return GetTriggerOrdersResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

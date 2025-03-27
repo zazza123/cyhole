@@ -94,6 +94,15 @@ class JupiterSwapDex(CyholeParam):
     VIRTUALS = "Virtuals"
     ZERO_FI = "ZeroFi"
 
+class JupiterOrderStatus(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's order statuses.
+    """
+    ACTIVE = "active"
+    """The order is active."""
+    HISTORY = "history"
+    """The order is in history."""
+
 class JupiterLimitOrderState(CyholeParam):
     """
         Enum class to get the supported Jupiter's limit order states.

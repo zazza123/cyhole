@@ -32,9 +32,10 @@ from ..jupiter.schema import (
     PostTriggerCreateOrderBody,
     PostTriggerCreateOrderResponse,
     PostTriggerExecuteResponse,
-    PostTriggerCancelOrderResponse
+    PostTriggerCancelOrderResponse,
+    GetTriggerOrdersResponse
 )
-from ..jupiter.param import JupiterTokenTagType
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -183,6 +184,21 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_trigger_cancel_order(True, user_public_key, orders, compute_unit_price)
 
+    def get_trigger_orders(
+        self,
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse:
+        """
+            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
+        """
+        return self._interaction._get_trigger_orders(True, user_public_key, status, include_failed, input_token, output_token, page)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -326,3 +342,18 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
         """
         return await self._interaction._post_trigger_cancel_order(False, user_public_key, orders, compute_unit_price)
+
+    async def get_trigger_orders(
+        self,
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse:
+        """
+            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
+        """
+        return await self._interaction._get_trigger_orders(False, user_public_key, status, include_failed, input_token, output_token, page)

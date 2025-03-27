@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer
 
-from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus
+from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus, JupiterOrderStatus
 
 # class used on Jupiter HTTPErrors
 class JupiterHTTPError(BaseModel):
@@ -788,3 +788,175 @@ class PostTriggerCancelOrderResponse(BaseModel):
 
     transaction_id: str | list[str] = Field(validation_alias = AliasChoices("transaction", "transactions"))
     """Unsigned base-64 encoded transaction."""
+
+# classes used on GET "Trigger - Orders" endpoint
+class GetTriggerOrdersTrade(BaseModel):
+    """
+        Model refering to the schema of a trade in the GET 
+        "**Trigger - Orders**" endpoint from Jupiter
+    """
+
+    order_key: str = Field(alias = "orderKey")
+    """Unique identifier of the order associated with the trade."""
+
+    keeper: str
+    """Wallet address of the user who made the trade."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address."""
+
+    input_amount: float = Field(alias = "inputAmount")
+    """Amount of input token sent in the trade."""
+
+    input_amount_raw: int = Field(alias = "rawInputAmount")
+    """Amount of input token sent in raw format; i.e. integer value without decimals."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address."""
+
+    output_amount: float = Field(alias = "outputAmount")
+    """Amount of output token received in the trade."""
+
+    output_amount_raw: int = Field(alias = "rawOutputAmount")
+    """Amount of output token received in raw format; i.e. integer value without decimals."""
+
+    fee_token: str = Field(alias = "feeMint")
+    """Fee token address."""
+
+    fee_amount: float = Field(alias = "feeAmount")
+    """Amount of fee token paid in the trade."""
+
+    fee_amount_raw: int = Field(alias = "rawFeeAmount")
+    """Amount of fee token paid in raw format; i.e. integer value without decimals."""
+
+    transaction_id: str = Field(alias = "txId")
+    """Unique identifier of the transaction associated with the trade."""
+
+    confirmed_at: datetime = Field(alias = "confirmedAt")
+    """Date and time when the trade was confirmed."""
+
+    action: str
+    """Action made in the trade."""
+
+    @field_validator("input_amount", "output_amount", "fee_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "output_amount_raw", "fee_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
+
+    @field_validator("confirmed_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+class GetTriggerOrdersOrder(BaseModel):
+    """
+        Model refering to the schema of an order in the GET 
+        "**Trigger - Orders**" endpoint from Jupiter API.
+    """
+
+    user_public_key: str = Field(alias = "userPubkey")
+    """User wallet address."""
+
+    order_key: str = Field(alias = "orderKey")
+    """Unique identifier of the order."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address."""
+
+    input_amount: float = Field(alias = "makingAmount")
+    """Amount of input token to sell in the order."""
+
+    input_amount_raw: int = Field(alias = "rawMakingAmount")
+    """Amount of input token to sell in raw format; i.e. integer value without decimals."""
+
+    input_remaining_token: float = Field(alias = "remainingMakingAmount")
+    """Amount of input token remaining to sell in the order."""
+
+    input_remaining_token_raw: int = Field(alias = "rawRemainingMakingAmount")
+    """Amount of input token remaining to sell in raw format; i.e. integer value without decimals."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address."""
+
+    output_amount: float = Field(alias = "takingAmount")
+    """Amount of output token to buy in the order."""
+
+    output_amount_raw: int = Field(alias = "rawTakingAmount")
+    """Amount of output token to buy in raw format; i.e. integer value without decimals."""
+
+    output_remaining_amount: float = Field(alias = "remainingTakingAmount")
+    """Amount of output token remaining to buy in the order."""
+
+    output_remaining_amount_raw: int = Field(alias = "rawRemainingTakingAmount")
+    """Amount of output token remaining to buy in raw format; i.e. integer value without decimals."""
+
+    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
+    """Expiring date for the Limit Order expressed in UNIX time"""
+
+    created_at: datetime = Field(alias = "createdAt")
+    """Date and time when the order was created."""
+
+    updated_at: datetime = Field(alias = "updatedAt")
+    """Date and time when the order was last updated."""
+
+    status: JupiterLimitOrderState
+    """Status of the order."""
+
+    open_transaction_id: str = Field(alias = "openTx")
+    """Transaction ID of the open order."""
+
+    close_transaction_id: str | None = Field(default = None, alias = "closeTx")
+    """Transaction ID of the close order."""
+
+    program_version_id: str = Field(alias = "programVersion")
+    """Program version public key used for the order."""
+
+    trades: list[GetTriggerOrdersTrade]
+    """List of trades made in the order."""
+
+    @field_validator("input_amount", "input_remaining_token", "output_amount", "output_remaining_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "input_remaining_token_raw", "output_amount_raw", "output_remaining_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
+
+    @field_validator("created_at", "updated_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+    @field_validator("status")
+    @classmethod
+    def validator_status(cls, status_raw: str | JupiterLimitOrderState) -> JupiterLimitOrderState:
+        if isinstance(status_raw, str):
+            JupiterLimitOrderState.check(status_raw)
+            return JupiterLimitOrderState[status_raw]
+        return status_raw
+
+class GetTriggerOrdersResponse(BaseModel):
+    """
+        Model refering to the response schema of the GET 
+        "**Trigger - Orders**" endpoint from Jupiter API.
+    """
+
+    user_public_key: str = Field(alias = "user")
+    """User wallet address."""
+
+    order_status: JupiterOrderStatus = Field(alias = "orderStatus")
+    """Status of the order."""
+
+    orders: list[GetTriggerOrdersOrder]
+    """List of orders."""
+
+    page: int
+    """Current page."""
+
+    total_pages: int = Field(alias = "totalPages")
+    """Total number of pages."""
