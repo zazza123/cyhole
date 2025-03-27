@@ -34,7 +34,8 @@ from ..jupiter.schema import (
     # Trigger API
     PostTriggerCreateOrderBody,
     PostTriggerCreateOrderResponse,
-    PostTriggerExecuteResponse
+    PostTriggerExecuteResponse,
+    PostTriggerCancelOrderResponse,
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -825,6 +826,67 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostTriggerExecuteResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_trigger_cancel_order(self, sync: Literal[True], user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse: ...
+
+    @overload
+    def _post_trigger_cancel_order(self, sync: Literal[False], user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> Coroutine[None, None, PostTriggerCancelOrderResponse]: ...
+
+    def _post_trigger_cancel_order(self, sync: bool, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse | Coroutine[None, None, PostTriggerCancelOrderResponse]:
+        """
+            This function refers to the POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint, 
+            and it is used to cancel one or more orders created using the Jupiter Ultra API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
+
+            This endpoint do not directly cancel the order, but it provides the transaction and request ID to it.
+            Similarly to the `post_trigger_create_order` endpoint, the transaction ID **must** be signed by the payer walled to get the `signed_transaction_id`
+            that can be then used to cancel the order by providing it together with the request ID to the `post_trigger_execute` endpoint.
+
+            Note:
+                The endpoint switches to POST **[Trigger - Cancel Orders](https://station.jup.ag/docs/api/trigger-api/cancel-orders)** 
+                if more than one order is provided. The logic and response do not change.
+
+            Parameters:
+                user_public_key: Public Key of the Owner wallet.
+                compute_unit_price: used to determine a transaction's prioritization fee. Defaults to `auto`.
+                orders: List of orders Public Keys to cancel.
+
+            Returns:
+                Order cancellation information provided by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_trigger + "cancelOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body: dict[str, str | list[str]] = {
+            "maker": user_public_key,
+            "computeUnitPrice": compute_unit_price
+        }
+
+        # switch to multiple orders
+        if isinstance(orders, list):
+            url += "s"
+            body["orders"] = orders
+        else:
+            body["order"] = orders
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTriggerCancelOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTriggerCancelOrderResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

@@ -775,3 +775,16 @@ class PostTriggerExecuteResponse(BaseModel):
 
     error: str | None = None
     """Error message in case of failure."""
+
+# classes used on POST "Trigger - Cancel Order" endpoint
+class PostTriggerCancelOrderResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Trigger - Cancel Order**" endpoint from Jupiter API.
+    """
+
+    request_id: str = Field(alias = "requestId")
+    """Unique ID required to make a request to `post_trigger_execute`"""
+
+    transaction_id: str | list[str] = Field(validation_alias = AliasChoices("transaction", "transactions"))
+    """Unsigned base-64 encoded transaction."""
