@@ -17,19 +17,18 @@ from ..jupiter.schema import (
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
-    # Limit Order API
-    PostLimitOrderCreateBody,
-    PostLimitOrderCreateResponse,
-    PostLimitOrderCancelBody,
-    PostLimitOrderCancelResponse,
-    GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse,
     # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
-    PostUltraExecuteOrderResponse
+    PostUltraExecuteOrderResponse,
+    # Trigger API
+    PostTriggerCreateOrderBody,
+    PostTriggerCreateOrderResponse,
+    PostTriggerExecuteResponse,
+    PostTriggerCancelOrderResponse,
+    GetTriggerOrdersResponse
 )
-from ..jupiter.param import JupiterTokenTagType
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -108,34 +107,6 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_token_tagged(True, tag)
 
-    def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
-        """
-            Call the Jupiter's POST **[Limit Order - Create](https://station.jup.ag/docs/swap-api/limit-order-api#create-limit-order-transaction)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_limit_order_create`][cyhole.jupiter.interaction.Jupiter._post_limit_order_create].
-        """
-        return self._interaction._post_limit_order_create(True, body)
-
-    def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
-        """
-            Call the Jupiter's POST **[Limit Order - Cancel](https://station.jup.ag/docs/swap-api/limit-order-api#cancel-limit-order-transaction)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_limit_order_cancel`][cyhole.jupiter.interaction.Jupiter._post_limit_order_cancel].
-        """
-        return self._interaction._post_limit_order_cancel(True, body)
-
-    def get_limit_order_open(self, wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse:
-        """
-            Call the Jupiter's GET **[Limit Order - Open](https://station.jup.ag/docs/swap-api/limit-order-api#view-open-orders)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_limit_order_open`][cyhole.jupiter.interaction.Jupiter._get_limit_order_open].
-        """
-        return self._interaction._get_limit_order_open(True, wallet, input_token, output_token)
-
-    def get_limit_order_history(self, wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse:
-        """
-            Call the Jupiter's GET **[Limit Order - History](https://station.jup.ag/docs/swap-api/limit-order-api#view-order-history)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
-        """
-        return self._interaction._get_limit_order_history(True, wallet, page)
-
     def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """
             Call the Jupiter's GET **[Ultra - Get Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint for synchronous logic. 
@@ -156,6 +127,42 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
         """
         return self._interaction._get_ultra_balances(True, wallet_public_key)
+
+    def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
+        """
+        return self._interaction._post_trigger_create_order(True, body)
+
+    def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_execute_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute_order].
+        """
+        return self._interaction._post_trigger_execute(True, signed_transaction_id, request_id)
+
+    def post_trigger_cancel_order(self, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
+        """
+        return self._interaction._post_trigger_cancel_order(True, user_public_key, orders, compute_unit_price)
+
+    def get_trigger_orders(
+        self,
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse:
+        """
+            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
+        """
+        return self._interaction._get_trigger_orders(True, user_public_key, status, include_failed, input_token, output_token, page)
 
 class JupiterAsyncClient(AsyncAPIClient):
     """
@@ -231,34 +238,6 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_new(False, limit, offset)
 
-    async def post_limit_order_create(self, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse:
-        """
-            Call the Jupiter's POST **[Limit Order - Create](https://station.jup.ag/docs/swap-api/limit-order-api#create-limit-order-transaction)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_limit_order_create`][cyhole.jupiter.interaction.Jupiter._post_limit_order_create].
-        """
-        return await self._interaction._post_limit_order_create(False, body)
-
-    async def post_limit_order_cancel(self, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse:
-        """
-            Call the Jupiter's POST **[Limit Order - Cancel](https://station.jup.ag/docs/swap-api/limit-order-api#cancel-limit-order-transaction)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_limit_order_cancel`][cyhole.jupiter.interaction.Jupiter._post_limit_order_cancel].
-        """
-        return await self._interaction._post_limit_order_cancel(False, body)
-
-    async def get_limit_order_open(self, wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse:
-        """
-            Call the Jupiter's GET **[Limit Order - Open](https://station.jup.ag/docs/swap-api/limit-order-api#view-open-orders)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_limit_order_open`][cyhole.jupiter.interaction.Jupiter._get_limit_order_open].
-        """
-        return await self._interaction._get_limit_order_open(False, wallet, input_token, output_token)
-
-    async def get_limit_order_history(self, wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse:
-        """
-            Call the Jupiter's GET **[Limit Order - History](https://station.jup.ag/docs/swap-api/limit-order-api#view-order-history)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_limit_order_history`][cyhole.jupiter.interaction.Jupiter._get_limit_order_history].
-        """
-        return await self._interaction._get_limit_order_history(False, wallet, page)
-
     async def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """
             Call the Jupiter's GET **[Ultra - Get Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint for asynchronous logic. 
@@ -279,3 +258,39 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
         """
         return await self._interaction._get_ultra_balances(False, wallet_public_key)
+
+    async def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
+        """
+        return await self._interaction._post_trigger_create_order(False, body)
+
+    async def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_execute_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute_order].
+        """
+        return await self._interaction._post_trigger_execute(False, signed_transaction_id, request_id)
+
+    async def post_trigger_cancel_order(self, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse:
+        """
+            Call the Jupiter's POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
+        """
+        return await self._interaction._post_trigger_cancel_order(False, user_public_key, orders, compute_unit_price)
+
+    async def get_trigger_orders(
+        self,
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse:
+        """
+            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
+        """
+        return await self._interaction._get_trigger_orders(False, user_public_key, status, include_failed, input_token, output_token, page)

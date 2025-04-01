@@ -1,0 +1,79 @@
+{
+    "user": "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+    "orderStatus": "history",
+    "orders": [
+        {
+            "userPubkey": "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+            "orderKey": "jaNSCyxgM4VjcAtuMRELjv8ZyKpFvUWzE8JxzJgKt7T",
+            "inputMint": "9So52ugZh2BLBT3f7p61947q91uQh2DyvbfyMDeRpump",
+            "makingAmount": 237957.544252,
+            "rawMakingAmount": 237957544252,
+            "remainingMakingAmount": 0.0,
+            "rawRemainingMakingAmount": 0,
+            "outputMint": "So11111111111111111111111111111111111111112",
+            "takingAmount": 2.987137376,
+            "rawTakingAmount": 2987137376,
+            "remainingTakingAmount": 0.0,
+            "rawRemainingTakingAmount": 0,
+            "expiredAt": null,
+            "createdAt": "2025-03-27T16:06:28Z",
+            "updatedAt": "2025-03-27T17:00:34Z",
+            "status": "Completed",
+            "openTx": "4W1Q8spuHZGmA55tHYysynbmb1oWx4ZsYs2LgCshhRLnm6gEnKwYb7Rwt2fnrq4x7rrgTXkgFWs5HTjGyGnvk5Gc",
+            "closeTx": "2wSFXTgVEemS9j757Hxtj71YTexCsi5syuRVUpZJDGq79GxHTk9aKNzLEssg9GhJYZTQtmsV2cuVZwT1uhQTwqg2",
+            "programVersion": "j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X",
+            "trades": [
+                {
+                    "orderKey": "jaNSCyxgM4VjcAtuMRELjv8ZyKpFvUWzE8JxzJgKt7T",
+                    "keeper": "j1oAbxxiDUWvoHxEDhWE7THLjEkDQW2cSHYn2vttxTF",
+                    "inputMint": "9So52ugZh2BLBT3f7p61947q91uQh2DyvbfyMDeRpump",
+                    "inputAmount": 180847.733632,
+                    "rawInputAmount": 180847733632,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 2.270224405,
+                    "rawOutputAmount": 2270224405,
+                    "feeMint": "GNSHYrJmjwYXnWLy3esF5VjWa1AKMhzAru1pTeQDY8w3",
+                    "feeAmount": 0.002270224,
+                    "rawFeeAmount": 2270224,
+                    "txId": "2wSFXTgVEemS9j757Hxtj71YTexCsi5syuRVUpZJDGq79GxHTk9aKNzLEssg9GhJYZTQtmsV2cuVZwT1uhQTwqg2",
+                    "confirmedAt": "2025-03-27T17:00:34Z",
+                    "action": "Fill"
+                },
+                {
+                    "orderKey": "jaNSCyxgM4VjcAtuMRELjv8ZyKpFvUWzE8JxzJgKt7T",
+                    "keeper": "j1opmdubY84LUeidrPCsSGskTCYmeJVzds1UWm6nngb",
+                    "inputMint": "9So52ugZh2BLBT3f7p61947q91uQh2DyvbfyMDeRpump",
+                    "inputAmount": 47591.50885,
+                    "rawInputAmount": 47591508850,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.597427475,
+                    "rawOutputAmount": 597427475,
+                    "feeMint": "GNSHYrJmjwYXnWLy3esF5VjWa1AKMhzAru1pTeQDY8w3",
+                    "feeAmount": 0.000597427,
+                    "rawFeeAmount": 597427,
+                    "txId": "3ttL2edd4viEn5KfqZ1DUMdBHxiHDkwaDK797n54y9DkfUA8cmHa2y9BcHe7TxcTksM8ffvmvML8oqeMvvHfkgMq",
+                    "confirmedAt": "2025-03-27T16:44:54Z",
+                    "action": "Fill"
+                },
+                {
+                    "orderKey": "jaNSCyxgM4VjcAtuMRELjv8ZyKpFvUWzE8JxzJgKt7T",
+                    "keeper": "j1oeQoPeuEDmjvyMwBmCWexzCQup77kbKKxV59CnYbd",
+                    "inputMint": "9So52ugZh2BLBT3f7p61947q91uQh2DyvbfyMDeRpump",
+                    "inputAmount": 9518.30177,
+                    "rawInputAmount": 9518301770,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.119485496,
+                    "rawOutputAmount": 119485496,
+                    "feeMint": "GNSHYrJmjwYXnWLy3esF5VjWa1AKMhzAru1pTeQDY8w3",
+                    "feeAmount": 0.000119485,
+                    "rawFeeAmount": 119485,
+                    "txId": "5X1cLkRHVF19z6C3AtHwARvf53Fzk1d8LBUcsjtzhaE42zsmWfLsvD4UwzZbtzLRjeHukKUKAqK3hoUwVEBpbBgA",
+                    "confirmedAt": "2025-03-27T16:44:54Z",
+                    "action": "Fill"
+                }
+            ]
+        }
+    ],
+    "page": 1,
+    "totalPages": 265
+}

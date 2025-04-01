@@ -20,17 +20,16 @@ from ..jupiter.schema import (
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
-    # Limit Order API
-    PostLimitOrderCreateBody,
-    PostLimitOrderCreateResponse,
-    PostLimitOrderCancelBody,
-    PostLimitOrderCancelResponse,
-    GetLimitOrderOpenResponse,
-    GetLimitOrderHistoryResponse,
     # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
-    PostUltraExecuteOrderResponse
+    PostUltraExecuteOrderResponse,
+    # Trigger API
+    PostTriggerCreateOrderBody,
+    PostTriggerCreateOrderResponse,
+    PostTriggerExecuteResponse,
+    PostTriggerCancelOrderResponse,
+    GetTriggerOrdersResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -38,7 +37,7 @@ from ..jupiter.exception import (
     JupiterComputeAmountThresholdError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenTagType
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
 
 class Jupiter(Interaction):
     """
@@ -84,6 +83,7 @@ class Jupiter(Interaction):
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_limit = "https://api.jup.ag/limit/v2/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
+        self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
         return
 
     @overload
@@ -415,181 +415,6 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _post_limit_order_create(self, sync: Literal[True], body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse: ...
-
-    @overload
-    def _post_limit_order_create(self, sync: Literal[False], body: PostLimitOrderCreateBody) -> Coroutine[None, None, PostLimitOrderCreateResponse]: ...
-
-    def _post_limit_order_create(self, sync: bool, body: PostLimitOrderCreateBody) -> PostLimitOrderCreateResponse | Coroutine[None, None, PostLimitOrderCreateResponse]:
-        """
-            This function refers to the POST **[Limit Order - Create](https://station.jup.ag/docs/swap-api/limit-order-api#create-limit-order-transaction)** API endpoint, 
-            and it is used to receive the transaction to perform the creation of a Limit Order via Jupiter API.
-
-            Parameters:
-                body: the body to sent to Jupiter API that describe the swap.
-                    More details in the object definition.
-
-            Returns:
-                Transaction created by Jupiter API.
-        """
-
-        # set params
-        url = self.url_api_limit + "createOrder"
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(
-                    type = RequestType.POST.value,
-                    url = url,
-                    headers = headers,
-                    json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
-                )
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostLimitOrderCreateResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(
-                        type = RequestType.POST.value,
-                        url = url,
-                        headers = headers,
-                        json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
-                    )
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostLimitOrderCreateResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_limit_order_cancel(self, sync: Literal[True], body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse: ...
-
-    @overload
-    def _post_limit_order_cancel(self, sync: Literal[False], body: PostLimitOrderCancelBody) -> Coroutine[None, None, PostLimitOrderCancelResponse]: ...
-
-    def _post_limit_order_cancel(self, sync: bool, body: PostLimitOrderCancelBody) -> PostLimitOrderCancelResponse | Coroutine[None, None, PostLimitOrderCancelResponse]:
-        """
-            This function refers to the POST **[Limit Order - Cancel](https://station.jup.ag/docs/swap-api/limit-order-api#cancel-limit-order-transaction)** 
-            API endpoint, and it is used to receive the transaction to perform the cancellation of a Limit Order previously opened via Jupiter API.
-
-            Parameters:
-                body: the body to sent to Jupiter API that describe the limit order to cancel.
-                    More details in the object definition.
-
-            Returns:
-                Transaction created by Jupiter API.
-        """
-
-        # set params
-        url = self.url_api_limit + "cancelOrders"
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(
-                    type = RequestType.POST.value,
-                    url = url,
-                    headers = headers,
-                    json = body.model_dump(by_alias = True, exclude_defaults = True)
-                )
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostLimitOrderCancelResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(
-                        type = RequestType.POST.value,
-                        url = url,
-                        headers = headers,
-                        json = body.model_dump(by_alias = True, exclude_defaults = True)
-                    )
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostLimitOrderCancelResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _get_limit_order_open(self, sync: Literal[True], wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse: ...
-
-    @overload
-    def _get_limit_order_open(self, sync: Literal[False], wallet: str, input_token: str | None = None, output_token: str | None = None) -> Coroutine[None, None, GetLimitOrderOpenResponse]: ...
-
-    def _get_limit_order_open(self, sync: bool, wallet: str, input_token: str | None = None, output_token: str | None = None) -> GetLimitOrderOpenResponse | Coroutine[None, None, GetLimitOrderOpenResponse]:
-        """
-            This function refers to the GET **[Limit Order - Open](https://station.jup.ag/docs/swap-api/limit-order-api#view-open-orders)** 
-            API endpoint, and it is used to receive the current open limit orders related to a wallet, input token 
-            or output token via Jupiter API. 
-
-            Parameters:
-                wallet: address of the wallet to check.
-                input_token: address of the input token associated to the limit order.
-                output_token: address of the output token associated to the limit order.
-
-            Returns:
-                Open limit orders created by Jupiter API.
-        """
-        # set params
-        url = self.url_api_limit + "openOrders"
-        params = {
-            "wallet": wallet,
-            "inputMint": input_token,
-            "outputMint": output_token
-        }
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetLimitOrderOpenResponse(orders = content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetLimitOrderOpenResponse(orders = content_raw.json())
-            return async_request()
-
-    @overload
-    def _get_limit_order_history(self, sync: Literal[True], wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse: ...
-
-    @overload
-    def _get_limit_order_history(self, sync: Literal[False], wallet: str, page: int = 1) -> Coroutine[None, None, GetLimitOrderHistoryResponse]: ...
-
-    def _get_limit_order_history(self, sync: bool, wallet: str, page: int = 1) -> GetLimitOrderHistoryResponse | Coroutine[None, None, GetLimitOrderHistoryResponse]:
-        """
-            This function refers to the GET **[Limit Order - History](https://station.jup.ag/docs/swap-api/limit-order-api#view-order-history)** 
-            API endpoint, and it is used to retrieve the history of Limit Orders associated to a wallet via Jupiter API. 
-
-            Parameters:
-                wallet: address of the wallet to check.
-                page: specify which 'page' of orders to return.
-
-            Returns:
-                History of limit orders associated to the input wallet.
-        """
-        # set params
-        url = self.url_api_limit + "orderHistory"
-        params = {
-            "wallet": wallet,
-            "page": page
-        }
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetLimitOrderHistoryResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetLimitOrderHistoryResponse(**content_raw.json())
-            return async_request()
-
-    @overload
     def _get_ultra_order(self, sync: Literal[True], input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse: ...
 
     @overload
@@ -717,6 +542,246 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url)
                 return GetUltraBalancesResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_trigger_create_order(self, sync: Literal[True], body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse: ...
+
+    @overload
+    def _post_trigger_create_order(self, sync: Literal[False], body: PostTriggerCreateOrderBody) -> Coroutine[None, None, PostTriggerCreateOrderResponse]: ...
+
+    def _post_trigger_create_order(self, sync: bool, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse | Coroutine[None, None, PostTriggerCreateOrderResponse]:
+        """
+            This function refers to the POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint, 
+            and it is used to receive an unsigned transaction to perform the creation of an order via Jupiter API.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the order.
+                    More details in the object definition.
+
+            Returns:
+                **Unsigned** transaction created by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_trigger + "createOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTriggerCreateOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTriggerCreateOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_trigger_execute(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse: ...
+
+    @overload
+    def _post_trigger_execute(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostTriggerExecuteResponse]: ...
+
+    def _post_trigger_execute(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse | Coroutine[None, None, PostTriggerExecuteResponse]:
+        """
+            This function refers to the POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint, 
+            and it is used to execute an order created using the Jupiter Ultra API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
+
+            First, it is required to create a order using the `post_trigger_create_order` endpoint. From the response, 
+            is possible to get the Request ID (`PostTriggerCreateOrderResponse.request_id`) and the transaction ID (`PostTriggerCreateOrderResponse.transaction_id`).
+            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be then used
+            to execute the order.
+
+            The execute endpoint is not used only for creating an order, but it can be also used combined with `post_trigger_cancel_order` 
+            to cancel one or more orders.
+
+            Parameters:
+                signed_transaction_id: the transaction ID coming from the `post_trigger_create_order` response **signed** by the payer wallet.
+                request_id: the same request ID coming from the `post_trigger_create_order` response.
+
+            Returns:
+                Order execution information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_ultra + "execute"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "signedTransaction": signed_transaction_id,
+            "requestId": request_id
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTriggerExecuteResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTriggerExecuteResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_trigger_cancel_order(self, sync: Literal[True], user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse: ...
+
+    @overload
+    def _post_trigger_cancel_order(self, sync: Literal[False], user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> Coroutine[None, None, PostTriggerCancelOrderResponse]: ...
+
+    def _post_trigger_cancel_order(self, sync: bool, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse | Coroutine[None, None, PostTriggerCancelOrderResponse]:
+        """
+            This function refers to the POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint, 
+            and it is used to cancel one or more orders created using the Jupiter Ultra API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
+
+            This endpoint do not directly cancel the order, but it provides the transaction and request ID to it.
+            Similarly to the `post_trigger_create_order` endpoint, the transaction ID **must** be signed by the payer walled to get the `signed_transaction_id`
+            that can be then used to cancel the order by providing it together with the request ID to the `post_trigger_execute` endpoint.
+
+            Note:
+                The endpoint switches to POST **[Trigger - Cancel Orders](https://station.jup.ag/docs/api/trigger-api/cancel-orders)** 
+                if more than one order is provided. The logic and response do not change.
+
+            Parameters:
+                user_public_key: Public Key of the Owner wallet.
+                compute_unit_price: used to determine a transaction's prioritization fee. Defaults to `auto`.
+                orders: List of orders Public Keys to cancel.
+
+            Returns:
+                Order cancellation information provided by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_trigger + "cancelOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body: dict[str, str | list[str]] = {
+            "maker": user_public_key,
+            "computeUnitPrice": compute_unit_price
+        }
+
+        # switch to multiple orders
+        if isinstance(orders, list):
+            url += "s"
+            body["orders"] = orders
+        else:
+            body["order"] = orders
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTriggerCancelOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTriggerCancelOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_trigger_orders(
+        self,
+        sync: Literal[True],
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse: ...
+
+    @overload
+    def _get_trigger_orders(
+        self,
+        sync: Literal[False],
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> Coroutine[None, None, GetTriggerOrdersResponse]: ...
+
+    def _get_trigger_orders(
+        self,
+        sync: bool,
+        user_public_key: str,
+        status:  JupiterOrderStatus,
+        include_failed: bool = False,
+        input_token: str | None = None,
+        output_token: str | None = None,
+        page: int = 1
+    ) -> GetTriggerOrdersResponse | Coroutine[None, None, GetTriggerOrdersResponse]:
+        """
+            This function refers to the GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint,
+            and it is used to retrieve the list of orders associated to a wallet via Jupiter API.
+
+            Parameters:
+                user_public_key: Public Key of the Owner wallet.
+                status: status of the orders to retrieve.
+                include_failed: flag to include failed orders.
+                input_token: address of the input token associated to the orders.
+                output_token: address of the output token associated to the orders.
+                page: specify which 'page' of orders to return.
+
+            Returns:
+                List of orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_trigger + "getTriggerOrders"
+        params = {
+            "user": user_public_key,
+            "orderStatus": status.value,
+            "includeFailedTx": "true" if include_failed else "false",
+            "inputMint": input_token,
+            "outputMint": output_token,
+            "page": page
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            except HTTPError as e:
+                raise self._raise(e)
+            return GetTriggerOrdersResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return GetTriggerOrdersResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

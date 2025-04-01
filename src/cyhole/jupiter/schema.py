@@ -1,8 +1,8 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer
+from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
 
-from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus
+from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus, JupiterOrderStatus
 
 # class used on Jupiter HTTPErrors
 class JupiterHTTPError(BaseModel):
@@ -361,214 +361,9 @@ class GetTokenNewResponse(BaseModel):
     """
     tokens: list[GetTokenNewToken]
 
-# classes used on POST "Limit Order Create" endpoint
-# Body
-class PostLimitOrderCreateParams(BaseModel):
-    """
-        Model used to identify the amounts required by a POST **Limit Order Create** request.  
-        Observe that the amounts are in raw format (integer values without decimals).
-    """
-
-    input_amount: int = Field(serialization_alias = "makingAmount")
-    """Amount of input token to sell in the limit order."""
-
-    output_amount: int = Field(serialization_alias = "takingAmount")
-    """Amount of output token to buy in the limit order."""
-
-    expired_at_unix_time: int | None = Field(default = None, serialization_alias = "expiredAt")
-    """Expiring date for the Limit Order expressed in UNIX time"""
-
-    fee_base_points: int | None = Field(default = None, serialization_alias = "feeBps")
-    """Amount of fee that the `referral_public_key` collects."""
-
-    @field_serializer("input_amount", "output_amount", "fee_base_points", "expired_at_unix_time", when_used = "unless-none")
-    @classmethod
-    def serialize_amounts(cls, amount_raw: int | None) -> str | None:
-        if amount_raw is not None:
-            return str(amount_raw)
-
-class PostLimitOrderCreateBody(BaseModel):
-    """
-        Model used to identify the body required by a POST **Limit Order Create** request.
-    """
-
-    maker_wallet_key: str = Field(serialization_alias = "maker")
-    """Wallet address of the user who wants to create an order."""
-
-    payer_wallet_key: str = Field(serialization_alias = "payer")
-    """Wallet address of who is paying to open an order (usually the `maker` wallet)."""
-
-    input_token: str = Field(serialization_alias = "inputMint")
-    """The address of the input token on the chain used to buy."""
-
-    output_token: str = Field(serialization_alias = "outputMint")
-    """The address of the output token on the chain that will bought."""
-
-    params: PostLimitOrderCreateParams
-    """The amounts of output-to-buy and input-to-sell tokens in the limit order."""
-
-    compute_unit_price: str = Field(default = "auto", serialization_alias = "computeUnitPrice")
-    """Used to determine a transaction's prioritization fee. Defaults to `auto`."""
-
-    referral_public_key: str | None = Field(default = None, serialization_alias = "referral")
-    """The address of the account used to get referral fees."""
-
-    input_token_program: str | None = Field(default = None, serialization_alias = "inputTokenProgram")
-    """Default to token program if empty or specify e.g. token2022 program"""
-
-    output_token_program: str | None = Field(default = None, serialization_alias = "outputTokenProgram")
-    """Default to token program if empty or specify e.g. token2022 program"""
-
-    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
-    """To automatically wrap/unwrap SOL in the transaction."""
-
-# Output
-class PostLimitOrderCreateResponse(BaseModel):
-    """
-        Model used to represent the **Limit Order Create** endpoint from Jupiter API.
-    """
-    transaction: str = Field(alias = "tx")
-    order_public_key: str = Field(alias = "order")
-
-# classes used on POST "Limit Order Cancel" endpoint
-# Body
-class PostLimitOrderCancelBody(BaseModel):
-    """
-        Model used to identify the body required by a POST **Limit Order Cancel** request.
-    """
-    user_public_key: str = Field(serialization_alias = "maker")
-    """Public Key of the Owner wallet"""
-
-    compute_unit_price: str = Field(default = "auto", serialization_alias = "computeUnitPrice")
-    """Used to determine a transaction's prioritization fee. Defaults to `auto`."""
-
-    orders: list[str]
-    """List of orders Public Keys to cancel."""
-
-# Output
-class PostLimitOrderCancelResponse(BaseModel):
-    """
-        Model used to represent the **Limit Order Cancel** endpoint from Jupiter API.
-    """
-    transactions: list[str] = Field(alias = "txs")
-
-# classes used on GET "Limit Order Opens" endpoint
-class GetLimitOrderOpenAccount(BaseModel):
-    unique_id: int = Field(alias = "uniqueId")
-    created_at: datetime = Field(alias = "createdAt")
-    update_at: datetime = Field(alias = "updatedAt")
-    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
-    input_token: str = Field(alias = "inputMint")
-    input_token_reserve: str = Field(alias = "inputMintReserve")
-    input_token_program: str = Field(alias = "inputTokenProgram")
-    input_amount_raw: int = Field(alias = "makingAmount")
-    input_amount_ori_raw: int = Field(alias = "oriMakingAmount")
-    input_amount_borrow_making: int = Field(alias = "borrowMakingAmount")
-    output_token: str = Field(alias = "outputMint")
-    output_token_program: str = Field(alias = "outputTokenProgram")
-    output_amount_raw: int = Field(alias = "takingAmount")
-    output_amount_ori_raw: int = Field(alias = "oriTakingAmount")
-    fee_account: str = Field(alias = "feeAccount")
-    fee_base_points: int = Field(alias = "feeBps")
-    bump: int
-    maker: str
-    slippage_base_points: int = Field(alias = "slippageBps")
-
-class GetLimitOrderOpen(BaseModel):
-    public_key: str = Field(alias = "publicKey")
-    account: GetLimitOrderOpenAccount
-
-class GetLimitOrderOpenResponse(BaseModel):
-    """
-        Model used to represent the **Limit Order Opens** endpoint from Jupiter API.
-    """
-    orders: list[GetLimitOrderOpen]
-
-# classes used on GET "Limit Order History" endpoint
-class GetLimitOrderHistoryTrade(BaseModel):
-    order_key: str = Field(alias = "orderKey")
-    keeper: str
-    input_token: str = Field(alias = "inputMint")
-    input_amount: float = Field(alias = "inputAmount")
-    input_amount_raw: int = Field(alias = "rawInputAmount")
-    output_token: str = Field(alias = "outputMint")
-    output_amount: float = Field(alias = "outputAmount")
-    output_amount_raw: int = Field(alias = "rawOutputAmount")
-    fee_token: str = Field(alias = "feeMint")
-    fee_amount: float = Field(alias = "feeAmount")
-    fee_amount_raw: int = Field(alias = "rawFeeAmount")
-    transaction_id: str = Field(alias = "txId")
-    confirmed_at: datetime = Field(alias = "confirmedAt")
-    action: str
-
-    @field_validator("input_amount", "output_amount", "fee_amount")
-    def parse_amounts(cls, amount_raw: str) -> float:
-        return float(amount_raw)
-
-    @field_validator("input_amount_raw", "output_amount_raw", "fee_amount_raw")
-    def parse_amounts_raw(cls, amount_raw: str) -> int:
-        return int(amount_raw)
-
-    @field_validator("confirmed_at")
-    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
-        if isinstance(datetime_raw, str):
-            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
-        return datetime_raw
-
-class GetLimitOrderHistoryOrder(BaseModel):
-    user_public_key: str = Field(alias = "userPubkey")
-    order_key: str = Field(alias = "orderKey")
-    input_token: str = Field(alias = "inputMint")
-    input_amount: float = Field(alias = "makingAmount")
-    input_amount_raw: int = Field(alias = "rawMakingAmount")
-    input_remaining_token: float = Field(alias = "remainingMakingAmount")
-    input_remaining_token_raw: int = Field(alias = "rawRemainingMakingAmount")
-    output_token: str = Field(alias = "outputMint")
-    output_amount: float = Field(alias = "takingAmount")
-    output_amount_raw: int = Field(alias = "rawTakingAmount")
-    output_remaining_amount: float = Field(alias = "remainingTakingAmount")
-    output_remaining_amount_raw: int = Field(alias = "rawRemainingTakingAmount")
-    slippage_base_points: str = Field(alias = "slippageBps")
-    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
-    created_at: datetime = Field(alias = "createdAt")
-    updated_at: datetime = Field(alias = "updatedAt")
-    status: JupiterLimitOrderState
-    open_transaction_id: str = Field(alias = "openTx")
-    close_transaction_id: str | None = Field(default = None, alias = "closeTx")
-    program_version_id: str = Field(alias = "programVersion")
-    trades: list[GetLimitOrderHistoryTrade]
-
-    @field_validator("input_amount", "input_remaining_token", "output_amount", "output_remaining_amount")
-    def parse_amounts(cls, amount_raw: str) -> float:
-        return float(amount_raw)
-
-    @field_validator("input_amount_raw", "input_remaining_token_raw", "output_amount_raw", "output_remaining_amount_raw")
-    def parse_amounts_raw(cls, amount_raw: str) -> int:
-        return int(amount_raw)
-
-    @field_validator("created_at", "updated_at")
-    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
-        if isinstance(datetime_raw, str):
-            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
-        return datetime_raw
-
-    @field_validator("status")
-    @classmethod
-    def validator_status(cls, status_raw: str | JupiterLimitOrderState) -> JupiterLimitOrderState:
-        if isinstance(status_raw, str):
-            JupiterLimitOrderState.check(status_raw)
-            return JupiterLimitOrderState[status_raw]
-        return status_raw
-
-class GetLimitOrderHistoryResponse(BaseModel):
-    """
-        Model used to represent the **Limit Order History** endpoint from Jupiter API.
-    """
-    orders: list[GetLimitOrderHistoryOrder]
-    has_more_data: bool = Field(alias = "hasMoreData")
-    user_public_key: str = Field(alias = "user")
-    page: int
-    total_pages: int = Field(alias = "totalPages")
+# *************
+# * Ultra API *
+# *************
 
 # classes used on GET "Ultra - Order" endpoint
 class GetUltraOrderDynamicSlippageReport(BaseModel):
@@ -658,7 +453,6 @@ class GetUltraBalancesToken(BaseModel):
     is_frozen: bool = Field(alias = "isFrozen")
     """Flag indicating if the token is frozen."""
 
-
 class GetUltraBalancesResponse(BaseModel):
     """
         Model representing the response object from the 
@@ -670,3 +464,305 @@ class GetUltraBalancesResponse(BaseModel):
         Dictionary of token balances. The key is the token address.  
         Observe that for `SOL` balance the key is `SOL` and not the address.
     """
+
+# ***************
+# * Trigger API *
+# ***************
+
+# classes used on POST "Trigger - Create Order" endpoint
+class PostTriggerCreateOrderParams(BaseModel):
+    """
+        Model used to identify the amounts required by a POST **Limit Order Create** request.  
+        Observe that the amounts are in raw format (integer values without decimals).
+    """
+
+    input_amount: int = Field(serialization_alias = "makingAmount")
+    """Amount of input token to sell in the limit order."""
+
+    output_amount: int = Field(serialization_alias = "takingAmount")
+    """Amount of output token to buy in the limit order."""
+
+    expired_at_unix_time: int | None = Field(default = None, serialization_alias = "expiredAt")
+    """Expiring date for the Limit Order expressed in UNIX time"""
+
+    slippage_base_points: int | None = Field(default = None, serialization_alias = "slippageBps")
+    """
+        Amount of slippage the order can be executed with.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
+    fee_base_points: int | None = Field(default = None, serialization_alias = "feeBps")
+    """
+        Amount of fee that the `referral_public_key` collects.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
+    @field_serializer("input_amount", "output_amount", "fee_base_points", "expired_at_unix_time", "slippage_base_points", when_used = "unless-none")
+    @classmethod
+    def serialize_amounts(cls, amount_raw: int | None) -> str | None:
+        if amount_raw is not None:
+            return str(amount_raw)
+
+class PostTriggerCreateOrderBody(BaseModel):
+    """
+        Model refering to the input body of the POST 
+        "**Trigger - Create Order**" endpoint from Jupiter API.
+    """
+
+    maker_wallet_key: str = Field(serialization_alias = "maker")
+    """Wallet address of the user who wants to create an order."""
+
+    payer_wallet_key: str = Field(serialization_alias = "payer")
+    """Wallet address of who is paying to open an order (usually the `maker` wallet)."""
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """The address of the output token on the chain that will bought."""
+
+    params: PostTriggerCreateOrderParams
+    """The amounts of output-to-buy and input-to-sell tokens in the limit order."""
+
+    compute_unit_price: str = Field(default = "auto", serialization_alias = "computeUnitPrice")
+    """Used to determine a transaction's prioritization fee. Defaults to `auto`."""
+
+    referral_public_key: str | None = Field(default = None, serialization_alias = "feeAccount")
+    """A token account (via the Referral Program) that will receive the fees."""
+
+    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
+    """To automatically wrap/unwrap SOL in the transaction."""
+
+class PostTriggerCreateOrderResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Trigger - Create Order**" endpoint from Jupiter API.
+    """
+
+    request_id: str = Field(alias = "requestId")
+    """Unique ID required to make a request to `post_trigger_execute`"""
+
+    transaction_id: str = Field(alias = "transaction")
+    """Unsigned base-64 encoded transaction."""
+
+    order_public_key: str = Field(alias = "order")
+    """Base-58 account which is the Trigger Order account."""
+
+# classes used on POST "Trigger - Execute" endpoint
+class PostTriggerExecuteResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Trigger - Execute**" endpoint from Jupiter API.
+    """
+
+    status: JupiterSwapExecutionStatus
+    """Status of the order."""
+
+    code: int
+    """Code of the status."""
+
+    signature_transaction_id: str | None = Field(default = None, alias = "signature")
+    """Signature of the successful transaction."""
+
+    error: str | None = None
+    """Error message in case of failure."""
+
+# classes used on POST "Trigger - Cancel Order" endpoint
+class PostTriggerCancelOrderResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Trigger - Cancel Order**" endpoint from Jupiter API.
+    """
+
+    request_id: str = Field(alias = "requestId")
+    """Unique ID required to make a request to `post_trigger_execute`"""
+
+    transaction_id: str | list[str] = Field(validation_alias = AliasChoices("transaction", "transactions"))
+    """Unsigned base-64 encoded transaction."""
+
+    @model_serializer
+    def serialize_response(self) -> dict[str, str | list[str]]:
+        """Custom serializer to manage transaction response according to type."""
+
+        # set root
+        resonse_model: dict[str, str | list[str]] = {"requestId": self.request_id}
+
+        # set transaction id
+        if isinstance(self.transaction_id, str):
+            resonse_model["transaction"] = self.transaction_id
+        elif isinstance(self.transaction_id, list):
+            resonse_model["transactions"] = self.transaction_id
+
+        return resonse_model
+
+# classes used on GET "Trigger - Orders" endpoint
+class GetTriggerOrdersTrade(BaseModel):
+    """
+        Model refering to the schema of a trade in the GET 
+        "**Trigger - Orders**" endpoint from Jupiter
+    """
+
+    order_key: str = Field(alias = "orderKey")
+    """Unique identifier of the order associated with the trade."""
+
+    keeper: str
+    """Wallet address of the user who made the trade."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address."""
+
+    input_amount: float = Field(alias = "inputAmount")
+    """Amount of input token sent in the trade."""
+
+    input_amount_raw: int = Field(alias = "rawInputAmount")
+    """Amount of input token sent in raw format; i.e. integer value without decimals."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address."""
+
+    output_amount: float = Field(alias = "outputAmount")
+    """Amount of output token received in the trade."""
+
+    output_amount_raw: int = Field(alias = "rawOutputAmount")
+    """Amount of output token received in raw format; i.e. integer value without decimals."""
+
+    fee_token: str = Field(alias = "feeMint")
+    """Fee token address."""
+
+    fee_amount: float = Field(alias = "feeAmount")
+    """Amount of fee token paid in the trade."""
+
+    fee_amount_raw: int = Field(alias = "rawFeeAmount")
+    """Amount of fee token paid in raw format; i.e. integer value without decimals."""
+
+    transaction_id: str = Field(alias = "txId")
+    """Unique identifier of the transaction associated with the trade."""
+
+    confirmed_at: datetime = Field(alias = "confirmedAt")
+    """Date and time when the trade was confirmed."""
+
+    action: str
+    """Action made in the trade."""
+
+    @field_validator("input_amount", "output_amount", "fee_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "output_amount_raw", "fee_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
+
+    @field_validator("confirmed_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+class GetTriggerOrdersOrder(BaseModel):
+    """
+        Model refering to the schema of an order in the GET 
+        "**Trigger - Orders**" endpoint from Jupiter API.
+    """
+
+    user_public_key: str = Field(alias = "userPubkey")
+    """User wallet address."""
+
+    order_key: str = Field(alias = "orderKey")
+    """Unique identifier of the order."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address."""
+
+    input_amount: float = Field(alias = "makingAmount")
+    """Amount of input token to sell in the order."""
+
+    input_amount_raw: int = Field(alias = "rawMakingAmount")
+    """Amount of input token to sell in raw format; i.e. integer value without decimals."""
+
+    input_remaining_token: float = Field(alias = "remainingMakingAmount")
+    """Amount of input token remaining to sell in the order."""
+
+    input_remaining_token_raw: int = Field(alias = "rawRemainingMakingAmount")
+    """Amount of input token remaining to sell in raw format; i.e. integer value without decimals."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address."""
+
+    output_amount: float = Field(alias = "takingAmount")
+    """Amount of output token to buy in the order."""
+
+    output_amount_raw: int = Field(alias = "rawTakingAmount")
+    """Amount of output token to buy in raw format; i.e. integer value without decimals."""
+
+    output_remaining_amount: float = Field(alias = "remainingTakingAmount")
+    """Amount of output token remaining to buy in the order."""
+
+    output_remaining_amount_raw: int = Field(alias = "rawRemainingTakingAmount")
+    """Amount of output token remaining to buy in raw format; i.e. integer value without decimals."""
+
+    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
+    """Expiring date for the Limit Order expressed in UNIX time"""
+
+    created_at: datetime = Field(alias = "createdAt")
+    """Date and time when the order was created."""
+
+    updated_at: datetime = Field(alias = "updatedAt")
+    """Date and time when the order was last updated."""
+
+    status: JupiterOrderState
+    """Status of the order."""
+
+    open_transaction_id: str = Field(alias = "openTx")
+    """Transaction ID of the open order."""
+
+    close_transaction_id: str | None = Field(default = None, alias = "closeTx")
+    """Transaction ID of the close order."""
+
+    program_version_id: str = Field(alias = "programVersion")
+    """Program version public key used for the order."""
+
+    trades: list[GetTriggerOrdersTrade]
+    """List of trades made in the order."""
+
+    @field_validator("input_amount", "input_remaining_token", "output_amount", "output_remaining_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "input_remaining_token_raw", "output_amount_raw", "output_remaining_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
+
+    @field_validator("created_at", "updated_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
+
+    @field_validator("status")
+    @classmethod
+    def validator_status(cls, status_raw: str | JupiterOrderState) -> JupiterOrderState:
+        if isinstance(status_raw, str):
+            JupiterOrderState.check(status_raw)
+            return JupiterOrderState[status_raw]
+        return status_raw
+
+class GetTriggerOrdersResponse(BaseModel):
+    """
+        Model refering to the response schema of the GET 
+        "**Trigger - Orders**" endpoint from Jupiter API.
+    """
+
+    user_public_key: str = Field(alias = "user")
+    """User wallet address."""
+
+    order_status: JupiterOrderStatus = Field(alias = "orderStatus")
+    """Status of the order."""
+
+    orders: list[GetTriggerOrdersOrder]
+    """List of orders."""
+
+    page: int
+    """Current page."""
+
+    total_pages: int = Field(alias = "totalPages")
+    """Total number of pages."""

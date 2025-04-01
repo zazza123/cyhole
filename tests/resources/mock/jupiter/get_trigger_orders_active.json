@@ -1,0 +1,52 @@
+{
+    "user": "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+    "orderStatus": "active",
+    "orders": [
+        {
+            "userPubkey": "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+            "orderKey": "jaNSCyxgM4VjcAtuMRELjv8ZyKpFvUWzE8JxzJgKt7T",
+            "inputMint": "9So52ugZh2BLBT3f7p61947q91uQh2DyvbfyMDeRpump",
+            "makingAmount": 237957.544252,
+            "rawMakingAmount": 237957544252,
+            "remainingMakingAmount": 237957.544252,
+            "rawRemainingMakingAmount": 237957544252,
+            "outputMint": "So11111111111111111111111111111111111111112",
+            "takingAmount": 2.987137376,
+            "rawTakingAmount": 2987137376,
+            "remainingTakingAmount": 2.987137376,
+            "rawRemainingTakingAmount": 2987137376,
+            "expiredAt": null,
+            "createdAt": "2025-03-27T16:06:28Z",
+            "updatedAt": "2025-03-27T16:06:28Z",
+            "status": "Open",
+            "openTx": "4W1Q8spuHZGmA55tHYysynbmb1oWx4ZsYs2LgCshhRLnm6gEnKwYb7Rwt2fnrq4x7rrgTXkgFWs5HTjGyGnvk5Gc",
+            "closeTx": "",
+            "programVersion": "j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X",
+            "trades": []
+        },
+        {
+            "userPubkey": "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
+            "orderKey": "2CkkFjEvDiJg723B8EGfb1w1GD6JESrCCKPqW9rsYDQQ",
+            "inputMint": "9So52ugZh2BLBT3f7p61947q91uQh2DyvbfyMDeRpump",
+            "makingAmount": 45623.507695,
+            "rawMakingAmount": 45623507695,
+            "remainingMakingAmount": 45623.507695,
+            "rawRemainingMakingAmount": 45623507695,
+            "outputMint": "So11111111111111111111111111111111111111112",
+            "takingAmount": 3.049074309,
+            "rawTakingAmount": 3049074309,
+            "remainingTakingAmount": 3.049074309,
+            "rawRemainingTakingAmount": 3049074309,
+            "expiredAt": null,
+            "createdAt": "2025-02-27T07:50:35Z",
+            "updatedAt": "2025-02-27T07:50:35Z",
+            "status": "Open",
+            "openTx": "5bfp6YnB2R3qpfC6hPJSu9AQ1vBos1N9BvSVeeeVm7Fzr2ZSzQ9vfVf9wKYZpmQhCpNgCehWwe3esiFZ2y81Ws88",
+            "closeTx": "",
+            "programVersion": "j1o2qRpjcyUwEvwtcfhEQefh773ZgjxcVRry7LDqg5X",
+            "trades": []
+        }
+    ],
+    "page": 1,
+    "totalPages": 1
+}

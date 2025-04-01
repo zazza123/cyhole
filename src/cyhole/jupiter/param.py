@@ -94,16 +94,25 @@ class JupiterSwapDex(CyholeParam):
     VIRTUALS = "Virtuals"
     ZERO_FI = "ZeroFi"
 
-class JupiterLimitOrderState(CyholeParam):
+class JupiterOrderStatus(CyholeParam):
     """
-        Enum class to get the supported Jupiter's limit order states.
+        Enum class to get the supported Jupiter's order statuses.
+    """
+    ACTIVE = "active"
+    """The order is active."""
+    HISTORY = "history"
+    """The order is in history."""
+
+class JupiterOrderState(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's order states.
     """
     OPEN = "Open"
-    """The limit order is still open."""
+    """The order is still open."""
     COMPLETED = "Completed"
-    """The limit order is completed."""
+    """The order is completed."""
     CANCELLED = "Cancelled"
-    """The limit order was cancelled."""
+    """The order was cancelled."""
 
 class JupiterTokenTagType(CyholeParam):
     """
