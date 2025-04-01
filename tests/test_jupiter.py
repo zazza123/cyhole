@@ -1480,3 +1480,75 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetTriggerOrdersResponse)
+
+    def test_post_trigger_cancel_order_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Trigger - Cancel Order" for synchronous logic.
+
+            Mock Response File: post_trigger_cancel_order.json
+        """
+        user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF"
+        order_key = ""
+
+        # load mock response
+        mock_file_name = "post_trigger_cancel_order"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCancelOrderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+        else:
+            # find open orders
+            open_orders = self.jupiter.client.get_trigger_orders(
+                user_public_key = user_public_key,
+                status = JupiterOrderStatus.ACTIVE,
+                output_token = WSOL.address
+            )
+            order = open_orders.orders[0]
+
+            # set inputs
+            order_key = order.order_key
+
+        # execute request
+        response = self.jupiter.client.post_trigger_cancel_order(user_public_key, order_key)
+
+        # actual test
+        assert isinstance(response, PostTriggerCancelOrderResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_trigger_cancel_order_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Trigger - Cancel Order" for asynchronous logic.
+
+            Mock Response File: post_trigger_cancel_order.json
+        """
+        user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF"
+        order_key = ""
+
+        async with self.jupiter.async_client as client:
+            # load mock response
+            mock_file_name = "post_trigger_cancel_order"
+            if config.mock_response or config.jupiter.mock_response:
+                mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCancelOrderResponse)
+                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            else:
+                # find open orders
+                open_orders = await client.get_trigger_orders(
+                    user_public_key = user_public_key,
+                    status = JupiterOrderStatus.ACTIVE,
+                    output_token = WSOL.address
+                )
+                order = open_orders.orders[0]
+
+                # set inputs
+                order_key = order.order_key
+
+            # execute request
+            response = await client.post_trigger_cancel_order(user_public_key, order_key)
+
+        # actual test
+        assert isinstance(response, PostTriggerCancelOrderResponse)
