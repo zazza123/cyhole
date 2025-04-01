@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer
+from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
 
 from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterLimitOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus, JupiterOrderStatus
 
@@ -788,6 +788,21 @@ class PostTriggerCancelOrderResponse(BaseModel):
 
     transaction_id: str | list[str] = Field(validation_alias = AliasChoices("transaction", "transactions"))
     """Unsigned base-64 encoded transaction."""
+
+    @model_serializer
+    def serialize_response(self) -> dict[str, str | list[str]]:
+        """Custom serializer to manage transaction response according to type."""
+
+        # set root
+        resonse_model: dict[str, str | list[str]] = {"requestId": self.request_id}
+
+        # set transaction id
+        if isinstance(self.transaction_id, str):
+            resonse_model["transaction"] = self.transaction_id
+        elif isinstance(self.transaction_id, list):
+            resonse_model["transactions"] = self.transaction_id
+
+        return resonse_model
 
 # classes used on GET "Trigger - Orders" endpoint
 class GetTriggerOrdersTrade(BaseModel):
