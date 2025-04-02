@@ -26,7 +26,10 @@ from ..jupiter.schema import (
     PostTriggerCreateOrderResponse,
     PostTriggerExecuteResponse,
     PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse
+    GetTriggerOrdersResponse,
+    # Recurring API
+    PostRecurringCreateOrderBody,
+    PostRecurringCreateOrderResponse
 )
 from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
 
@@ -164,6 +167,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_trigger_orders(True, user_public_key, status, include_failed, input_token, output_token, page)
 
+    def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Create Order](https://dev.jup.ag/docs/api/recurring-api/create-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_create_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_create_order].
+        """
+        return self._interaction._post_recurring_create_order(True, body)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -294,3 +304,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
         """
         return await self._interaction._get_trigger_orders(False, user_public_key, status, include_failed, input_token, output_token, page)
+
+    async def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Create Order](https://dev.jup.ag/docs/api/recurring-api/create-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_create_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_create_order].
+        """
+        return await self._interaction._post_recurring_create_order(False, body)

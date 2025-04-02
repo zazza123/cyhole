@@ -766,3 +766,108 @@ class GetTriggerOrdersResponse(BaseModel):
 
     total_pages: int = Field(alias = "totalPages")
     """Total number of pages."""
+
+# *****************
+# * Recurring API *
+# *****************
+
+class PostRecurringTransactionResponse(BaseModel):
+    """
+        This model is used to identify the general response 
+        provided by all the enpoints of the Recurring API that 
+        give an unsigned transaction that should be then sent 
+        to the `post_trigger_execute` endpoint.
+    """
+
+    request_id: str = Field(alias = "requestId")
+    """Unique ID required to make a request to `post_trigger_execute`"""
+
+    transaction_id: str = Field(alias = "transaction")
+    """Unsigned base-64 encoded transaction."""
+
+# class used on POST "Recurring - Create Order" endpoint
+class PostRecurringCreateOrderTime(BaseModel):
+    """
+        Model used to identify the parameters required by a POST 
+        **Recurring - Create Order** request using **time** mode.
+    """
+
+    deposit_amount_raw: int = Field(serialization_alias = "inAmount")
+    """Raw amount of input token to deposit now (before decimals)."""
+
+    order_count: int = Field(serialization_alias = "numberOfOrders")
+    """Number of orders to create."""
+
+    interval_unix_time: int = Field(serialization_alias = "interval")
+    """Time between each order in UNIX seconds."""
+
+    min_price_raw: int | None = Field(default = None, serialization_alias = "minPrice")
+    """Minimum price of the token for the order to be executed in raw format (before decimals)."""
+
+    max_price_raw: int | None = Field(default = None, serialization_alias = "maxPrice")
+    """Maximum price of the token for the order to be executed in raw format (before decimals)."""
+
+    start_at_unix_time: int | None = Field(default = None, serialization_alias = "startAt")
+    """
+        Time when the first cycle will start in UNIX seconds.  
+        If not provided, the first cycle will start immediately.
+    """
+
+class PostRecurringCreateOrderTimeParams(BaseModel):
+    """**Recurring - Create Order** time mode."""
+
+    time: PostRecurringCreateOrderTime
+    """Time order parameters."""
+
+class PostRecurringCreateOrderPrice(BaseModel):
+    """
+        Model used to identify the parameters required by a POST 
+        **Recurring - Create Order** request using **price** mode.
+    """
+
+    deposit_amount_raw: int = Field(serialization_alias = "depositAmount")
+    """Raw amount of input token to deposit now (before decimals)."""
+
+    increment_usdc_value_raw: int = Field(serialization_alias = "incrementUsdcValue")
+    """Raw amount of `USDC` to increment per cycle (before decimals)."""
+
+    interval_unix_time: int = Field(serialization_alias = "interval")
+    """Time between each cycle in UNIX seconds."""
+
+    start_at_unix_time: int | None = Field(default = None, serialization_alias = "startAt")
+    """
+        Time when the first cycle will start in UNIX seconds.  
+        If not provided, the first cycle will start immediately.
+    """
+
+class PostRecurringCreateOrderPriceParams(BaseModel):
+    """**Recurring - Create Order** price mode."""
+
+    price: PostRecurringCreateOrderPrice
+    """Price order parameters."""
+
+
+class PostRecurringCreateOrderBody(BaseModel):
+    """
+        Model refering to the input body of the POST 
+        "**Recurring - Create Order**" endpoint from Jupiter API.
+    """
+
+    user_public_key: str = Field(serialization_alias = "user")
+    """User wallet address."""
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """The address of the output token on the chain that will be bought."""
+
+    params: PostRecurringCreateOrderTimeParams | PostRecurringCreateOrderPriceParams
+    """The parameters of the order. It can be either a time or price parameter."""
+
+class PostRecurringCreateOrderResponse(PostRecurringTransactionResponse):
+    """
+        Model refering to the response schema of the POST 
+        "**Recurring - Create Order**" endpoint from Jupiter API.
+    """
+    pass

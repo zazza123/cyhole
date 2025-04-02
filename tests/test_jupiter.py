@@ -22,6 +22,10 @@ from cyhole.jupiter.schema import (
     PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse,
     PostTriggerCancelOrderResponse,
     GetTriggerOrdersResponse,
+    PostRecurringCreateOrderBody,
+    PostRecurringCreateOrderTime, PostRecurringCreateOrderTimeParams,
+    PostRecurringCreateOrderPrice, PostRecurringCreateOrderPriceParams,
+    PostRecurringCreateOrderResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterOrderStatus
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
@@ -1273,3 +1277,143 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostTriggerCancelOrderResponse)
+
+    def test_post_recurring_create_order_time_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Recurring - Create Order" time-based for synchronous logic.
+
+            Mock Response File: post_recurring_create_order_time.json
+        """
+
+        # load mock response
+        mock_file_name = "post_recurring_create_order_time"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringCreateOrderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostRecurringCreateOrderBody(
+            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            input_token = USDC.address,
+            output_token = JUP.address,
+            params = PostRecurringCreateOrderTimeParams(
+                time = PostRecurringCreateOrderTime(
+                    deposit_amount_raw = USDC.from_decimals(110),
+                    order_count = 10,
+                    interval_unix_time = 60*60
+                )
+            )
+        )
+        response = self.jupiter.client.post_recurring_create_order(body)
+
+        # actual test
+        assert isinstance(response, PostRecurringCreateOrderResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_recurring_create_order_time_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Recurring - Create Order" time-based for asynchronous logic.
+
+            Mock Response File: post_recurring_create_order_time.json
+        """
+
+        # load mock response
+        mock_file_name = "post_recurring_create_order_time"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringCreateOrderResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            body = PostRecurringCreateOrderBody(
+                user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+                input_token = USDC.address,
+                output_token = JUP.address,
+                params = PostRecurringCreateOrderTimeParams(
+                    time = PostRecurringCreateOrderTime(
+                        deposit_amount_raw = USDC.from_decimals(110),
+                        order_count = 10,
+                        interval_unix_time = 60*60
+                    )
+                )
+            )
+            response = await client.post_recurring_create_order(body)
+
+        # actual test
+        assert isinstance(response, PostRecurringCreateOrderResponse)
+
+    def test_post_recurring_create_order_price_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Recurring - Create Order" price-based for synchronous logic.
+
+            Mock Response File: post_recurring_create_order_price.json
+        """
+
+        # load mock response
+        mock_file_name = "post_recurring_create_order_price"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringCreateOrderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostRecurringCreateOrderBody(
+            user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            input_token = USDC.address,
+            output_token = JUP.address,
+            params = PostRecurringCreateOrderPriceParams(
+                price = PostRecurringCreateOrderPrice(
+                    deposit_amount_raw = USDC.from_decimals(110),
+                    increment_usdc_value_raw = USDC.from_decimals(10),
+                    interval_unix_time = 60*60
+                )
+            )
+        )
+        response = self.jupiter.client.post_recurring_create_order(body)
+
+        # actual test
+        assert isinstance(response, PostRecurringCreateOrderResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_recurring_create_order_price_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Recurring - Create Order" price-based for asynchronous logic.
+
+            Mock Response File: post_recurring_create_order_price.json
+        """
+
+        # load mock response
+        mock_file_name = "post_recurring_create_order_price"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringCreateOrderResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            body = PostRecurringCreateOrderBody(
+                user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+                input_token = USDC.address,
+                output_token = JUP.address,
+                params = PostRecurringCreateOrderPriceParams(
+                    price = PostRecurringCreateOrderPrice(
+                        deposit_amount_raw = USDC.from_decimals(110),
+                        increment_usdc_value_raw = USDC.from_decimals(10),
+                        interval_unix_time = 60*60
+                    )
+                )
+            )
+            response = await client.post_recurring_create_order(body)
+
+        # actual test
+        assert isinstance(response, PostRecurringCreateOrderResponse)

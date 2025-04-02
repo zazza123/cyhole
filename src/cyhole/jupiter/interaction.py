@@ -29,7 +29,10 @@ from ..jupiter.schema import (
     PostTriggerCreateOrderResponse,
     PostTriggerExecuteResponse,
     PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse
+    GetTriggerOrdersResponse,
+    # Recurring API
+    PostRecurringCreateOrderBody,
+    PostRecurringCreateOrderResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -81,9 +84,9 @@ class Jupiter(Interaction):
         self.url_api_price = "https://api.jup.ag/price/v2"
         self.url_api_swap  = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
-        self.url_api_limit = "https://api.jup.ag/limit/v2/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
         self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
+        self.url_api_recurring = "https://api.jup.ag/recurring/v1/"
         return
 
     @overload
@@ -782,6 +785,70 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return GetTriggerOrdersResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_recurring_create_order(self, sync: Literal[True], body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse: ...
+
+    @overload
+    def _post_recurring_create_order(self, sync: Literal[False], body: PostRecurringCreateOrderBody) -> Coroutine[None, None, PostRecurringCreateOrderResponse]: ...
+
+    def _post_recurring_create_order(self, sync: bool, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse | Coroutine[None, None, PostRecurringCreateOrderResponse]:
+        """
+            This function refers to the POST **[Recurring - Create Order](https://dev.jup.ag/docs/api/recurring-api/create-order)** API endpoint, 
+            and it is used to receive an unsigned transaction to perform the creation of an order via Jupiter API.
+
+            The creation order could be of two kinds:
+                - *time-based*: these orders are designed to create a set of recurring orders starting 
+                    from a initial amount. This amount is divided equally in the number of orders to create,
+                    and each order is created with a time interval between them. The time interval is
+                    specified at the creation of the order.
+                - *price-based*: these orders are designed to create a set of recurring orders starting 
+                    from a initial input token amount. This amount is then used to place orders (over a decided 
+                    time interval) act to increase the portafolio value by a fixed `USD` amount every time. 
+                    For example, if we put an initial 1 `SOL` amount and we want to buy `BONK` over time for 
+                    50 `USD` every 1 hour, then the order will proceed to place an order to buy every 1 hour
+                    for 50 `USD` of `BONK` using the current price of `SOL` to `BONK`. 
+                    **Important**: price-based orders are opened indefinitely until the user closes them.
+
+            Parameters:
+                body: the body to sent to Jupiter API that describe the order.
+                    More details in the object definition.
+
+            Returns:
+                **Unsigned** transaction created by Jupiter API.
+        """
+
+        # set params
+        url = self.url_api_recurring + "createOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostRecurringCreateOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostRecurringCreateOrderResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:
