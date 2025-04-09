@@ -32,7 +32,8 @@ from ..jupiter.schema import (
     GetTriggerOrdersResponse,
     # Recurring API
     PostRecurringCreateOrderBody,
-    PostRecurringCreateOrderResponse
+    PostRecurringCreateOrderResponse,
+    GetRecurringOrdersResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -40,7 +41,7 @@ from ..jupiter.exception import (
     JupiterComputeAmountThresholdError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType
 
 class Jupiter(Interaction):
     """
@@ -849,6 +850,77 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostRecurringCreateOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_recurring_orders(
+        self,
+        sync: Literal[True],
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> GetRecurringOrdersResponse: ...
+
+    @overload
+    def _get_recurring_orders(
+        self,
+        sync: Literal[False],
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> Coroutine[None, None, GetRecurringOrdersResponse]: ...
+
+    def _get_recurring_orders(
+        self,
+        sync: bool,
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> GetRecurringOrdersResponse | Coroutine[None, None, GetRecurringOrdersResponse]:
+        """
+            This function refers to the GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint,
+            and it is used to retrieve the list of recurring orders associated to a wallet via Jupiter API.
+
+            Parameters:
+                user_public_key: Public Key of the Owner wallet.
+                status: status of the orders to retrieve.
+                recurring_type: type of the recurring order to retrieve.
+                include_failed: flag to include failed orders.
+                page: specify which 'page' of orders to return.
+
+            Returns:
+                List of orders associated to the input wallet.
+        """
+        # set params
+        url = self.url_api_recurring + "getRecurringOrders"
+        params = {
+            "user": user_public_key,
+            "orderStatus": status.value,
+            "recurringType": recurring_type.value,
+            "includeFailedTx": "true" if include_failed else "false",
+            "page": page
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            except HTTPError as e:
+                raise self._raise(e)
+            return GetRecurringOrdersResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return GetRecurringOrdersResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

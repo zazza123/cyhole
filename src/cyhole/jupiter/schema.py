@@ -774,7 +774,7 @@ class GetTriggerOrdersResponse(BaseModel):
 class PostRecurringTransactionResponse(BaseModel):
     """
         This model is used to identify the general response 
-        provided by all the enpoints of the Recurring API that 
+        provided by all the endpoints of the Recurring API that 
         give an unsigned transaction that should be then sent 
         to the `post_trigger_execute` endpoint.
     """
@@ -871,3 +871,178 @@ class PostRecurringCreateOrderResponse(PostRecurringTransactionResponse):
         "**Recurring - Create Order**" endpoint from Jupiter API.
     """
     pass
+
+# classes used on GET "Recurring - Orders" endpoint
+class GetRecurringOrdersTrade(GetTriggerOrdersTrade):
+    """
+        Model refering to the response schema of the GET 
+        "**Recurring - Orders**" endpoint from Jupiter API
+        identifing a trade.
+    """
+
+    product_meta: dict | None = Field(default = None, alias = "productMeta")
+    """Additional metadata of the trade."""
+
+class GetRecurringOrdersOrder(BaseModel):
+    """
+        Model refering to an order coming from the GET 
+        "**Recurring - Orders**" endpoint from Jupiter API.
+    """
+
+    order_key: str = Field(alias = "orderKey")
+    """Unique identifier of the order."""
+
+    updated_at: datetime = Field(alias = "updatedAt")
+    """Date and time when the order was last updated."""
+
+    open_transaction_id: str = Field(alias = "openTx")
+    """Transaction ID used to open the order."""
+
+    close_transaction_id: str | None = Field(default = None, alias = "closeTx")
+    """Transaction ID of the close order."""
+
+    created_at: datetime = Field(alias = "createdAt")
+    """Date and time when the order was created."""
+
+    input_token: str = Field(alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    input_amount_deposited: float = Field(alias = "inDeposited")
+    """Input token amount deposited in the order."""
+
+    input_amount_deposited_raw: int = Field(alias = "rawInDeposited")
+    """Raw input token amount deposited in the order (before decimals)."""
+
+    input_amount_used: float = Field(alias = "inUsed")
+    """Input token amount used in the order."""
+
+    input_amount_used_raw: int = Field(alias = "rawInUsed")
+    """Raw input token amount used in the order (before decimals)."""
+
+    input_amount_withdrawn: float = Field(alias = "inWithdrawn")
+    """Input token amount withdrawn in the order."""
+
+    input_amount_withdrawn_raw: int = Field(alias = "rawInWithdrawn")
+    """Raw input token amount withdrawn in the order (before decimals)."""
+
+    output_token: str = Field(alias = "outputMint")
+    """The address of the output token on the chain that will be bought."""
+
+    output_amount_received: float = Field(alias = "outReceived")
+    """Output token amount received in the order."""
+
+    output_amount_received_raw: int = Field(alias = "rawOutReceived")
+    """Raw output token amount received in the order (before decimals)."""
+
+    output_amount_withdrawn: float = Field(alias = "outWithdrawn")
+    """Output token amount withdrawn in the order."""
+
+    output_amount_withdrawn_raw: int = Field(alias = "rawOutWithdrawn")
+    """Raw output token amount withdrawn in the order (before decimals)."""
+
+    trades: list[GetRecurringOrdersTrade]
+    """List of trades made in the order."""
+
+    user_public_key: str = Field(alias = "userPubkey")
+    """User wallet address."""
+
+class GetRecurringOrdersPrice(GetRecurringOrdersOrder):
+    """
+        Model refering to the response schema of the GET 
+        "**Recurring - Orders**" endpoint when requesting 
+        price-based orders from Jupiter API.
+    """
+
+    start_at: datetime = Field(alias = "startAt")
+    """Time when the order started."""
+
+    status: JupiterOrderState
+    """Status of the order."""
+
+    order_interval_sec: int = Field(alias = "orderInterval")
+    """Interval in seconds between each order."""
+
+    closed_by: str | None = Field(default = None, alias = "closedBy")
+    """Account key of the user who closed the order."""
+
+    estimated_usdc_value_spent: float = Field(alias = "estimatedUsdcValueSpent")
+    """Estimated USDC value spent in the order."""
+
+    estimated_usdc_value_spent_raw: int = Field(alias = "rawEstimatedUsdcValueSpent")
+    """Raw estimated USDC value spent in the order (before decimals)."""
+
+    incremental_usd_value: float = Field(alias = "incrementalUsdValue")
+    """Incremental `USD` value of the order."""
+
+    incremental_usd_value_raw: int = Field(alias = "rawIncrementalUsdValue")
+    """Raw incremental `USD` value of the order (before decimals)."""
+
+    supposed_usd_value: float = Field(alias = "supposedUsdValue")
+    """Supposed `USD` value to use in the order."""
+
+    supposed_usd_value_raw: int = Field(alias = "rawSupposedUsdValue")
+    """Raw supposed `USD` value to use in the order (before decimals)."""
+
+    input_amount_left: float = Field(alias = "inLeft")
+    """Input token amount left to fulfill the orders."""
+
+    input_amount_left_raw: int = Field(alias = "rawInLeft")
+    """Raw input token amount left to fulfill the orders (before decimals)."""
+
+class GetRecurringOrdersTime(GetRecurringOrdersOrder):
+    """
+        Model refering to the response schema of the GET 
+        "**Recurring - Orders**" endpoint when requesting
+        time-based orders from Jupiter API.
+    """
+
+    cycle_frequency_sec: int = Field(alias = "cycleFrequency")
+    """Seconds count between each cycle."""
+
+    input_amount_per_cycle: float = Field(alias = "inAmountPerCycle")
+    """Input token amount required by the cycle."""
+
+    input_amount_per_cycle_raw: int = Field(alias = "rawInAmountPerCycle")
+    """Raw input token amount required by the cycle (before decimals)."""
+
+    min_output_price: float = Field(alias = "minOutAmount")
+    """Minimum price of the output token for the order to be executed."""
+
+    min_output_price_raw: int = Field(alias = "rawMinOutAmount")
+    """Raw minimum price of the output token for the order to be executed (before decimals)."""
+
+    max_output_price: float = Field(alias = "maxOutAmount")
+    """Maximum price of the output token for the order to be executed."""
+
+    max_output_price_raw: int = Field(alias = "rawMaxOutAmount")
+    """Raw maximum price of the output token for the order to be executed (before decimals)."""
+
+    user_closed_flag: bool = Field(alias = "userClosed")
+    """Flag indicating if the user closed the order."""
+
+class GetRecurringOrdersResponse(BaseModel):
+    """
+        Model refering to the response schema of the GET 
+        "**Recurring - Orders**" endpoint from Jupiter API.
+    """
+
+    user_public_key: str = Field(alias = "user")
+    """User wallet address."""
+
+    order_status: JupiterOrderStatus = Field(alias = "orderStatus")
+    """Status of the order."""
+
+    price: list[GetRecurringOrdersPrice] | None = None
+    """List of price-based orders. Variable filled only if the request is for price-based orders."""
+
+    time: list[GetRecurringOrdersTime] | None = None
+    """List of time-based orders. Variable filled only if the request is for time-based orders."""
+
+    all: list[GetRecurringOrdersPrice | GetRecurringOrdersTime] | None = None
+    """List of both time-based and price-based orders. Variable filled only if the request is for all types of orders."""
+
+    page: int
+    """Current page."""
+
+    total_pages: int = Field(alias = "totalPages")
+    """Total number of pages."""

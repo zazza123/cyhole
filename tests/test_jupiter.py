@@ -25,9 +25,10 @@ from cyhole.jupiter.schema import (
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderTime, PostRecurringCreateOrderTimeParams,
     PostRecurringCreateOrderPrice, PostRecurringCreateOrderPriceParams,
-    PostRecurringCreateOrderResponse
+    PostRecurringCreateOrderResponse,
+    GetRecurringOrdersResponse
 )
-from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterOrderStatus
+from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
 from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
 from cyhole.core.token.ethereum import WETH
@@ -1417,3 +1418,301 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostRecurringCreateOrderResponse)
+
+    def test_get_recurring_orders_active_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Recurring - Orders" active orders for synchronous logic.
+
+            Mock Response File:
+                - get_recurring_orders_active_price.json
+                - get_recurring_orders_active_time.json
+                - get_recurring_orders_active_all.json
+        """
+
+        # Active Price-based Orders
+        # load mock responses
+        """mock_file_name = "get_recurring_orders_active_price"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_recurring_orders(
+            user_public_key = "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+            status = JupiterOrderStatus.ACTIVE,
+            recurring_type = JupiterRecurringType.PRICE
+        )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.price
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.price = [response.price[0]]
+            self.mocker.store_mock_model(mock_file_name, response)"""
+
+        # Active Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_active_time"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_recurring_orders(
+            user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+            status = JupiterOrderStatus.ACTIVE,
+            recurring_type = JupiterRecurringType.TIME
+        )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.time
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.time = [response.time[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+        # All Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_active_all"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_recurring_orders(
+            user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+            status = JupiterOrderStatus.ACTIVE,
+            recurring_type = JupiterRecurringType.ALL
+        )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.all
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.all = [response.all[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_recurring_orders_active_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Recurring - Orders" active orders for asynchronous logic.
+
+            Mock Response File:
+                - get_recurring_orders_active_price.json
+                - get_recurring_orders_active_time.json
+                - get_recurring_orders_active_all.json
+        """
+
+        # Active Price-based Orders
+        # load mock responses
+        """mock_file_name = "get_recurring_orders_active_price"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_recurring_orders(
+                user_public_key = "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+                status = JupiterOrderStatus.ACTIVE,
+                recurring_type = JupiterRecurringType.PRICE
+            )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.price"""
+
+        # Active Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_active_time"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_recurring_orders(
+                user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+                status = JupiterOrderStatus.ACTIVE,
+                recurring_type = JupiterRecurringType.TIME
+            )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.time
+
+        # All Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_active_all"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_recurring_orders(
+                user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+                status = JupiterOrderStatus.ACTIVE,
+                recurring_type = JupiterRecurringType.ALL
+            )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.all
+
+    def test_get_recurring_history_active_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Recurring - Orders" history orders for synchronous logic.
+
+            Mock Response File:
+                - get_recurring_orders_history_price.json
+                - get_recurring_orders_history_time.json
+                - get_recurring_orders_history_all.json
+        """
+
+        # Active Price-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_history_price"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_recurring_orders(
+            user_public_key = "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+            status = JupiterOrderStatus.HISTORY,
+            recurring_type = JupiterRecurringType.PRICE
+        )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.price
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.price = [response.price[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+        # Active Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_history_time"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_recurring_orders(
+            user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+            status = JupiterOrderStatus.HISTORY,
+            recurring_type = JupiterRecurringType.TIME
+        )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.time
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.time = [response.time[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+        # All Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_history_all"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_recurring_orders(
+            user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+            status = JupiterOrderStatus.HISTORY,
+            recurring_type = JupiterRecurringType.ALL
+        )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.all
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.all = [response.all[0]]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_recurring_history_active_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Recurring - Orders" history orders for asynchronous logic.
+
+            Mock Response File:
+                - get_recurring_orders_history_price.json
+                - get_recurring_orders_history_time.json
+                - get_recurring_orders_history_all.json
+        """
+
+        # Active Price-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_history_price"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_recurring_orders(
+                user_public_key = "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+                status = JupiterOrderStatus.HISTORY,
+                recurring_type = JupiterRecurringType.PRICE
+            )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.price
+
+        # Active Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_history_time"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_recurring_orders(
+                user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+                status = JupiterOrderStatus.HISTORY,
+                recurring_type = JupiterRecurringType.TIME
+            )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.time
+
+        # All Time-based Orders
+        # load mock responses
+        mock_file_name = "get_recurring_orders_history_all"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetRecurringOrdersResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_recurring_orders(
+                user_public_key = "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+                status = JupiterOrderStatus.HISTORY,
+                recurring_type = JupiterRecurringType.ALL
+            )
+
+        # actual test
+        assert isinstance(response, GetRecurringOrdersResponse)
+        assert response.all

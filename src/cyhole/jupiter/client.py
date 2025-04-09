@@ -29,9 +29,10 @@ from ..jupiter.schema import (
     GetTriggerOrdersResponse,
     # Recurring API
     PostRecurringCreateOrderBody,
-    PostRecurringCreateOrderResponse
+    PostRecurringCreateOrderResponse,
+    GetRecurringOrdersResponse
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -174,6 +175,20 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_recurring_create_order(True, body)
 
+    def get_recurring_orders(
+        self,
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> GetRecurringOrdersResponse:
+        """
+            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
+        """
+        return self._interaction._get_recurring_orders(True, user_public_key, status, recurring_type, include_failed, page)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -311,3 +326,17 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_recurring_create_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_create_order].
         """
         return await self._interaction._post_recurring_create_order(False, body)
+
+    async def get_recurring_orders(
+        self,
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> GetRecurringOrdersResponse:
+        """
+            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
+        """
+        return await self._interaction._get_recurring_orders(False, user_public_key, status, recurring_type, include_failed, page)

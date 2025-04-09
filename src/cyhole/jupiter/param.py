@@ -113,6 +113,8 @@ class JupiterOrderState(CyholeParam):
     """The order is completed."""
     CANCELLED = "Cancelled"
     """The order was cancelled."""
+    CLOSE = "Close"
+    """The order was closed."""
 
 class JupiterTokenTagType(CyholeParam):
     """
@@ -132,3 +134,16 @@ class JupiterTokenTagType(CyholeParam):
         via [catdetlist.jup.ag](https://catdetlist.jup.ag/) and the previous 
         standard of Jupiter Strict.
     """
+
+class JupiterRecurringType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's 
+        recurring order types, that can be used in 
+        "**Recurring - Orders**" endpoint.
+    """
+    ALL = "all"
+    """All recurring orders."""
+    PRICE = "price"
+    """Recurring price-based orders."""
+    TIME = "time"
+    """Recurring time-based orders."""

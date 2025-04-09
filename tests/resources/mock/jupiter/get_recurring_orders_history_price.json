@@ -1,0 +1,264 @@
+{
+    "user": "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+    "orderStatus": "history",
+    "price": [
+        {
+            "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+            "updatedAt": "2025-04-08T00:42:55Z",
+            "openTx": "2u9DojSqiCErPYnfhGDL1EJhJ5iQg8rLxb2Pce17xK9aFvDQY27S9TB4AXH8ggD6YnsQas1BztWxEHNDBXYbwmwj",
+            "closeTx": "4kHbGSa6J2eqQbmhna84sSAANx2Ujp9owPDMJGmGFdaWJU38scFEsNZBwsCrRCeNAHdzbmCy5bo9pHkRhgBmcmWD",
+            "createdAt": "2025-03-11T08:13:50Z",
+            "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "inDeposited": 110.0,
+            "rawInDeposited": 110000000,
+            "inUsed": 108.947274,
+            "rawInUsed": 108947274,
+            "inWithdrawn": 1.052726,
+            "rawInWithdrawn": 1052726,
+            "outputMint": "So11111111111111111111111111111111111111112",
+            "outReceived": 0.853967234,
+            "rawOutReceived": 853967234,
+            "outWithdrawn": 0.853967234,
+            "rawOutWithdrawn": 853967234,
+            "trades": [
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVFzwFiiKHK6rFHKj7fpBGWsGE7SpjUkfWqXRD8ip35",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 13.444135,
+                    "rawInputAmount": 13444135,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.104334769,
+                    "rawOutputAmount": 104334769,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000104439,
+                    "rawFeeAmount": 104439,
+                    "txId": "4S4ruD3TS3zBJmKd4X7Z2qb9pPCZiPEME5mijboEJN1B6cUdr6wQ5DWBYaaWzJp3NEziRLReveo1QDpdsQTgYTAG",
+                    "confirmedAt": "2025-03-21T09:21:49Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "110008020",
+                        "value": "13444189"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVhhq5CHJcKo9PaTSdmWEPTzNUt69xuZzcpMuCeja68",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 4.769578,
+                    "rawInputAmount": 4769578,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.035705997,
+                    "rawOutputAmount": 35705997,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000035741,
+                    "rawFeeAmount": 35741,
+                    "txId": "2dm4qxDjCZfBRxzW8KvoRFmCYkWTvsYX27ZuQQGm5Jr8eTR8y9amwuDXBh7j7HGocyihUdDxzJUxTz9K1hz96gtT",
+                    "confirmedAt": "2025-03-20T08:14:22Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "99997920",
+                        "value": "4769654"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVySYuJBFwQzURiGd7m6FEKDWsq4g7ooWUqhL8BsVTD",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 9.361594,
+                    "rawInputAmount": 9361594,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.074162674,
+                    "rawOutputAmount": 74162674,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000074236,
+                    "rawFeeAmount": 74236,
+                    "txId": "wMJvJXRk4UGaPS45m6CtkJQpnrAPXPtUfzxr6RtEPodzvyQzGh9BgZTKk5wYc9fpj3E7hRW8s2r73Ngrku2UAjv",
+                    "confirmedAt": "2025-03-19T08:14:27Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "89995254",
+                        "value": "9361837"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVFzwFiiKHK6rFHKj7fpBGWsGE7SpjUkfWqXRD8ip35",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 12.115261,
+                    "rawInputAmount": 12115261,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.09679752,
+                    "rawOutputAmount": 96797520,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000096894,
+                    "rawFeeAmount": 96894,
+                    "txId": "NBAc1yEuyJ67XJ7QvM9JMDpd1CUUb4b6jVGCND8FKePpjozZ5YhvtUkCYNvSw7o4TJC12bTEz6AkAVmnSRfBuqh",
+                    "confirmedAt": "2025-03-18T08:14:04Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "79998959",
+                        "value": "12115322"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVySYuJBFwQzURiGd7m6FEKDWsq4g7ooWUqhL8BsVTD",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 12.423489,
+                    "rawInputAmount": 12423489,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.096292749,
+                    "rawOutputAmount": 96292749,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000096389,
+                    "rawFeeAmount": 96389,
+                    "txId": "uDqQyRgVdHWQmkGmzKXgfcHEtpSEieoU6fmAVsgAJH4yLv7yRvuiFm4c2vYfm7J74fwXW63RsT9yL1qDyF5CthL",
+                    "confirmedAt": "2025-03-17T08:14:33Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "70000636",
+                        "value": "12423899"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVFzwFiiKHK6rFHKj7fpBGWsGE7SpjUkfWqXRD8ip35",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 9.441976,
+                    "rawInputAmount": 9441976,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.07024595,
+                    "rawOutputAmount": 70245950,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000070316,
+                    "rawFeeAmount": 70316,
+                    "txId": "JCP2GVN9MRxwJLCsTso3QMh2HtVRfxyuxZVEbPitb97NF2WnLrMJaqk4EuEMToTEn4QwVpvzZrqUxNNCpzNESKu",
+                    "confirmedAt": "2025-03-16T08:14:26Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "60001716",
+                        "value": "9442391"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVhhq5CHJcKo9PaTSdmWEPTzNUt69xuZzcpMuCeja68",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 7.541145,
+                    "rawInputAmount": 7541145,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.056725711,
+                    "rawOutputAmount": 56725711,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000056782,
+                    "rawFeeAmount": 56782,
+                    "txId": "5k6GkXESkF6jpjBMPpKPPfJ5pf9mMK2ea6NjpttnYHRNo9QFTGq4Nn6PG54qeMFPHsU1mwu5M7MeGCF464cuSC1m",
+                    "confirmedAt": "2025-03-15T08:14:27Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "49999640",
+                        "value": "7541454"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVhhq5CHJcKo9PaTSdmWEPTzNUt69xuZzcpMuCeja68",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 9.998867,
+                    "rawInputAmount": 9998867,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.079859542,
+                    "rawOutputAmount": 79859542,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000079939,
+                    "rawFeeAmount": 79939,
+                    "txId": "5HeFwQGjoHrrpGRY7HHR6ciYYjMSWhBp7NuNha1PmzYENTVPwddFT36qwbeyN6z2BRJJJ6GBnWEXSp2VBDRdRc5m",
+                    "confirmedAt": "2025-03-14T08:14:28Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "39999941",
+                        "value": "9999297"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVhhq5CHJcKo9PaTSdmWEPTzNUt69xuZzcpMuCeja68",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 9.876122,
+                    "rawInputAmount": 9876122,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.078920955,
+                    "rawOutputAmount": 78920955,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000078999,
+                    "rawFeeAmount": 78999,
+                    "txId": "4Xtaj8tSfGijT9qbTXykBsXuT8cTQ9FwzNfkhbTFU6Xnw6dMEDm1DELmjmSn9vA39uKNsBgoqJNzTpH5j7BToWZb",
+                    "confirmedAt": "2025-03-13T08:14:31Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "30002676",
+                        "value": "9876438"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVFzwFiiKHK6rFHKj7fpBGWsGE7SpjUkfWqXRD8ip35",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 9.974107,
+                    "rawInputAmount": 9974107,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.080183711,
+                    "rawOutputAmount": 80183711,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000080263,
+                    "rawFeeAmount": 80263,
+                    "txId": "9HEQPrjsXgCE3wF7GDLkUnzrnCm66Zp2j9q2NcWsdrCK8afRAsRwtsgCxFC4zMTrRNFzp4D4q3tzHx2rJKLs3Hc",
+                    "confirmedAt": "2025-03-12T08:14:05Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "19991910",
+                        "value": "9974636"
+                    }
+                },
+                {
+                    "orderKey": "68gkrN6oDADz7MLxkM5w7quxhg17nqehXtp2daP61g2f",
+                    "keeper": "JVySYuJBFwQzURiGd7m6FEKDWsq4g7ooWUqhL8BsVTD",
+                    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                    "inputAmount": 10.001,
+                    "rawInputAmount": 10001000,
+                    "outputMint": "So11111111111111111111111111111111111111112",
+                    "outputAmount": 0.080737656,
+                    "rawOutputAmount": 80737656,
+                    "feeMint": "So11111111111111111111111111111111111111112",
+                    "feeAmount": 0.000080818,
+                    "rawFeeAmount": 80818,
+                    "txId": "CSE3hPaQDf9TrmRwoZ6qZ1zPiKvqciEKeWPvS1jjmKYvEuwFDz9DmLMY5VoRjyEW69sfnJ7g95ybusaaj3PK2sW",
+                    "confirmedAt": "2025-03-11T08:14:18Z",
+                    "action": "Fill",
+                    "productMeta": {
+                        "new_actual_usdc_value": "9987319",
+                        "value": "10000000"
+                    }
+                }
+            ],
+            "userPubkey": "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+            "startAt": "2025-03-11T08:13:50Z",
+            "status": "Close",
+            "orderInterval": 86400,
+            "closedBy": "5dMXLJ8GYQxcHe2fjpttVkEpRrxcajRXZqJHCiCbWS4H",
+            "estimatedUsdcValueSpent": 110.00802,
+            "rawEstimatedUsdcValueSpent": 110008020,
+            "incrementalUsdValue": 10.0,
+            "rawIncrementalUsdValue": 10000000,
+            "supposedUsdValue": 110.0,
+            "rawSupposedUsdValue": 110000000,
+            "inLeft": 0.0,
+            "rawInLeft": 0
+        }
+    ],
+    "time": null,
+    "all": null,
+    "page": 1,
+    "totalPages": 1
+}
