@@ -28,7 +28,8 @@ from cyhole.jupiter.schema import (
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
     PostRecurringWithdrawPriceResponse,
-    PostRecurringDepositPriceResponse
+    PostRecurringDepositPriceResponse,
+    PostRecurringCancelOrderResponse
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
@@ -1862,3 +1863,75 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostRecurringDepositPriceResponse)
+
+    def test_post_recurring_cancel_order_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Recurring - Cancel Order" for synchronous logic.
+
+            Mock Response File: post_recurring_cancel_order.json
+        """
+        user_public_key = "EKqKLCF9Sdn7UoCtcP6UmtjyXqVMacMLd5sCa1WgQ1MV"
+        order_key = ""
+
+        # load mock response
+        mock_file_name = "post_recurring_cancel_order"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringCancelOrderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+        else:
+            # find open orders
+            open_orders = self.jupiter.client.get_recurring_orders(
+                user_public_key = user_public_key,
+                status = JupiterOrderStatus.ACTIVE,
+                recurring_type = JupiterRecurringType.PRICE
+            )
+            order = open_orders.price[0] # type: ignore
+
+            # set inputs
+            order_key = order.order_key
+
+        # execute request
+        response = self.jupiter.client.post_recurring_cancel_order(order_key, user_public_key, JupiterRecurringType.PRICE)
+
+        # actual test
+        assert isinstance(response, PostRecurringCancelOrderResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_recurring_cancel_order_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            POST "Recurring - Cancel Order" for asynchronous logic.
+
+            Mock Response File: post_recurring_cancel_order.json
+        """
+        user_public_key = "EKqKLCF9Sdn7UoCtcP6UmtjyXqVMacMLd5sCa1WgQ1MV"
+        order_key = ""
+
+        async with self.jupiter.async_client as client:
+            # load mock response
+            mock_file_name = "post_recurring_cancel_order"
+            if config.mock_response or config.jupiter.mock_response:
+                mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringCancelOrderResponse)
+                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            else:
+                # find open orders
+                open_orders = await client.get_recurring_orders(
+                    user_public_key = user_public_key,
+                    status = JupiterOrderStatus.ACTIVE,
+                    recurring_type = JupiterRecurringType.PRICE
+                )
+                order = open_orders.price[0] # type: ignore
+
+                # set inputs
+                order_key = order.order_key
+
+            # execute request
+            response = await client.post_recurring_cancel_order(order_key, user_public_key, JupiterRecurringType.PRICE)
+
+        # actual test
+        assert isinstance(response, PostRecurringCancelOrderResponse)

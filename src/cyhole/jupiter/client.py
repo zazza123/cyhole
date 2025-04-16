@@ -32,7 +32,8 @@ from ..jupiter.schema import (
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
     PostRecurringWithdrawPriceResponse,
-    PostRecurringDepositPriceResponse
+    PostRecurringDepositPriceResponse,
+    PostRecurringCancelOrderResponse
 )
 from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 
@@ -205,6 +206,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_recurring_deposit_price(True, order_id, user_public_key, amount)
 
+    def post_recurring_cancel_order(self, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Cancel Order](https://dev.jup.ag/docs/api/recurring-api/cancel-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_cancel_order].
+        """
+        return self._interaction._post_recurring_cancel_order(True, order_id, user_public_key, recurring_type)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -370,3 +378,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
         """
         return await self._interaction._post_recurring_deposit_price(False, order_id, user_public_key, amount)
+
+    async def post_recurring_cancel_order(self, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Cancel Order](https://dev.jup.ag/docs/api/recurring-api/cancel-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_cancel_order].
+        """
+        return await self._interaction._post_recurring_cancel_order(False, order_id, user_public_key, recurring_type)

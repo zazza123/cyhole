@@ -35,7 +35,8 @@ from ..jupiter.schema import (
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
     PostRecurringWithdrawPriceResponse,
-    PostRecurringDepositPriceResponse
+    PostRecurringDepositPriceResponse,
+    PostRecurringCancelOrderResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -1018,6 +1019,52 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostRecurringDepositPriceResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_recurring_cancel_order(self, sync: Literal[True], order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse: ...
+
+    @overload
+    def _post_recurring_cancel_order(self, sync: Literal[False], order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> Coroutine[None, None, PostRecurringCancelOrderResponse]: ...
+
+    def _post_recurring_cancel_order(self, sync: bool, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse | Coroutine[None, None, PostRecurringCancelOrderResponse]:
+        """
+            This function refers to the POST **[Recurring - Cancel Order](https://dev.jup.ag/docs/api/recurring-api/cancel-order)** API endpoint, 
+            and it is used to cancel an order placed using the Jupiter Recurring API.
+
+            Parameters:
+                order_id: ID of the recurring order.
+                user_public_key: Public Key of the Owner wallet.
+                recurring_type: type of the recurring order to retrieve.
+
+            Returns:
+                Cancel information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_recurring + "cancelOrder"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "order": order_id,
+            "user": user_public_key,
+            "recurringType": recurring_type.value
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostRecurringCancelOrderResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostRecurringCancelOrderResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

@@ -1062,3 +1062,11 @@ class PostRecurringDepositPriceResponse(PostRecurringTransactionResponse):
         "**Recurring - Deposit Price**" endpoint from Jupiter API.
     """
     pass
+
+# classes used on POST "Recurring - Cancel Order" endpoint
+class PostRecurringCancelOrderResponse(PostRecurringTransactionResponse):
+    """
+        Model refering to the response schema of the POST 
+        "**Recurring - Cancel Order**" endpoint from Jupiter API.
+    """
+    pass
