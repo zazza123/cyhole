@@ -33,7 +33,8 @@ from ..jupiter.schema import (
     # Recurring API
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
-    GetRecurringOrdersResponse
+    GetRecurringOrdersResponse,
+    PostRecurringWithdrawPriceResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -41,7 +42,7 @@ from ..jupiter.exception import (
     JupiterComputeAmountThresholdError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 
 class Jupiter(Interaction):
     """
@@ -921,6 +922,55 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return GetRecurringOrdersResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_recurring_withdraw_price(self, sync: Literal[True], order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse: ...
+
+    @overload
+    def _post_recurring_withdraw_price(self, sync: Literal[False], order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> Coroutine[None, None, PostRecurringWithdrawPriceResponse]: ...
+
+    def _post_recurring_withdraw_price(self, sync: bool, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse | Coroutine[None, None, PostRecurringWithdrawPriceResponse]:
+        """
+            This function refers to the POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint, 
+            and it is used to withdraw the price of a recurring order.
+
+            Parameters:
+                order_id: ID of the recurring order.
+                user_public_key: Public Key of the Owner wallet.
+                mode: mode of the withdrawal. 
+                    The available modes are available on [`JupiterWithdrawMode`][cyhole.jupiter.param.JupiterWithdrawMode].
+                amount: amount to withdraw. If not provided, then the entire amount will be withdrawn.
+
+            Returns:
+                Withdrawal information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_recurring + "priceWithdraw"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "order": order_id,
+            "user": user_public_key,
+            "inputOrOutput": mode.value,
+            "amount": amount
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostRecurringWithdrawPriceResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostRecurringWithdrawPriceResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:

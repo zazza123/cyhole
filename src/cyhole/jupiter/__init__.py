@@ -1,5 +1,9 @@
+from ..jupiter import param
+from ..jupiter import schema
 from ..jupiter.interaction import Jupiter
 
 __all__ = [
-    "Jupiter"
+    "Jupiter",
+    "param",
+    "schema",
 ]

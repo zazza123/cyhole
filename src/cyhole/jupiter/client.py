@@ -30,9 +30,10 @@ from ..jupiter.schema import (
     # Recurring API
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
-    GetRecurringOrdersResponse
+    GetRecurringOrdersResponse,
+    PostRecurringWithdrawPriceResponse
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -189,6 +190,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_recurring_orders(True, user_public_key, status, recurring_type, include_failed, page)
 
+    def post_recurring_withdraw_price(self, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
+        """
+        return self._interaction._post_recurring_withdraw_price(True, order_id, user_public_key, mode, amount)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -340,3 +348,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
         """
         return await self._interaction._get_recurring_orders(False, user_public_key, status, recurring_type, include_failed, page)
+
+    async def post_recurring_withdraw_price(self, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
+        """
+        return await self._interaction._post_recurring_withdraw_price(False, order_id, user_public_key, mode, amount)
