@@ -31,7 +31,8 @@ from ..jupiter.schema import (
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
-    PostRecurringWithdrawPriceResponse
+    PostRecurringWithdrawPriceResponse,
+    PostRecurringDepositPriceResponse
 )
 from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 
@@ -197,6 +198,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_recurring_withdraw_price(True, order_id, user_public_key, mode, amount)
 
+    def post_recurring_deposit_price(self, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
+        """
+        return self._interaction._post_recurring_deposit_price(True, order_id, user_public_key, amount)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -355,3 +363,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
         """
         return await self._interaction._post_recurring_withdraw_price(False, order_id, user_public_key, mode, amount)
+
+    async def post_recurring_deposit_price(self, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
+        """
+        return await self._interaction._post_recurring_deposit_price(False, order_id, user_public_key, amount)

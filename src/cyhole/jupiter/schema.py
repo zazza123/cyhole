@@ -1054,3 +1054,11 @@ class PostRecurringWithdrawPriceResponse(PostRecurringTransactionResponse):
         "**Recurring - Withdraw Price**" endpoint from Jupiter API.
     """
     pass
+
+# classes used on POST "Recurring - Deposit Price" endpoint
+class PostRecurringDepositPriceResponse(PostRecurringTransactionResponse):
+    """
+        Model refering to the response schema of the POST 
+        "**Recurring - Deposit Price**" endpoint from Jupiter API.
+    """
+    pass

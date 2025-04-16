@@ -34,7 +34,8 @@ from ..jupiter.schema import (
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
-    PostRecurringWithdrawPriceResponse
+    PostRecurringWithdrawPriceResponse,
+    PostRecurringDepositPriceResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -971,6 +972,52 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostRecurringWithdrawPriceResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_recurring_deposit_price(self, sync: Literal[True], order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse: ...
+
+    @overload
+    def _post_recurring_deposit_price(self, sync: Literal[False], order_id: str, user_public_key: str, amount: int) -> Coroutine[None, None, PostRecurringDepositPriceResponse]: ...
+
+    def _post_recurring_deposit_price(self, sync: bool, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse | Coroutine[None, None, PostRecurringDepositPriceResponse]:
+        """
+            This function refers to the POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint, 
+            and it is used to deposit an amount to a price-based recurring order.
+
+            Parameters:
+                order_id: ID of the recurring order.
+                user_public_key: Public Key of the Owner wallet.
+                amount: amount to deposit.
+
+            Returns:
+                Deposit information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_recurring + "priceDeposit"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "order": order_id,
+            "user": user_public_key,
+            "amount": amount
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostRecurringDepositPriceResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostRecurringDepositPriceResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:
