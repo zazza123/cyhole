@@ -444,8 +444,8 @@ class TestJupiter:
 
         # define input
         input = GetQuoteParams(
-            input_token = WSOL.address,
-            output_token = JUP.address,
+            input_token = JUP.address,
+            output_token = WSOL.address,
             amount = 1
         )
 
@@ -462,8 +462,8 @@ class TestJupiter:
 
         # define input
         input = GetQuoteParams(
-            input_token = WSOL.address,
-            output_token = JUP.address,
+            input_token = JUP.address,
+            output_token = WSOL.address,
             amount = 1
         )
 
