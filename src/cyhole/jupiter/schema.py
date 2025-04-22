@@ -1070,3 +1070,14 @@ class PostRecurringCancelOrderResponse(PostRecurringTransactionResponse):
         "**Recurring - Cancel Order**" endpoint from Jupiter API.
     """
     pass
+
+# classes used on POST "Recurring - Execute" endpoint
+class PostRecurringExecuteResponse(BaseModel):
+    """
+        Model refering to the response schema of the POST 
+        "**Recurring - Execute**" endpoint from Jupiter API.
+    """
+    signature_transaction_id: str | None = Field(default = None, alias = "signature")
+    status: JupiterSwapExecutionStatus
+    order_id: str | None = Field(default = None, alias = "order")
+    error: str | None = None

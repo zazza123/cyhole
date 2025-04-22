@@ -33,7 +33,8 @@ from ..jupiter.schema import (
     GetRecurringOrdersResponse,
     PostRecurringWithdrawPriceResponse,
     PostRecurringDepositPriceResponse,
-    PostRecurringCancelOrderResponse
+    PostRecurringCancelOrderResponse,
+    PostRecurringExecuteResponse
 )
 from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 
@@ -213,6 +214,13 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_recurring_cancel_order(True, order_id, user_public_key, recurring_type)
 
+    def post_recurring_execute(self, signed_transaction_id: str, request_id: str) -> PostRecurringExecuteResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Execute](https://dev.jup.ag/docs/api/recurring-api/execute)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_execute`][cyhole.jupiter.interaction.Jupiter._post_recurring_execute].
+        """
+        return self._interaction._post_recurring_execute(True, signed_transaction_id, request_id)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -385,3 +393,10 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_recurring_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_cancel_order].
         """
         return await self._interaction._post_recurring_cancel_order(False, order_id, user_public_key, recurring_type)
+
+    async def post_recurring_execute(self, signed_transaction_id: str, request_id: str) -> PostRecurringExecuteResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Execute](https://dev.jup.ag/docs/api/recurring-api/execute)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_execute`][cyhole.jupiter.interaction.Jupiter._post_recurring_execute].
+        """
+        return await self._interaction._post_recurring_execute(False, signed_transaction_id, request_id)

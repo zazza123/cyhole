@@ -36,7 +36,8 @@ from ..jupiter.schema import (
     GetRecurringOrdersResponse,
     PostRecurringWithdrawPriceResponse,
     PostRecurringDepositPriceResponse,
-    PostRecurringCancelOrderResponse
+    PostRecurringCancelOrderResponse,
+    PostRecurringExecuteResponse
 )
 from ..jupiter.exception import (
     JupiterException,
@@ -611,7 +612,7 @@ class Jupiter(Interaction):
     def _post_trigger_execute(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse | Coroutine[None, None, PostTriggerExecuteResponse]:
         """
             This function refers to the POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint, 
-            and it is used to execute an order created using the Jupiter Ultra API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
+            and it is used to execute an order created using the Jupiter API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
 
             First, it is required to create a order using the `post_trigger_create_order` endpoint. From the response, 
             is possible to get the Request ID (`PostTriggerCreateOrderResponse.request_id`) and the transaction ID (`PostTriggerCreateOrderResponse.transaction_id`).
@@ -629,7 +630,7 @@ class Jupiter(Interaction):
                 Order execution information provided by Jupiter API.
         """
         # set params
-        url = self.url_api_ultra + "execute"
+        url = self.url_api_trigger + "execute"
         headers = {
             "Content-Type": "application/json"
         }
@@ -663,7 +664,7 @@ class Jupiter(Interaction):
     def _post_trigger_cancel_order(self, sync: bool, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse | Coroutine[None, None, PostTriggerCancelOrderResponse]:
         """
             This function refers to the POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint, 
-            and it is used to cancel one or more orders created using the Jupiter Ultra API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
+            and it is used to cancel one or more orders created using the Jupiter API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
 
             This endpoint do not directly cancel the order, but it provides the transaction and request ID to it.
             Similarly to the `post_trigger_create_order` endpoint, the transaction ID **must** be signed by the payer walled to get the `signed_transaction_id`
@@ -1065,6 +1066,56 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return PostRecurringCancelOrderResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _post_recurring_execute(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostRecurringExecuteResponse: ...
+
+    @overload
+    def _post_recurring_execute(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostRecurringExecuteResponse]: ...
+
+    def _post_recurring_execute(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostRecurringExecuteResponse | Coroutine[None, None, PostRecurringExecuteResponse]:
+        """
+            This function refers to the POST **[Recurring - Execute](https://dev.jup.ag/docs/api/recurring-api/execute)** API endpoint, 
+            and it is used to execute an "action" order using the different endpoints of the Jupiter Recurring API. For example, 
+            creating a new recurring order (`post_recurring_create_order`) or canceling an existing one (`post_recurring_cancel_order`).
+
+            First, it is required to call the endpoint of the desired action (create, cancel, deposit, withdraw). From the response, 
+            is then possible to get the Request ID (`PostRecurring*Response.request_id`) and the transaction ID (`PostRecurring*Response.transaction_id`).
+            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be finally used
+            to execute the action.
+
+            Parameters:
+                signed_transaction_id: the transaction ID coming from the Recurring API responses **signed** by the payer wallet.
+                request_id: the same request ID coming from the responses.
+
+            Returns:
+                Order execution information provided by Jupiter API.
+        """
+        # set params
+        url = self.url_api_recurring + "execute"
+        headers = {
+            "Content-Type": "application/json"
+        }
+        body = {
+            "signedTransaction": signed_transaction_id,
+            "requestId": request_id
+        }
+
+        # execute request
+        if sync:
+            try:
+                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostRecurringExecuteResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostRecurringExecuteResponse(**content_raw.json())
             return async_request()
 
     def _raise(self, exception: HTTPError) -> JupiterException:
