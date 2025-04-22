@@ -1,0 +1,39 @@
+{
+    "user": "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+    "orderStatus": "active",
+    "price": null,
+    "time": null,
+    "all": [
+        {
+            "orderKey": "2Q5eAV3zYAALzGvPvbStY3mqC5i1Ay3EPcLESNmSfVxy",
+            "updatedAt": "2025-04-09T21:13:23Z",
+            "openTx": "5R1AUT9XLTZcUNTNpoNXigXvJ7KuNZQ17eropm3cCMYC5PBLnPpJExqs5oyxX3Z4QEdKZwuGpwerEND6wAB4MKjh",
+            "closeTx": "",
+            "createdAt": "2025-04-09T21:13:23Z",
+            "inputMint": "5LJMJyR8MtAkbtpf8kFUV7S9oFG3xaGDdcnFxYt9pump",
+            "inDeposited": 4699875.045432,
+            "rawInDeposited": 4699875045432,
+            "inUsed": 0.0,
+            "rawInUsed": 0,
+            "inWithdrawn": 0.0,
+            "rawInWithdrawn": 0,
+            "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "outReceived": 0.0,
+            "rawOutReceived": 0,
+            "outWithdrawn": 21882.042738,
+            "rawOutWithdrawn": 21882042738,
+            "trades": [],
+            "userPubkey": "3CEhwPQoxcjZ7Qtj5QQJRwjCpnoxTtJY1cy21MHmTMi2",
+            "cycleFrequency": 60,
+            "inAmountPerCycle": 187995.001817,
+            "rawInAmountPerCycle": 187995001817,
+            "minOutAmount": 2707.128026,
+            "rawMinOutAmount": 2707128026,
+            "maxOutAmount": 0.0,
+            "rawMaxOutAmount": 0,
+            "userClosed": false
+        }
+    ],
+    "page": 1,
+    "totalPages": 1
+}

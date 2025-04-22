@@ -26,9 +26,17 @@ from ..jupiter.schema import (
     PostTriggerCreateOrderResponse,
     PostTriggerExecuteResponse,
     PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse
+    GetTriggerOrdersResponse,
+    # Recurring API
+    PostRecurringCreateOrderBody,
+    PostRecurringCreateOrderResponse,
+    GetRecurringOrdersResponse,
+    PostRecurringWithdrawPriceResponse,
+    PostRecurringDepositPriceResponse,
+    PostRecurringCancelOrderResponse,
+    PostRecurringExecuteResponse
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus
+from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -164,6 +172,55 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_trigger_orders(True, user_public_key, status, include_failed, input_token, output_token, page)
 
+    def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Create Order](https://dev.jup.ag/docs/api/recurring-api/create-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_create_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_create_order].
+        """
+        return self._interaction._post_recurring_create_order(True, body)
+
+    def get_recurring_orders(
+        self,
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> GetRecurringOrdersResponse:
+        """
+            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
+        """
+        return self._interaction._get_recurring_orders(True, user_public_key, status, recurring_type, include_failed, page)
+
+    def post_recurring_withdraw_price(self, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
+        """
+        return self._interaction._post_recurring_withdraw_price(True, order_id, user_public_key, mode, amount)
+
+    def post_recurring_deposit_price(self, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
+        """
+        return self._interaction._post_recurring_deposit_price(True, order_id, user_public_key, amount)
+
+    def post_recurring_cancel_order(self, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Cancel Order](https://dev.jup.ag/docs/api/recurring-api/cancel-order)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_cancel_order].
+        """
+        return self._interaction._post_recurring_cancel_order(True, order_id, user_public_key, recurring_type)
+
+    def post_recurring_execute(self, signed_transaction_id: str, request_id: str) -> PostRecurringExecuteResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Execute](https://dev.jup.ag/docs/api/recurring-api/execute)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_execute`][cyhole.jupiter.interaction.Jupiter._post_recurring_execute].
+        """
+        return self._interaction._post_recurring_execute(True, signed_transaction_id, request_id)
+
 class JupiterAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Jupiter` interaction.
@@ -294,3 +351,52 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
         """
         return await self._interaction._get_trigger_orders(False, user_public_key, status, include_failed, input_token, output_token, page)
+
+    async def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Create Order](https://dev.jup.ag/docs/api/recurring-api/create-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_create_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_create_order].
+        """
+        return await self._interaction._post_recurring_create_order(False, body)
+
+    async def get_recurring_orders(
+        self,
+        user_public_key: str,
+        status: JupiterOrderStatus,
+        recurring_type: JupiterRecurringType,
+        include_failed: bool = False,
+        page: int = 1
+    ) -> GetRecurringOrdersResponse:
+        """
+            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
+        """
+        return await self._interaction._get_recurring_orders(False, user_public_key, status, recurring_type, include_failed, page)
+
+    async def post_recurring_withdraw_price(self, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
+        """
+        return await self._interaction._post_recurring_withdraw_price(False, order_id, user_public_key, mode, amount)
+
+    async def post_recurring_deposit_price(self, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
+        """
+        return await self._interaction._post_recurring_deposit_price(False, order_id, user_public_key, amount)
+
+    async def post_recurring_cancel_order(self, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Cancel Order](https://dev.jup.ag/docs/api/recurring-api/cancel-order)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_recurring_cancel_order].
+        """
+        return await self._interaction._post_recurring_cancel_order(False, order_id, user_public_key, recurring_type)
+
+    async def post_recurring_execute(self, signed_transaction_id: str, request_id: str) -> PostRecurringExecuteResponse:
+        """
+            Call the Jupiter's POST **[Recurring - Execute](https://dev.jup.ag/docs/api/recurring-api/execute)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._post_recurring_execute`][cyhole.jupiter.interaction.Jupiter._post_recurring_execute].
+        """
+        return await self._interaction._post_recurring_execute(False, signed_transaction_id, request_id)
