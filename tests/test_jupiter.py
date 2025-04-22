@@ -173,7 +173,7 @@ class TestJupiter:
         # check vs token
         jup_data = response.data[JUP.address]
         assert jup_data is not None
-        assert jup_data.price == "1"
+        assert jup_data.price == 1
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -205,7 +205,7 @@ class TestJupiter:
         # check vs token
         jup_data = response.data[JUP.address]
         assert jup_data is not None
-        assert jup_data.price == "1"
+        assert jup_data.price == 1
 
     def test_get_price_unknown_address_sync(self, mocker: MockerFixture) -> None:
         """

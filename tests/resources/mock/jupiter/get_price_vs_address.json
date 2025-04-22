@@ -3,21 +3,21 @@
         "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
             "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
             "type": "derivedPrice",
-            "price": "1",
+            "price": 1.0,
             "extraInfo": null
         },
         "So11111111111111111111111111111111111111112": {
             "id": "So11111111111111111111111111111111111111112",
             "type": "derivedPrice",
-            "price": "244.14684493810518",
+            "price": 339.19031226142465,
             "extraInfo": null
         },
         "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263": {
             "id": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
             "type": "derivedPrice",
-            "price": "0.000024164015184660442",
+            "price": 0.000033611310167816514,
             "extraInfo": null
         }
     },
-    "timeTaken": 0.000813581
+    "timeTaken": 0.006842313
 }

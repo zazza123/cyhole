@@ -11,72 +11,120 @@ class JupiterHTTPError(BaseModel):
         that can be used to investigated the error. This schema 
         is used to strandardise the HTTPErrors.
     """
+
     code: str = Field(validation_alias = AliasChoices("errorCode", "error_code"))
+    """Error code returned by the API."""
+
     msg: str = Field(alias = "error")
+    """Error message returned by the API."""
 
 # classes used on GET "Price" endpoint
 class GetPriceDepthValues(BaseModel):
     """Depth values."""
 
     amount_10_sol: float = Field(alias = "10")
+    """Amount of tokens for 10 SOL."""
+
     amount_100_sol: float = Field(alias = "100")
+    """Amount of tokens for 100 SOL."""
+
     amount_1000_sol: float = Field(alias = "1000")
+    """Amount of tokens for 1000 SOL."""
 
 class GetPriceDepthRatio(BaseModel):
     """Depth ratio information."""
 
     timestamp_unix: int = Field(alias = "timestamp")
+    """Timestamp in UNIX format."""
+
     depth: GetPriceDepthValues
+    """Depth/Quantity values."""
 
 class GetPriceDepth(BaseModel):
     """Depth information."""
 
     buy_price_impact_ratio: GetPriceDepthRatio | None = Field(default = None, alias = "buyPriceImpactRatio")
+    """Buy price impact ratios according to different quantities."""
+
     sell_price_impact_ratio: GetPriceDepthRatio | None = Field(default = None, alias = "sellPriceImpactRatio")
+    """Sell price impact ratios according to different quantities."""
 
 class GetPriceLastSwappedPrice(BaseModel):
     """Last swapped price information."""
 
     last_jupiter_sell_at_unix: int = Field(alias = "lastJupiterSellAt")
-    last_jupiter_sell_price: str = Field(alias = "lastJupiterSellPrice")
+    """Last Jupiter sell time in UNIX format."""
+
+    last_jupiter_sell_price: float = Field(alias = "lastJupiterSellPrice")
+    """Last Jupiter sell price (compared to `USDC`)."""
+
     last_jupiter_buy_at_unix: int = Field(alias = "lastJupiterBuyAt")
-    last_jupiter_buy_price: str = Field(alias = "lastJupiterBuyPrice")
+    """Last Jupiter buy time in UNIX format."""
+
+    last_jupiter_buy_price: float = Field(alias = "lastJupiterBuyPrice")
+    """Last Jupiter buy price (compared to `USDC`)."""
 
 class GetPriceQuotedPrice(BaseModel):
     """Last quoted price information."""
 
-    buy_price: str = Field(alias = "buyPrice")
+    buy_price: float = Field(alias = "buyPrice")
+    """Last quoted buy price (compared to `USDC`)."""
+
     buy_at_unix: int = Field(alias = "buyAt")
-    sell_price: str | None = Field(default = None, alias = "sellPrice")
+    """Last quoted buy time in UNIX format."""
+
+    sell_price: float | None = Field(default = None, alias = "sellPrice")
+    """Last quoted sell price (compared to `USDC`)."""
+
     sell_at_unix: int | None = Field(default = None, alias = "sellAt")
+    """Last quoted sell time in UNIX format."""
 
 class GetPriceExtraInfo(BaseModel):
     """Extra information about the price."""
 
     last_swapped_price: GetPriceLastSwappedPrice | None = Field(default = None, alias = "lastSwappedPrice")
+    """Last swapped price information."""
+
     quoted_price: GetPriceQuotedPrice = Field(alias = "quotedPrice")
+    """Last quoted price information."""
+
     confidence_level: str = Field(alias = "confidenceLevel")
+    """Confidence level of the token."""
+
     depth: GetPriceDepth
+    """Depth information on the price."""
 
 class GetPriceData(BaseModel):
+    """
+        Model with all the information about a token data
+        returned by the GET "**Price**" endpoint from Jupiter API.
+    """
+
     id: str
     """Chain address of the token."""
 
     type: str
     """The type of the token."""
 
-    price: str
-    """The price of the token."""
+    price: float
+    """The price of the token compared to the `USDC` token."""
 
     extra_info: None | GetPriceExtraInfo = Field(default = None, alias = "extraInfo")
-    """Extra information about the price. Only available if request param `extra_info` is set to `True`."""
+    """
+        Extra information about the price. 
+        Only available if request param `extra_info` is set to `True`.
+    """
 
 class GetPriceResponse(BaseModel):
     """
-        Model used to represent the **Price** endpoint from Jupiter API.
+        Model refering to the response schema of the GET 
+        "**Price**" endpoint from Jupiter API.
     """
     data: dict[str, GetPriceData | None]
+    """Dictionary of token prices. The key is the token address."""
+
     time_taken: float = Field(alias = "timeTaken")
+    """Time taken to process the request."""
 
 # classes used on GET "Quote" endpoint
 # Input
