@@ -152,6 +152,70 @@ class TestJupiter:
         assert isinstance(response, GetPriceResponse)
         assert (JUP.address in response.data) and (WSOL.address in response.data)
 
+    def test_get_price_vs_address_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price"
+            for synchronous logic. Provide a different comparison token.
+
+            Mock Response File: get_price_vs_address.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_vs_address"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_price([WSOL.address, BONK.address], vs_address = JUP.address)
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert WSOL.address in response.data
+        assert BONK.address in response.data
+
+        # check vs token
+        jup_data = response.data[JUP.address]
+        assert jup_data is not None
+        assert jup_data.price == 1
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_price_vs_address_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Price"
+            for asynchronous logic. Provide a different comparison token.
+
+            Mock Response File: get_price_vs_address.json
+        """
+
+        # load mock response
+        mock_file_name = "get_price_vs_address"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPriceResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_price([WSOL.address], vs_address = JUP.address)
+
+        # actual test
+        assert isinstance(response, GetPriceResponse)
+        assert WSOL.address in response.data
+
+        # check vs token
+        jup_data = response.data[JUP.address]
+        assert jup_data is not None
+        assert jup_data.price == 1
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+
     def test_get_price_unknown_address_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Price" 

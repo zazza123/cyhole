@@ -1,0 +1,43 @@
+{
+    "data": {
+        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
+            "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "type": "derivedPrice",
+            "price": 0.424925,
+            "extraInfo": {
+                "lastSwappedPrice": {
+                    "lastJupiterSellAt": 1745341689,
+                    "lastJupiterSellPrice": 0.42492946604325454,
+                    "lastJupiterBuyAt": 1745341689,
+                    "lastJupiterBuyPrice": 0.42532126287620564
+                },
+                "quotedPrice": {
+                    "buyPrice": 0.424922,
+                    "buyAt": 1745341684,
+                    "sellPrice": 0.424928,
+                    "sellAt": 1745341684
+                },
+                "confidenceLevel": "high",
+                "depth": {
+                    "buyPriceImpactRatio": {
+                        "timestamp": 1745340923,
+                        "depth": {
+                            "10": 0.04148077545921529,
+                            "100": 0.08056659306275075,
+                            "1000": 0.6683729513267997
+                        }
+                    },
+                    "sellPriceImpactRatio": {
+                        "timestamp": 1745340923,
+                        "depth": {
+                            "10": 0.07188135334986805,
+                            "100": 0.19466400565767605,
+                            "1000": 1.5820059196393097
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "timeTaken": 0.005213459
+}

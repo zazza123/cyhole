@@ -1,17 +1,23 @@
 {
     "data": {
+        "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263": {
+            "id": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+            "type": "derivedPrice",
+            "price": 0.000033041489509387077,
+            "extraInfo": null
+        },
         "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
             "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
             "type": "derivedPrice",
-            "price": 0.425024,
+            "price": 1.0,
             "extraInfo": null
         },
         "So11111111111111111111111111111111111111112": {
             "id": "So11111111111111111111111111111111111111112",
             "type": "derivedPrice",
-            "price": 144.9719385,
+            "price": 341.01242591159036,
             "extraInfo": null
         }
     },
-    "timeTaken": 0.00536117
+    "timeTaken": 0.007537699
 }
