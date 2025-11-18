@@ -1,5 +1,13 @@
 from ..core.param import CyholeParam
 
+class JupiterApiTier(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's API tiers.
+    """
+    LITE = "lite"
+    PRO = "pro"
+    ULTRA = "ultra"
+
 class JupiterSwapMode(CyholeParam):
     """
         Enum class to get the supported Jupiter's swap modes.

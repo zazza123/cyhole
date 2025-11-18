@@ -4,6 +4,9 @@ class JupiterException(CyholeException):
     """General Exception for Jupiter API."""
     pass
 
+class JupiterApiTierError(JupiterException):
+    pass
+
 class JupiterNoRouteFoundError(JupiterException):
     pass
 

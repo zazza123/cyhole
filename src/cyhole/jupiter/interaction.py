@@ -41,18 +41,28 @@ from ..jupiter.schema import (
 )
 from ..jupiter.exception import (
     JupiterException,
+    JupiterApiTierError,
     JupiterNoRouteFoundError,
     JupiterComputeAmountThresholdError,
     JupiterInvalidRequest
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
+from ..jupiter.param import (
+    JupiterApiTier,
+    JupiterTokenTagType,
+    JupiterOrderStatus,
+    JupiterRecurringType,
+    JupiterWithdrawMode
+)
 
 class Jupiter(Interaction):
     """
         Class used to connect [Jupiter](https://jup.ag) API, one of them most popular Solana DEX. 
-        To have access Jupiter API is **not** required an API key.
+        To have access Jupiter API is **not** required an API key if you are using the `lite` API tier. 
+        If using the `pro` or `ultra` API tiers, an API key is required.
 
-        Check [https://station.jup.ag/docs/api](https://station.jup.ag/docs/api) for all the details on the available endpoints.
+        Check supported API tiers at: [https://dev.jup.ag/portal/rate-limit](https://dev.jup.ag/portal/rate-limit)
+
+        Check [https://dev.jup.ag/api-reference](https://dev.jup.ag/api-reference) for all the details on the available endpoints.
 
         **Example**
 
@@ -78,12 +88,40 @@ class Jupiter(Interaction):
         ```
     """
 
-    def __init__(self, headers: Any | None = None) -> None:
+    tier: JupiterApiTier
+    """API tier used by the connetor"""
+
+    api_key: str | None
+    """API key used to connect to Jupiter API."""
+
+    def __init__(self, 
+        tier: JupiterApiTier = JupiterApiTier.LITE,
+        api_key: str | None = None,
+        headers: Any | None = None
+    ) -> None:
+        # headers setup
+        headers = {
+            "Content-Type": "application/json"
+        }
+
+        # tier
+        self.tier = tier
+
+        # api key
+        self.api_key = api_key
+        if self.tier != JupiterApiTier.LITE and api_key is None:
+            raise JupiterApiTierError(f"API Key is required for {self.tier.name} tier")
+
+        if self.api_key:
+            headers["x-api-key"] = self.api_key
+
+        # init super
         super().__init__(headers)
+        self.headers: dict[str, str]
 
         # clients
-        self.client = JupiterClient(self)
-        self.async_client = JupiterAsyncClient(self)
+        self.client = JupiterClient(self, headers = self.headers)
+        self.async_client = JupiterAsyncClient(self, self.headers)
 
         # API urls
         self.url_api_price = "https://api.jup.ag/price/v2"
@@ -93,6 +131,17 @@ class Jupiter(Interaction):
         self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
         self.url_api_recurring = "https://api.jup.ag/recurring/v1/"
         return
+
+    @property
+    def url_api_root(self) -> str:
+        """API root URL based in API tier."""
+        match self.tier:
+            case JupiterApiTier.LITE:
+                return "https://lite-api.jup.ag/"
+            case JupiterApiTier.PRO:
+                return "https://api.jup.ag/"
+            case JupiterApiTier.ULTRA:
+                return "https://api.jup.ag/ultra/"
 
     @overload
     def _get_price(self, sync: Literal[True], address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse: ...
