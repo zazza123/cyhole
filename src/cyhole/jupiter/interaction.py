@@ -102,7 +102,7 @@ class Jupiter(Interaction):
 
     def _get_price(self, sync: bool, address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://station.jup.ag/docs/api/price-api/price)** API endpoint, 
+            This function refers to the GET **[Price](https://dev.jup.ag/docs/api/price-api/price)** API endpoint, 
             and it is used to get the current price of a list of tokens on Solana chain with respect to another token
             taken from [Jupiter Swap](https://jup.ag).
 
@@ -156,7 +156,7 @@ class Jupiter(Interaction):
 
     def _get_quote(self, sync: bool, input: GetQuoteParams) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
         """
-            This function refers to the GET **[Quote](https://station.jup.ag/docs/api/swap-api/quote)** API endpoint, 
+            This function refers to the GET **[Quote](https://dev.jup.ag/docs/api/swap-api/quote)** API endpoint, 
             and it is used to get a quote for swapping a specific amount of tokens.  
             The function can be combined with the `post_swap` enpdpoint to implement a payment mechanism.
 

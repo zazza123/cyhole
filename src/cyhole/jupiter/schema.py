@@ -18,6 +18,10 @@ class JupiterHTTPError(BaseModel):
     msg: str = Field(alias = "error")
     """Error message returned by the API."""
 
+# *************
+# * Price API *
+# *************
+
 # classes used on GET "Price" endpoint
 class GetPriceDepthValues(BaseModel):
     """Depth values."""
@@ -126,12 +130,16 @@ class GetPriceResponse(BaseModel):
     time_taken: float = Field(alias = "timeTaken")
     """Time taken to process the request."""
 
+# ************
+# * Swap API *
+# ************
+
 # classes used on GET "Quote" endpoint
 # Input
 class GetQuoteParams(BaseModel):
     """
-        Model used to identify the inputs params required by 
-        a GET Quote request.
+        Model refering to the input schema of the GET 
+        "**Quote**" endpoint from Jupiter API.
     """
 
     input_token: str = Field(serialization_alias = "inputMint")
@@ -197,46 +205,116 @@ class GetQuoteParams(BaseModel):
 
 # Output
 class GetQuotePlatformFees(BaseModel):
-    amount: str
-    fee_base_points: str = Field(alias = "feeBps")
+    """
+        Model refering to the platform fees of a route plan in
+        GET "**Quote**" endpoint from Jupiter API.
+    """
+
+    amount_raw: int = Field(alias = "amount")
+    """Raw amount of platform fee token to buy (before decimals)."""
+
+    fee_base_points: int = Field(alias = "feeBps")
+    """
+        Amount of fees collected.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
 
 class GetQuoteSwapInfo(BaseModel):
+    """
+        Model defining all the SWAP info of a route plan in
+        GET "**Quote**" endpoint from Jupiter API.
+    """
+
     amm_key: str = Field(alias = "ammKey")
+    """Address of the AMM (Automated Market Maker) used for the swap."""
+
     amm_label: str | None = Field(default = None, alias = "label")
+    """Label of the AMM used for the swap."""
+
     input_token: str = Field(alias = "inputMint")
-    input_amount: str = Field(alias = "inAmount")
+    """The address of the input token on the chain used to buy."""
+
+    input_amount_raw: int = Field(alias = "inAmount")
+    """Raw amount of input token to use to buy (before decimals)."""
+
     output_token: str = Field(alias = "outputMint")
-    output_amount: str = Field(alias = "outAmount")
+    """The address of the output token on the chain that will bought."""
+
+    output_amount_raw: int = Field(alias = "outAmount")
+    """Raw amount of output token to buy (before decimals)."""
+
     fee_token: str = Field(alias = "feeMint")
-    fee_amount: str = Field(alias = "feeAmount")
+    """Fee token address."""
+
+    fee_amount_raw: int = Field(alias = "feeAmount")
+    """Raw amount of fee token to buy (before decimals)."""
 
 class GetQuoteRoutePlan(BaseModel):
+    """
+        Model refering to the schema of a route plan in the GET 
+        "**Quote**" endpoint from Jupiter API.
+    """
+
     swap_info: GetQuoteSwapInfo = Field(alias = "swapInfo")
+    """Information about the swap."""
+
     percent: int
+    """Percentage of the swap."""
 
 class GetQuoteResponse(BaseModel):
     """
-        Model used to represent the **Quote** endpoint from Jupiter API.
+        Model refering to the response schema of the GET 
+        "**Quote**" endpoint from Jupiter API.
     """
+
     input_token: str = Field(alias = "inputMint")
-    input_amount: str = Field(alias = "inAmount")
+    """The address of the input token on the chain used to buy."""
+
+    input_amount_raw: int = Field(alias = "inAmount")
+    """Raw amount of input token to use to buy (before decimals)."""
+
     output_token: str = Field(alias = "outputMint")
-    output_amount: str = Field(alias = "outAmount")
-    other_amount_threshold: str = Field(alias = "otherAmountThreshold")
-    swap_mode: str = Field(alias = "swapMode")
+    """The address of the output token on the chain that will bought."""
+
+    output_amount_raw: int = Field(alias = "outAmount")
+    """Raw amount of output token to buy (before decimals)."""
+
+    other_amount_threshold_raw: int = Field(alias = "otherAmountThreshold")
+    """Raw calculated minimum output amount after accounting for `slippage_base_points` and `platform_fees` (before decimals)."""
+
+    swap_mode: JupiterSwapMode = Field(alias = "swapMode")
+    """Mode of the swap."""
+
     slippage_base_points: int = Field(alias = "slippageBps")
+    """
+        Amount of slippage the order can be executed with.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
     platform_fees: GetQuotePlatformFees | None = Field(default = None, alias = "platformFee")
-    price_impact_pct: str = Field(alias = "priceImpactPct")
+    """Platform fees for the swap."""
+
+    price_impact_pct: float = Field(alias = "priceImpactPct")
+    """Percentage of price impact for the swap."""
+
     route_plan: list[GetQuoteRoutePlan] = Field(alias = "routePlan")
+    """List of route plans for the swap."""
+
     context_slot: int = Field(alias = "contextSlot")
+    """Slot number of the context."""
+
     time_taken: float = Field(alias = "timeTaken")
+    """Time taken to process the request."""
 
 # classes used on GET "Quote/Program ID to Label" endpoint
 class GetQuoteProgramIdLabelResponse(BaseModel):
     """
-        Model used to represent the **Quote/Program ID to Label** endpoint from Jupiter API.
+        Model representing the GET **Quote/Program ID to Label** 
+        endpoint response from Jupiter API.
     """
+
     dexes: dict[str, str]
+    """List of dexes with their program ID and label (public_key: name)."""
 
 # classes used on POST "Swap" endpoint
 # Body
@@ -244,6 +322,7 @@ class PostSwapPriorityLevelWithMaxLamports(BaseModel):
     """
         Model used to identify the priority level with max lamports.
     """
+
     priority_level: int = Field(default = None, alias = "priorityLevel")
     """Priority level."""
 
@@ -323,91 +402,190 @@ class PostSwapBody(BaseModel):
 # Output
 class PostSwapResponse(BaseModel):
     """
-        Model used to represent the **Swap** endpoint response from Jupiter API.
+        Model representing the POST **Swap** endpoint 
+        response from Jupiter API.
     """
+
     swap_transaction: str = Field(alias = "swapTransaction")
+    """Base-64 encoded transaction."""
+
     last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
+    """Last valid block height for the transaction."""
+
     prioritization_fee_lamports: int = Field(default = 0, alias = "prioritizationFeeLamports")
+    """Amount of prioritization fee in lamports."""
 
 # Output (Instructions)
 class PostSwapAccount(BaseModel):
+    """Model describing a generic account in the swap transaction."""
+
     public_key: str = Field(alias = "pubkey")
+    """Public key of the account."""
+
     is_signer: bool = Field(alias = "isSigner")
+    """Flag indicating if the account is a signer."""
+
     is_writable: bool = Field(alias = "isWritable")
+    """Flag indicating if the account is writable."""
 
 class PostSwapInstruction(BaseModel):
+    """Model describing a generic instruction in the swap transaction."""
+
     program_id: str = Field(alias = "programId")
+    """Program ID of the instruction."""
+
     accounts: list[PostSwapAccount]
+    """List of accounts used in the instruction."""
+
     data: str
+    """Data of the instruction."""
 
 class PostSwapInstructionsResponse(BaseModel):
     """
         Model used to represent the **Swap Instructions** endpoint response from 
         Jupiter API in the case of instructions are requested.
     """
+
     swap: PostSwapInstruction = Field(alias = "swapInstruction")
+    """Swap instruction."""
+
     setup: list[PostSwapInstruction] = Field(alias = "setupInstructions")
+    """Setup instructions."""
+
     compute_budget: list[PostSwapInstruction] = Field(alias = "computeBudgetInstructions")
+    """Compute budget instructions."""
+
     cleanup: PostSwapInstruction | None = Field(default = None, alias = "cleanupInstruction")
+    """Cleanup instruction."""
+
     other: list[PostSwapInstruction] = Field(default = None, alias = "otherInstructions")
+    """Other instructions."""
+
     address_lookup_table_addresses: list[str] = Field(alias = "addressLookupTableAddresses")
+    """Address lookup table addresses."""
+
+# *************
+# * Token API *
+# *************
 
 # classes used on GET "Token Info" endpoint
 class GetTokenInfoResponse(BaseModel):
     """
-        Model used to represent the **Token** endpoint from Jupiter API
-        focused on retrieving information about a token.
+        Model representing the response object from the GET
+        "**Token Info**" endpoint from Jupiter API.
     """
+
     name: str
+    """Name of the token."""
+
     address: str
+    """Chain address of the token."""
+
     symbol: str
+    """Symbol of the token."""
+
     decimals: int
-    created_at: str
+    """Decimals of the token."""
+
+    created_at: datetime
+    """Date and time when the token was created."""
+
     logoURI: str | None = None
+    """URI of the token logo."""
+
     tags: list[str] | None = None
+    """List of tags associated with the token."""
+
     daily_volume: float | None = None
+    """Daily volume of the token."""
+
     freeze_authority: str | None = None
+    """Address of the freeze authority of the token."""
+
     mint_authority: str | None = None
-    minted_at: str | None = None
+    """Address of the mint authority of the token."""
+
+    minted_at: datetime | None = None
+    """Date and time when the token was minted."""
+
     permanent_delegate: str | None = None
+    """Address of the permanent delegate of the token."""
+
     extensions: dict[str, str] | None = None
+    """Extensions of the token (sites)."""
 
 # classes used on GET "Token Market Mints" endpoint
 class GetTokenMarketMintsResponse(BaseModel):
     """
-        Model used to represent the **Token Market Mints** endpoint from Jupiter API.
+        Model used to represent the GET **Token Market Mints** 
+        endpoint from Jupiter API.
     """
+
     mints: list[str]
+    """List of token addresses."""
 
 # classes used on GET "Token Tagged" endpoint
 class GetTokenTaggedToken(GetTokenInfoResponse):
+    """
+        Model used to represent a token information 
+        on the GET **Token Tagged** endpoint.
+    """
     pass
 
 class GetTokenTaggedResponse(BaseModel):
     """
-        Model used to represent the **Token Tagged** endpoint from Jupiter API.
+        Model used to represent the GET **Token Tagged** 
+        endpoint from Jupiter API.
     """
+
     tokens: list[GetTokenTaggedToken]
+    """List of tokens and information."""
 
 # classes used on GET "Token New" endpoint
 class GetTokenNewToken(BaseModel):
-    """Model used to represent a token information on the **Token New** endpoint."""
+    """
+        Model used to represent a token information 
+        on the GET **Token New** endpoint.
+    """
+
     mint: str
+    """Chain address of the token."""
+
     name: str
+    """Name of the token."""
+
     symbol: str
+    """Symbol of the token."""
+
     decimals: int
-    created_at: str
+    """Decimals of the token."""
+
+    created_at_unix: int = Field(alias = "created_at")
+    """Date and time when the token was created in UNIX format."""
+
     known_markets: list[str]
-    metadata_updated_at: int
+    """List of markets where the token is traded."""
+
+    metadata_updated_at_unix: int = Field(alias = "metadata_updated_at")
+    """Date and time when the token metadata was updated in UNIX format."""
+
     logo_uri: str | None = None
+    """URI of the token logo."""
+
     mint_authority: str | None = None
+    """Address of the mint authority of the token."""
+
     freeze_authority: str | None = None
+    """Address of the freeze authority of the token."""
 
 class GetTokenNewResponse(BaseModel):
     """
-        Model used to represent the **Token New** endpoint from Jupiter API.
+        Model used to represent the GET **Token New** 
+        endpoint from Jupiter API.
     """
+
     tokens: list[GetTokenNewToken]
+    """List of tokens with information."""
 
 # *************
 # * Ultra API *
@@ -422,6 +600,11 @@ class GetUltraOrderDynamicSlippageReport(BaseModel):
     other_amount: int | None = Field(default = None, alias = "otherAmount")
     simulated_incurred_slippage_base_points: int | None = Field(default = None, alias = "simulatedIncurredSlippageBps")
     slippage_base_points: int = Field(alias = "slippageBps")
+    """
+        Amount of slippage the order can be executed with.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
     category_name: str = Field(alias = "categoryName")
     heuristic_max_slippage_base_points: int = Field(alias = "heuristicMaxSlippageBps")
 
@@ -433,54 +616,142 @@ class GetUltraOrderRoutePlan(GetQuoteRoutePlan):
 
 class GetUltraOrderResponse(BaseModel):
     """
-        Model used to represent the **Ultra - Order** endpoint response from Jupiter API.
+        Model refering to the response schema of the GET
+        "**Ultra - Order**" endpoint from Jupiter API.
     """
+
     swap_type: JupiterSwapType = Field(alias = "swapType")
+    """Type of the swap."""
+
     environment: JupiterEnvironmentType | None = None
+    """Environment of the swap."""
+
     request_id: str = Field(alias = "requestId")
-    input_amount_raw: int = Field(alias = "inAmount")
-    output_amount_raw: int = Field(alias = "outAmount")
-    other_amount_threshold_raw: int = Field(alias = "otherAmountThreshold")
-    swap_mode: JupiterSwapMode = Field(alias = "swapMode")
-    slippage_base_points: int = Field(alias = "slippageBps")
-    price_impact_percent: float = Field(alias = "priceImpactPct")
-    route_plan: list[GetUltraOrderRoutePlan] = Field(alias = "routePlan")
+    """Unique ID required to make a request to `post_ultra_execute`"""
+
     input_token: str = Field(alias = "inputMint")
+    """The address of the input token on the chain used to buy."""
+
+    input_amount_raw: int = Field(alias = "inAmount")
+    """Raw amount of input token to use to buy (before decimals)."""
+
     output_token: str = Field(alias = "outputMint")
+    """The address of the output token on the chain that will bought."""
+
+    output_amount_raw: int = Field(alias = "outAmount")
+    """Raw amount of output token to buy (before decimals)."""
+
+    other_amount_threshold_raw: int = Field(alias = "otherAmountThreshold")
+    """Raw calculated minimum output amount after accounting for `slippage_base_points` and `platform_fees` (before decimals)."""
+
+    swap_mode: JupiterSwapMode = Field(alias = "swapMode")
+    """Mode of the swap."""
+
+    slippage_base_points: int = Field(alias = "slippageBps")
+    """
+        Amount of slippage the order can be executed with.  
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
+    price_impact_percent: float = Field(alias = "priceImpactPct")
+    """Percentage of price impact for the swap."""
+
+    route_plan: list[GetUltraOrderRoutePlan] = Field(alias = "routePlan")
+    """List of route plans for the swap."""
+
     fee_base_points: int = Field(alias = "feeBps")
+    """
+        Amount of fee that the `referral_public_key` collects.
+        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+    """
+
     taker_wallet_key: str | None = Field(default = None, alias = "taker")
+    """Wallet address of the user who wants to create an order."""
+
     gasless: bool
+    """Flag indicating if the order is gasless."""
+
     transaction_id: str | None = Field(default = None, alias = "transaction")
+    """Base-64 encoded transaction."""
+
     prioritization_type: JupiterPrioritizationType = Field(alias = "prioritizationType")
+    """Type of prioritization for the order."""
+
     prioritization_fee_lamports: int = Field(alias = "prioritizationFeeLamports")
+    """Amount of prioritization fee in lamports."""
+
     last_valid_block_height: int | None = Field(default = None, alias = "lastValidBlockHeight")
+    """Last valid block height for the transaction."""
+
     context_slot: int | None = Field(default = None, alias = "contextSlot")
+    """Slot number of the context."""
+
     total_time: int = Field(alias = "totalTime")
+    """Total time taken to process the request."""
+
     quote_id: str | None = Field(default = None, alias = "quoteId")
+    """Unique ID of the quote."""
+
     maker_wallet_key: str | None = Field(default = None, alias = "maker")
+    """Wallet address of the user who wants to create an order."""
+
     expire_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
+    """Expiring date for the Limit Order expressed in UNIX time"""
+
     platform_fee: GetUltraOrderPlatformFee | None = Field(default = None, alias = "platformFee")
+    """Platform fees for the swap."""
+
     dynamic_slippage_report: GetUltraOrderDynamicSlippageReport | None = Field(default = None, alias = "dynamicSlippageReport")
+    """Dynamic slippage report for the swap."""
 
 # classes used on POST "Ultra - Execute Order" endpoint
 class PostUltraExecuteOrderSwapEvent(BaseModel):
+    """
+        Model refering to the schema of a swap event in the POST 
+        "**Ultra - Execute Order**" endpoint from Jupiter API.
+    """
+
     input_token: str = Field(alias = "inputMint")
+    """Input token address."""
+
     input_amount_raw: int = Field(alias = "inputAmount")
+    """Raw amount of input token used to buy (before decimals)."""
+
     output_token: str = Field(alias = "outputMint")
+    """Output token address."""
+
     output_amount_raw: int = Field(alias = "outputAmount")
+    """Raw amount of output token bought (before decimals)."""
 
 class PostUltraExecuteOrderResponse(BaseModel):
     """
-        Model used to identify the body required by a POST **Ultra - Execute Order** request.
+        Model refering to the response schema of the POST 
+        "**Ultra - Execute Order**" endpoint from Jupiter API.
     """
+
     status: JupiterSwapExecutionStatus
+    """Status of the order."""
+
     code: int
+    """Code indicating the status of the operation."""
+
     signature_transaction_id: str | None = Field(default = None, alias = "signature")
+    """Signature of the successful transaction."""
+
     slot: int | None = None
+    """Slot number of the transaction."""
+
     input_amount_result_raw: int | None = Field(default = None, alias = "inputAmountResult")
+    """Raw amount of input token used to buy (before decimals)."""
+
     output_amount_result_raw: int | None = Field(default = None, alias = "outputAmountResult")
+    """Raw amount of output token bought (before decimals)."""
+
     swap_events: PostUltraExecuteOrderSwapEvent | None = Field(default = None, alias = "swapEvents")
+    """List of swap events."""
+
     error: str | None = None
+    """Error message in case of failure."""
 
 # classes used on GET "Ultra - Balances" endpoint
 class GetUltraBalancesToken(BaseModel):
