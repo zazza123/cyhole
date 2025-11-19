@@ -1,9 +1,9 @@
 from datetime import datetime
 from requests.exceptions import HTTPError
-from typing import Any, Coroutine, overload, Literal
+from typing import Any, Coroutine, overload, Literal, Type
 
 from ..core.param import RequestType
-from ..core.interaction import Interaction
+from ..core.interaction import Interaction, ResponseModel
 from ..jupiter.client import JupiterClient, JupiterAsyncClient
 from ..jupiter.schema import (
     JupiterHTTPError,
@@ -126,7 +126,6 @@ class Jupiter(Interaction):
         self.async_client = JupiterAsyncClient(self, self.headers)
 
         # API urls
-        self.url_api_swap  = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
         self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
@@ -146,6 +145,30 @@ class Jupiter(Interaction):
     def url_api_price(self) -> str:
         """Price API URL composed according to API tier"""
         return self.url_api_root + "/price/v3"
+
+    @property
+    def url_api_swap(self) -> str:
+        """Swap API URL composed according to API tier"""
+        return self.url_api_root + "/swap/v1/"
+
+    def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
+        """
+            Overwrite of base function to handle Jupiter API responses.
+        """
+        if sync:
+            try:
+                content_raw = self.client.api(type, url, *args, **kwargs)
+            except HTTPError as e:
+                raise self._raise(e)
+            return response_model(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(type, url, *args, **kwargs)
+                except HTTPError as e:
+                    raise self._raise(e)
+                return response_model(**content_raw.json())
+            return async_request()
 
     @overload
     def _get_price(self, sync: Literal[True], address: list[str]) -> GetPriceResponse: ...
@@ -198,7 +221,7 @@ class Jupiter(Interaction):
 
     def _get_quote(self, sync: bool, input: GetQuoteParams) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
         """
-            This function refers to the GET **[Quote](https://dev.jup.ag/docs/api/swap-api/quote)** API endpoint, 
+            This function refers to the GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint, 
             and it is used to get a quote for swapping a specific amount of tokens.  
             The function can be combined with the `post_swap` enpdpoint to implement a payment mechanism.
 
@@ -217,20 +240,7 @@ class Jupiter(Interaction):
         )
 
         # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            except HTTPError as e:
-                raise self._raise(e)
-            return GetQuoteResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return GetQuoteResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetQuoteResponse, params = params)
 
     @overload
     def _get_quote_program_id_label(self, sync: Literal[True]) -> GetQuoteProgramIdLabelResponse: ...

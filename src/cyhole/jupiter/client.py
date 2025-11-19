@@ -59,7 +59,7 @@ class JupiterClient(APIClient):
 
     def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
         """
-            Call the Jupiter's GET **[Quote](https://dev.jup.ag/docs/api/swap-api/quote)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return self._interaction._get_quote(True, input)
@@ -239,7 +239,7 @@ class JupiterAsyncClient(AsyncAPIClient):
 
     async def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
         """
-            Call the Jupiter's GET **[Quote](https://dev.jup.ag/docs/api/swap-api/quote)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
         """
         return await self._interaction._get_quote(False, input)

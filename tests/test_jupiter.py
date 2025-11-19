@@ -224,6 +224,10 @@ class TestJupiter:
         assert response.input_token == WSOL.address
         assert response.output_token == JUP.address
 
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
     @pytest.mark.asyncio
     async def test_get_quote_async(self, mocker: MockerFixture) -> None:
         """
@@ -254,10 +258,6 @@ class TestJupiter:
         assert response.input_token == WSOL.address
         assert response.output_token == JUP.address
 
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
     def test_get_quote_force_route_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Quote" 
@@ -267,7 +267,7 @@ class TestJupiter:
         """
 
         # load mock response
-        mock_file_name = "get_quote_force_rooute"
+        mock_file_name = "get_quote_force_route"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
@@ -279,7 +279,7 @@ class TestJupiter:
             output_token = JUP.address,
             amount = amount,
             dexes = [JupiterSwapDex.METEORA_DLMM.value],
-            swap_mode = JupiterSwapMode.EXACT_IN.value
+            swap_mode = JupiterSwapMode.EXACT_IN
         )
         response = self.jupiter.client.get_quote(input)
 
@@ -312,7 +312,7 @@ class TestJupiter:
             output_token = JUP.address,
             amount = amount,
             dexes = [JupiterSwapDex.METEORA_DLMM.value],
-            swap_mode = JupiterSwapMode.EXACT_IN.value
+            swap_mode = JupiterSwapMode.EXACT_IN
         )
 
         async with self.jupiter.async_client as client:
@@ -370,21 +370,6 @@ class TestJupiter:
                 output_token = JUP.address,
                 amount = 1000,
                 dexes = ["XXX"]
-            )
-
-    def test_get_quote_error_unknown_mode(self) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote" 
-            when a not supported MODE is used.
-        """
-
-        # actual test
-        with pytest.raises(ParamUnknownError):
-            GetQuoteParams(
-                input_token = WSOL.address,
-                output_token = JUP.address,
-                amount = 1000,
-                swap_mode = "XXX"
             )
 
     def test_get_quote_program_id_label_sync(self, mocker: MockerFixture) -> None:

@@ -80,7 +80,7 @@ class GetQuoteParams(BaseModel):
     slippage_base_points: int = Field(default = 50, serialization_alias = "slippageBps")
     """Slippage tolerance in basis points. Observe that if the slippage exeeded this value, then the swap will fail."""
 
-    swap_mode: str = Field(default = JupiterSwapMode.EXACT_IN.value, serialization_alias = "swapMode")
+    swap_mode: JupiterSwapMode = Field(default = JupiterSwapMode.EXACT_IN, serialization_alias = "swapMode")
     """Define if the slippage is on the input or output token."""
 
     dexes: list[str] | None = None
@@ -91,7 +91,7 @@ class GetQuoteParams(BaseModel):
     """List of DEXes to exclude.  
         See [`JupiterSwapDex`][cyhole.jupiter.param.JupiterSwapDex] for all the supported DEXs"""
 
-    restrict_intermediate_tokens: bool | None = Field(default = None, serialization_alias = "restrictIntermediateTokens")
+    restrict_intermediate_tokens: bool = Field(default = True, serialization_alias = "restrictIntermediateTokens")
     """Restrict to a top token set for stable liquidity. This will help to reduce exposure to potential high slippage routes."""
 
     only_direct_routes: bool = Field(default = False, serialization_alias = "onlyDirectRoutes")
@@ -103,7 +103,7 @@ class GetQuoteParams(BaseModel):
     platform_fee_base_points: int | None = Field(default = None, serialization_alias = "platformFeeBps")
     """Fee to charge. The value is in percent and taken from output token."""
 
-    max_accounts: int | None = Field(default = None, serialization_alias = "maxAccounts")
+    max_accounts: int = Field(default = 64, serialization_alias = "maxAccounts")
     """Max accounts to be used for the quote. Jupiter Frontend uses a maxAccounts of 64."""
 
     @field_validator("dexes", "exclude_dexes")
@@ -179,7 +179,7 @@ class GetQuoteRoutePlan(BaseModel):
     swap_info: GetQuoteSwapInfo = Field(alias = "swapInfo")
     """Information about the swap."""
 
-    percent: int
+    percent: int | None = None
     """Percentage of the swap."""
 
 class GetQuoteResponse(BaseModel):
