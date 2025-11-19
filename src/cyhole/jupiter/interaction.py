@@ -1,3 +1,4 @@
+from datetime import datetime
 from requests.exceptions import HTTPError
 from typing import Any, Coroutine, overload, Literal
 
@@ -7,6 +8,7 @@ from ..jupiter.client import JupiterClient, JupiterAsyncClient
 from ..jupiter.schema import (
     JupiterHTTPError,
     # Price API
+    GetPriceData,
     GetPriceResponse,
     # Swap API
     GetQuoteParams,
@@ -124,7 +126,6 @@ class Jupiter(Interaction):
         self.async_client = JupiterAsyncClient(self, self.headers)
 
         # API urls
-        self.url_api_price = "https://api.jup.ag/price/v2"
         self.url_api_swap  = "https://api.jup.ag/swap/v1/"
         self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
@@ -137,26 +138,27 @@ class Jupiter(Interaction):
         """API root URL based in API tier."""
         match self.tier:
             case JupiterApiTier.LITE:
-                return "https://lite-api.jup.ag/"
-            case JupiterApiTier.PRO:
-                return "https://api.jup.ag/"
-            case JupiterApiTier.ULTRA:
-                return "https://api.jup.ag/ultra/"
+                return "https://lite-api.jup.ag"
+            case JupiterApiTier.PRO | JupiterApiTier.ULTRA:
+                return "https://api.jup.ag"
+
+    @property
+    def url_api_price(self) -> str:
+        """Price API URL composed according to API tier"""
+        return self.url_api_root + "/price/v3"
 
     @overload
-    def _get_price(self, sync: Literal[True], address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse: ...
+    def _get_price(self, sync: Literal[True], address: list[str]) -> GetPriceResponse: ...
 
     @overload
-    def _get_price(self, sync: Literal[False], address: list[str], extra_info: bool = False, vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]: ...
+    def _get_price(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetPriceResponse]: ...
 
-    def _get_price(self, sync: bool, address: list[str], extra_info: bool = False, vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
+    def _get_price(self, sync: bool, address: list[str]) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://dev.jup.ag/docs/api/price-api/price)** API endpoint, 
-            and it is used to get the current price of a list of tokens on Solana chain with respect to another token
-            taken from [Jupiter Swap](https://jup.ag).
+            This function refers to the GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint, 
+            and it is used to get the current price of a list of tokens on Solana chain from [Jupiter Swap](https://jup.ag).
 
-            The API returns the unit buy price for the tokens; by default, the price is provided according to 
-            the value of `USDC` token. It is also possible to provide another comparison token in the request.
+            The API returns the unit buy price for the tokens according to the value of `USDC` token. 
 
             !!! info
                 Observe that when the token address or comparison token address are not found, 
@@ -166,35 +168,26 @@ class Jupiter(Interaction):
             Parameters:
                 address: list of tokens addresses to get the price.
                     For example, `So11111111111111111111111111111111111111112`.
-                extra_info: flag to include extra information in the response
-                    that could be useful fot analysis (e.g., last swap, current quote price).
-                    More important, if activated, then `vs_address` is ignored.
-                vs_address: comparison token address.
-                    Default Value: `None` (`USDC`)
 
             Returns:
                 tokens' prices.
         """
 
-        # extra_info consistency
-        if extra_info:
-            vs_address = None
-
         # set params
         params = {
-            "ids": ",".join(address),
-            "vsToken": vs_address,
-            "showExtraInfo": "true" if extra_info else "false"
+            "ids": ",".join(address)
         }
 
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, self.url_api_price, params = params)
-            return GetPriceResponse(**content_raw.json())
+            data = {str(k): GetPriceData(**v) for k, v in dict(content_raw.json()).items()}
+            return GetPriceResponse(data = data, time_unix = int(datetime.now().timestamp()))
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, self.url_api_price, params = params)
-                return GetPriceResponse(**content_raw.json())
+                data = {str(k): GetPriceData(**v) for k, v in dict(content_raw.json()).items()}
+                return GetPriceResponse(data = data, time_unix = int(datetime.now().timestamp()))
             return async_request()
 
     @overload

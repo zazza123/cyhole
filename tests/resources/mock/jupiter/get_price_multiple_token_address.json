@@ -1,17 +1,17 @@
 {
     "data": {
         "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
-            "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-            "type": "derivedPrice",
-            "price": 0.427014,
-            "extraInfo": null
+            "usdPrice": 0.25143098250370727,
+            "decimals": 6,
+            "blockId": 381156867,
+            "priceChange24h": -7.18069874752635
         },
         "So11111111111111111111111111111111111111112": {
-            "id": "So11111111111111111111111111111111111111112",
-            "type": "derivedPrice",
-            "price": 144.839012,
-            "extraInfo": null
+            "usdPrice": 132.4644694370239,
+            "decimals": 9,
+            "blockId": 381156869,
+            "priceChange24h": -5.6612667320938135
         }
     },
-    "timeTaken": 0.003818406
+    "time_unix": 1763574219
 }
