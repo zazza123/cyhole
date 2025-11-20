@@ -250,7 +250,7 @@ class Jupiter(Interaction):
 
     def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
         """
-            This function refers to the GET **[Quote Program ID to Label](https://station.jup.ag/docs/api/swap-api/program-id-to-label)** API endpoint, 
+            This function refers to the GET **[Quote Program ID to Label](https://dev.jup.ag/api-reference/swap/program-id-to-label)** API endpoint, 
             and it is used to get the list of supported DEXes to use in quote endpoint. 
 
             Returns:
@@ -283,7 +283,7 @@ class Jupiter(Interaction):
 
     def _post_swap(self, sync: bool, body: PostSwapBody, with_instructions: bool = False) -> PostSwapResponse | PostSwapInstructionsResponse | Coroutine[None, None, PostSwapResponse | PostSwapInstructionsResponse]:
         """
-            This function refers to the POST **[Swap](https://station.jup.ag/docs/api/swap-api/swap)** API endpoint, 
+            This function refers to the POST **[Swap](https://dev.jup.ag/api-reference/swap/swap)** API endpoint, 
             and it is used to recive the transaction to perform the swap initialised from Jupiter client 
             `get_quote` endpoint for the desired pair; for this reason the function should be combined 
             with the `get_quote` endpoint.
@@ -293,7 +293,7 @@ class Jupiter(Interaction):
             and in case of need, to modify the instructions before sending the transaction. This behaviour 
             can be activated by setting the `with_instructions` flag to `True`. Observe that in this case, 
             the response will be different from the standard swap response. In Jupiter's API documentation,
-            this endpoint is referred to the POST **[Swap Instructions](https://station.jup.ag/docs/api/swap-api/swap-instructions)**.
+            this endpoint is referred to the POST **[Swap Instructions](https://dev.jup.ag/api-reference/swap/swap-instructions)**.
 
             Parameters:
                 body: the body to sent to Jupiter API that describe the swap.
@@ -307,9 +307,6 @@ class Jupiter(Interaction):
         # set params
         url = self.url_api_swap + "swap"
         response_model_class = PostSwapResponse
-        headers = {
-            "Content-Type": "application/json"
-        }
 
         # check instructions
         if with_instructions:
@@ -317,30 +314,9 @@ class Jupiter(Interaction):
             response_model_class = PostSwapInstructionsResponse
 
         # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(
-                    type = RequestType.POST.value,
-                    url = url,
-                    headers = headers,
-                    json = body.model_dump(by_alias = True, exclude_defaults = True)
-                )
-            except HTTPError as e:
-                raise self._raise(e)
-            return response_model_class(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(
-                        type = RequestType.POST.value,
-                        url = url,
-                        headers = headers,
-                        json = body.model_dump(by_alias = True, exclude_defaults = True)
-                    )
-                except HTTPError as e:
-                    raise self._raise(e)
-                return response_model_class(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.POST.value, url, response_model_class, 
+            json = body.model_dump(by_alias = True, exclude_defaults = True)
+        )
 
     @overload
     def _get_token_info(self, sync: Literal[True], address: str) -> GetTokenInfoResponse: ...

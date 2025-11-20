@@ -220,7 +220,7 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetQuoteResponse)
-        assert response.input_amount_raw == amount
+        assert response.input_amount_raw == str(amount)
         assert response.input_token == WSOL.address
         assert response.output_token == JUP.address
 

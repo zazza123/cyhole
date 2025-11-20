@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
 
@@ -118,6 +119,11 @@ class GetQuoteParams(BaseModel):
     def serialize_dexes(cls, dexes: list[str] | None) -> str | None:
         return ",".join(dexes) if dexes else None
 
+    @field_serializer("swap_mode")
+    @classmethod
+    def serialize_swap_mode(cls, mode: JupiterSwapMode) -> str:
+        return mode.value
+
     @field_validator("swap_mode")
     @classmethod
     def validator_swap_mode(cls, mode: str) -> str:
@@ -155,20 +161,32 @@ class GetQuoteSwapInfo(BaseModel):
     input_token: str = Field(alias = "inputMint")
     """The address of the input token on the chain used to buy."""
 
-    input_amount_raw: int = Field(alias = "inAmount")
+    input_amount_raw: str = Field(alias = "inAmount")
     """Raw amount of input token to use to buy (before decimals)."""
 
     output_token: str = Field(alias = "outputMint")
     """The address of the output token on the chain that will bought."""
 
-    output_amount_raw: int = Field(alias = "outAmount")
+    output_amount_raw: str = Field(alias = "outAmount")
     """Raw amount of output token to buy (before decimals)."""
 
     fee_token: str = Field(alias = "feeMint")
     """Fee token address."""
 
-    fee_amount_raw: int = Field(alias = "feeAmount")
+    fee_amount_raw: str = Field(alias = "feeAmount")
     """Raw amount of fee token to buy (before decimals)."""
+
+    @property
+    def input_amount(self) -> int:
+        return int(self.input_amount_raw)
+
+    @property
+    def output_amount(self) -> int:
+        return int(self.output_amount_raw)
+
+    @property
+    def fee_amount(self) -> int:
+        return int(self.fee_amount_raw)
 
 class GetQuoteRoutePlan(BaseModel):
     """
@@ -191,16 +209,16 @@ class GetQuoteResponse(BaseModel):
     input_token: str = Field(alias = "inputMint")
     """The address of the input token on the chain used to buy."""
 
-    input_amount_raw: int = Field(alias = "inAmount")
+    input_amount_raw: str = Field(alias = "inAmount")
     """Raw amount of input token to use to buy (before decimals)."""
 
     output_token: str = Field(alias = "outputMint")
     """The address of the output token on the chain that will bought."""
 
-    output_amount_raw: int = Field(alias = "outAmount")
+    output_amount_raw: str = Field(alias = "outAmount")
     """Raw amount of output token to buy (before decimals)."""
 
-    other_amount_threshold_raw: int = Field(alias = "otherAmountThreshold")
+    other_amount_threshold_raw: str = Field(alias = "otherAmountThreshold")
     """Raw calculated minimum output amount after accounting for `slippage_base_points` and `platform_fees` (before decimals)."""
 
     swap_mode: JupiterSwapMode = Field(alias = "swapMode")
@@ -227,6 +245,23 @@ class GetQuoteResponse(BaseModel):
     time_taken: float = Field(alias = "timeTaken")
     """Time taken to process the request."""
 
+    @field_serializer("swap_mode")
+    @classmethod
+    def serialize_swap_mode(cls, mode: JupiterSwapMode) -> str:
+        return mode.value
+
+    @property
+    def input_amount(self) -> int:
+        return int(self.input_amount_raw)
+
+    @property
+    def output_amount(self) -> int:
+        return int(self.output_amount_raw)
+
+    @property
+    def other_amount_threshold(self) -> int:
+        return int(self.other_amount_threshold_raw)
+
 # classes used on GET "Quote/Program ID to Label" endpoint
 class GetQuoteProgramIdLabelResponse(BaseModel):
     """
@@ -244,11 +279,15 @@ class PostSwapPriorityLevelWithMaxLamports(BaseModel):
         Model used to identify the priority level with max lamports.
     """
 
-    priority_level: int = Field(default = None, alias = "priorityLevel")
+    priority_level: Literal["low", "medium", "high"] = Field(default = None, alias = "priorityLevel")
     """Priority level."""
 
     max_lamports: int = Field(default = None, alias = "maxLamports")
-    """Max lamports."""
+    """Maximum lamports to cap the priority fee estimation, to prevent overpaying."""
+
+    global_flag: bool = Field(default = False, alias = "global")
+    """A boolean to choose between using a global or local fee market to estimate.
+        If global is set to false, the estimation focuses on fees relevant to the writable accounts involved in the instruction."""
 
 class PostSwapPrioritizationFeeLamports(BaseModel):
     """
@@ -276,20 +315,20 @@ class PostSwapBody(BaseModel):
     wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
     """To automatically wrap/unwrap SOL in the transaction.  
         Parameter will be ignored if `destination_token_account` is set because it may belong to a 
-        different user that Jupitere has no authority to close."""
+        different user that Jupiter has no authority to close."""
 
     use_shared_accounts: bool= Field(default = True, serialization_alias = "useSharedAccounts")
     """This enables the usage of shared program accounts, it is essential as complex routing 
         will require multiple intermediate token accounts which the user might not have."""
 
     fee_account: str = Field(default = None, serialization_alias = "feeAccount")
-    """An Associated Token Address (ATA) of specific mints depending on SwapMode to collect fees."""
+    """An associated Token Address (ATA) of specific mints depending on SwapMode to collect fees."""
 
     tracking_account: str = Field(default = None, serialization_alias = "trackingAccount")
     """Specify any public key that belongs to you to track the transactions.  
         Useful for integrators to get all the swap transactions from this public key."""
 
-    compute_unit_price_micro_lamports: int = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
+    compute_unit_price_micro_lamports: int | None = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
     """This number is used to specify a compute unit price to calculate priority fee; 
         `computeUnitLimit` (1400000) * `compute_unit_price_micro_lamports`.  
         Jupiter recommends using `prioritization_fee_lamports` and `dynamic_compute_unit_limit` instead of passing in a compute unit price."""
@@ -319,6 +358,14 @@ class PostSwapBody(BaseModel):
     dynamic_slippage: bool = Field(default = False, serialization_alias = "dynamicSlippage")
     """When enabled, it estimates slippage and apply it in the swap transaction directly, 
         overwriting the `GetQuoteResponse.slippage_base_points` parameter in the quote response."""
+
+    compute_unit_price_micro_lamports: int | None = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
+    """To use an exact compute unit price to calculate priority fee: `computeUnitLimit (1400000) * computeUnitPriceMicroLamports`.  
+        It is recommended using `prioritizationFeeLamports` and `dynamicComputeUnitLimit` instead of passing in your own compute unit price."""
+
+    blockhash_slots_to_expiry: int | None = Field(default = None, serialization_alias = "blockhashSlotsToExpiry")
+    """Number of slots until the blockhash expires.  
+        Example: If you pass in 10 slots, the transaction will be valid for ~400ms * 10 = approximately 4 seconds before it expires."""
 
 # Output
 class PostSwapResponse(BaseModel):
@@ -624,6 +671,11 @@ class GetUltraOrderResponse(BaseModel):
 
     dynamic_slippage_report: GetUltraOrderDynamicSlippageReport | None = Field(default = None, alias = "dynamicSlippageReport")
     """Dynamic slippage report for the swap."""
+
+    @field_serializer("swap_mode")
+    @classmethod
+    def serialize_swap_mode(cls, mode: JupiterSwapMode) -> str:
+        return mode.value
 
 # classes used on POST "Ultra - Execute Order" endpoint
 class PostUltraExecuteOrderSwapEvent(BaseModel):

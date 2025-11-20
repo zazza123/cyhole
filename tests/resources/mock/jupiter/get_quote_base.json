@@ -1,9 +1,9 @@
 {
     "inputMint": "So11111111111111111111111111111111111111112",
-    "inAmount": 1000,
+    "inAmount": "1000",
     "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-    "outAmount": 522,
-    "otherAmountThreshold": 520,
+    "outAmount": "523",
+    "otherAmountThreshold": "521",
     "swapMode": "ExactIn",
     "slippageBps": 50,
     "platformFee": null,
@@ -11,14 +11,27 @@
     "routePlan": [
         {
             "swapInfo": {
-                "ammKey": "2sf5NYcY4zUPXUSmG6f66mskb24t5F8S11pC1Nz5nQT3",
-                "label": "Meteora DLMM",
+                "ammKey": "8tpmZEtYup1UEXNqaKoXWE5eiK7yqxh9cGfh76YeCtuC",
+                "label": "PancakeSwap",
                 "inputMint": "So11111111111111111111111111111111111111112",
-                "inAmount": 1000,
-                "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-                "outAmount": 132,
+                "inAmount": "1000",
+                "outputMint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+                "outAmount": "44623",
                 "feeMint": "So11111111111111111111111111111111111111112",
-                "feeAmount": 1
+                "feeAmount": "1"
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "s3E3VmFty1mEpo1oR2HyGL47nkksqatk4bxsX5MbqT5",
+                "label": "Whirlpool",
+                "inputMint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+                "inAmount": "44623",
+                "outputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "outAmount": "144",
+                "feeMint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+                "feeAmount": "447"
             },
             "percent": 100
         },
@@ -27,15 +40,15 @@
                 "ammKey": "hKgG7iEDRFNsJSwLYqz8ETHuZwzh6qMMLow8VXa8pLm",
                 "label": "HumidiFi",
                 "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-                "inAmount": 132,
+                "inAmount": "144",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": 522,
+                "outAmount": "523",
                 "feeMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-                "feeAmount": 0
+                "feeAmount": "0"
             },
             "percent": 100
         }
     ],
-    "contextSlot": 381160622,
-    "timeTaken": 0.006065726
+    "contextSlot": 381280042,
+    "timeTaken": 0.005810423
 }
