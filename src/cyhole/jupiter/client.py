@@ -14,7 +14,6 @@ from ..jupiter.schema import (
     PostSwapInstructionsResponse,
     # Token API
     GetTokenSearchResponse,
-    GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
     # Ultra API
@@ -93,13 +92,6 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._get_token_search`][cyhole.jupiter.interaction.Jupiter._get_token_search].
         """
         return self._interaction._get_token_search(True, address)
-
-    def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
-        """
-            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/token-api/mints-in-market)** API for synchronous logic.
-            All the API endpoint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
-        """
-        return self._interaction._get_token_market_mints(True, address)
 
     def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
         """
@@ -273,13 +265,6 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_token_search`][cyhole.jupiter.interaction.Jupiter._get_token_search].
         """
         return await self._interaction._get_token_search(False, address)
-
-    async def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
-        """
-            Call the Jupiter's GET **[Token Market Mints](https://station.jup.ag/docs/api/token-api/mints-in-market)** API for asynchronous logic.
-            All the API endpoint details are available on [`Jupiter._get_token_market_mints`][cyhole.jupiter.interaction.Jupiter._get_token_market_mints].
-        """
-        return await self._interaction._get_token_market_mints(False, address)
 
     async def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
         """

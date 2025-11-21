@@ -639,16 +639,6 @@ class GetTokenSearchResponse(BaseModel):
     tokens: list[GetTokenInfo]
     """List of token addresses matching the search query."""
 
-# classes used on GET "Token Market Mints" endpoint
-class GetTokenMarketMintsResponse(BaseModel):
-    """
-        Model used to represent the GET **Token Market Mints** 
-        endpoint from Jupiter API.
-    """
-
-    mints: list[str]
-    """List of token addresses."""
-
 # classes used on GET "Token Tagged" endpoint
 class GetTokenTaggedToken(GetTokenSearchResponse):
     """
