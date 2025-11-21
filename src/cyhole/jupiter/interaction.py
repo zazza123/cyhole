@@ -18,7 +18,8 @@ from ..jupiter.schema import (
     PostSwapResponse,
     PostSwapInstructionsResponse,
     # Token API
-    GetTokenInfoResponse,
+    GetTokenInfo,
+    GetTokenSearchResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
@@ -126,7 +127,6 @@ class Jupiter(Interaction):
         self.async_client = JupiterAsyncClient(self, self.headers)
 
         # API urls
-        self.url_api_token = "https://api.jup.ag/tokens/v1/"
         self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
         self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
         self.url_api_recurring = "https://api.jup.ag/recurring/v1/"
@@ -150,6 +150,11 @@ class Jupiter(Interaction):
     def url_api_swap(self) -> str:
         """Swap API URL composed according to API tier"""
         return self.url_api_root + "/swap/v1/"
+
+    @property
+    def url_api_token(self) -> str:
+        """Token API URL composed according to API tier"""
+        return self.url_api_root + "/tokens/v2/"
 
     def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
         """
@@ -319,34 +324,45 @@ class Jupiter(Interaction):
         )
 
     @overload
-    def _get_token_info(self, sync: Literal[True], address: str) -> GetTokenInfoResponse: ...
+    def _get_token_search(self, sync: Literal[True], address: str | list[str]) -> GetTokenSearchResponse: ...
 
     @overload
-    def _get_token_info(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetTokenInfoResponse]: ...
+    def _get_token_search(self, sync: Literal[False], address: str | list[str]) -> Coroutine[None, None, GetTokenSearchResponse]: ...
 
-    def _get_token_info(self, sync: bool, address: str) -> GetTokenInfoResponse | Coroutine[None, None, GetTokenInfoResponse]:
+    def _get_token_search(self, sync: bool, address: str | list[str]) -> GetTokenSearchResponse | Coroutine[None, None, GetTokenSearchResponse]:
         """
-            This function refers to the GET **[Token](https://station.jup.ag/docs/api/token-api/token-information)** API endpoint,
-            with a specific focus on retrieving the information of a token given its address.
+            This function refers to the GET **[Token Search](https://dev.jup.ag/api-reference/tokens/v2/search)** API endpoint,
+            with a specific focus on retrieving the information of a list of token given its addresses, names or symbols.
 
             Parameters:
-                address: address of the token to check.
-                    For example, `So11111111111111111111111111111111111111112`.
+                address: list of addresses, names or symbols of the tokens to check. 
+                    For example, `So11111111111111111111111111111111111111112` or `USDC`.
 
             Returns:
-                Information of the token.
+                Information of the tokens.
         """
         # set url
-        url = self.url_api_token + address
+        url = self.url_api_token + "search"
+
+        # single
+        if isinstance(address, str):
+            address = [address]
+
+        # set params
+        params = {
+            "query" : ",".join(address)
+        }
 
         # execute request
         if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetTokenInfoResponse(**content_raw.json())
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            tokens = [GetTokenInfo(**token) for token in content_raw.json()]
+            return GetTokenSearchResponse(tokens = tokens)
         else:
             async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetTokenInfoResponse(**content_raw.json())
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                tokens = [GetTokenInfo(**token) for token in content_raw.json()]
+                return GetTokenSearchResponse(tokens = tokens)
             return async_request()
 
     @overload

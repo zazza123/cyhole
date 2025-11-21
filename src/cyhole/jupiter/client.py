@@ -13,7 +13,7 @@ from ..jupiter.schema import (
     PostSwapResponse,
     PostSwapInstructionsResponse,
     # Token API
-    GetTokenInfoResponse,
+    GetTokenSearchResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
@@ -87,12 +87,12 @@ class JupiterClient(APIClient):
         """
         return self._interaction._post_swap(True, body, True)
 
-    def get_token_info(self, address: str) -> GetTokenInfoResponse:
+    def get_token_search(self, address: str | list[str]) -> GetTokenSearchResponse:
         """
-            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-api/token-information)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
+            Call the Jupiter's GET **[Token Search](https://dev.jup.ag/api-reference/tokens/v2/search)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_search`][cyhole.jupiter.interaction.Jupiter._get_token_search].
         """
-        return self._interaction._get_token_info(True, address)
+        return self._interaction._get_token_search(True, address)
 
     def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
         """
@@ -267,12 +267,12 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._post_swap(False, body, True)
 
-    async def get_token_info(self, address: str) -> GetTokenInfoResponse:
+    async def get_token_search(self, address: str | list[str]) -> GetTokenSearchResponse:
         """
-            Call the Jupiter's GET **[Token](https://station.jup.ag/docs/api/token-api/token-information)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_token_info`][cyhole.jupiter.interaction.Jupiter._get_token_info].
+            Call the Jupiter's GET **[Token Search](https://dev.jup.ag/api-reference/tokens/v2/search)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_search`][cyhole.jupiter.interaction.Jupiter._get_token_search].
         """
-        return await self._interaction._get_token_info(False, address)
+        return await self._interaction._get_token_search(False, address)
 
     async def get_token_market_mints(self, address: str) -> GetTokenMarketMintsResponse:
         """

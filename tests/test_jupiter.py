@@ -12,7 +12,7 @@ from cyhole.jupiter.schema import (
     PostSwapBody,
     PostSwapResponse,
     PostSwapInstructionsResponse,
-    GetTokenInfoResponse,
+    GetTokenSearchResponse,
     GetTokenMarketMintsResponse,
     GetTokenTaggedResponse,
     GetTokenNewResponse,
@@ -574,51 +574,51 @@ class TestJupiter:
         # actual test
         assert isinstance(response, PostSwapInstructionsResponse)
 
-    def test_get_token_info_sync(self, mocker: MockerFixture) -> None:
+    def test_get_token_search_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Token Info" 
+            Unit Test used to check the response schema of endpoint "Token Search" 
             for synchronous logic.
 
-            Mock Response File: get_token_info.json
+            Mock Response File: get_token_search.json
         """
 
         # load mock response
-        mock_file_name = "get_token_info"
+        mock_file_name = "get_token_search"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenInfoResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSearchResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_token_info(JUP.address)
+        response = self.jupiter.client.get_token_search(JUP.address)
 
         # actual test
-        assert isinstance(response, GetTokenInfoResponse)
+        assert isinstance(response, GetTokenSearchResponse)
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_token_info_async(self, mocker: MockerFixture) -> None:
+    async def test_get_token_search_async(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint "Token Info" 
             for synchronous logic.
 
-            Mock Response File: get_token_info.json
+            Mock Response File: get_token_search.json
         """
 
         # load mock response
-        mock_file_name = "get_token_info"
+        mock_file_name = "get_token_search"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenInfoResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenSearchResponse)
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_token_info(JUP.address)
+            response = await client.get_token_search([JUP.address, WSOL.address])
 
         # actual test
-        assert isinstance(response, GetTokenInfoResponse)
+        assert isinstance(response, GetTokenSearchResponse)
 
     def test_get_token_market_mints_sync(self, mocker: MockerFixture) -> None:
         """

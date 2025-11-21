@@ -3,7 +3,17 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
 
-from ..jupiter.param import JupiterSwapMode, JupiterSwapDex, JupiterOrderState, JupiterSwapType, JupiterEnvironmentType, JupiterPrioritizationType, JupiterSwapExecutionStatus, JupiterOrderStatus
+from ..jupiter.param import (
+    JupiterSwapMode,
+    JupiterSwapDex,
+    JupiterOrderState,
+    JupiterSwapType,
+    JupiterEnvironmentType,
+    JupiterPrioritizationType,
+    JupiterSwapExecutionStatus,
+    JupiterOrderStatus,
+    JupiterOrganicScore
+)
 
 # class used on Jupiter HTTPErrors
 class JupiterHTTPError(BaseModel):
@@ -436,51 +446,198 @@ class PostSwapInstructionsResponse(BaseModel):
 # * Token API *
 # *************
 
-# classes used on GET "Token Info" endpoint
-class GetTokenInfoResponse(BaseModel):
-    """
-        Model representing the response object from the GET
-        "**Token Info**" endpoint from Jupiter API.
-    """
+class GetTokenInfoAudit(BaseModel):
+    """General class holding audit information about a token."""
+
+    is_suspicious: bool | None = Field(default = None, alias = "isSus")
+    """The token is considered suspicious."""
+
+    mint_authority_disabled: bool | None = Field(default = None, alias = "mintAuthorityDisabled")
+    """Check if the mint authority is disabled."""
+
+    freeze_authority_disabled: bool | None = Field(default = None, alias = "freezeAuthorityDisabled")
+    """Check if the freeze authority is disabled."""
+
+    top_holders_percentage: float | None = Field(default = None, alias = "topHoldersPercentage")
+    """Percentage of the top holders."""
+
+    dev_balance_percentage: float | None = Field(default = None, alias = "devBalancePercentage")
+    """Percentage of the developer balance."""
+
+    dev_migrations: float | None = Field(default = None, alias = "devMigrations")
+    """Number of developer migrations."""
+
+class GetTokenInfoFirstPool(BaseModel):
+    """General class holding information about the first pool of a token."""
+
+    id: str
+    """The pool's ID."""
+
+    created_at: str = Field(alias = "createdAt")
+    """The pool's creation timestamp."""
+
+class GetTokenInfoStatistics(BaseModel):
+    """General class holding statistics information about a token in a period of time."""
+
+    price_change: float | None = Field(default = None, alias = "priceChange")
+    """Price change in percentage."""
+
+    holder_change: float | None = Field(default = None, alias = "holderChange")
+    """Holder change in percentage."""
+
+    liquidity_change: float | None = Field(default = None, alias = "liquidityChange")
+    """Liquidity change in percentage."""
+
+    volume_change: float | None = Field(default = None, alias = "volumeChange")
+    """Volume change in percentage."""
+
+    buy_volume: float | None = Field(default = None, alias = "buyVolume")
+    """Buy volume in percentage."""
+
+    sell_volume: float | None = Field(default = None, alias = "sellVolume")
+    """Sell volume in percentage."""
+
+    buy_organic_volume: float | None = Field(default = None, alias = "buyOrganicVolume")
+    """Buy organic volume in percentage."""
+
+    sell_organic_volume: float | None = Field(default = None, alias = "sellOrganicVolume")
+    """Sell organic volume in percentage."""
+
+    num_buys: int | None = Field(default = None, alias = "numBuys")
+    """Number of buys."""
+
+    num_sells: int | None = Field(default = None, alias = "numSells")
+    """Number of sells."""
+
+    num_traders: int | None = Field(default = None, alias = "numTraders")
+    """Number of traders."""
+
+    num_organic_buyers: int | None = Field(default = None, alias = "numOrganicBuyers")
+    """Number of organic buyers."""
+
+    num_net_buyers: int | None = Field(default = None, alias = "numNetBuyers")
+    """Number of net buyers."""
+
+class GetTokenInfo(BaseModel):
+    """General class identifing a token on the chain and all its information."""
+
+    id: str
+    """The token's mint address."""
 
     name: str
-    """Name of the token."""
-
-    address: str
-    """Chain address of the token."""
+    """The token's name."""
 
     symbol: str
-    """Symbol of the token."""
+    """The token's symbol."""
+
+    icon: str | None = None
+    """The token's icon URL."""
 
     decimals: int
-    """Decimals of the token."""
+    """The token's decimals."""
 
-    created_at: datetime
-    """Date and time when the token was created."""
+    twitter: str | None = None
+    """The token's Twitter URL."""
 
-    logoURI: str | None = None
-    """URI of the token logo."""
+    telegram: str | None = None
+    """The token's Telegram URL."""
 
-    tags: list[str] | None = None
+    website: str | None = None
+    """The token's website URL."""
+
+    dev: str | None = None
+    """The token's developer URL."""
+
+    circ_supply: float | None = Field(default = None, alias = "circSupply")
+    """The token's circulating supply."""
+
+    total_supply: float | None = Field(default = None, alias = "totalSupply")
+    """The token's total supply."""
+
+    token_program: str | None = Field(default = None, alias = "tokenProgram")
+    """The token program address."""
+
+    launchpad: str | None = Field(default = None, alias = "launchpad")
+    """The token launchpad address."""
+
+    partner_config: str | None = Field(default = None, alias = "partnerConfig")
+    """The token partner config address."""
+
+    graduated_pool: str | None = Field(default = None, alias = "graduatedPool")
+    """The token graduated pool address."""
+
+    graduated_at: str | None = Field(default = None, alias = "graduatedAt")
+    """The token graduated at timestamp."""
+
+    holder_count: int | None = Field(default = None, alias = "holderCount")
+    """The token holder count."""
+
+    fully_diluted_valuation: float | None = Field(default = None, alias = "fdv")
+    """The token fully diluted valuation."""
+
+    market_cap: float | None = Field(default = None, alias = "mcap")
+    """The token market capitalization."""
+
+    usd_price: float | None = Field(default = None, alias = "usdPrice")
+    """The token price in USD."""
+
+    price_block_id: int | None = Field(default = None, alias = "priceBlockId")
+    """The block ID of the token price."""
+
+    liquidity: float | None = Field(default = None, alias = "liquidity")
+    """The token liquidity."""
+
+    stats_5m: GetTokenInfoStatistics | None = Field(default = None, alias = "stats5m")
+    """The token statistics over the last 5 minutes."""
+
+    stats_1h: GetTokenInfoStatistics | None = Field(default = None, alias = "stats1h")
+    """The token statistics over the last 1 hour."""
+
+    stats_6h: GetTokenInfoStatistics | None = Field(default = None, alias = "stats6h")
+    """The token statistics over the last 6 hours."""
+
+    stats_24h: GetTokenInfoStatistics | None = Field(default = None, alias = "stats24h")
+    """The token statistics over the last 24 hours."""
+
+    stats_7d: GetTokenInfoStatistics | None = Field(default = None, alias = "stats7d")
+    """The token statistics over the last 7 days."""
+
+    stats_30d: GetTokenInfoStatistics | None = Field(default = None, alias = "stats30d")
+    """The token statistics over the last 30 days."""
+
+    first_pool: GetTokenInfoFirstPool | None = Field(default = None, alias = "firstPool")
+    """The token first pool information."""
+
+    audit: GetTokenInfoAudit | None = None
+    """The token audit information."""
+
+    organic_score: float = Field(alias = "organicScore")
+    """The token organic score."""
+
+    organic_score_label: JupiterOrganicScore = Field(alias = "organicScoreLabel")
+    """The token organic score label."""
+
+    is_verified: bool | None = Field(default = None, alias = "isVerified")
+    """Whether the token is verified."""
+
+    cexes: list[str] | None = Field(default = None, alias = "cexes")
+    """List of centralized exchanges where the token is listed."""
+
+    tags: list[str] | None = Field(default = None, alias = "tags")
     """List of tags associated with the token."""
 
-    daily_volume: float | None = None
-    """Daily volume of the token."""
+    updated_at: str | None = Field(default = None, alias = "updatedAt")
+    """Date and time when the token was last updated."""
 
-    freeze_authority: str | None = None
-    """Address of the freeze authority of the token."""
+# classes used on GET "Token Search" endpoint
+class GetTokenSearchResponse(BaseModel):
+    """
+        Model representing the response object from the GET
+        "**Token Search**" endpoint from Jupiter API.
+    """
 
-    mint_authority: str | None = None
-    """Address of the mint authority of the token."""
-
-    minted_at: datetime | None = None
-    """Date and time when the token was minted."""
-
-    permanent_delegate: str | None = None
-    """Address of the permanent delegate of the token."""
-
-    extensions: dict[str, str] | None = None
-    """Extensions of the token (sites)."""
+    tokens: list[GetTokenInfo]
+    """List of token addresses matching the search query."""
 
 # classes used on GET "Token Market Mints" endpoint
 class GetTokenMarketMintsResponse(BaseModel):
@@ -493,7 +650,7 @@ class GetTokenMarketMintsResponse(BaseModel):
     """List of token addresses."""
 
 # classes used on GET "Token Tagged" endpoint
-class GetTokenTaggedToken(GetTokenInfoResponse):
+class GetTokenTaggedToken(GetTokenSearchResponse):
     """
         Model used to represent a token information 
         on the GET **Token Tagged** endpoint.

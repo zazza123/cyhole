@@ -106,8 +106,11 @@ The documentation follows the library's structure by providing all the technical
 | Quote Tokens | `GET` | [`get_quote_tokens`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote_tokens) | `0.1.0` | - |
 | Quote Program ID to Label | `GET` | [`get_quote_program_id_label`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote_program_id_label) | `0.1.0` | - |
 | Swap | `POST` | [`post_swap`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap) | `0.1.0` | - |
-| Token Info | `GET` | [`get_token_info`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_info) | `0.2.5` | - |
-| Token List | `GET` | [`get_token_list`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_list) | `0.1.0` | - |
+| Token Search | `GET` | [`get_token_search`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_search) | `0.2.5` | - |
+| Token Tag | `GET` | [`get_token_tag`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_tag) | `0.2.5` | - |
+| Token Category | `GET` | [`get_token_category`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_category) | `0.2.5` | - |
+| Token Recent | `GET` | [`get_token_recent`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_recent) | `0.2.5` | - |
+| Token List | `GET` | `get_token_list` | `0.1.0` | `0.2.5` |
 | Limit Order - Create | `POST` | [`post_limit_order_create`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_create) | `0.1.0` | - |
 | Limit Order - Cancel | `POST` | [`post_limit_order_cancel`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_cancel) | `0.1.0` | - |
 | Limit Order - Open | `GET` | [`get_limit_order_open`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_limit_order_open) | `0.1.0` | - |

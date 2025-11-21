@@ -164,3 +164,15 @@ class JupiterWithdrawMode(CyholeParam):
     """Withdraw in mode."""
     OUT = "Out"
     """Withdraw out mode."""
+
+class JupiterOrganicScore(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's 
+        organic score types.
+    """
+    HIGH = "high"
+    """Tokens with high organic score."""
+    MEDIUM = "medium"
+    """Tokens with medium organic score."""
+    LOW = "low"
+    """Tokens with low organic score."""
