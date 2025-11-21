@@ -639,21 +639,14 @@ class GetTokenSearchResponse(BaseModel):
     tokens: list[GetTokenInfo]
     """List of token addresses matching the search query."""
 
-# classes used on GET "Token Tagged" endpoint
-class GetTokenTaggedToken(GetTokenSearchResponse):
+# classes used on GET "Token Tag" endpoint
+class GetTokenTagResponse(BaseModel):
     """
-        Model used to represent a token information 
-        on the GET **Token Tagged** endpoint.
-    """
-    pass
-
-class GetTokenTaggedResponse(BaseModel):
-    """
-        Model used to represent the GET **Token Tagged** 
+        Model used to represent the GET **Token Tag** 
         endpoint from Jupiter API.
     """
 
-    tokens: list[GetTokenTaggedToken]
+    tokens: list[GetTokenInfo]
     """List of tokens and information."""
 
 # classes used on GET "Token New" endpoint

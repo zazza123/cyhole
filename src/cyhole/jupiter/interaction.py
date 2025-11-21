@@ -20,7 +20,7 @@ from ..jupiter.schema import (
     # Token API
     GetTokenInfo,
     GetTokenSearchResponse,
-    GetTokenTaggedResponse,
+    GetTokenTagResponse,
     GetTokenNewResponse,
     # Ultra API
     GetUltraOrderResponse,
@@ -365,14 +365,14 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_token_tagged(self, sync: Literal[True], tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse: ...
+    def _get_token_tag(self, sync: Literal[True], tag: str | JupiterTokenTagType) -> GetTokenTagResponse: ...
 
     @overload
-    def _get_token_tagged(self, sync: Literal[False], tag: str | JupiterTokenTagType) -> Coroutine[None, None, GetTokenTaggedResponse]: ...
+    def _get_token_tag(self, sync: Literal[False], tag: str | JupiterTokenTagType) -> Coroutine[None, None, GetTokenTagResponse]: ...
 
-    def _get_token_tagged(self, sync: bool, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse | Coroutine[None, None, GetTokenTaggedResponse]:
+    def _get_token_tag(self, sync: bool, tag: str | JupiterTokenTagType) -> GetTokenTagResponse | Coroutine[None, None, GetTokenTagResponse]:
         """
-            This function refers to the GET **[Tagged Token](https://station.jup.ag/docs/api/token-api/tagged)** API endpoint, 
+            This function refers to the GET **[Token Tag](https://dev.jup.ag/api-reference/tokens/v2/tag)** API endpoint, 
             and it is used to retrieved the list of tokens eligible for trading, managed by Jupiter.  
             Choose the tokens list according to `tag` field.
 
@@ -388,16 +388,19 @@ class Jupiter(Interaction):
         JupiterTokenTagType.check(tag_str)
 
         # set params
-        url = self.url_api_token + "tagged/" + tag_str
+        url = self.url_api_token + "tag"
+        params = {
+            "query" : tag_str
+        }
 
         # execute request
         if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetTokenTaggedResponse(tokens = content_raw.json())
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetTokenTagResponse(tokens = content_raw.json())
         else:
             async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetTokenTaggedResponse(tokens = content_raw.json())
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetTokenTagResponse(tokens = content_raw.json())
             return async_request()
 
     @overload

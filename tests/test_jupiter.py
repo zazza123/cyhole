@@ -13,7 +13,7 @@ from cyhole.jupiter.schema import (
     PostSwapResponse,
     PostSwapInstructionsResponse,
     GetTokenSearchResponse,
-    GetTokenTaggedResponse,
+    GetTokenTagResponse,
     GetTokenNewResponse,
     PostTriggerCreateOrderParams,
     GetUltraOrderResponse,
@@ -619,18 +619,18 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetTokenSearchResponse)
 
-    def test_get_token_tagged_sync(self, mocker: MockerFixture) -> None:
+    def test_get_token_tag_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Tagged Token" 
+            Unit Test used to check the response schema of endpoint "Token Tag" 
             for synchronous logic.
 
-            Mock Response File: get_token_tagged.json
+            Mock Response File: get_token_tag.json
         """
 
         # load mock response
-        mock_file_name = "get_token_tagged"
+        mock_file_name = "get_token_tag"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTaggedResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTagResponse)
 
             # response content to be adjusted
             content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
@@ -639,10 +639,10 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_token_tagged(JupiterTokenTagType.MOONSHOT)
+        response = self.jupiter.client.get_token_tag(JupiterTokenTagType.VERIFIED)
 
         # actual test
-        assert isinstance(response, GetTokenTaggedResponse)
+        assert isinstance(response, GetTokenTagResponse)
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -650,18 +650,18 @@ class TestJupiter:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_token_tagged_async(self, mocker: MockerFixture) -> None:
+    async def test_get_token_tag_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Tagged Token" 
+            Unit Test used to check the response schema of endpoint "Token Tag" 
             for asynchronous logic.
 
-            Mock Response File: get_token_tagged.json
+            Mock Response File: get_token_tag.json
         """
 
         # load mock response
-        mock_file_name = "get_token_tagged"
+        mock_file_name = "get_token_tag"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTaggedResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenTagResponse)
 
             # response content to be adjusted
             content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
@@ -671,10 +671,10 @@ class TestJupiter:
 
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_token_tagged("moonshot")
+            response = await client.get_token_tag("lst")
 
         # actual test
-        assert isinstance(response, GetTokenTaggedResponse)
+        assert isinstance(response, GetTokenTagResponse)
 
     def test_get_token_new_sync(self, mocker: MockerFixture) -> None:
         """

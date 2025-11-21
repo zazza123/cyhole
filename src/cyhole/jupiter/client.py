@@ -14,7 +14,7 @@ from ..jupiter.schema import (
     PostSwapInstructionsResponse,
     # Token API
     GetTokenSearchResponse,
-    GetTokenTaggedResponse,
+    GetTokenTagResponse,
     GetTokenNewResponse,
     # Ultra API
     GetUltraOrderResponse,
@@ -100,12 +100,12 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_token_new(True, limit, offset)
 
-    def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
+    def get_token_tag(self, tag: str | JupiterTokenTagType) -> GetTokenTagResponse:
         """
-            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/token-api/tagged)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
+            Call the Jupiter's GET **[Token Tag](https://dev.jup.ag/api-reference/tokens/v2/tag)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_tag`][cyhole.jupiter.interaction.Jupiter._get_token_tag].
         """
-        return self._interaction._get_token_tagged(True, tag)
+        return self._interaction._get_token_tag(True, tag)
 
     def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """
@@ -266,12 +266,12 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_search(False, address)
 
-    async def get_token_tagged(self, tag: str | JupiterTokenTagType) -> GetTokenTaggedResponse:
+    async def get_token_tag(self, tag: str | JupiterTokenTagType) -> GetTokenTagResponse:
         """
-            Call the Jupiter's GET **[Tagged Token]https://station.jup.ag/docs/api/token-api/tagged)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_token_tagged`][cyhole.jupiter.interaction.Jupiter._get_token_tagged].
+            Call the Jupiter's GET **[Token Tag](https://dev.jup.ag/api-reference/tokens/v2/tag)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_tag`][cyhole.jupiter.interaction.Jupiter._get_token_tag].
         """
-        return await self._interaction._get_token_tagged(False, tag)
+        return await self._interaction._get_token_tag(False, tag)
 
     async def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
         """
