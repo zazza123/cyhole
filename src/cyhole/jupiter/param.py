@@ -137,6 +137,23 @@ class JupiterTokenTagType(CyholeParam):
         standard of Jupiter Strict.
     """
 
+class JupiterTokenCategory(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's token category types.
+    """
+    TOP_ORGANIC_SCORE = "toporganicscore"
+    TOP_TRADED = "toptraded"
+    TOP_TRENDING = "toptrending"
+
+class JupiterTokenInterval(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's token interval types.
+    """
+    FIVE_MINUTES = "5m"
+    ONE_HOUR = "1h"
+    SIX_HOURS = "6h"
+    TWENTY_FOUR_HOURS = "24h"
+
 class JupiterRecurringType(CyholeParam):
     """
         Enum class to get the supported Jupiter's 

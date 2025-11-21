@@ -640,14 +640,20 @@ class GetTokenSearchResponse(BaseModel):
     """List of token addresses matching the search query."""
 
 # classes used on GET "Token Tag" endpoint
-class GetTokenTagResponse(BaseModel):
+class GetTokenTagResponse(GetTokenSearchResponse):
     """
         Model used to represent the GET **Token Tag** 
         endpoint from Jupiter API.
     """
+    pass
 
-    tokens: list[GetTokenInfo]
-    """List of tokens and information."""
+# classes used on GET "Token Category" endpoint
+class GetTokenCategoryResponse(GetTokenSearchResponse):
+    """
+        Model used to represent the GET **Token Category** 
+        endpoint from Jupiter API.
+    """
+    pass
 
 # classes used on GET "Token New" endpoint
 class GetTokenNewToken(BaseModel):

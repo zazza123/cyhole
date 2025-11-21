@@ -21,6 +21,7 @@ from ..jupiter.schema import (
     GetTokenInfo,
     GetTokenSearchResponse,
     GetTokenTagResponse,
+    GetTokenCategoryResponse,
     GetTokenNewResponse,
     # Ultra API
     GetUltraOrderResponse,
@@ -51,6 +52,8 @@ from ..jupiter.exception import (
 from ..jupiter.param import (
     JupiterApiTier,
     JupiterTokenTagType,
+    JupiterTokenCategory,
+    JupiterTokenInterval,
     JupiterOrderStatus,
     JupiterRecurringType,
     JupiterWithdrawMode
@@ -401,6 +404,44 @@ class Jupiter(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetTokenTagResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_category(self, sync: Literal[True], category: str | JupiterTokenCategory, interval: str | JupiterTokenInterval) -> GetTokenCategoryResponse: ...
+
+    @overload
+    def _get_token_category(self, sync: Literal[False], category: str | JupiterTokenCategory, interval: str | JupiterTokenInterval) -> Coroutine[None, None, GetTokenCategoryResponse]: ...
+
+    def _get_token_category(self, sync: bool, category: str | JupiterTokenCategory, interval: str | JupiterTokenInterval) -> GetTokenCategoryResponse | Coroutine[None, None, GetTokenCategoryResponse]:
+        """
+            This function refers to the GET **[Token Category](https://dev.jup.ag/api-reference/tokens/v2/category)** API endpoint, 
+            and it is used to retrieved the list of token according to a category in a specific interval.
+
+            Parameters:
+                category: category to filter by.
+                interval: time range to consider to extract.
+
+            Returns:
+                List of Jupiter's tokens list.
+        """
+        # check inputs
+        category_str = category if isinstance(category, str) else category.value
+        JupiterTokenCategory.check(category_str)
+
+        interval_str = interval if isinstance(interval, str) else interval.value
+        JupiterTokenInterval.check(interval_str)
+
+        # set params
+        url = self.url_api_token + f"{category_str}/{interval_str}"
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetTokenCategoryResponse(tokens = content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetTokenCategoryResponse(tokens = content_raw.json())
             return async_request()
 
     @overload

@@ -15,6 +15,7 @@ from ..jupiter.schema import (
     # Token API
     GetTokenSearchResponse,
     GetTokenTagResponse,
+    GetTokenCategoryResponse,
     GetTokenNewResponse,
     # Ultra API
     GetUltraOrderResponse,
@@ -35,7 +36,14 @@ from ..jupiter.schema import (
     PostRecurringCancelOrderResponse,
     PostRecurringExecuteResponse
 )
-from ..jupiter.param import JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
+from ..jupiter.param import (
+    JupiterTokenTagType,
+    JupiterTokenCategory,
+    JupiterTokenInterval,
+    JupiterOrderStatus,
+    JupiterRecurringType,
+    JupiterWithdrawMode
+)
 
 if TYPE_CHECKING:
     from ..jupiter.interaction import Jupiter
@@ -106,6 +114,13 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._get_token_tag`][cyhole.jupiter.interaction.Jupiter._get_token_tag].
         """
         return self._interaction._get_token_tag(True, tag)
+
+    def get_token_category(self, category: str | JupiterTokenCategory, interval: str | JupiterTokenInterval) -> GetTokenCategoryResponse:
+        """
+            Call the Jupiter's GET **[Token Category](https://dev.jup.ag/api-reference/tokens/v2/category)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_category`][cyhole.jupiter.interaction.Jupiter._get_token_category].
+        """
+        return self._interaction._get_token_category(True, category, interval)
 
     def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """
@@ -279,6 +294,13 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
         """
         return await self._interaction._get_token_new(False, limit, offset)
+
+    async def get_token_category(self, category: str | JupiterTokenCategory, interval: str | JupiterTokenInterval) -> GetTokenCategoryResponse:
+        """
+            Call the Jupiter's GET **[Token Category](https://dev.jup.ag/api-reference/tokens/v2/category)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_category`][cyhole.jupiter.interaction.Jupiter._get_token_category].
+        """
+        return await self._interaction._get_token_category(False, category, interval)
 
     async def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """

@@ -14,6 +14,7 @@ from cyhole.jupiter.schema import (
     PostSwapInstructionsResponse,
     GetTokenSearchResponse,
     GetTokenTagResponse,
+    GetTokenCategoryResponse,
     GetTokenNewResponse,
     PostTriggerCreateOrderParams,
     GetUltraOrderResponse,
@@ -30,7 +31,7 @@ from cyhole.jupiter.schema import (
     PostRecurringDepositPriceResponse,
     PostRecurringCancelOrderResponse
 )
-from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
+from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
 from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
 from cyhole.core.token.ethereum import WETH
@@ -675,6 +676,63 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetTokenTagResponse)
+
+    def test_get_token_category_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token Category" 
+            for synchronous logic.
+
+            Mock Response File: get_token_category.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_category"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenCategoryResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_token_category(JupiterTokenCategory.TOP_TRENDING, JupiterTokenInterval.FIVE_MINUTES)
+
+        # actual test
+        assert isinstance(response, GetTokenCategoryResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            response.tokens = response.tokens[0:2]
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_category_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token Category" 
+            for asynchronous logic.
+
+            Mock Response File: get_token_category.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_category"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenCategoryResponse)
+
+            # response content to be adjusted
+            content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
+            mock_response._content = content
+
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_token_category("toporganicscore", "5m")
+
+        # actual test
+        assert isinstance(response, GetTokenCategoryResponse)
 
     def test_get_token_new_sync(self, mocker: MockerFixture) -> None:
         """
