@@ -16,7 +16,7 @@ from ..jupiter.schema import (
     GetTokenSearchResponse,
     GetTokenTagResponse,
     GetTokenCategoryResponse,
-    GetTokenNewResponse,
+    GetTokenRecentResponse,
     # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
@@ -101,13 +101,6 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_token_search(True, address)
 
-    def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
-        """
-            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/token-api/new)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
-        """
-        return self._interaction._get_token_new(True, limit, offset)
-
     def get_token_tag(self, tag: str | JupiterTokenTagType) -> GetTokenTagResponse:
         """
             Call the Jupiter's GET **[Token Tag](https://dev.jup.ag/api-reference/tokens/v2/tag)** API endpoint for synchronous logic. 
@@ -121,6 +114,13 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._get_token_category`][cyhole.jupiter.interaction.Jupiter._get_token_category].
         """
         return self._interaction._get_token_category(True, category, interval)
+
+    def get_token_recent(self) -> GetTokenRecentResponse:
+        """
+            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_recent`][cyhole.jupiter.interaction.Jupiter._get_token_recent].
+        """
+        return self._interaction._get_token_recent(True)
 
     def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """
@@ -288,19 +288,19 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_tag(False, tag)
 
-    async def get_token_new(self, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse:
-        """
-            Call the Jupiter's GET **[New Token](https://station.jup.ag/docs/api/token-api/new)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_token_new`][cyhole.jupiter.interaction.Jupiter._get_token_new].
-        """
-        return await self._interaction._get_token_new(False, limit, offset)
-
     async def get_token_category(self, category: str | JupiterTokenCategory, interval: str | JupiterTokenInterval) -> GetTokenCategoryResponse:
         """
             Call the Jupiter's GET **[Token Category](https://dev.jup.ag/api-reference/tokens/v2/category)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_token_category`][cyhole.jupiter.interaction.Jupiter._get_token_category].
         """
         return await self._interaction._get_token_category(False, category, interval)
+
+    async def get_token_recent(self) -> GetTokenRecentResponse:
+        """
+            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_token_recent`][cyhole.jupiter.interaction.Jupiter._get_token_recent].
+        """
+        return await self._interaction._get_token_recent(False)
 
     async def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
         """

@@ -15,7 +15,7 @@ from cyhole.jupiter.schema import (
     GetTokenSearchResponse,
     GetTokenTagResponse,
     GetTokenCategoryResponse,
-    GetTokenNewResponse,
+    GetTokenRecentResponse,
     PostTriggerCreateOrderParams,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
@@ -734,18 +734,18 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetTokenCategoryResponse)
 
-    def test_get_token_new_sync(self, mocker: MockerFixture) -> None:
+    def test_get_token_recent_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "New Token" 
+            Unit Test used to check the response schema of endpoint "Token Recent" 
             for synchronous logic.
 
-            Mock Response File: get_token_new.json
+            Mock Response File: get_token_recent.json
         """
 
         # load mock response
-        mock_file_name = "get_token_new"
+        mock_file_name = "get_token_recent"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenNewResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenRecentResponse)
 
             # response content to be adjusted
             content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
@@ -754,10 +754,10 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_token_new()
+        response = self.jupiter.client.get_token_recent()
 
         # actual test
-        assert isinstance(response, GetTokenNewResponse)
+        assert isinstance(response, GetTokenRecentResponse)
 
         # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
@@ -765,18 +765,18 @@ class TestJupiter:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_token_new_async(self, mocker: MockerFixture) -> None:
+    async def test_get_token_recent_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "New Token" 
+            Unit Test used to check the response schema of endpoint "Token Recent" 
             for asynchronous logic.
 
-            Mock Response File: get_token_new.json
+            Mock Response File: get_token_recent.json
         """
 
         # load mock response
-        mock_file_name = "get_token_new"
+        mock_file_name = "get_token_recent"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenNewResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenRecentResponse)
 
             # response content to be adjusted
             content = self.mocker.adjust_content_json(str(mock_response.json()["tokens"]))
@@ -786,10 +786,10 @@ class TestJupiter:
 
         # execute request
         async with self.jupiter.async_client as client:
-            response = await client.get_token_new()
+            response = await client.get_token_recent()
 
         # actual test
-        assert isinstance(response, GetTokenNewResponse)
+        assert isinstance(response, GetTokenRecentResponse)
 
     def test_get_ultra_order_sync(self, mocker: MockerFixture) -> None:
         """

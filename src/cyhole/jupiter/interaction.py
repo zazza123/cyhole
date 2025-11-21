@@ -22,7 +22,7 @@ from ..jupiter.schema import (
     GetTokenSearchResponse,
     GetTokenTagResponse,
     GetTokenCategoryResponse,
-    GetTokenNewResponse,
+    GetTokenRecentResponse,
     # Ultra API
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
@@ -445,38 +445,30 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_token_new(self, sync: Literal[True], limit: int = 10, offset: int | None = None) -> GetTokenNewResponse: ...
+    def _get_token_recent(self, sync: Literal[True]) -> GetTokenRecentResponse: ...
 
     @overload
-    def _get_token_new(self, sync: Literal[False], limit: int = 10, offset: int | None = None) -> Coroutine[None, None, GetTokenNewResponse]: ...
+    def _get_token_recent(self, sync: Literal[False]) -> Coroutine[None, None, GetTokenRecentResponse]: ...
 
-    def _get_token_new(self, sync: bool, limit: int = 10, offset: int | None = None) -> GetTokenNewResponse | Coroutine[None, None, GetTokenNewResponse]:
+    def _get_token_recent(self, sync: bool) -> GetTokenRecentResponse | Coroutine[None, None, GetTokenRecentResponse]:
         """
-            This function refers to the GET **[New Token](https://station.jup.ag/docs/api/token-api/new)** API endpoint, 
-            and it is used to retrieved the list of new tokens managed by Jupiter.
-
-            Parameters:
-                limit: number of tokens to retrieve.
-                offset: number of tokens to skip.
+            This function refers to the GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint, 
+            and it is used to retrieved the list of new tokens in the last 30 minutes.
 
             Returns:
                 List of Jupiter's tokens list.
         """
         # set params
-        url = self.url_api_token + "new"
-        params = {
-            "limit": limit,
-            "offset": offset
-        }
+        url = self.url_api_token + "recent"
 
         # execute request
         if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenNewResponse(tokens = content_raw.json())
+            content_raw = self.client.api(RequestType.GET.value, url)
+            return GetTokenRecentResponse(tokens = content_raw.json())
         else:
             async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenNewResponse(tokens = content_raw.json())
+                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                return GetTokenRecentResponse(tokens = content_raw.json())
             return async_request()
 
     @overload

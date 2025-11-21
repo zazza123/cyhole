@@ -656,50 +656,12 @@ class GetTokenCategoryResponse(GetTokenSearchResponse):
     pass
 
 # classes used on GET "Token New" endpoint
-class GetTokenNewToken(BaseModel):
+class GetTokenRecentResponse(GetTokenSearchResponse):
     """
         Model used to represent a token information 
-        on the GET **Token New** endpoint.
+        on the GET **Token Recent** endpoint.
     """
-
-    mint: str
-    """Chain address of the token."""
-
-    name: str
-    """Name of the token."""
-
-    symbol: str
-    """Symbol of the token."""
-
-    decimals: int
-    """Decimals of the token."""
-
-    created_at_unix: int = Field(alias = "created_at")
-    """Date and time when the token was created in UNIX format."""
-
-    known_markets: list[str]
-    """List of markets where the token is traded."""
-
-    metadata_updated_at_unix: int = Field(alias = "metadata_updated_at")
-    """Date and time when the token metadata was updated in UNIX format."""
-
-    logo_uri: str | None = None
-    """URI of the token logo."""
-
-    mint_authority: str | None = None
-    """Address of the mint authority of the token."""
-
-    freeze_authority: str | None = None
-    """Address of the freeze authority of the token."""
-
-class GetTokenNewResponse(BaseModel):
-    """
-        Model used to represent the GET **Token New** 
-        endpoint from Jupiter API.
-    """
-
-    tokens: list[GetTokenNewToken]
-    """List of tokens with information."""
+    pass
 
 # *************
 # * Ultra API *
