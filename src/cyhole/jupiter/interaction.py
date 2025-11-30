@@ -512,7 +512,7 @@ class Jupiter(Interaction):
 
     def _post_ultra_execute_order(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse | Coroutine[None, None, PostUltraExecuteOrderResponse]:
         """
-            This function refers to the POST **[Ultra - Execute Order](https://station.jup.ag/docs/ultra-api/execute-order)** API endpoint, 
+            This function refers to the POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint, 
             and it is used to execute a swap order created using the Jupiter Ultra API "GET Order" endpoint (`get_ultra_order`). 
 
             First, it is required to initialize a swap order using the `get_ultra_order` endpoint. From the response, 
@@ -529,29 +529,13 @@ class Jupiter(Interaction):
         """
         # set params
         url = self.url_api_ultra + "execute"
-        headers = {
-            "Content-Type": "application/json"
-        }
         body = {
             "signedTransaction": signed_transaction_id,
             "requestId": request_id
         }
 
         # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostUltraExecuteOrderResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostUltraExecuteOrderResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.POST.value, url, PostUltraExecuteOrderResponse, json = body)
 
     @overload
     def _get_ultra_holdings(self, sync: Literal[True], address: str) -> GetUltraHoldingsResponse: ...

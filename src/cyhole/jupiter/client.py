@@ -132,7 +132,7 @@ class JupiterClient(APIClient):
 
     def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
         """
-            Call the Jupiter's POST **[Ultra - Execute Order](https://station.jup.ag/docs/ultra-api/execute-order)** API endpoint for synchronous logic. 
+            Call the Jupiter's POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
         """
         return self._interaction._post_ultra_execute_order(True, signed_transaction_id, request_id)
@@ -312,7 +312,7 @@ class JupiterAsyncClient(AsyncAPIClient):
 
     async def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
         """
-            Call the Jupiter's POST **[Ultra - Execute Order](https://station.jup.ag/docs/ultra-api/execute-order)** API endpoint for asynchronous logic. 
+            Call the Jupiter's POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
         """
         return await self._interaction._post_ultra_execute_order(False, signed_transaction_id, request_id)

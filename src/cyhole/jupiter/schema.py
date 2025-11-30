@@ -922,8 +922,14 @@ class PostUltraExecuteOrderResponse(BaseModel):
     input_amount_result_raw: int | None = Field(default = None, alias = "inputAmountResult")
     """Raw amount of input token used to buy (before decimals)."""
 
+    total_input_amount_raw: int | None = Field(default = None, alias = "totalInputAmount")
+    """Raw total amount of input token used to buy (before decimals)."""
+
     output_amount_result_raw: int | None = Field(default = None, alias = "outputAmountResult")
     """Raw amount of output token bought (before decimals)."""
+
+    total_output_amount_raw: int | None = Field(default = None, alias = "totalOutputAmount")
+    """Raw total amount of output token bought (before decimals)."""
 
     swap_events: PostUltraExecuteOrderSwapEvent | None = Field(default = None, alias = "swapEvents")
     """List of swap events."""
