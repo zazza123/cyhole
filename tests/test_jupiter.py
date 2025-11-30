@@ -17,6 +17,7 @@ from cyhole.jupiter.schema import (
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
     PostTriggerCreateOrderParams,
+    GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
     PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse,
@@ -806,11 +807,12 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
-        response = self.jupiter.client.get_ultra_order(
+        body = GetUltraOrderBody(
             input_token = USDC.address,
             output_token = JUP.address,
             input_amount = USDC.from_decimals(10),
         )
+        response = self.jupiter.client.get_ultra_order(body)
 
         # actual test
         assert isinstance(response, GetUltraOrderResponse)
@@ -835,12 +837,13 @@ class TestJupiter:
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
         # execute request
+        body = GetUltraOrderBody(
+            input_token = USDC.address,
+            output_token = JUP.address,
+            input_amount = USDC.from_decimals(10),
+        )
         async with self.jupiter.async_client as client:
-            response = await client.get_ultra_order(
-                input_token = USDC.address,
-                output_token = JUP.address,
-                input_amount = USDC.from_decimals(10),
-            )
+            response = await client.get_ultra_order(body)
 
         # actual test
         assert isinstance(response, GetUltraOrderResponse)

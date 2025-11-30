@@ -8,8 +8,7 @@ from ..jupiter.param import (
     JupiterSwapDex,
     JupiterOrderState,
     JupiterSwapType,
-    JupiterEnvironmentType,
-    JupiterPrioritizationType,
+    JupiterRouter,
     JupiterSwapExecutionStatus,
     JupiterOrderStatus,
     JupiterOrganicScore
@@ -147,7 +146,7 @@ class GetQuotePlatformFees(BaseModel):
         GET "**Quote**" endpoint from Jupiter API.
     """
 
-    amount_raw: int = Field(alias = "amount")
+    amount_raw: int | None = Field(default = None, alias = "amount")
     """Raw amount of platform fee token to buy (before decimals)."""
 
     fee_base_points: int = Field(alias = "feeBps")
@@ -289,10 +288,10 @@ class PostSwapPriorityLevelWithMaxLamports(BaseModel):
         Model used to identify the priority level with max lamports.
     """
 
-    priority_level: Literal["low", "medium", "high"] = Field(default = None, alias = "priorityLevel")
+    priority_level: Literal["low", "medium", "high"] | None = Field(default = None, alias = "priorityLevel")
     """Priority level."""
 
-    max_lamports: int = Field(default = None, alias = "maxLamports")
+    max_lamports: int | None = Field(default = None, alias = "maxLamports")
     """Maximum lamports to cap the priority fee estimation, to prevent overpaying."""
 
     global_flag: bool = Field(default = False, alias = "global")
@@ -303,10 +302,10 @@ class PostSwapPrioritizationFeeLamports(BaseModel):
     """
         Model used to identify the prioritization fee lamports.
     """
-    priority_level_with_max_lamports: PostSwapPriorityLevelWithMaxLamports = Field(default = None, alias = "priorityLevelWithMaxLamports")
+    priority_level_with_max_lamports: PostSwapPriorityLevelWithMaxLamports | None = Field(default = None, alias = "priorityLevelWithMaxLamports")
     """Priority level with max lamports."""
 
-    jito_tip_lamports: int = Field(default = None, alias = "jitoTipLamports")
+    jito_tip_lamports: int | None = Field(default = None, alias = "jitoTipLamports")
     """Exact amount of tip to use in a tip instruction.  
         Estimate how much to set using Jito tip percentiles endpoint.  
         It has to be used together with a connection to a Jito RPC"""
@@ -331,10 +330,10 @@ class PostSwapBody(BaseModel):
     """This enables the usage of shared program accounts, it is essential as complex routing 
         will require multiple intermediate token accounts which the user might not have."""
 
-    fee_account: str = Field(default = None, serialization_alias = "feeAccount")
+    fee_account: str | None = Field(default = None, serialization_alias = "feeAccount")
     """An associated Token Address (ATA) of specific mints depending on SwapMode to collect fees."""
 
-    tracking_account: str = Field(default = None, serialization_alias = "trackingAccount")
+    tracking_account: str | None = Field(default = None, serialization_alias = "trackingAccount")
     """Specify any public key that belongs to you to track the transactions.  
         Useful for integrators to get all the swap transactions from this public key."""
 
@@ -343,7 +342,7 @@ class PostSwapBody(BaseModel):
         `computeUnitLimit` (1400000) * `compute_unit_price_micro_lamports`.  
         Jupiter recommends using `prioritization_fee_lamports` and `dynamic_compute_unit_limit` instead of passing in a compute unit price."""
 
-    prioritization_fee_lamports: PostSwapPrioritizationFeeLamports = Field(default = None, serialization_alias = "prioritizationFeeLamports")
+    prioritization_fee_lamports: PostSwapPrioritizationFeeLamports | None = Field(default = None, serialization_alias = "prioritizationFeeLamports")
     """This object is used to specify a level or amount of additional fees to prioritize the transaction.
         It can be used for EITHER priority fee OR Jito tip."""
 
@@ -351,7 +350,7 @@ class PostSwapBody(BaseModel):
     """Request a legacy transaction rather than the default versioned transaction.  
         Used together with `GetQuoteParams.as_legacy_transaction` in quote, otherwise the transaction might be too large."""
 
-    destination_token_account: str = Field(default = None, serialization_alias = "destinationTokenAccount")
+    destination_token_account: str | None = Field(default = None, serialization_alias = "destinationTokenAccount")
     """Public key of a token account that will be used to receive the token out of the swap.  
         If not provided, the signer's ATA will be used. If provided, Jupiter assumes that the token account is already initialized."""
 
@@ -436,7 +435,7 @@ class PostSwapInstructionsResponse(BaseModel):
     cleanup: PostSwapInstruction | None = Field(default = None, alias = "cleanupInstruction")
     """Cleanup instruction."""
 
-    other: list[PostSwapInstruction] = Field(default = None, alias = "otherInstructions")
+    other: list[PostSwapInstruction] | None = Field(default = None, alias = "otherInstructions")
     """Other instructions."""
 
     address_lookup_table_addresses: list[str] = Field(alias = "addressLookupTableAddresses")
@@ -690,29 +689,91 @@ class GetUltraOrderPlatformFee(GetQuotePlatformFees):
 class GetUltraOrderRoutePlan(GetQuoteRoutePlan):
     pass
 
+class GetUltraOrderBody(BaseModel):
+    """
+        Model refering to the body schema of the GET
+        "**Ultra - Order**" endpoint from Jupiter API.
+    """
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """Address of the input token."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """Address of the output token."""
+
+    input_amount: int = Field(serialization_alias = "amount")
+    """
+        Amount of input token to swap.
+        The amount to swap **must** be factored in the token decimals. 
+        For example, if the token has 6 decimals, then `1.0` = `1_000_000`.
+    """
+
+    taker_wallet_key: str = Field(default = "vBXNsd5SRtTPpW7GWv3wREA6Ztm2jCWp5eqqTsVhyG5", serialization_alias = "taker")
+    """
+        Address of the taker wallet. 
+        If the `taker_wallet_key` is not provided, then the response will have `transaction_id` equals `None`.
+    """
+
+    receiver: str | None = None
+    """
+        The public key of the account that will receive the output tokens.
+        If not provided, the output tokens will be sent to the taker.
+    """
+
+    payer: str | None = None
+    """
+        The public key of an account that will be used to cover gas-related fees on behalf of the taker.
+        When `payer` is passed in, `close_authority` is required.
+    """
+
+    close_authority: str | None = Field(default = None, serialization_alias = "closeAuthority")
+    """
+        The public key of an account to set as the close authority of ATAs created during the swap.
+        When `payer` is passed in, `close_authority` is required.
+    """
+
+    referral_account: str | None = Field(default = None, serialization_alias = "referralAccount")
+    """Referral account address for integrator fees."""
+
+    referral_fee: int | None = Field(default = None, serialization_alias = "referralFee")
+    """Referral fee in basis points. Required range: 50 <= x <= 255."""
+
+    exclude_routers: list[JupiterRouter] | None = Field(default = None, serialization_alias = "excludeRouters")
+    """List of routers to exclude from the swap. Available options: `iris`, `jupiterz`, `dflow`, `okx`."""
+
+    exclude_dexes: str | None = Field(default = None, serialization_alias = "excludeDexes")
+    """
+        Comma-separated list of DEXes to exclude (e.g., "Raydium,Orca V2,Meteora DLMM").
+        This only excludes DEXes on the Iris router.
+    """
+
+    @field_serializer("input_amount")
+    @classmethod
+    def serialize_input_amount(cls, amount: int) -> str:
+        return str(amount)
+    
+    @field_validator("exclude_routers")
+    @classmethod
+    def validator_exclude_routers(cls, routers: list[JupiterRouter]) -> list[str]:
+        return [router.value for router in routers]
+
 class GetUltraOrderResponse(BaseModel):
     """
         Model refering to the response schema of the GET
         "**Ultra - Order**" endpoint from Jupiter API.
     """
 
-    swap_type: JupiterSwapType = Field(alias = "swapType")
-    """Type of the swap."""
-
-    environment: JupiterEnvironmentType | None = None
-    """Environment of the swap."""
-
-    request_id: str = Field(alias = "requestId")
-    """Unique ID required to make a request to `post_ultra_execute`"""
+    mode: str
+    """Mode of the order."""
 
     input_token: str = Field(alias = "inputMint")
     """The address of the input token on the chain used to buy."""
 
-    input_amount_raw: int = Field(alias = "inAmount")
-    """Raw amount of input token to use to buy (before decimals)."""
-
     output_token: str = Field(alias = "outputMint")
     """The address of the output token on the chain that will bought."""
+
+    input_amount_raw: int = Field(alias = "inAmount")
+    """Raw amount of input token to use to buy (before decimals)."""
 
     output_amount_raw: int = Field(alias = "outAmount")
     """Raw amount of output token to buy (before decimals)."""
@@ -730,7 +791,7 @@ class GetUltraOrderResponse(BaseModel):
     """
 
     price_impact_percent: float = Field(alias = "priceImpactPct")
-    """Percentage of price impact for the swap."""
+    """Percentage of price impact for the swap (deprecated, use price_impact instead)."""
 
     route_plan: list[GetUltraOrderRoutePlan] = Field(alias = "routePlan")
     """List of route plans for the swap."""
@@ -741,44 +802,80 @@ class GetUltraOrderResponse(BaseModel):
         **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
     """
 
-    taker_wallet_key: str | None = Field(default = None, alias = "taker")
-    """Wallet address of the user who wants to create an order."""
+    platform_fee: GetUltraOrderPlatformFee = Field(alias = "platformFee")
+    """Platform fees for the swap."""
 
-    gasless: bool
-    """Flag indicating if the order is gasless."""
+    signature_fee_lamports: int = Field(alias = "signatureFeeLamports")
+    """The number of lamports the taker, maker or payer has to pay for the base network fee."""
+
+    signature_fee_payer: str | None = Field(default = None, alias = "signatureFeePayer")
+    """The public key of the account that will cover the signature fee."""
+
+    prioritization_fee_lamports: int = Field(alias = "prioritizationFeeLamports")
+    """The number of lamports the taker, maker or payer has to pay for higher priority landing."""
+
+    prioritization_fee_payer: str | None = Field(default = None, alias = "prioritizationFeePayer")
+    """The public key of the account that will cover the prioritization fee."""
+
+    rent_fee_lamports: int = Field(alias = "rentFeeLamports")
+    """The number of lamports the taker or payer has to pay for account rent."""
+
+    rent_fee_payer: str | None = Field(default = None, alias = "rentFeePayer")
+    """The public key of the account that will cover the rent fee."""
+
+    swap_type: str = Field(default = "", alias = "swapType")
+    """Type of the swap (deprecated, in favour of router)."""
+
+    router: JupiterRouter = Field(alias = "router")
+    """Router used for the swap."""
 
     transaction_id: str | None = Field(default = None, alias = "transaction")
     """Base-64 encoded transaction."""
 
-    prioritization_type: JupiterPrioritizationType = Field(alias = "prioritizationType")
-    """Type of prioritization for the order."""
+    gasless: bool
+    """Flag indicating if the order is gasless."""
 
-    prioritization_fee_lamports: int = Field(alias = "prioritizationFeeLamports")
-    """Amount of prioritization fee in lamports."""
-
-    last_valid_block_height: int | None = Field(default = None, alias = "lastValidBlockHeight")
-    """Last valid block height for the transaction."""
-
-    context_slot: int | None = Field(default = None, alias = "contextSlot")
-    """Slot number of the context."""
+    request_id: str = Field(alias = "requestId")
+    """Unique ID required to make a request to `post_ultra_execute`."""
 
     total_time: int = Field(alias = "totalTime")
     """Total time taken to process the request."""
+
+    taker_wallet_key: str | None = Field(default = None, alias = "taker")
+    """Wallet address of the user who wants to create an order."""
+
+    input_usd_value: float | None = Field(default = None, alias = "inUsdValue")
+    """USD value of the input amount."""
+
+    output_usd_value: float | None = Field(default = None, alias = "outUsdValue")
+    """USD value of the output amount."""
+
+    price_impact: float | None = Field(default = None, alias = "priceImpact")
+    """Price impact of the swap."""
+
+    swap_usd_value: float | None = Field(default = None, alias = "swapUsdValue")
+    """USD value of the swap."""
+
+    referral_account: str | None = Field(default = None, alias = "referralAccount")
+    """Referral account address."""
+
+    fee_mint: str | None = Field(default = None, alias = "feeMint")
+    """Token mint address for the fee."""
 
     quote_id: str | None = Field(default = None, alias = "quoteId")
     """Unique ID of the quote."""
 
     maker_wallet_key: str | None = Field(default = None, alias = "maker")
-    """Wallet address of the user who wants to create an order."""
+    """Wallet address of the maker."""
 
-    expire_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
-    """Expiring date for the Limit Order expressed in UNIX time"""
+    expire_at: str | None = Field(default = None, alias = "expireAt")
+    """Expiration time for the order."""
 
-    platform_fee: GetUltraOrderPlatformFee | None = Field(default = None, alias = "platformFee")
-    """Platform fees for the swap."""
+    error_code: int | None = Field(default = None, alias = "errorCode")
+    """Error code if transaction field is empty."""
 
-    dynamic_slippage_report: GetUltraOrderDynamicSlippageReport | None = Field(default = None, alias = "dynamicSlippageReport")
-    """Dynamic slippage report for the swap."""
+    error_message: str | None = Field(default = None, alias = "errorMessage")
+    """Error message if transaction field is empty."""
 
     @field_serializer("swap_mode")
     @classmethod

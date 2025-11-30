@@ -24,6 +24,7 @@ from ..jupiter.schema import (
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
     # Ultra API
+    GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
     PostUltraExecuteOrderResponse,
@@ -129,7 +130,6 @@ class Jupiter(Interaction):
         self.async_client = JupiterAsyncClient(self, self.headers)
 
         # API urls
-        self.url_api_ultra = "https://api.jup.ag/ultra/v1/"
         self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
         self.url_api_recurring = "https://api.jup.ag/recurring/v1/"
         return
@@ -157,6 +157,11 @@ class Jupiter(Interaction):
     def url_api_token(self) -> str:
         """Token API URL composed according to API tier"""
         return self.url_api_root + "/tokens/v2/"
+
+    @property
+    def url_api_ultra(self) -> str:
+        """Ultra API URL composed according to API tier"""
+        return self.url_api_root + "/ultra/v1/"
 
     def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
         """
@@ -472,55 +477,32 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_ultra_order(self, sync: Literal[True], input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse: ...
+    def _get_ultra_order(self, sync: Literal[True], body: GetUltraOrderBody) -> GetUltraOrderResponse: ...
 
     @overload
-    def _get_ultra_order(self, sync: Literal[False], input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> Coroutine[None, None, GetUltraOrderResponse]: ...
+    def _get_ultra_order(self, sync: Literal[False], body: GetUltraOrderBody) -> Coroutine[None, None, GetUltraOrderResponse]: ...
 
-    def _get_ultra_order(self, sync: bool, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse | Coroutine[None, None, GetUltraOrderResponse]:
+    def _get_ultra_order(self, sync: bool, body: GetUltraOrderBody) -> GetUltraOrderResponse | Coroutine[None, None, GetUltraOrderResponse]:
         """
-            This function refers to the GET **[Ultra - Get Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint, 
+            This function refers to the GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint, 
             and it is used to create a swap order using the Jupiter Ultra API. This API was designed to facilitate 
             the creation of a swap order without the need to use the `get_quote` endpoint. In fact, the Ultra API 
             was created over the Swap API to provide a more direct way to create a swap order. This endpoint 
             can be then combined with the `post_ultra_execute_order` endpoint to perform the swap.
 
             Parameters:
-                input_token: address of the input token.
-                output_token: address of the output token.
-                input_amount: amount of input token to swap.
-                    The amount to swap **must** be factored in the token decimals. 
-                    For example, if the token has 6 decimals, then `1.0` = `1_000_000`.
-                taker_wallet_key: address of the taker wallet. 
-                    If the `taker_wallet_key` is not provided, then the response will have `transaction_id` equals `None`.
+                body: input body containing all the parameters for the Ultra Order endpoint.
 
             Returns:
                 Order information provided by Jupiter API.
         """
         # set params
         url = self.url_api_ultra + "order"
-        params = {
-            "inputMint": input_token,
-            "outputMint": output_token,
-            "amount": input_amount,
-            "taker": taker_wallet_key
-        }
 
         # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            except HTTPError as e:
-                raise self._raise(e)
-            return GetUltraOrderResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return GetUltraOrderResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraOrderResponse, 
+            params = body.model_dump(by_alias = True, exclude_defaults = True)
+        )
 
     @overload
     def _post_ultra_execute_order(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse: ...

@@ -1,42 +1,81 @@
 {
-    "swapType": "aggregator",
-    "environment": null,
-    "requestId": "5459df2f-00b1-475a-ae97-ab8916eab9c1",
+    "mode": "ultra",
+    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
     "inAmount": 10000000,
-    "outAmount": 18617187,
-    "otherAmountThreshold": 18067706,
+    "outAmount": 40274417,
+    "otherAmountThreshold": 40274417,
     "swapMode": "ExactIn",
-    "slippageBps": 300,
-    "priceImpactPct": 0.0,
+    "slippageBps": 0,
+    "priceImpactPct": -0.0003604692515375799,
     "routePlan": [
         {
             "swapInfo": {
-                "ammKey": "1amiJLvkVHjPz7t8dwBsWHknHitcpqwPPuuUCfHyzjB",
-                "label": "ZeroFi",
+                "ammKey": "CdDY1733oPx7dnDoKjspDDfrKRtZqQVheP5EVtVZT471",
+                "label": "Raydium CLMM",
                 "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
                 "inAmount": "10000000",
+                "outputMint": "hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux",
+                "outAmount": "465157232",
+                "feeMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "feeAmount": "0"
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "CSP4RmB6kBHkKGkyTnzt9zYYXDA8SbZ5Do5WfZcjqjE4",
+                "label": "Whirlpools",
+                "inputMint": "hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux",
+                "inAmount": "465157232",
+                "outputMint": "So11111111111111111111111111111111111111112",
+                "outAmount": "73228640",
+                "feeMint": "hntyVP6YFm1Hg25TN9WGLqM12b8TQmcknKrdu1oxWux",
+                "feeAmount": "0"
+            },
+            "percent": 100
+        },
+        {
+            "swapInfo": {
+                "ammKey": "FpjYwNjCStVE2Rvk9yVZsV46YwgNTFjp7ktJUDcZdyyk",
+                "label": "Meteora DLMM",
+                "inputMint": "So11111111111111111111111111111111111111112",
+                "inAmount": "73228640",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": "18626501",
-                "feeMint": "11111111111111111111111111111111",
+                "outAmount": "40274417",
+                "feeMint": "So11111111111111111111111111111111111111112",
                 "feeAmount": "0"
             },
             "percent": 100
         }
     ],
-    "inputMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-    "feeBps": 5,
-    "taker": null,
-    "gasless": false,
-    "transaction": null,
-    "prioritizationType": "None",
+    "feeBps": 0,
+    "platformFee": {
+        "amount": null,
+        "feeBps": 0
+    },
+    "signatureFeeLamports": 0,
+    "signatureFeePayer": null,
     "prioritizationFeeLamports": 0,
-    "lastValidBlockHeight": null,
-    "contextSlot": null,
-    "totalTime": 285,
+    "prioritizationFeePayer": null,
+    "rentFeeLamports": 0,
+    "rentFeePayer": null,
+    "swapType": "dflow",
+    "router": "dflow",
+    "transaction": null,
+    "gasless": false,
+    "requestId": "019ad4a9-8946-714d-a8b8-9ba4e2947947",
+    "totalTime": 603,
+    "taker": null,
+    "inUsdValue": 9.997914274614816,
+    "outUsdValue": 9.994310333939309,
+    "priceImpact": -0.03604692515375799,
+    "swapUsdValue": 9.997914274614816,
+    "referralAccount": null,
+    "feeMint": null,
     "quoteId": null,
     "maker": null,
-    "expiredAt": null,
-    "platformFee": null,
-    "dynamicSlippageReport": null
+    "expireAt": null,
+    "errorCode": null,
+    "errorMessage": null
 }

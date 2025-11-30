@@ -18,6 +18,7 @@ from ..jupiter.schema import (
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
     # Ultra API
+    GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
     PostUltraExecuteOrderResponse,
@@ -122,12 +123,12 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_token_recent(True)
 
-    def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
+    def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
         """
-            Call the Jupiter's GET **[Ultra - Get Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint for synchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
         """
-        return self._interaction._get_ultra_order(True, input_token, output_token, input_amount, taker_wallet_key)
+        return self._interaction._get_ultra_order(True, body)
 
     def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
         """
@@ -302,12 +303,12 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_recent(False)
 
-    async def get_ultra_order(self, input_token: str, output_token: str, input_amount: int, taker_wallet_key: str | None = None) -> GetUltraOrderResponse:
+    async def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
         """
-            Call the Jupiter's GET **[Ultra - Get Order](https://station.jup.ag/docs/ultra-api/get-order)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint for asynchronous logic. 
             All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
         """
-        return await self._interaction._get_ultra_order(False, input_token, output_token, input_amount, taker_wallet_key)
+        return await self._interaction._get_ultra_order(False, body)
 
     async def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
         """

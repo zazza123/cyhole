@@ -29,21 +29,6 @@ class JupiterSwapExecutionStatus(CyholeParam):
     SUCCESS = "Success"
     FAILED = "Failed"
 
-class JupiterEnvironmentType(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's environment types.
-    """
-    PRODUCTION = "production"
-    CANARY = "canary"
-
-class JupiterPrioritizationType(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's prioritization types.
-    """
-    NONE = "None"
-    COMPUTE_BUDGET = "ComputeBudget"
-    JITO = "Jito"
-
 class JupiterSwapDex(CyholeParam):
     """
         Enum class to get the supported Jupiter's swap DEXes.
@@ -187,3 +172,16 @@ class JupiterOrganicScore(CyholeParam):
     """Tokens with medium organic score."""
     LOW = "low"
     """Tokens with low organic score."""
+
+class JupiterRouter(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's router types.
+    """
+    IRIS = "iris"
+    """Iris router."""
+    JUPITERZ = "jupiterz"
+    """JupiterZ router."""
+    DFLOW = "dflow"
+    """DFlow router."""
+    OKX = "okx"
+    """OKX router."""
