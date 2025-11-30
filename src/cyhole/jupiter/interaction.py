@@ -27,6 +27,7 @@ from ..jupiter.schema import (
     GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
+    GetUltraHoldingsResponse,
     PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
@@ -582,6 +583,29 @@ class Jupiter(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url)
                 return GetUltraBalancesResponse(tokens = content_raw.json())
             return async_request()
+
+    @overload
+    def _get_ultra_holdings(self, sync: Literal[True], address: str) -> GetUltraHoldingsResponse: ...
+
+    @overload
+    def _get_ultra_holdings(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetUltraHoldingsResponse]: ...
+
+    def _get_ultra_holdings(self, sync: bool, address: str) -> GetUltraHoldingsResponse | Coroutine[None, None, GetUltraHoldingsResponse]:
+        """
+            This function refers to the GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint, 
+            and it is used to request for token balances of an account including token account information using the Jupiter Ultra API.
+
+            Parameters:
+                address: wallet address to get holdings for.
+
+            Returns:
+                Token holdings of the wallet including SOL balance and other tokens.
+        """
+        # set params
+        url = self.url_api_ultra + f"holdings/{address}"
+
+        # execute request
+        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraHoldingsResponse)
 
     @overload
     def _post_trigger_create_order(self, sync: Literal[True], body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse: ...

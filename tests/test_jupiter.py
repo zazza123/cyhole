@@ -20,6 +20,7 @@ from cyhole.jupiter.schema import (
     GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
+    GetUltraHoldingsResponse,
     PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse,
     PostTriggerCancelOrderResponse,
     GetTriggerOrdersResponse,
@@ -905,6 +906,62 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetUltraBalancesResponse)
+
+    def test_get_ultra_holdings_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Ultra - Holdings" for synchronous logic.
+
+            Mock Response File: get_ultra_holdings.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_holdings"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraHoldingsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_ultra_holdings("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
+
+        # actual test
+        assert isinstance(response, GetUltraHoldingsResponse)
+        assert response.amount_raw is not None
+        assert response.amount is not None
+        assert response.amount_string is not None
+        assert isinstance(response.tokens, dict)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            # store only two random token holdings
+            response.tokens = dict(list(response.tokens.items())[0:2])
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_ultra_holdings_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Ultra - Holdings" for asynchronous logic.
+
+            Mock Response File: get_ultra_holdings.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_holdings"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraHoldingsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_ultra_holdings("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
+
+        # actual test
+        assert isinstance(response, GetUltraHoldingsResponse)
+        assert response.amount_raw is not None
+        assert response.amount is not None
+        assert response.amount_string is not None
+        assert isinstance(response.tokens, dict)
 
     def test_post_trigger_create_order_sync(self, mocker: MockerFixture) -> None:
         """

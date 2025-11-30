@@ -21,6 +21,7 @@ from ..jupiter.schema import (
     GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraBalancesResponse,
+    GetUltraHoldingsResponse,
     PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
@@ -143,6 +144,13 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
         """
         return self._interaction._get_ultra_balances(True, wallet_public_key)
+
+    def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
+        """
+            Call the Jupiter's GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint for synchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_ultra_holdings`][cyhole.jupiter.interaction.Jupiter._get_ultra_holdings].
+        """
+        return self._interaction._get_ultra_holdings(True, address)
 
     def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
         """
@@ -323,6 +331,13 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
         """
         return await self._interaction._get_ultra_balances(False, wallet_public_key)
+
+    async def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
+        """
+            Call the Jupiter's GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint for asynchronous logic. 
+            All the API endpoint details are available on [`Jupiter._get_ultra_holdings`][cyhole.jupiter.interaction.Jupiter._get_ultra_holdings].
+        """
+        return await self._interaction._get_ultra_holdings(False, address)
 
     async def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
         """

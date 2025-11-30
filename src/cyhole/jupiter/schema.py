@@ -962,6 +962,58 @@ class GetUltraBalancesResponse(BaseModel):
         Observe that for `SOL` balance the key is `SOL` and not the address.
     """
 
+# classes used on GET "Ultra - Holdings" endpoint
+class GetUltraHoldingsToken(BaseModel):
+    """
+        Model representing a specific token holding coming 
+        from the GET "**Ultra - Holdings**" endpoint of Jupiter API.
+    """
+
+    address: str = Field(alias = "account")
+    """The token account address."""
+
+    amount_raw: str = Field(alias = "amount")
+    """Amount of the token in raw format as string; i.e., lamports for SOL."""
+
+    amount: float = Field(alias = "uiAmount")
+    """Amount of the token in UI units after applying decimals."""
+
+    amount_string: str = Field(alias = "uiAmountString")
+    """Amount of the token as string in UI units after applying decimals."""
+
+    is_frozen: bool = Field(alias = "isFrozen")
+    """Flag indicating if the token account is frozen."""
+
+    is_associated_token_account: bool = Field(alias = "isAssociatedTokenAccount")
+    """Flag indicating if this is an associated token account."""
+
+    decimals: int
+    """Number of decimal places for the token."""
+
+    program_id: str = Field(alias = "programId")
+    """The token program ID."""
+
+    exclude_from_net_worth: bool | None = Field(default = None, alias = "excludeFromNetWorth")
+    """Flag indicating if the token should be excluded from net worth calculations."""
+
+class GetUltraHoldingsResponse(BaseModel):
+    """
+        Model representing the response object from the 
+        GET "**Ultra - Holdings**" endpoint from Jupiter API.
+    """
+
+    amount_raw: str = Field(alias = "amount")
+    """Total SOL in lamports as string."""
+
+    amount: float = Field(alias = "uiAmount")
+    """Total SOL in UI units after applying decimals."""
+
+    amount_string: str = Field(alias = "uiAmountString")
+    """Total SOL as string in UI units after applying decimals."""
+
+    tokens: dict[str, list[GetUltraHoldingsToken]]
+    """Other token holdings organized by mint address as keys."""
+
 # ***************
 # * Trigger API *
 # ***************
