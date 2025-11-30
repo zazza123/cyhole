@@ -931,37 +931,6 @@ class PostUltraExecuteOrderResponse(BaseModel):
     error: str | None = None
     """Error message in case of failure."""
 
-# classes used on GET "Ultra - Balances" endpoint
-class GetUltraBalancesToken(BaseModel):
-    """
-        Model representing a specific token balance coming 
-        from the GET "**Ultra - Balances**" endpoint of Jupiter API.
-    """
-
-    amount_raw: int = Field(alias = "amount")
-    """Amount of the token in raw format; i.e., integer value without decimals."""
-
-    amount: float = Field(alias = "uiAmount")
-    """Amount of the token in float format."""
-
-    slot: int
-    """Slot number."""
-
-    is_frozen: bool = Field(alias = "isFrozen")
-    """Flag indicating if the token is frozen."""
-
-class GetUltraBalancesResponse(BaseModel):
-    """
-        Model representing the response object from the 
-        GET "**Ultra - Balances**" endpoint from Jupiter API.
-    """
-
-    tokens: dict[str, GetUltraBalancesToken]
-    """
-        Dictionary of token balances. The key is the token address.  
-        Observe that for `SOL` balance the key is `SOL` and not the address.
-    """
-
 # classes used on GET "Ultra - Holdings" endpoint
 class GetUltraHoldingsToken(BaseModel):
     """

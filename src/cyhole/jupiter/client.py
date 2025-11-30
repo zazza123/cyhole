@@ -20,7 +20,6 @@ from ..jupiter.schema import (
     # Ultra API
     GetUltraOrderBody,
     GetUltraOrderResponse,
-    GetUltraBalancesResponse,
     GetUltraHoldingsResponse,
     PostUltraExecuteOrderResponse,
     # Trigger API
@@ -137,13 +136,6 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
         """
         return self._interaction._post_ultra_execute_order(True, signed_transaction_id, request_id)
-
-    def get_ultra_balances(self, wallet_public_key: str) -> GetUltraBalancesResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Balances](https://station.jup.ag/docs/api/ultra-api/balances)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
-        """
-        return self._interaction._get_ultra_balances(True, wallet_public_key)
 
     def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
         """
@@ -324,13 +316,6 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
         """
         return await self._interaction._post_ultra_execute_order(False, signed_transaction_id, request_id)
-
-    async def get_ultra_balances(self, wallet_public_key: str) -> GetUltraBalancesResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Balances](https://station.jup.ag/docs/api/ultra-api/balances)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_balances`][cyhole.jupiter.interaction.Jupiter._get_ultra_balances].
-        """
-        return await self._interaction._get_ultra_balances(False, wallet_public_key)
 
     async def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
         """
