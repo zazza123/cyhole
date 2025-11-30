@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
 
@@ -11,7 +11,10 @@ from ..jupiter.param import (
     JupiterRouter,
     JupiterSwapExecutionStatus,
     JupiterOrderStatus,
-    JupiterOrganicScore
+    JupiterOrganicScore,
+    JupiterShieldWarningType,
+    JupiterShieldWarningSeverity,
+    JupiterShieldWarningSource
 )
 
 # class used on Jupiter HTTPErrors
@@ -988,6 +991,62 @@ class GetUltraHoldingsResponse(BaseModel):
 
     tokens: dict[str, list[GetUltraHoldingsToken]]
     """Other token holdings organized by mint address as keys."""
+
+# classes used on GET "Ultra - Shield" endpoint
+class GetUltraShieldWarning(BaseModel):
+    """
+        Model representing a specific warning for a token mint 
+        from the GET "**Ultra - Shield**" endpoint of Jupiter API.
+    """
+
+    type: str
+    """
+        Type of warning for the token.  
+        See [`JupiterShieldWarningType`][cyhole.jupiter.param.JupiterShieldWarningType] for all the supported types.
+    """
+
+    message: str
+    """Human-readable warning message."""
+
+    severity: str
+    """
+        Severity level of the warning.  
+        See [`JupiterShieldWarningSeverity`][cyhole.jupiter.param.JupiterShieldWarningSeverity] for all the supported severity levels.
+    """
+
+    source: str | None = None
+    """
+        Optional external source of the warning.  
+        See [`JupiterShieldWarningSource`][cyhole.jupiter.param.JupiterShieldWarningSource] for all the supported sources.
+    """
+
+    @field_validator("type")
+    @classmethod
+    def validator_type(cls, warning_type: str) -> str:
+        JupiterShieldWarningType.check(warning_type)
+        return warning_type
+
+    @field_validator("severity")
+    @classmethod
+    def validator_severity(cls, severity: str) -> str:
+        JupiterShieldWarningSeverity.check(severity)
+        return severity
+
+    @field_validator("source")
+    @classmethod
+    def validator_source(cls, source: str | None) -> str | None:
+        if source is not None:
+            JupiterShieldWarningSource.check(source)
+        return source
+
+class GetUltraShieldResponse(BaseModel):
+    """
+        Model representing the response object from the 
+        GET "**Ultra - Shield**" endpoint from Jupiter API.
+    """
+
+    warnings: dict[str, list[GetUltraShieldWarning]]
+    """Dictionary containing lists of warnings for each mint address as keys."""
 
 # ***************
 # * Trigger API *

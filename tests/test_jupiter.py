@@ -20,6 +20,7 @@ from cyhole.jupiter.schema import (
     GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraHoldingsResponse,
+    GetUltraShieldResponse,
     PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse,
     PostTriggerCancelOrderResponse,
     GetTriggerOrdersResponse,
@@ -903,6 +904,54 @@ class TestJupiter:
         assert response.amount is not None
         assert response.amount_string is not None
         assert isinstance(response.tokens, dict)
+
+    def test_get_ultra_shield_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Ultra - Shield" for synchronous logic.
+
+            Mock Response File: get_ultra_shield.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_shield"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraShieldResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_ultra_shield([WSOL.address, JUP.address, USDC.address])
+
+        # actual test
+        assert isinstance(response, GetUltraShieldResponse)
+        assert isinstance(response.warnings, dict)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_ultra_shield_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint 
+            GET "Ultra - Shield" for asynchronous logic.
+
+            Mock Response File: get_ultra_shield.json
+        """
+
+        # load mock response
+        mock_file_name = "get_ultra_shield"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraShieldResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_ultra_shield([WSOL.address, JUP.address, USDC.address])
+
+        # actual test
+        assert isinstance(response, GetUltraShieldResponse)
+        assert isinstance(response.warnings, dict)
 
     def test_post_trigger_create_order_sync(self, mocker: MockerFixture) -> None:
         """

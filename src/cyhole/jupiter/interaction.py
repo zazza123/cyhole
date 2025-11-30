@@ -27,6 +27,7 @@ from ..jupiter.schema import (
     GetUltraOrderBody,
     GetUltraOrderResponse,
     GetUltraHoldingsResponse,
+    GetUltraShieldResponse,
     PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
@@ -559,6 +560,32 @@ class Jupiter(Interaction):
 
         # execute request
         return self.api_return_model(sync, RequestType.GET.value, url, GetUltraHoldingsResponse)
+
+    @overload
+    def _get_ultra_shield(self, sync: Literal[True], mints: list[str]) -> GetUltraShieldResponse: ...
+
+    @overload
+    def _get_ultra_shield(self, sync: Literal[False], mints: list[str]) -> Coroutine[None, None, GetUltraShieldResponse]: ...
+
+    def _get_ultra_shield(self, sync: bool, mints: list[str]) -> GetUltraShieldResponse | Coroutine[None, None, GetUltraShieldResponse]:
+        """
+            This function refers to the GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint, 
+            and it is used to request token information and warnings for a list of mint addresses using the Jupiter Ultra API.
+
+            Parameters:
+                mints: list of token mint addresses to get warnings for.
+
+            Returns:
+                Token warnings information for the requested mint addresses.
+        """
+        # set params
+        url = self.url_api_ultra + "shield"
+        params = {
+            "mints": ",".join(mints)
+        }
+
+        # execute request
+        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraShieldResponse, params = params)
 
     @overload
     def _post_trigger_create_order(self, sync: Literal[True], body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse: ...
