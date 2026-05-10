@@ -162,7 +162,7 @@ class JupiterClient(APIClient):
     def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
         """
             Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_execute_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute_order].
+            All the API endpoint details are available on [`Jupiter._post_trigger_execute`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute].
         """
         return self._interaction._post_trigger_execute(True, signed_transaction_id, request_id)
 
@@ -349,7 +349,7 @@ class JupiterAsyncClient(AsyncAPIClient):
     async def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
         """
             Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_execute_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute_order].
+            All the API endpoint details are available on [`Jupiter._post_trigger_execute`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute].
         """
         return await self._interaction._post_trigger_execute(False, signed_transaction_id, request_id)
 

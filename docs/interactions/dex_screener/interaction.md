@@ -1,3 +1,6 @@
 # Interaction
 
-::: cyhole.dex_screener.interaction
+::: cyhole.dex_screener.DexScreener
+    options:
+        filters:
+            - "^_"
