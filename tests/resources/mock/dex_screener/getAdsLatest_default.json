@@ -1,0 +1,11 @@
+[
+    {
+        "url": "https://dexscreener.com/solana/A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv",
+        "chainId": "solana",
+        "tokenAddress": "A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv",
+        "date": "2024-01-15T10:30:00Z",
+        "type": "tokenAd",
+        "durationHours": 24.0,
+        "impressions": 5000.0
+    }
+]

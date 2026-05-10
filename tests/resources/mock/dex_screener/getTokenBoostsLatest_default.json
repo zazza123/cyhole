@@ -1,0 +1,19 @@
+[
+    {
+        "url": "https://dexscreener.com/solana/A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv",
+        "chainId": "solana",
+        "tokenAddress": "A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv",
+        "amount": 100.0,
+        "totalAmount": 500.0,
+        "icon": "https://dd.dexscreener.com/ds-data/tokens/solana/A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv.png",
+        "header": null,
+        "description": "Boosted token sample.",
+        "links": [
+            {
+                "type": "twitter",
+                "label": "Twitter",
+                "url": "https://twitter.com/sampletoken"
+            }
+        ]
+    }
+]

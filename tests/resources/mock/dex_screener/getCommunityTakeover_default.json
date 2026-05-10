@@ -1,0 +1,12 @@
+[
+    {
+        "url": "https://dexscreener.com/solana/A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv",
+        "chainId": "solana",
+        "tokenAddress": "A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv",
+        "icon": "https://dd.dexscreener.com/ds-data/tokens/solana/A55XjvzRU4KtR3Lrys8PpLZQvPojPqvnv5bJVHMYy3Jv.png",
+        "header": null,
+        "description": "Community takeover sample.",
+        "links": null,
+        "claimDate": "2024-01-15T10:30:00Z"
+    }
+]

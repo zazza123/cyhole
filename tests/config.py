@@ -53,6 +53,16 @@ class BirdeyeConfiguration(BaseModel):
     api_key: str = ""
     """API key to access the birdeye APIs."""
 
+class DexScreenerConfiguration(BaseModel):
+    """
+        Model in charge to manage the DexScreener APIs.
+    """
+    mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
+    mock_folder: str = "dex_screener"
+    """Folder where the mock responses are stored."""
+
+
 class TestConfiguration(BaseModel):
     """
         Model in charge to manage the tests' configuration.
@@ -66,6 +76,8 @@ class TestConfiguration(BaseModel):
 
     birdeye: BirdeyeConfiguration = BirdeyeConfiguration()
     """Birdeye configuration."""
+    dex_screener: DexScreenerConfiguration = DexScreenerConfiguration()
+    """DexScreener configuration."""
     jupiter: JupiterConfiguration = JupiterConfiguration()
     """Jupiter configuration."""
     solana_fm: SolanaFMConfiguration = SolanaFMConfiguration()
@@ -100,6 +112,10 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.mock_response = config.getboolean("global", "mock_response", fallback = test_config.mock_response)
     test_config.mock_folder = config.get("global", "mock_folder", fallback = test_config.mock_folder)
     test_config.mock_file_overwrite = config.getboolean("global", "mock_file_overwrite", fallback = test_config.mock_file_overwrite)
+
+    # dex_screener
+    test_config.dex_screener.mock_response = config.getboolean("dex_screener", "mock_response", fallback = test_config.dex_screener.mock_response)
+    test_config.dex_screener.mock_folder = config.get("dex_screener", "mock_folder", fallback = test_config.dex_screener.mock_folder)
 
     # birdeye
     test_config.birdeye.mock_response_public = config.getboolean("birdeye", "mock_response_public", fallback = test_config.birdeye.mock_response_public)
@@ -151,7 +167,7 @@ class MockerManager:
 
         with open(mock_path_file, "r") as file:
             data = json.loads(file.read())
-            mock_response = response_model(**data)
+            mock_response = response_model.model_validate(data)
 
         return mock_response
 

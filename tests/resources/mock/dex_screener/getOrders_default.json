@@ -1,0 +1,12 @@
+[
+    {
+        "type": "tokenProfile",
+        "status": "approved",
+        "paymentTimestamp": 1705312200000
+    },
+    {
+        "type": "tokenAd",
+        "status": "processing",
+        "paymentTimestamp": 1705312300000
+    }
+]

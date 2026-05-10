@@ -1,0 +1,13 @@
+[
+    {
+        "url": "https://dexscreener.com/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+        "chainId": "solana",
+        "tokenAddress": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+        "amount": 250.0,
+        "totalAmount": 1200.0,
+        "icon": "https://dd.dexscreener.com/ds-data/tokens/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN.png",
+        "header": null,
+        "description": "Top boosted token sample.",
+        "links": null
+    }
+]

@@ -1,0 +1,40 @@
+[
+    {
+        "chainId": "solana",
+        "dexId": "raydium",
+        "url": "https://dexscreener.com/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+        "pairAddress": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+        "labels": null,
+        "baseToken": {
+            "address": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "name": "Jupiter",
+            "symbol": "JUP"
+        },
+        "quoteToken": {
+            "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+            "name": "USD Coin",
+            "symbol": "USDC"
+        },
+        "priceNative": "0.8423",
+        "priceUsd": "0.8423",
+        "txns": {
+            "h24": {"buys": 2800, "sells": 2100}
+        },
+        "volume": {
+            "h24": 1250000.0
+        },
+        "priceChange": {
+            "h24": -5.1
+        },
+        "liquidity": {
+            "usd": 5000000.0,
+            "base": 2500000.0,
+            "quote": 2500000.0
+        },
+        "fdv": 840000000.0,
+        "marketCap": 650000000.0,
+        "pairCreatedAt": 1690000000,
+        "info": null,
+        "boosts": null
+    }
+]
