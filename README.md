@@ -42,9 +42,10 @@ In **cyhole**, Interactions serve as the fundamental components, akin to the bui
 
 The current supported external/interactions APIs are:
 
-|Site                             |Path               |Connector                                                                          |
-|----                             |----               |---------                                                                          |
-|[birdeye.so](https://birdeye.so) |`cyhole.birdeye`   |[`Birdeye`](https://zazza123.github.io/cyhole/interactions/birdeye/index.html)     |
-|[jup.ag](https://jup.ag)         |`cyhole.jupiter`   |[`Jupiter`](https://zazza123.github.io/cyhole/interactions/jupiter/index.html)     |
-|[solana.fm](https://solana.fm)   |`cyhole.solana_fm` |[`SolanaFM`](https://zazza123.github.io/cyhole/interactions/solana_fm/index.html)  |
-|[solscan.io](https://solscan.io) |`cyhole.solscan`   |[`SolscanV1`](https://zazza123.github.io/cyhole/interactions/solscan/v1/index.html), [`SolscanV2`](https://zazza123.github.io/cyhole/interactions/solscan/v2/index.html) |
+|Site                                         |Path                    |Connector                                                                                                                                                                |
+|----                                         |----                    |---------                                                                                                                                                                |
+|[birdeye.so](https://birdeye.so)             |`cyhole.birdeye`        |[`Birdeye`](https://zazza123.github.io/cyhole/interactions/birdeye/index.html)                                                                                           |
+|[dexscreener.com](https://dexscreener.com)   |`cyhole.dex_screener`   |[`DexScreener`](https://zazza123.github.io/cyhole/interactions/dex_screener/index.html)                                                                                  |
+|[jup.ag](https://jup.ag)                     |`cyhole.jupiter`        |[`Jupiter`](https://zazza123.github.io/cyhole/interactions/jupiter/index.html)                                                                                           |
+|[solana.fm](https://solana.fm)               |`cyhole.solana_fm`      |[`SolanaFM`](https://zazza123.github.io/cyhole/interactions/solana_fm/index.html)                                                                                        |
+|[solscan.io](https://solscan.io)             |`cyhole.solscan`        |[`SolscanV1`](https://zazza123.github.io/cyhole/interactions/solscan/v1/index.html), [`SolscanV2`](https://zazza123.github.io/cyhole/interactions/solscan/v2/index.html) |
