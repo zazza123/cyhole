@@ -23,12 +23,6 @@ from ..jupiter.schema import (
     GetTokenVerifyCraftTxnResponse,
     PostTokenVerifyExecuteBody,
     PostTokenVerifyExecuteResponse,
-    # Trigger API
-    PostTriggerCreateOrderBody,
-    PostTriggerCreateOrderResponse,
-    PostTriggerExecuteResponse,
-    PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse,
     # Recurring API
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
@@ -139,42 +133,6 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
         """
         return self._interaction._post_token_verify_execute(True, body)
-
-    def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
-        """
-        return self._interaction._post_trigger_create_order(True, body)
-
-    def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_execute`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute].
-        """
-        return self._interaction._post_trigger_execute(True, signed_transaction_id, request_id)
-
-    def post_trigger_cancel_order(self, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
-        """
-        return self._interaction._post_trigger_cancel_order(True, user_public_key, orders, compute_unit_price)
-
-    def get_trigger_orders(
-        self,
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> GetTriggerOrdersResponse:
-        """
-            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
-        """
-        return self._interaction._get_trigger_orders(True, user_public_key, status, include_failed, input_token, output_token, page)
 
     def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
         """
@@ -305,42 +263,6 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
         """
         return await self._interaction._post_token_verify_execute(False, body)
-
-    async def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
-        """
-        return await self._interaction._post_trigger_create_order(False, body)
-
-    async def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_execute`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute].
-        """
-        return await self._interaction._post_trigger_execute(False, signed_transaction_id, request_id)
-
-    async def post_trigger_cancel_order(self, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
-        """
-        return await self._interaction._post_trigger_cancel_order(False, user_public_key, orders, compute_unit_price)
-
-    async def get_trigger_orders(
-        self,
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> GetTriggerOrdersResponse:
-        """
-            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
-        """
-        return await self._interaction._get_trigger_orders(False, user_public_key, status, include_failed, input_token, output_token, page)
 
     async def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
         """
