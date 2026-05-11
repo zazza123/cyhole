@@ -1,0 +1,14 @@
+{
+    "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+    "eligible": false,
+    "criteria": {
+        "exists": true,
+        "duplicate": false,
+        "created_recently": false,
+        "mint_authority_set": false,
+        "freeze_authority_set": false,
+        "metadata_missing": false,
+        "liquidity_unlocked": true,
+        "risk_score": 7
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "reports": [
+        {
+            "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "tokenType": "",
+            "risks": [
+                {
+                    "name": "Mutable metadata",
+                    "value": "",
+                    "description": "Token metadata can be changed by the owner",
+                    "score": 100,
+                    "level": "warn"
+                }
+            ],
+            "score": 101,
+            "score_normalised": 7,
+            "lpLockedPct": 1.46,
+            "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+        }
+    ]
+}

@@ -1,0 +1,22 @@
+[
+    {
+        "mint": "BTSkAcrB6RgFvmmx7zMp3P7wQNBszmazrR6JLFSfmzm8",
+        "payer": "58StPDgfmrTkCcegNV2QpKbERa9aGafNPATgKpBSBiQG",
+        "name": "Buy To Survive",
+        "symbol": "bts",
+        "description": "https://buytosurvive.com",
+        "jup_verified": false,
+        "jup_strict": false,
+        "links": null
+    },
+    {
+        "mint": "3RceBbbhrvohcVZAq1EtJusDiuxJTjESD2zti51npump",
+        "payer": "H692cNuuHZmCSrgzfou6GdPzJo46hmr6qUFvq51MiNqb",
+        "name": "All or Nothing",
+        "symbol": "aon",
+        "description": "AON Coin is meticulously crafted to provide lasting value in the cryptocurrency landscape. By merging the excitement of poker with the innovative world of blockchain, AON Coin is set to redefine your gaming experience.\n\n",
+        "jup_verified": false,
+        "jup_strict": false,
+        "links": null
+    }
+]

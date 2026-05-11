@@ -97,6 +97,13 @@ nav:
       - Parameters: interactions/dex_screener/param.md
       - Schema: interactions/dex_screener/schema.md
       - Exceptions: interactions/dex_screener/exception.md
+    - Rugcheck:
+      - interactions/rugcheck/index.md
+      - Interaction: interactions/rugcheck/interaction.md
+      - Client: interactions/rugcheck/client.md
+      - Parameters: interactions/rugcheck/param.md
+      - Schema: interactions/rugcheck/schema.md
+      - Exceptions: interactions/rugcheck/exception.md
     - Birdeye:
       - interactions/birdeye/index.md
       - Interaction: interactions/birdeye/interaction.md

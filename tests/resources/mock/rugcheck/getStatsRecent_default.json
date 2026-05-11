@@ -1,0 +1,28 @@
+[
+    {
+        "mint": "HzCxUhYHmtrpfR9B4dcMNdojTvhKNBueY4SG1cd6pump",
+        "metadata": {
+            "name": "MACO",
+            "symbol": "MACO",
+            "uri": "https://ipfs.io/ipfs/bafkreic6axebxzn64mjeuzvqohqfupd7q4gdk4deirxkabdg5rvb5gh2cq",
+            "mutable": false,
+            "updateAuthority": "11111111111111111111111111111111"
+        },
+        "user_visits": 830,
+        "visits": 830,
+        "score": 501
+    },
+    {
+        "mint": "Cnz9zbzfwYwZ6WdXTVjC9HcdBeMszRLksc1wtyWCpump",
+        "metadata": {
+            "name": "Lobstercoin",
+            "symbol": "LOBSTER",
+            "uri": "https://metadata.j7tracker.io/metadata/2e1d6d128ea2477c.json",
+            "mutable": false,
+            "updateAuthority": "11111111111111111111111111111111"
+        },
+        "user_visits": 782,
+        "visits": 782,
+        "score": 501
+    }
+]

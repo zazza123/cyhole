@@ -392,8 +392,13 @@ Rules:
 ```markdown
 # Interaction
 
-::: cyhole.{name}.interaction
+::: cyhole.{name}.{Name}
+    options:
+        filters:
+            - "^_"
 ```
+
+**Critical:** Reference the class directly (not the module) and include `filters: ["^_"]` to expose private methods. Without this, cross-reference links from `client.py` docstrings will generate mkdocs warnings and broken anchors.
 
 ### `docs/interactions/{name}/param.md`
 ```markdown
@@ -424,11 +429,11 @@ The classes identifying the response schema of an endpoint are the only ones end
 ### `docs/interactions/{name}/index.md`
 
 Structure:
-```markdown
+````markdown
 # :simple-{icon}: - {Name}
 
 {Name} ([{api_url}]({api_url})) is ... [brief description].
-[Authentication: "No API key is required." or "An API key is required."]
+[Authentication: "No API key is required." or "Authenticated endpoints require a Bearer token passed as `api_key` to the `{Name}` constructor."]
 
 The API connector is [`{Name}`](../{name}/interaction.md) class imported from `cyhole.{name}` path.
 
@@ -445,11 +450,62 @@ from cyhole.{name} import {Name}
 
 ## Content
 
-| | |
-|---|---|
-| [Client](client.md) | [Interaction](interaction.md) |
-| [Parameters](param.md) | [Schema](schema.md) |
-| [Exceptions](exception.md) | |
+The documentation follows the library's structure by providing all the technical details required to use it.
+
+<div class="grid cards" markdown>
+
+-   :material-connection:{ .lg .middle } __Connector__
+
+    ---
+
+    `cyhole.{name}` - Explore the [`{Name}`](../{name}/interaction.md) API connector and all its methods.
+
+    [:octicons-arrow-right-24: Reference](../{name}/interaction.md)
+
+-   :material-list-status:{ .lg .middle } __API Parameters__
+
+    ---
+
+    `cyhole.{name}.param` - Ensure to use the correct parameters during the API calls.
+
+    [:octicons-arrow-right-24: Reference](../{name}/param.md)
+
+-   :material-graph:{ .lg .middle } __Response Schema__
+
+    ---
+
+    `cyhole.{name}.schema` - Extract only what is necessary by exploiting response mapping thanks to `pydantic` schemes.
+
+    [:octicons-arrow-right-24: Reference](../{name}/schema.md)
+
+-   :octicons-stop-24:{ .lg .middle } __Exceptions__
+
+    ---
+
+    `cyhole.{name}.exception` - Make sure you intercept all exceptions correctly.
+
+    [:octicons-arrow-right-24: Reference](../{name}/exception.md)
+
+</div>
+
+## Endpoints
+
+| Endpoint | Type | Method | `cyhole` Release | Deprecated |
+| --- | --- | --- | --- | --- |
+| {EndpointName} | `GET` | [`get_{endpoint_name}`](../{name}/interaction.md#cyhole.{name}.{Name}._{get_endpoint_name}) | `{version}` | - |
+````
+
+**Important:**
+- Use `<div class="grid cards" markdown>` for the Content section — not a plain table.
+- The Endpoints table must link to the private method anchors in `interaction.md` (e.g., `#cyhole.{name}.{Name}._get_{endpoint_name}`).
+- List every endpoint in the table with its HTTP type, cyhole release version, and Deprecated column.
+
+### `README.md` — add to interactions table
+
+Find the interactions table and add a row for the new interaction (keep alphabetical or logical order):
+
+```markdown
+|[{site}]({api_url}) |`cyhole.{name}` |[`{Name}`](https://zazza123.github.io/cyhole/interactions/{name}/index.html) |
 ```
 
 ### `mkdocs.yml` — register new interaction
@@ -495,7 +551,11 @@ Before declaring the implementation complete, verify:
 - [ ] `tests/test.default.ini` updated with new section
 - [ ] `tests/test_{name}.py` has `_sync` and `_async` test for each endpoint
 - [ ] All 6 doc files created in `docs/interactions/{name}/`
+- [ ] `interaction.md` uses class-level `:::` with `filters: ["^_"]` (not module-level)
+- [ ] `index.md` uses grid cards for Content section and full Endpoints table with all methods
 - [ ] `mkdocs.yml` updated under `nav: Interactions:`
+- [ ] `README.md` interactions table updated with new row for `{name}`
+- [ ] `mkdocs build` runs with no WARNINGs or ERRORs
 - [ ] `pytest tests/test_{name}.py` passes
 
 ---

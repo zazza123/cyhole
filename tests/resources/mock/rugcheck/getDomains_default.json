@@ -1,0 +1,16 @@
+[
+    {
+        "mint": "Mint",
+        "name": "Name",
+        "symbol": "symbol",
+        "domain": "symbol.token",
+        "createdAt": "2024-06-10T16:30:28.524524933Z"
+    },
+    {
+        "mint": "CbNYA9n3927uXUukee2Hf4tm3xxkffJPPZvGazc2EAH1",
+        "name": "agEUR (Wormhole)",
+        "symbol": "ageur",
+        "domain": "ageur.token",
+        "createdAt": "2024-06-10T16:30:28.524908723Z"
+    }
+]

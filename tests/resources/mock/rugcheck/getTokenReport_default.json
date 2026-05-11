@@ -1,0 +1,227 @@
+{
+    "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+    "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "creator": "9AhKqLR67hwapvG8SA2JFXaCshXc9nALJjpKaHZrsbkw",
+    "creatorBalance": 14608186413,
+    "token": {
+        "mintAuthority": null,
+        "supply": 8799473520399442134,
+        "decimals": 5,
+        "isInitialized": true,
+        "freezeAuthority": null
+    },
+    "token_extensions": null,
+    "tokenMeta": {
+        "name": "Bonk",
+        "symbol": "Bonk",
+        "uri": "https://arweave.net/QPC6FYdUn-3V8ytFNuoCS85S2tHAuiDblh6u3CIZLsw",
+        "mutable": true,
+        "updateAuthority": "9AhKqLR67hwapvG8SA2JFXaCshXc9nALJjpKaHZrsbkw"
+    },
+    "topHolders": [
+        {
+            "address": "5hpfC9VBxVcoW9opCnM2PqR6YWRLBzrBpabJTZnwwNiw",
+            "amount": 699666605122332215,
+            "decimals": 5,
+            "pct": 7.951232576589101,
+            "uiAmount": 6996666051223.321,
+            "uiAmountString": "6996666051223.32129",
+            "owner": "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM",
+            "insider": false
+        },
+        {
+            "address": "2vPvEovB1gw8bAUqasThEv6YMAdJ77AU3RxiUNqknEiw",
+            "amount": 471204766940904418,
+            "decimals": 5,
+            "pct": 5.3549199943443275,
+            "uiAmount": 4712047669409.045,
+            "uiAmountString": "4712047669409.04492",
+            "owner": "51yZyDSnec4xnUv7XLRVYcDyV4x3wUtzrDcRaYbmQU5j",
+            "insider": false
+        },
+        {
+            "address": "8F5kDNNBic4AFUHw2G83yenGrcSeJRoQPGSyt8HAxV5W",
+            "amount": 471204670153498125,
+            "decimals": 5,
+            "pct": 5.354918894421632,
+            "uiAmount": 0,
+            "uiAmountString": "4712046701534.98145",
+            "owner": "9FtGm6hJULCpA8An4sFg5ysHUExDZBtMeDCxsYnTnWh5",
+            "insider": false
+        }
+    ],
+    "freezeAuthority": null,
+    "mintAuthority": null,
+    "risks": [
+        {
+            "name": "Mutable metadata",
+            "value": "",
+            "description": "Token metadata can be changed by the owner",
+            "score": 100,
+            "level": "warn"
+        }
+    ],
+    "score": 101,
+    "score_normalised": 7,
+    "fileMeta": {
+        "description": "",
+        "name": "Bonk",
+        "symbol": "Bonk",
+        "image": "https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I"
+    },
+    "lockerOwners": {},
+    "lockers": {
+        "3UwfrdLTpAjxTRni1boc5HUWe6hzc4HgE5yLdvEp2Noc": {
+            "programID": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+            "tokenAccount": "11111111111111111111111111111111",
+            "owner": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+            "uri": "https://raydium.io/clmm/create-position/?pool_id=3UwfrdLTpAjxTRni1boc5HUWe6hzc4HgE5yLdvEp2Noc",
+            "unlockDate": 0,
+            "usdcLocked": 18.949453164710732,
+            "type": "raydium_locker"
+        },
+        "6Qni4zFNtkrVtny2w2Z6tb3ispGDAKTjwjNrbx2pZf87": {
+            "programID": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+            "tokenAccount": "11111111111111111111111111111111",
+            "owner": "675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8",
+            "uri": "https://raydium.io/liquidity/increase/?mode=add&pool_id=4UDXmQvau4tYoAGZr3j2Pd6DPQTE48dPKy2GnoPbyonE",
+            "unlockDate": 0,
+            "usdcLocked": 1640.1750768326074,
+            "type": "raydium_locker"
+        }
+    },
+    "lockerScanStatus": "none",
+    "markets": [
+        {
+            "pubkey": "3ne4mWqdYuNiYrYZC9TrA3FcfuFdErghH97vNPbjicr1",
+            "marketType": "orca",
+            "mintA": "So11111111111111111111111111111111111111112",
+            "mintB": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+            "mintLP": "11111111111111111111111111111111",
+            "liquidityA": "47BkLC5ReY8tfQF5Web2nk3zA4TKskdk8NARKuMGV8gE",
+            "liquidityB": "9MSyH6ptUM1a885FUhawyYLd6YfVjDRUhqib4Apqjm3Z",
+            "mintAAccount": {
+                "mintAuthority": null,
+                "supply": 0,
+                "decimals": 9,
+                "isInitialized": true,
+                "freezeAuthority": null
+            },
+            "mintBAccount": {
+                "mintAuthority": null,
+                "supply": 8799473520399442134,
+                "decimals": 5,
+                "isInitialized": true,
+                "freezeAuthority": null
+            },
+            "mintLPAccount": {
+                "mintAuthority": null,
+                "supply": 32251162044021,
+                "decimals": 0,
+                "isInitialized": false,
+                "freezeAuthority": null
+            },
+            "liquidityAAccount": {
+                "mint": "So11111111111111111111111111111111111111112",
+                "owner": "3ne4mWqdYuNiYrYZC9TrA3FcfuFdErghH97vNPbjicr1",
+                "amount": 603033380452,
+                "delegate": null,
+                "state": 1,
+                "delegatedAmount": 0,
+                "closeAuthority": null
+            },
+            "liquidityBAccount": {
+                "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "owner": "3ne4mWqdYuNiYrYZC9TrA3FcfuFdErghH97vNPbjicr1",
+                "amount": 13339165281560363,
+                "delegate": null,
+                "state": 1,
+                "delegatedAmount": 0,
+                "closeAuthority": null
+            },
+            "lp": {
+                "baseMint": "So11111111111111111111111111111111111111112",
+                "quoteMint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+                "lpMint": "11111111111111111111111111111111",
+                "quotePrice": 7.5266931214907855e-06,
+                "basePrice": 95.2648565570013,
+                "base": 603.033380452,
+                "quote": 133391652815.60364,
+                "reserveSupply": 32251162044021,
+                "currentSupply": 32251162044021,
+                "quoteUSD": 1003998.0357114909,
+                "baseUSD": 57447.88848784337,
+                "pctReserve": 200,
+                "pctSupply": 0,
+                "holders": null,
+                "totalTokensUnlocked": 32251162044021,
+                "tokenSupply": 32251162044021,
+                "lpLocked": 0,
+                "lpUnlocked": 32251162044021,
+                "lpLockedPct": 0,
+                "lpLockedUSD": 0,
+                "lpMaxSupply": 0,
+                "lpCurrentSupply": 0,
+                "lpTotalSupply": 32251162044021
+            }
+        }
+    ],
+    "totalMarketLiquidity": 3225471.2692268034,
+    "totalStableLiquidity": 974241.5528573005,
+    "totalLPProviders": 89,
+    "totalHolders": 0,
+    "price": 0,
+    "rugged": false,
+    "tokenType": "",
+    "transferFee": {
+        "pct": 0,
+        "maxAmount": 0,
+        "authority": "11111111111111111111111111111111"
+    },
+    "knownAccounts": {
+        "13grxnxkeiyVBycg6R2w8RqXxM16rLnA8awuMFf6YMPH": {
+            "name": "Meteora DLMM Pool",
+            "type": "AMM"
+        },
+        "23UGjut13RxKehs98SQPbCBLNtpumTXDk1ng3NdCrG24": {
+            "name": "Meteora DLMM Pool",
+            "type": "AMM"
+        },
+        "257rRut9Y6QpBG6Nk1jZw2L7aStyktuU32Pa9vsbov85": {
+            "name": "Meteora DLMM Pool",
+            "type": "AMM"
+        }
+    },
+    "events": [],
+    "verification": {
+        "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        "payer": "3ZTwSXYzVATC9rei1PFe2ND5s6AbLNzLScjZg6WnfDyU",
+        "name": "Bonk",
+        "symbol": "bonk",
+        "description": "The Official Bonk Inu token",
+        "jup_verified": true,
+        "jup_strict": true,
+        "links": []
+    },
+    "graphInsidersDetected": 1046,
+    "insiderNetworks": [
+        {
+            "id": "damp-fawn-possum",
+            "size": 998,
+            "type": "transfer",
+            "tokenAmount": 384568474838896027,
+            "activeAccounts": 998
+        },
+        {
+            "id": "fluffy-blush-narwhal",
+            "size": 48,
+            "type": "transfer",
+            "tokenAmount": 28954737171604569,
+            "activeAccounts": 48
+        }
+    ],
+    "detectedAt": "2024-06-13T13:21:32.560276226Z",
+    "creatorTokens": null,
+    "launchpad": null,
+    "deployPlatform": "unknown"
+}
