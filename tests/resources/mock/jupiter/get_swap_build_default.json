@@ -1,0 +1,49 @@
+{
+    "inputMint": "So11111111111111111111111111111111111111112",
+    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "inAmount": "1000000000",
+    "outAmount": "150000000",
+    "otherAmountThreshold": "148500000",
+    "swapMode": "ExactIn",
+    "slippageBps": 50,
+    "routePlan": [
+        {
+            "swapInfo": {
+                "ammKey": "AMMKey1111111111111111111111111111111111111",
+                "label": "Orca",
+                "inputMint": "So11111111111111111111111111111111111111112",
+                "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "inAmount": "1000000000",
+                "outAmount": "150000000"
+            },
+            "percent": 100
+        }
+    ],
+    "computeBudgetInstructions": [
+        {
+            "programId": "ComputeBudget111111111111111111111111111111",
+            "accounts": [],
+            "data": "AQAAAMC0kgAAAAA="
+        }
+    ],
+    "setupInstructions": [],
+    "swapInstruction": {
+        "programId": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+        "accounts": [
+            {
+                "pubkey": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+                "isSigner": false,
+                "isWritable": false
+            }
+        ],
+        "data": "YjN3aGFsZXhhbmRlcg=="
+    },
+    "cleanupInstruction": null,
+    "otherInstructions": [],
+    "tipInstruction": null,
+    "addressesByLookupTableAddress": null,
+    "blockhashWithMetadata": {
+        "blockhash": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
+        "lastValidBlockHeight": 284350200
+    }
+}

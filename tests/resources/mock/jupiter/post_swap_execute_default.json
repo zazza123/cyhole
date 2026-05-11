@@ -1,0 +1,18 @@
+{
+    "status": "Success",
+    "code": 0,
+    "signature": "5j7Ym3zKXqFakeSignature1234567890abcdefghijklmnopqrstuvwxyz",
+    "slot": "284350123",
+    "totalInputAmount": "1000000000",
+    "totalOutputAmount": "150000000",
+    "inputAmountResult": "1000000000",
+    "outputAmountResult": "150000000",
+    "swapEvents": [
+        {
+            "inputMint": "So11111111111111111111111111111111111111112",
+            "inputAmount": "1000000000",
+            "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+            "outputAmount": "150000000"
+        }
+    ]
+}

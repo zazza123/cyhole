@@ -1,0 +1,31 @@
+{
+    "mode": "ultra",
+    "inputMint": "So11111111111111111111111111111111111111112",
+    "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+    "inAmount": "1000000000",
+    "outAmount": "150000000",
+    "otherAmountThreshold": "148500000",
+    "swapMode": "ExactIn",
+    "slippageBps": 50,
+    "routePlan": [
+        {
+            "swapInfo": {
+                "ammKey": "AMMKey1111111111111111111111111111111111111",
+                "label": "Orca",
+                "inputMint": "So11111111111111111111111111111111111111112",
+                "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
+                "inAmount": "1000000000",
+                "outAmount": "150000000"
+            },
+            "percent": 100,
+            "bps": 10000,
+            "usdValue": 140.5
+        }
+    ],
+    "feeBps": 0,
+    "transaction": null,
+    "gasless": false,
+    "requestId": "req-12345678-abcd-efgh-ijkl-1234567890ab",
+    "totalTime": 250,
+    "router": "iris"
+}

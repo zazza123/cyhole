@@ -173,6 +173,16 @@ class JupiterOrganicScore(CyholeParam):
     LOW = "low"
     """Tokens with low organic score."""
 
+class JupiterBroadcastFeeType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's broadcast fee type strategies
+        in the Swap v2 "**Order**" endpoint.
+    """
+    MAX_CAP = "maxCap"
+    """Treat the fee as a maximum cap; actual fee may be lower."""
+    EXACT_FEE = "exactFee"
+    """Use the exact fee amount specified."""
+
 class JupiterRouter(CyholeParam):
     """
         Enum class to get the supported Jupiter's router types.

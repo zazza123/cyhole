@@ -102,10 +102,14 @@ The documentation follows the library's structure by providing all the technical
 | Endpoint  | Type      | Method    | `cyhole` Release  | Deprecated    |
 | ---       | ---       | ---       | ---               | ---           |
 | Price | `GET` | [`get_price`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_price) | `0.1.0` | - |
-| Quote | `GET` | [`get_quote`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote) | `0.1.0` | - |
+| Quote | `GET` | `get_quote` | `0.1.0` | `0.3.0` |
 | Quote Tokens | `GET` | `get_quote_tokens` | `0.1.0` | `0.2.5` |
-| Quote Program ID to Label | `GET` | [`get_quote_program_id_label`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote_program_id_label) | `0.1.0` | - |
-| Swap | `POST` | [`post_swap`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap) | `0.1.0` | - |
+| Quote Program ID to Label | `GET` | `get_quote_program_id_label` | `0.1.0` | `0.3.0` |
+| Swap | `POST` | `post_swap` | `0.1.0` | `0.3.0` |
+| Swap - Order | `GET` | [`get_swap_order`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_swap_order) | `0.3.0` | - |
+| Swap - Execute | `POST` | [`post_swap_execute`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap_execute) | `0.3.0` | - |
+| Swap - Build | `GET` | [`get_swap_build`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_swap_build) | `0.3.0` | - |
+| Swap - Submit | `POST` | [`post_swap_submit`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap_submit) | `0.3.0` | - |
 | Token Search | `GET` | [`get_token_search`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_search) | `0.2.5` | - |
 | Token Tag | `GET` | [`get_token_tag`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_tag) | `0.2.5` | - |
 | Token Category | `GET` | [`get_token_category`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_category) | `0.2.5` | - |

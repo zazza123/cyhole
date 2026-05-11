@@ -9,12 +9,14 @@ from ..jupiter.schema import (
     # Price API
     GetPriceResponse,
     # Swap API
-    GetQuoteParams,
-    GetQuoteResponse,
-    GetQuoteProgramIdLabelResponse,
-    PostSwapBody,
-    PostSwapResponse,
-    PostSwapInstructionsResponse,
+    GetSwapOrderParams,
+    GetSwapOrderResponse,
+    PostSwapExecuteBody,
+    PostSwapExecuteResponse,
+    GetSwapBuildParams,
+    GetSwapBuildResponse,
+    PostSwapSubmitBody,
+    PostSwapSubmitResponse,
     # Token API
     GetTokenInfo,
     GetTokenSearchResponse,
@@ -150,7 +152,12 @@ class Jupiter(Interaction):
     @property
     def url_api_swap(self) -> str:
         """Swap API URL composed according to API tier"""
-        return self.url_api_root + "/swap/v1/"
+        return self.url_api_root + "/swap/v2/"
+
+    @property
+    def url_api_tx(self) -> str:
+        """Transaction submission API URL composed according to API tier"""
+        return self.url_api_root + "/tx/v1/"
 
     @property
     def url_api_token(self) -> str:
@@ -227,108 +234,108 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_quote(self, sync: Literal[True], input: GetQuoteParams) -> GetQuoteResponse: ...
+    def _get_swap_order(self, sync: Literal[True], params: GetSwapOrderParams) -> GetSwapOrderResponse: ...
 
     @overload
-    def _get_quote(self, sync: Literal[False], input: GetQuoteParams) -> Coroutine[None, None, GetQuoteResponse]: ...
+    def _get_swap_order(self, sync: Literal[False], params: GetSwapOrderParams) -> Coroutine[None, None, GetSwapOrderResponse]: ...
 
-    def _get_quote(self, sync: bool, input: GetQuoteParams) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
+    def _get_swap_order(self, sync: bool, params: GetSwapOrderParams) -> GetSwapOrderResponse | Coroutine[None, None, GetSwapOrderResponse]:
         """
-            This function refers to the GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint, 
-            and it is used to get a quote for swapping a specific amount of tokens.  
-            The function can be combined with the `post_swap` enpdpoint to implement a payment mechanism.
+            This function refers to the GET **[Swap - Order](https://developers.jup.ag/docs/api-reference/swap/order)** API endpoint,
+            and it is used to get a swap quote and a fully assembled transaction using Jupiter Swap v2 API.
+
+            The Meta-Aggregator path competes across all routing engines (Metis, JupiterZ RFQ, DFlow, OKX)
+            to return the best price. When `taker` is provided the response includes a ready-to-sign
+            base64-encoded transaction; combine with `post_swap_execute` to land it on-chain.
 
             Parameters:
-                input: an input schema used to describe the request.
-                    More details in the object definition.
+                params: input params describing the swap. See [`GetSwapOrderParams`][cyhole.jupiter.schema.GetSwapOrderParams].
 
             Returns:
-                Quote found by Jupiter API.
+                Quote and assembled transaction from Jupiter Swap v2 API.
         """
-        # set params
-        url = self.url_api_swap + "quote"
-        params = input.model_dump(
-            by_alias = True, 
-            exclude_defaults = True
+        url = self.url_api_swap + "order"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetSwapOrderResponse,
+            params = params.model_dump(by_alias = True, exclude_defaults = True)
         )
 
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetQuoteResponse, params = params)
+    @overload
+    def _post_swap_execute(self, sync: Literal[True], body: PostSwapExecuteBody) -> PostSwapExecuteResponse: ...
 
     @overload
-    def _get_quote_program_id_label(self, sync: Literal[True]) -> GetQuoteProgramIdLabelResponse: ...
+    def _post_swap_execute(self, sync: Literal[False], body: PostSwapExecuteBody) -> Coroutine[None, None, PostSwapExecuteResponse]: ...
 
-    @overload
-    def _get_quote_program_id_label(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteProgramIdLabelResponse]: ...
-
-    def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
+    def _post_swap_execute(self, sync: bool, body: PostSwapExecuteBody) -> PostSwapExecuteResponse | Coroutine[None, None, PostSwapExecuteResponse]:
         """
-            This function refers to the GET **[Quote Program ID to Label](https://dev.jup.ag/api-reference/swap/program-id-to-label)** API endpoint, 
-            and it is used to get the list of supported DEXes to use in quote endpoint. 
+            This function refers to the POST **[Swap - Execute](https://developers.jup.ag/docs/api-reference/swap/execute)** API endpoint,
+            and it is used to execute a signed swap transaction created by `get_swap_order`.
 
-            Returns:
-                List of DEXs addresses and labels.
-        """
-        # set params
-        url = self.url_api_swap + "program-id-to-label"
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_swap(self, sync: Literal[True], body: PostSwapBody, with_instructions: Literal[False]) -> PostSwapResponse: ...
-
-    @overload
-    def _post_swap(self, sync: Literal[True], body: PostSwapBody, with_instructions: Literal[True]) -> PostSwapInstructionsResponse: ...
-
-    @overload
-    def _post_swap(self, sync: Literal[False], body: PostSwapBody, with_instructions: Literal[False]) -> Coroutine[None, None, PostSwapResponse]: ...
-
-    @overload
-    def _post_swap(self, sync: Literal[False], body: PostSwapBody, with_instructions: Literal[True]) -> Coroutine[None, None, PostSwapInstructionsResponse]: ...
-
-    def _post_swap(self, sync: bool, body: PostSwapBody, with_instructions: bool = False) -> PostSwapResponse | PostSwapInstructionsResponse | Coroutine[None, None, PostSwapResponse | PostSwapInstructionsResponse]:
-        """
-            This function refers to the POST **[Swap](https://dev.jup.ag/api-reference/swap/swap)** API endpoint, 
-            and it is used to recive the transaction to perform the swap initialised from Jupiter client 
-            `get_quote` endpoint for the desired pair; for this reason the function should be combined 
-            with the `get_quote` endpoint.
-
-            Jupiter API provides also the possibility to retrieve only the instructions to perform the swap 
-            without the transaction. This is useful to check the instructions before performing the swap, 
-            and in case of need, to modify the instructions before sending the transaction. This behaviour 
-            can be activated by setting the `with_instructions` flag to `True`. Observe that in this case, 
-            the response will be different from the standard swap response. In Jupiter's API documentation,
-            this endpoint is referred to the POST **[Swap Instructions](https://dev.jup.ag/api-reference/swap/swap-instructions)**.
+            First call `get_swap_order` with a valid `taker` to obtain the base64 transaction and the
+            `request_id`. Sign the transaction with the taker's wallet, then submit both via this endpoint.
 
             Parameters:
-                body: the body to sent to Jupiter API that describe the swap.
-                    More details in the object definition.
-                with_instructions: flag to receive only the instructions to perform the swap.
+                body: signed transaction and request ID from `get_swap_order`.
+                    See [`PostSwapExecuteBody`][cyhole.jupiter.schema.PostSwapExecuteBody].
 
             Returns:
-                Transaction found by Jupiter API in case `with_instructions` is `False`, 
-                otherwise instructions to perform the swap.
+                Execution result including status, signature, and amount details.
         """
-        # set params
-        url = self.url_api_swap + "swap"
-        response_model_class = PostSwapResponse
+        url = self.url_api_swap + "execute"
+        return self.api_return_model(sync, RequestType.POST.value, url, PostSwapExecuteResponse,
+            json = body.model_dump(by_alias = True, exclude_none = True)
+        )
 
-        # check instructions
-        if with_instructions:
-            url += "-instructions"
-            response_model_class = PostSwapInstructionsResponse
+    @overload
+    def _get_swap_build(self, sync: Literal[True], params: GetSwapBuildParams) -> GetSwapBuildResponse: ...
 
-        # execute request
-        return self.api_return_model(sync, RequestType.POST.value, url, response_model_class, 
-            json = body.model_dump(by_alias = True, exclude_defaults = True)
+    @overload
+    def _get_swap_build(self, sync: Literal[False], params: GetSwapBuildParams) -> Coroutine[None, None, GetSwapBuildResponse]: ...
+
+    def _get_swap_build(self, sync: bool, params: GetSwapBuildParams) -> GetSwapBuildResponse | Coroutine[None, None, GetSwapBuildResponse]:
+        """
+            This function refers to the GET **[Swap - Build](https://developers.jup.ag/docs/api-reference/swap/build)** API endpoint,
+            and it is used to get raw swap instructions for custom transaction building using Jupiter Swap v2 Router path.
+
+            Unlike `get_swap_order`, this endpoint returns individual Solana instructions rather than an assembled
+            transaction, allowing integrators to compose their own transaction. Routing is handled exclusively
+            by the Metis on-chain router (no RFQ market makers). Combine with `post_swap_submit` to land the
+            transaction via Jupiter's infrastructure.
+
+            Parameters:
+                params: input params describing the swap. See [`GetSwapBuildParams`][cyhole.jupiter.schema.GetSwapBuildParams].
+
+            Returns:
+                Raw instructions and route plan for custom transaction assembly.
+        """
+        url = self.url_api_swap + "build"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetSwapBuildResponse,
+            params = params.model_dump(by_alias = True, exclude_defaults = True)
+        )
+
+    @overload
+    def _post_swap_submit(self, sync: Literal[True], body: PostSwapSubmitBody) -> PostSwapSubmitResponse: ...
+
+    @overload
+    def _post_swap_submit(self, sync: Literal[False], body: PostSwapSubmitBody) -> Coroutine[None, None, PostSwapSubmitResponse]: ...
+
+    def _post_swap_submit(self, sync: bool, body: PostSwapSubmitBody) -> PostSwapSubmitResponse | Coroutine[None, None, PostSwapSubmitResponse]:
+        """
+            This function refers to the POST **[Swap - Submit](https://developers.jup.ag/docs/swap)** API endpoint,
+            and it is used to submit any signed Solana transaction through Jupiter's proprietary landing pipeline.
+
+            The transaction must include a SOL tip (minimum 0.001 SOL / 1,000,000 lamports) to incentivise
+            validators. This endpoint is zero-credit-cost and available on all plans including keyless access.
+
+            Parameters:
+                body: base64-encoded signed Solana transaction.
+                    See [`PostSwapSubmitBody`][cyhole.jupiter.schema.PostSwapSubmitBody].
+
+            Returns:
+                Transaction signature after successful submission.
+        """
+        url = self.url_api_tx + "submit"
+        return self.api_return_model(sync, RequestType.POST.value, url, PostSwapSubmitResponse,
+            json = body.model_dump(by_alias = True)
         )
 
     @overload
