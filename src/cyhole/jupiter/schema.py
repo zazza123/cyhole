@@ -938,10 +938,157 @@ class GetTokenCategoryResponse(GetTokenSearchResponse):
 # classes used on GET "Token New" endpoint
 class GetTokenRecentResponse(GetTokenSearchResponse):
     """
-        Model used to represent a token information 
+        Model used to represent a token information
         on the GET **Token Recent** endpoint.
     """
     pass
+
+# classes used on GET "Token Verify - Check Eligibility" endpoint
+class GetTokenVerifyCheckEligibilityResponse(BaseModel):
+    """
+        Model representing the response object from the GET
+        "**Token Verify - Check Eligibility**" endpoint from Jupiter API.
+    """
+
+    token_exists: bool = Field(alias = "tokenExists")
+    """Whether Jupiter recognises the token."""
+
+    is_verified: bool = Field(alias = "isVerified")
+    """Whether the token already has verified status."""
+
+    can_verify: bool = Field(alias = "canVerify")
+    """Whether a verification submission is currently permitted."""
+
+    can_metadata: bool = Field(alias = "canMetadata")
+    """Whether a metadata update submission is currently permitted."""
+
+    verification_error: str | None = Field(default = None, alias = "verificationError")
+    """Reason verification is blocked; `None` when verification is permitted."""
+
+    metadata_error: str | None = Field(default = None, alias = "metadataError")
+    """Reason metadata update is blocked; `None` when metadata update is permitted."""
+
+# classes used on GET "Token Verify - Craft Transaction" endpoint
+class GetTokenVerifyCraftTxnResponse(BaseModel):
+    """
+        Model representing the response object from the GET
+        "**Token Verify - Craft Transaction**" endpoint from Jupiter API.
+    """
+
+    transaction: str
+    """Base64-encoded unsigned transaction for the 1000 JUP payment."""
+
+    request_id: str = Field(alias = "requestId")
+    """Unique identifier to be passed to the execute step."""
+
+    mint: str
+    """JUP token mint address used for the payment."""
+
+    amount: str
+    """Payment amount in the smallest JUP units (1000 JUP = `1000000000`)."""
+
+    expire_at: str = Field(alias = "expireAt")
+    """ISO-8601 timestamp after which the transaction is no longer valid."""
+
+    gasless: bool
+    """Whether the transaction requires no SOL fees."""
+
+# classes used on POST "Token Verify - Execute" endpoint
+class PostTokenVerifyExecuteTokenMetadata(BaseModel):
+    """Optional token metadata fields submitted alongside a verification request."""
+
+    token_id: str = Field(serialization_alias = "tokenId")
+    """Mint address of the token being updated."""
+
+    name: str | None = None
+    """Display name of the token."""
+
+    symbol: str | None = None
+    """Ticker symbol of the token."""
+
+    icon: str | None = None
+    """URL to the token icon image."""
+
+    website: str | None = None
+    """Official website URL."""
+
+    twitter: str | None = None
+    """Official Twitter/X profile URL."""
+
+    twitter_community: str | None = Field(default = None, serialization_alias = "twitterCommunity")
+    """Twitter/X community URL."""
+
+    telegram: str | None = None
+    """Official Telegram URL."""
+
+    discord: str | None = None
+    """Official Discord URL."""
+
+    instagram: str | None = None
+    """Official Instagram URL."""
+
+    tiktok: str | None = None
+    """Official TikTok URL."""
+
+    token_description: str | None = Field(default = None, serialization_alias = "tokenDescription")
+    """Short description of the token."""
+
+    circulating_supply: str | None = Field(default = None, serialization_alias = "circulatingSupply")
+    """Current circulating supply as a string."""
+
+    circulating_supply_url: str | None = Field(default = None, serialization_alias = "circulatingSupplyUrl")
+    """URL to a data source for circulating supply."""
+
+    coingecko_coin_id: str | None = Field(default = None, serialization_alias = "coingeckoCoinId")
+    """CoinGecko coin identifier for the token."""
+
+    other_url: str | None = Field(default = None, serialization_alias = "otherUrl")
+    """Any additional reference URL."""
+
+class PostTokenVerifyExecuteBody(BaseModel):
+    """
+        Model referring to the body schema of the POST
+        "**Token Verify - Execute**" endpoint from Jupiter API.
+    """
+
+    transaction: str
+    """Base64-encoded signed transaction from the craft-txn step."""
+
+    request_id: str = Field(serialization_alias = "requestId")
+    """Request ID from the craft-txn response."""
+
+    sender_address: str = Field(serialization_alias = "senderAddress")
+    """Wallet address that signed and submitted the payment."""
+
+    token_id: str = Field(serialization_alias = "tokenId")
+    """Mint address of the token to verify."""
+
+    twitter_handle: str = Field(serialization_alias = "twitterHandle")
+    """X profile URL of the project."""
+
+    description: str
+    """Rationale for the verification submission."""
+
+    token_metadata: PostTokenVerifyExecuteTokenMetadata | None = Field(default = None, serialization_alias = "tokenMetadata")
+    """Optional metadata to update alongside the verification request."""
+
+class PostTokenVerifyExecuteResponse(BaseModel):
+    """
+        Model representing the response object from the POST
+        "**Token Verify - Execute**" endpoint from Jupiter API.
+    """
+
+    status: str
+    """Execution result: `Success` or `Failed`."""
+
+    signature: str
+    """On-chain transaction signature."""
+
+    verification_created: bool = Field(alias = "verificationCreated")
+    """Whether a verification request was submitted."""
+
+    metadata_created: bool = Field(alias = "metadataCreated")
+    """Whether a metadata update request was submitted."""
 
 # *************
 # * Ultra API *

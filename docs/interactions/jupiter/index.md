@@ -114,6 +114,9 @@ The documentation follows the library's structure by providing all the technical
 | Token Tag | `GET` | [`get_token_tag`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_tag) | `0.2.5` | - |
 | Token Category | `GET` | [`get_token_category`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_category) | `0.2.5` | - |
 | Token Recent | `GET` | [`get_token_recent`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_recent) | `0.2.5` | - |
+| Token Verify - Check Eligibility | `GET` | [`get_token_verify_check_eligibility`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_verify_check_eligibility) | `0.3.0` | - |
+| Token Verify - Craft Transaction | `GET` | [`get_token_verify_craft_txn`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_verify_craft_txn) | `0.3.0` | - |
+| Token Verify - Execute | `POST` | [`post_token_verify_execute`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_token_verify_execute) | `0.3.0` | - |
 | Token List | `GET` | `get_token_list` | `0.1.0` | `0.2.5` |
 | Limit Order - Create | `POST` | `post_limit_order_create` | `0.1.0` | `0.3.0` |
 | Limit Order - Cancel | `POST` | `post_limit_order_cancel` | `0.1.0` | `0.3.0` |

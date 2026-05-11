@@ -19,6 +19,10 @@ from ..jupiter.schema import (
     GetTokenTagResponse,
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
+    GetTokenVerifyCheckEligibilityResponse,
+    GetTokenVerifyCraftTxnResponse,
+    PostTokenVerifyExecuteBody,
+    PostTokenVerifyExecuteResponse,
     # Ultra API
     GetUltraOrderBody,
     GetUltraOrderResponse,
@@ -117,12 +121,33 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_token_category(True, category, interval)
 
-    def get_token_recent(self) -> GetTokenRecentResponse:
+    def get_token_recent(self, limit: int | None = None) -> GetTokenRecentResponse:
         """
-            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for synchronous logic.
             All the API endpoint details are available on [`Jupiter._get_token_recent`][cyhole.jupiter.interaction.Jupiter._get_token_recent].
         """
-        return self._interaction._get_token_recent(True)
+        return self._interaction._get_token_recent(True, limit)
+
+    def get_token_verify_check_eligibility(self, token_id: str) -> GetTokenVerifyCheckEligibilityResponse:
+        """
+            Call the Jupiter's GET **[Token Verify - Check Eligibility](https://developers.jup.ag/docs/tokens/verification)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_check_eligibility`][cyhole.jupiter.interaction.Jupiter._get_token_verify_check_eligibility].
+        """
+        return self._interaction._get_token_verify_check_eligibility(True, token_id)
+
+    def get_token_verify_craft_txn(self, sender_address: str) -> GetTokenVerifyCraftTxnResponse:
+        """
+            Call the Jupiter's GET **[Token Verify - Craft Transaction](https://developers.jup.ag/docs/tokens/verification)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_craft_txn`][cyhole.jupiter.interaction.Jupiter._get_token_verify_craft_txn].
+        """
+        return self._interaction._get_token_verify_craft_txn(True, sender_address)
+
+    def post_token_verify_execute(self, body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse:
+        """
+            Call the Jupiter's POST **[Token Verify - Execute](https://developers.jup.ag/docs/tokens/verification)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
+        """
+        return self._interaction._post_token_verify_execute(True, body)
 
     def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
         """
@@ -302,12 +327,33 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_category(False, category, interval)
 
-    async def get_token_recent(self) -> GetTokenRecentResponse:
+    async def get_token_recent(self, limit: int | None = None) -> GetTokenRecentResponse:
         """
-            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for asynchronous logic.
             All the API endpoint details are available on [`Jupiter._get_token_recent`][cyhole.jupiter.interaction.Jupiter._get_token_recent].
         """
-        return await self._interaction._get_token_recent(False)
+        return await self._interaction._get_token_recent(False, limit)
+
+    async def get_token_verify_check_eligibility(self, token_id: str) -> GetTokenVerifyCheckEligibilityResponse:
+        """
+            Call the Jupiter's GET **[Token Verify - Check Eligibility](https://developers.jup.ag/docs/tokens/verification)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_check_eligibility`][cyhole.jupiter.interaction.Jupiter._get_token_verify_check_eligibility].
+        """
+        return await self._interaction._get_token_verify_check_eligibility(False, token_id)
+
+    async def get_token_verify_craft_txn(self, sender_address: str) -> GetTokenVerifyCraftTxnResponse:
+        """
+            Call the Jupiter's GET **[Token Verify - Craft Transaction](https://developers.jup.ag/docs/tokens/verification)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_craft_txn`][cyhole.jupiter.interaction.Jupiter._get_token_verify_craft_txn].
+        """
+        return await self._interaction._get_token_verify_craft_txn(False, sender_address)
+
+    async def post_token_verify_execute(self, body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse:
+        """
+            Call the Jupiter's POST **[Token Verify - Execute](https://developers.jup.ag/docs/tokens/verification)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
+        """
+        return await self._interaction._post_token_verify_execute(False, body)
 
     async def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
         """

@@ -18,6 +18,10 @@ from cyhole.jupiter.schema import (
     GetTokenTagResponse,
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
+    GetTokenVerifyCheckEligibilityResponse,
+    GetTokenVerifyCraftTxnResponse,
+    PostTokenVerifyExecuteBody,
+    PostTokenVerifyExecuteResponse,
     PostTriggerCreateOrderParams,
     GetUltraOrderBody,
     GetUltraOrderResponse,
@@ -1711,3 +1715,157 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostRecurringCancelOrderResponse)
+
+    def test_get_token_verify_check_eligibility_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Check Eligibility" for synchronous logic.
+
+            Mock Response File: get_token_verify_check_eligibility.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_check_eligibility"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCheckEligibilityResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_token_verify_check_eligibility(JUP.address)
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCheckEligibilityResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_verify_check_eligibility_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Check Eligibility" for asynchronous logic.
+
+            Mock Response File: get_token_verify_check_eligibility.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_check_eligibility"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCheckEligibilityResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_token_verify_check_eligibility(JUP.address)
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCheckEligibilityResponse)
+
+    def test_get_token_verify_craft_txn_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Craft Transaction" for synchronous logic.
+
+            Mock Response File: get_token_verify_craft_txn.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_craft_txn"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCraftTxnResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_token_verify_craft_txn("REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3")
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCraftTxnResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_verify_craft_txn_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Craft Transaction" for asynchronous logic.
+
+            Mock Response File: get_token_verify_craft_txn.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_craft_txn"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCraftTxnResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_token_verify_craft_txn("REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3")
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCraftTxnResponse)
+
+    def test_post_token_verify_execute_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            POST "Token Verify - Execute" for synchronous logic.
+
+            Mock Response File: post_token_verify_execute.json
+        """
+
+        # load mock response
+        mock_file_name = "post_token_verify_execute"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenVerifyExecuteResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostTokenVerifyExecuteBody(
+            transaction = "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAHCw==",
+            request_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            sender_address = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            token_id = JUP.address,
+            twitter_handle = "https://x.com/JupiterExchange",
+            description = "Test verification submission"
+        )
+        response = self.jupiter.client.post_token_verify_execute(body)
+
+        # actual test
+        assert isinstance(response, PostTokenVerifyExecuteResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_token_verify_execute_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            POST "Token Verify - Execute" for asynchronous logic.
+
+            Mock Response File: post_token_verify_execute.json
+        """
+
+        # load mock response
+        mock_file_name = "post_token_verify_execute"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenVerifyExecuteResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostTokenVerifyExecuteBody(
+            transaction = "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAHCw==",
+            request_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            sender_address = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            token_id = JUP.address,
+            twitter_handle = "https://x.com/JupiterExchange",
+            description = "Test verification submission"
+        )
+        async with self.jupiter.async_client as client:
+            response = await client.post_token_verify_execute(body)
+
+        # actual test
+        assert isinstance(response, PostTokenVerifyExecuteResponse)
