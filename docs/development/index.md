@@ -10,6 +10,17 @@ Depending on the scope, different actions should be taken into consideration.
 
 Since you are reading this section, it could mean that you want to contribute to the project by improving the library, for this reason I want to say... **Thank You**!
 
+## Claude Code Skills
+
+Developers using [Claude Code](https://claude.ai/code) can take advantage of two project skills that enforce library conventions automatically:
+
+| Skill | Purpose |
+|-------|---------|
+| `cyhole-git-commit-convention` | Enforces the `CODE: Title` commit message format on every commit. Use during the development phase whenever creating a git commit. |
+| `cyhole-writing-documentation` | Enforces documentation structure and style conventions. Use whenever new functionality is added or existing behaviour changes. |
+
+These skills are available inside the `.claude/skills/` folder of the repository and are loaded automatically by Claude Code when working in this project.
+
 <div class="grid cards" markdown>
 
 -   :material-new-box:{ .lg .middle } **New `Interaction`**
