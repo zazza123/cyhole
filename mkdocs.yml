@@ -90,6 +90,13 @@ nav:
   - Home: index.md
   - Interactions:
     - interactions/index.md
+    - DexScreener:
+      - interactions/dex_screener/index.md
+      - Interaction: interactions/dex_screener/interaction.md
+      - Client: interactions/dex_screener/client.md
+      - Parameters: interactions/dex_screener/param.md
+      - Schema: interactions/dex_screener/schema.md
+      - Exceptions: interactions/dex_screener/exception.md
     - Birdeye:
       - interactions/birdeye/index.md
       - Interaction: interactions/birdeye/interaction.md

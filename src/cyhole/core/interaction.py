@@ -54,9 +54,9 @@ class Interaction:
         """
         if sync:
             content_raw = self.client.api(type, url, *args, **kwargs)
-            return response_model(**content_raw.json())
+            return response_model.model_validate(content_raw.json())
         else:
             async def async_request():
                 content_raw = await self.async_client.api(type, url, *args, **kwargs)
-                return response_model(**content_raw.json())
+                return response_model.model_validate(content_raw.json())
             return async_request()

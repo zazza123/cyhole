@@ -4,6 +4,10 @@ on:
   release:
     types: [created]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     name: deploy a new version of cyhole library
@@ -13,7 +17,7 @@ jobs:
 
       # set up environment
       - name: set up python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
       - name: install pip
@@ -25,7 +29,9 @@ jobs:
 
       # update library version equals release
       - name: update version in pyproject.toml
-        run: sed -i "s/{{PROJECT_VERSION}}/${{ github.event.release.tag_name }}/g" pyproject.toml
+        run: |
+          TAG_NAME="${{ github.event.release.tag_name }}"
+          sed -i "s/{{PROJECT_VERSION}}/${TAG_NAME}/g" pyproject.toml
 
       # build package
       - name: build a binary wheel and a source tarball
@@ -33,13 +39,4 @@ jobs:
 
       # publish on pypi
       - name: publish package
-        uses: pypa/gh-action-pypi-publish@v1.8.14
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-
-      # check workflow output
-      - name: dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+        uses: pypa/gh-action-pypi-publish@release/v1

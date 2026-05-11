@@ -225,9 +225,9 @@ class TestSolanaFM:
 
         # load mock response
         mock_file_name = "get_account_transfers_csv_export"
-        if config.mock_response or config.jupiter.mock_response:
+        if config.mock_response or config.solana_fm.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetAccountTransfersCsvExportResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
         # execute request
         account = "5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"

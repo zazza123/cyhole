@@ -217,13 +217,15 @@ class Jupiter(Interaction):
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, self.url_api_price, params = params)
-            data = {str(k): GetPriceData(**v) for k, v in dict(content_raw.json()).items()}
-            return GetPriceResponse(data = data, time_unix = int(datetime.now().timestamp()))
+            json_data = content_raw.json()
+            data = {str(k): GetPriceData(**v) for k, v in json_data["data"].items()}
+            return GetPriceResponse(data = data, time_unix = json_data.get("time_unix", int(datetime.now().timestamp())))
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, self.url_api_price, params = params)
-                data = {str(k): GetPriceData(**v) for k, v in dict(content_raw.json()).items()}
-                return GetPriceResponse(data = data, time_unix = int(datetime.now().timestamp()))
+                json_data = content_raw.json()
+                data = {str(k): GetPriceData(**v) for k, v in json_data["data"].items()}
+                return GetPriceResponse(data = data, time_unix = json_data.get("time_unix", int(datetime.now().timestamp())))
             return async_request()
 
     @overload
@@ -364,12 +366,12 @@ class Jupiter(Interaction):
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            tokens = [GetTokenInfo(**token) for token in content_raw.json()]
+            tokens = [GetTokenInfo(**token) for token in content_raw.json()["tokens"]]
             return GetTokenSearchResponse(tokens = tokens)
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                tokens = [GetTokenInfo(**token) for token in content_raw.json()]
+                tokens = [GetTokenInfo(**token) for token in content_raw.json()["tokens"]]
                 return GetTokenSearchResponse(tokens = tokens)
             return async_request()
 

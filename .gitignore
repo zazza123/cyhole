@@ -5,3 +5,4 @@ cyhole.code-workspace
 /**/.DS_Store
 /tests/test.ini
 /.vscode
+/site

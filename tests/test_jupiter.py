@@ -1,5 +1,7 @@
 import pytest
 from pathlib import Path
+from unittest.mock import MagicMock
+from requests.exceptions import HTTPError
 
 from pytest_mock import MockerFixture
 
@@ -35,7 +37,7 @@ from cyhole.jupiter.schema import (
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
-from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
+from cyhole.core.token.solana import WSOL, JUP, USDC
 from cyhole.core.token.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
 
@@ -256,7 +258,7 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, GetQuoteResponse)
-        assert response.input_amount_raw == amount
+        assert response.input_amount_raw == str(amount)
         assert response.input_token == WSOL.address
         assert response.output_token == JUP.address
 
@@ -265,7 +267,7 @@ class TestJupiter:
             Unit Test used to check the response schema of endpoint "Quote" 
             forcing a route and mode for synchronous logic.
 
-            Mock Response File: get_quote_force_rooute.json
+            Mock Response File: get_quote_force_route.json
         """
 
         # load mock response
@@ -298,11 +300,11 @@ class TestJupiter:
             Unit Test used to check the response schema of endpoint "Quote" 
             forcing a route and mode for asynchronous logic.
 
-            Mock Response File: get_quote_force_rooute.json
+            Mock Response File: get_quote_force_route.json
         """
 
         # load mock response
-        mock_file_name = "get_quote_force_rooute"
+        mock_file_name = "get_quote_force_route"
         if config.mock_response or config.jupiter.mock_response:
             mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
@@ -323,11 +325,16 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetQuoteResponse)
 
-    def test_get_quote_error_route_not_found_sync(self) -> None:
+    def test_get_quote_error_route_not_found_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote" 
+            Unit Test used to check the response schema of endpoint "Quote"
             when no route is found for synchronous logic.
         """
+
+        if config.mock_response or config.jupiter.mock_response:
+            mock_http_response = MagicMock()
+            mock_http_response.json.return_value = {"errorCode": "COULD_NOT_FIND_ANY_ROUTE", "error": "No route found"}
+            mocker.patch("cyhole.core.client.APIClient.api", side_effect = HTTPError(response = mock_http_response))
 
         # define input
         input = GetQuoteParams(
@@ -341,11 +348,16 @@ class TestJupiter:
             self.jupiter.client.get_quote(input)
 
     @pytest.mark.asyncio
-    async def test_get_quote_error_route_not_found_async(self) -> None:
+    async def test_get_quote_error_route_not_found_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote" 
+            Unit Test used to check the response schema of endpoint "Quote"
             when no route is found for asynchronous logic.
         """
+
+        if config.mock_response or config.jupiter.mock_response:
+            mock_http_response = MagicMock()
+            mock_http_response.json.return_value = {"errorCode": "COULD_NOT_FIND_ANY_ROUTE", "error": "No route found"}
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", side_effect = HTTPError(response = mock_http_response))
 
         # define input
         input = GetQuoteParams(

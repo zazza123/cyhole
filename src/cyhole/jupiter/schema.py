@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Literal
+from typing import Literal
 
 from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
 
@@ -7,7 +7,6 @@ from ..jupiter.param import (
     JupiterSwapMode,
     JupiterSwapDex,
     JupiterOrderState,
-    JupiterSwapType,
     JupiterRouter,
     JupiterSwapExecutionStatus,
     JupiterOrderStatus,
@@ -182,10 +181,10 @@ class GetQuoteSwapInfo(BaseModel):
     output_amount_raw: str = Field(alias = "outAmount")
     """Raw amount of output token to buy (before decimals)."""
 
-    fee_token: str = Field(alias = "feeMint")
+    fee_token: str | None = Field(default = None, alias = "feeMint")
     """Fee token address."""
 
-    fee_amount_raw: str = Field(alias = "feeAmount")
+    fee_amount_raw: str | None = Field(default = None, alias = "feeAmount")
     """Raw amount of fee token to buy (before decimals)."""
 
     @property
@@ -197,8 +196,8 @@ class GetQuoteSwapInfo(BaseModel):
         return int(self.output_amount_raw)
 
     @property
-    def fee_amount(self) -> int:
-        return int(self.fee_amount_raw)
+    def fee_amount(self) -> int | None:
+        return int(self.fee_amount_raw) if self.fee_amount_raw is not None else None
 
 class GetQuoteRoutePlan(BaseModel):
     """

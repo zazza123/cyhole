@@ -1,9 +1,9 @@
 {
     "inputMint": "So11111111111111111111111111111111111111112",
-    "inAmount": 1000,
+    "inAmount": "1000",
     "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-    "outAmount": 522,
-    "otherAmountThreshold": 520,
+    "outAmount": "522",
+    "otherAmountThreshold": "520",
     "swapMode": "ExactIn",
     "slippageBps": 50,
     "platformFee": null,
@@ -14,11 +14,11 @@
                 "ammKey": "4UopaeYzxPyHtSYcvb1Cj9U3Z8uUf3yngsrTExqi2JAh",
                 "label": "Meteora DLMM",
                 "inputMint": "So11111111111111111111111111111111111111112",
-                "inAmount": 1000,
+                "inAmount": "1000",
                 "outputMint": "KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS",
-                "outAmount": 2495,
+                "outAmount": "2495",
                 "feeMint": "So11111111111111111111111111111111111111112",
-                "feeAmount": 1
+                "feeAmount": "1"
             },
             "percent": 100
         },
@@ -27,11 +27,11 @@
                 "ammKey": "7E2VdM6xYRYsUxMsTcofCcwT3JMMfCnBoHaRnZ8z3mZW",
                 "label": "Meteora DLMM",
                 "inputMint": "KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS",
-                "inAmount": 2495,
+                "inAmount": "2495",
                 "outputMint": "jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v",
-                "outAmount": 871,
+                "outAmount": "871",
                 "feeMint": "KMNo3nJsBXfcpJTVhZcXLW7RmTwTt4GVFE7suUBo9sS",
-                "feeAmount": 7
+                "feeAmount": "7"
             },
             "percent": 100
         },
@@ -40,11 +40,11 @@
                 "ammKey": "67kn7dbRuvaGSnTqdegwFAc9p1yPNN9LMJd4qDuo6kfG",
                 "label": "Meteora DLMM",
                 "inputMint": "jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v",
-                "inAmount": 871,
+                "inAmount": "871",
                 "outputMint": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-                "outAmount": 522,
+                "outAmount": "522",
                 "feeMint": "jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v",
-                "feeAmount": 4
+                "feeAmount": "4"
             },
             "percent": 100
         }

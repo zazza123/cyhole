@@ -27,7 +27,7 @@ asyncio.run(main())
 
 ### Create Limit Order Transaction
 
-Get the transaction for the creation of a new Limit Order by using [`post_limit_order_create`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_create) in **synchronous** logic.
+Get the transaction for the creation of a new Limit Order by using `post_limit_order_create` in **synchronous** logic.
 
 ```py
 from solders.keypair import Keypair
@@ -103,7 +103,7 @@ The documentation follows the library's structure by providing all the technical
 | ---       | ---       | ---       | ---               | ---           |
 | Price | `GET` | [`get_price`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_price) | `0.1.0` | - |
 | Quote | `GET` | [`get_quote`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote) | `0.1.0` | - |
-| Quote Tokens | `GET` | [`get_quote_tokens`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote_tokens) | `0.1.0` | - |
+| Quote Tokens | `GET` | `get_quote_tokens` | `0.1.0` | `0.2.5` |
 | Quote Program ID to Label | `GET` | [`get_quote_program_id_label`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote_program_id_label) | `0.1.0` | - |
 | Swap | `POST` | [`post_swap`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap) | `0.1.0` | - |
 | Token Search | `GET` | [`get_token_search`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_search) | `0.2.5` | - |
@@ -111,8 +111,8 @@ The documentation follows the library's structure by providing all the technical
 | Token Category | `GET` | [`get_token_category`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_category) | `0.2.5` | - |
 | Token Recent | `GET` | [`get_token_recent`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_recent) | `0.2.5` | - |
 | Token List | `GET` | `get_token_list` | `0.1.0` | `0.2.5` |
-| Limit Order - Create | `POST` | [`post_limit_order_create`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_create) | `0.1.0` | - |
-| Limit Order - Cancel | `POST` | [`post_limit_order_cancel`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_limit_order_cancel) | `0.1.0` | - |
-| Limit Order - Open | `GET` | [`get_limit_order_open`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_limit_order_open) | `0.1.0` | - |
-| Limit Order - History | `GET` | [`get_limit_order_history`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_limit_order_history) | `0.1.0` | - |
-| Limit Order - Trade History | `GET` | [`get_limit_order_trade_history`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_limit_order_trade_history) | `0.1.0` | - |
+| Limit Order - Create | `POST` | `post_limit_order_create` | `0.1.0` | `0.3.0` |
+| Limit Order - Cancel | `POST` | `post_limit_order_cancel` | `0.1.0` | `0.3.0` |
+| Limit Order - Open | `GET` | `get_limit_order_open` | `0.1.0` | `0.3.0` |
+| Limit Order - History | `GET` | `get_limit_order_history` | `0.1.0` | `0.3.0` |
+| Limit Order - Trade History | `GET` | `get_limit_order_trade_history` | `0.1.0` | `0.3.0` |
