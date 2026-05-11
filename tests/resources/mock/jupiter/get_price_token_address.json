@@ -1,11 +1,8 @@
 {
-    "data": {
-        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
-            "id": "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-            "type": "derivedPrice",
-            "price": 0.425024,
-            "extraInfo": null
-        }
-    },
-    "timeTaken": 0.007792442
+    "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
+        "usdPrice": 0.425024,
+        "blockId": 345678901,
+        "decimals": 6,
+        "priceChange24h": -2.34
+    }
 }

@@ -193,39 +193,31 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_price(self, sync: Literal[True], address: list[str], vs_address: str | None = None) -> GetPriceResponse: ...
+    def _get_price(self, sync: Literal[True], address: list[str]) -> GetPriceResponse: ...
 
     @overload
-    def _get_price(self, sync: Literal[False], address: list[str], vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]: ...
+    def _get_price(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetPriceResponse]: ...
 
-    def _get_price(self, sync: bool, address: list[str], vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
+    def _get_price(self, sync: bool, address: list[str]) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint,
-            and it is used to get the current price of a list of tokens on Solana chain from [Jupiter Swap](https://jup.ag).
+            This function refers to the GET **[Price](https://developers.jup.ag/docs/price)** API endpoint,
+            and it is used to get the current USD price for up to 50 tokens on Solana from [Jupiter](https://jup.ag).
 
-            The API returns the unit buy price for the tokens according to the value of `USDC` token.
-
-            !!! info
-                Observe that when the token address or comparison token address are not found,
-                the response provided will have a `data` object with the token address as key and
-                the value will be `None`.
+            Returns `None` for a token when price data is unavailable or unreliable
+            (e.g. no trades in the last 7 days, or flagged as suspicious).
 
             Parameters:
-                address: list of tokens addresses to get the price.
+                address: list of token mint addresses to query. Maximum 50 per request.
                     For example, `So11111111111111111111111111111111111111112`.
-                vs_address: optional token address to use as comparison token instead of `USDC`.
-                    When provided, the response will include the comparison token with price `1.0`.
 
             Returns:
-                tokens' prices.
+                mapping of token mint address to price data.
         """
 
         # set params
         params: dict[str, str] = {
             "ids": ",".join(address)
         }
-        if vs_address is not None:
-            params["vsToken"] = vs_address
 
         # execute request
         if sync:
