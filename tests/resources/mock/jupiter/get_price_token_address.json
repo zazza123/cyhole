@@ -1,11 +1,8 @@
 {
-    "data": {
-        "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
-            "usdPrice": 0.25205922293897653,
-            "decimals": 6,
-            "blockId": 381156740,
-            "priceChange24h": -6.623099843213508
-        }
-    },
-    "time_unix": 1763574168
+    "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN": {
+        "usdPrice": 0.425024,
+        "blockId": 345678901,
+        "decimals": 6,
+        "priceChange24h": -2.34
+    }
 }

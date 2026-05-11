@@ -20,7 +20,7 @@ async def main() -> None:
     jupiter = Jupiter()
     async with jupiter.async_client as client:
         response = await client.get_price([JUP.address])
-        print("Current JUP/USDC:", response.data[JUP.address].price)
+        print("Current JUP/USD:", response.data[JUP.address].usd_price)
 
 asyncio.run(main())
 ```
@@ -102,17 +102,34 @@ The documentation follows the library's structure by providing all the technical
 | Endpoint  | Type      | Method    | `cyhole` Release  | Deprecated    |
 | ---       | ---       | ---       | ---               | ---           |
 | Price | `GET` | [`get_price`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_price) | `0.1.0` | - |
-| Quote | `GET` | [`get_quote`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote) | `0.1.0` | - |
+| Quote | `GET` | `get_quote` | `0.1.0` | `0.3.0` |
 | Quote Tokens | `GET` | `get_quote_tokens` | `0.1.0` | `0.2.5` |
-| Quote Program ID to Label | `GET` | [`get_quote_program_id_label`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_quote_program_id_label) | `0.1.0` | - |
-| Swap | `POST` | [`post_swap`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap) | `0.1.0` | - |
+| Quote Program ID to Label | `GET` | `get_quote_program_id_label` | `0.1.0` | `0.3.0` |
+| Swap | `POST` | `post_swap` | `0.1.0` | `0.3.0` |
+| Swap - Order | `GET` | [`get_swap_order`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_swap_order) | `0.3.0` | - |
+| Swap - Execute | `POST` | [`post_swap_execute`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap_execute) | `0.3.0` | - |
+| Swap - Build | `GET` | [`get_swap_build`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_swap_build) | `0.3.0` | - |
+| Swap - Submit | `POST` | [`post_swap_submit`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_swap_submit) | `0.3.0` | - |
 | Token Search | `GET` | [`get_token_search`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_search) | `0.2.5` | - |
 | Token Tag | `GET` | [`get_token_tag`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_tag) | `0.2.5` | - |
 | Token Category | `GET` | [`get_token_category`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_category) | `0.2.5` | - |
 | Token Recent | `GET` | [`get_token_recent`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_recent) | `0.2.5` | - |
+| Token Verify - Check Eligibility | `GET` | [`get_token_verify_check_eligibility`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_verify_check_eligibility) | `0.3.0` | - |
+| Token Verify - Craft Transaction | `GET` | [`get_token_verify_craft_txn`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_token_verify_craft_txn) | `0.3.0` | - |
+| Token Verify - Execute | `POST` | [`post_token_verify_execute`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_token_verify_execute) | `0.3.0` | - |
 | Token List | `GET` | `get_token_list` | `0.1.0` | `0.2.5` |
 | Limit Order - Create | `POST` | `post_limit_order_create` | `0.1.0` | `0.3.0` |
 | Limit Order - Cancel | `POST` | `post_limit_order_cancel` | `0.1.0` | `0.3.0` |
 | Limit Order - Open | `GET` | `get_limit_order_open` | `0.1.0` | `0.3.0` |
 | Limit Order - History | `GET` | `get_limit_order_history` | `0.1.0` | `0.3.0` |
 | Limit Order - Trade History | `GET` | `get_limit_order_trade_history` | `0.1.0` | `0.3.0` |
+| Ultra - Order | `GET` | `get_ultra_order` | `0.3.0` | `0.3.0` |
+| Ultra - Execute | `POST` | `post_ultra_execute_order` | `0.3.0` | `0.3.0` |
+| Recurring - Create Order | `POST` | [`post_recurring_create_order`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_recurring_create_order) | `0.3.0` | - |
+| Recurring - Orders | `GET` | [`get_recurring_orders`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_recurring_orders) | `0.3.0` | - |
+| Recurring - Withdraw Price | `POST` | `post_recurring_withdraw_price` | `0.3.0` | `0.3.0` |
+| Recurring - Deposit Price | `POST` | `post_recurring_deposit_price` | `0.3.0` | `0.3.0` |
+| Recurring - Cancel Order | `POST` | [`post_recurring_cancel_order`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_recurring_cancel_order) | `0.3.0` | - |
+| Recurring - Execute | `POST` | [`post_recurring_execute`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_recurring_execute) | `0.3.0` | - |
+| Ultra - Holdings | `GET` | `get_ultra_holdings` | `0.3.0` | `0.3.0` |
+| Ultra - Shield | `GET` | `get_ultra_shield` | `0.3.0` | `0.3.0` |

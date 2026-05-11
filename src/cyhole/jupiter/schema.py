@@ -1,19 +1,14 @@
 from datetime import datetime
-from typing import Literal
 
-from pydantic import BaseModel, Field, AliasChoices, field_validator, field_serializer, model_serializer
+from pydantic import BaseModel, RootModel, Field, AliasChoices, field_validator, field_serializer
 
 from ..jupiter.param import (
-    JupiterSwapMode,
-    JupiterSwapDex,
+    JupiterBroadcastFeeType,
     JupiterOrderState,
     JupiterRouter,
     JupiterSwapExecutionStatus,
     JupiterOrderStatus,
-    JupiterOrganicScore,
-    JupiterShieldWarningType,
-    JupiterShieldWarningSeverity,
-    JupiterShieldWarningSource
+    JupiterOrganicScore
 )
 
 # class used on Jupiter HTTPErrors
@@ -34,112 +29,41 @@ class JupiterHTTPError(BaseModel):
 # * Price API *
 # *************
 
+# classes used on GET "Price" endpoint
 class GetPriceData(BaseModel):
     """
-        Model with all the information about a token data
-        returned by the GET "**Price**" endpoint from Jupiter API.
+        Model with the price information for a single token
+        returned by the GET "**Price**" endpoint from Jupiter Price V3 API.
     """
 
-    price: float = Field(alias = "usdPrice")
-    """The price of the token compared to the `USDC` token."""
+    usd_price: float = Field(alias = "usdPrice")
+    """Token price in USD."""
+
+    block_id: int = Field(alias = "blockId")
+    """Solana block height at which the price was recorded, used to verify recency."""
 
     decimals: int
-    """Decimal of the token on the chain."""
+    """Token decimal places, used for UI display purposes."""
 
-    block_id: int | None = Field(default = None, alias = "blockId")
-    """The block ID of the token."""
+    price_change_24h: float = Field(alias = "priceChange24h")
+    """24-hour percentage price change. Negative values indicate a price decrease."""
 
-    price_change_24h: float | None = Field(default = None, alias = "priceChange24h")
-    """Price change in percentage in the last 24h."""
-
-class GetPriceResponse(BaseModel):
+class GetPriceResponse(RootModel[dict[str, GetPriceData | None]]):
     """
-        Model refering to the response schema of the GET 
-        "**Price**" endpoint from Jupiter API.
+        Model referring to the response schema of the GET
+        "**Price**" endpoint from Jupiter Price V3 API.
+        The response is a flat mapping of token mint address to price data.
+        A value of `None` indicates the price is unavailable or unreliable for that token.
     """
-    data: dict[str, GetPriceData]
-    """Dictionary of token prices. The key is the token address."""
 
-    time_unix: int
-    """UNIX timestamp of the price data."""
+    @property
+    def data(self) -> dict[str, GetPriceData | None]:
+        """Dictionary of token prices. Key is the mint address."""
+        return self.root
 
 # ************
 # * Swap API *
 # ************
-
-# classes used on GET "Quote" endpoint
-# Input
-class GetQuoteParams(BaseModel):
-    """
-        Model refering to the input schema of the GET 
-        "**Quote**" endpoint from Jupiter API.
-    """
-
-    input_token: str = Field(serialization_alias = "inputMint")
-    """The address of the input token on the chain."""
-
-    output_token: str = Field(serialization_alias = "outputMint")
-    """The address of the output token on the chain."""
-
-    amount: int
-    """The amount to swap, factoring in the token decimals.
-        For example, if the token has 6 decimals, then `1.0` = `1_000_000`. 
-        The amount refers to the input/output token depending on the `swap_mode` 
-        parameter. Since by default the `swap_mode` is set to `EXACT_IN`, then 
-        the amount refers to the **input** token if not specified.
-    """
-
-    slippage_base_points: int = Field(default = 50, serialization_alias = "slippageBps")
-    """Slippage tolerance in basis points. Observe that if the slippage exeeded this value, then the swap will fail."""
-
-    swap_mode: JupiterSwapMode = Field(default = JupiterSwapMode.EXACT_IN, serialization_alias = "swapMode")
-    """Define if the slippage is on the input or output token."""
-
-    dexes: list[str] | None = None
-    """List of DEXes to include; by default, all the DEXes are included.  
-        See [`JupiterSwapDex`][cyhole.jupiter.param.JupiterSwapDex] for all the supported DEXs"""
-
-    exclude_dexes: list[str] | None = Field(default = None, serialization_alias = "excludeDexes")
-    """List of DEXes to exclude.  
-        See [`JupiterSwapDex`][cyhole.jupiter.param.JupiterSwapDex] for all the supported DEXs"""
-
-    restrict_intermediate_tokens: bool = Field(default = True, serialization_alias = "restrictIntermediateTokens")
-    """Restrict to a top token set for stable liquidity. This will help to reduce exposure to potential high slippage routes."""
-
-    only_direct_routes: bool = Field(default = False, serialization_alias = "onlyDirectRoutes")
-    """Limit to single hop routes only."""
-
-    as_legacy_transaction: bool = Field(default = False, serialization_alias = "asLegacyTransaction")
-    """Use legacy transactions instead of versioned ones."""
-
-    platform_fee_base_points: int | None = Field(default = None, serialization_alias = "platformFeeBps")
-    """Fee to charge. The value is in percent and taken from output token."""
-
-    max_accounts: int = Field(default = 64, serialization_alias = "maxAccounts")
-    """Max accounts to be used for the quote. Jupiter Frontend uses a maxAccounts of 64."""
-
-    @field_validator("dexes", "exclude_dexes")
-    @classmethod
-    def validator_dexes(cls, dexes: list[str]) -> list[str]:
-        for dex in dexes:
-            JupiterSwapDex.check(dex)
-        return dexes
-
-    @field_serializer("dexes", "exclude_dexes")
-    @classmethod
-    def serialize_dexes(cls, dexes: list[str] | None) -> str | None:
-        return ",".join(dexes) if dexes else None
-
-    @field_serializer("swap_mode")
-    @classmethod
-    def serialize_swap_mode(cls, mode: JupiterSwapMode) -> str:
-        return mode.value
-
-    @field_validator("swap_mode")
-    @classmethod
-    def validator_swap_mode(cls, mode: str) -> str:
-        JupiterSwapMode.check(mode)
-        return mode
 
 # Output
 class GetQuotePlatformFees(BaseModel):
@@ -211,237 +135,514 @@ class GetQuoteRoutePlan(BaseModel):
     percent: int | None = None
     """Percentage of the swap."""
 
-class GetQuoteResponse(BaseModel):
+# classes used on GET "Swap v2 - Order" endpoint
+# Input
+class GetSwapOrderParams(BaseModel):
     """
-        Model refering to the response schema of the GET 
-        "**Quote**" endpoint from Jupiter API.
-    """
-
-    input_token: str = Field(alias = "inputMint")
-    """The address of the input token on the chain used to buy."""
-
-    input_amount_raw: str = Field(alias = "inAmount")
-    """Raw amount of input token to use to buy (before decimals)."""
-
-    output_token: str = Field(alias = "outputMint")
-    """The address of the output token on the chain that will bought."""
-
-    output_amount_raw: str = Field(alias = "outAmount")
-    """Raw amount of output token to buy (before decimals)."""
-
-    other_amount_threshold_raw: str = Field(alias = "otherAmountThreshold")
-    """Raw calculated minimum output amount after accounting for `slippage_base_points` and `platform_fees` (before decimals)."""
-
-    swap_mode: JupiterSwapMode = Field(alias = "swapMode")
-    """Mode of the swap."""
-
-    slippage_base_points: int = Field(alias = "slippageBps")
-    """
-        Amount of slippage the order can be executed with.  
-        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+        Model referring to the input params schema of the GET
+        "**Swap - Order**" endpoint from Jupiter Swap v2 API.
     """
 
-    platform_fees: GetQuotePlatformFees | None = Field(default = None, alias = "platformFee")
-    """Platform fees for the swap."""
+    input_token: str = Field(serialization_alias = "inputMint")
+    """Address of the input token mint."""
 
-    price_impact_pct: float = Field(alias = "priceImpactPct")
-    """Percentage of price impact for the swap."""
+    output_token: str = Field(serialization_alias = "outputMint")
+    """Address of the output token mint."""
 
-    route_plan: list[GetQuoteRoutePlan] = Field(alias = "routePlan")
-    """List of route plans for the swap."""
+    amount: int
+    """Amount to swap in the smallest unit of the input token (factoring in token decimals)."""
 
-    context_slot: int = Field(alias = "contextSlot")
-    """Slot number of the context."""
+    taker: str | None = None
+    """Public key of the wallet signing the transaction. Required to receive a non-null transaction in the response."""
 
-    time_taken: float = Field(alias = "timeTaken")
-    """Time taken to process the request."""
+    receiver: str | None = None
+    """Public key of the account receiving the output tokens. Must differ from taker when provided."""
 
-    @field_serializer("swap_mode")
+    swap_mode: str = Field(default = "ExactIn", serialization_alias = "swapMode")
+    """Swap mode. Currently only `ExactIn` is supported."""
+
+    slippage_bps: int | None = Field(default = None, serialization_alias = "slippageBps")
+    """Slippage tolerance in basis points (0–10000). Auto-determined by RTSE if unset."""
+
+    referral_account: str | None = Field(default = None, serialization_alias = "referralAccount")
+    """Referral account address. Requires referral_fee to be set."""
+
+    referral_fee: int | None = Field(default = None, serialization_alias = "referralFee")
+    """Referral fee in basis points (50–255). Requires referral_account to be set."""
+
+    payer: str | None = None
+    """Public key of the account covering gas fees on behalf of the taker."""
+
+    priority_fee_lamports: int | None = Field(default = None, serialization_alias = "priorityFeeLamports")
+    """Priority fee in lamports. Auto-optimised if unset."""
+
+    jito_tip_lamports: int | None = Field(default = None, serialization_alias = "jitoTipLamports")
+    """Jito MEV tip in lamports for faster block inclusion."""
+
+    broadcast_fee_type: JupiterBroadcastFeeType | None = Field(default = None, serialization_alias = "broadcastFeeType")
+    """Fee strategy. See [`JupiterBroadcastFeeType`][cyhole.jupiter.param.JupiterBroadcastFeeType] for valid values."""
+
+    exclude_routers: list[JupiterRouter] | None = Field(default = None, serialization_alias = "excludeRouters")
+    """Routers to exclude from competition. See [`JupiterRouter`][cyhole.jupiter.param.JupiterRouter] for valid values."""
+
+    exclude_dexes: str | None = Field(default = None, serialization_alias = "excludeDexes")
+    """Comma-separated list of DEXes to exclude from the Metis router (e.g. "Raydium,Orca V2")."""
+
+    @field_serializer("amount")
     @classmethod
-    def serialize_swap_mode(cls, mode: JupiterSwapMode) -> str:
-        return mode.value
+    def serialize_amount(cls, amount: int) -> str:
+        return str(amount)
 
-    @property
-    def input_amount(self) -> int:
-        return int(self.input_amount_raw)
+    @field_serializer("exclude_routers")
+    @classmethod
+    def serialize_exclude_routers(cls, routers: list[JupiterRouter] | None) -> str | None:
+        return ",".join(r.value for r in routers) if routers else None
 
-    @property
-    def output_amount(self) -> int:
-        return int(self.output_amount_raw)
-
-    @property
-    def other_amount_threshold(self) -> int:
-        return int(self.other_amount_threshold_raw)
-
-# classes used on GET "Quote/Program ID to Label" endpoint
-class GetQuoteProgramIdLabelResponse(BaseModel):
-    """
-        Model representing the GET **Quote/Program ID to Label** 
-        endpoint response from Jupiter API.
-    """
-
-    dexes: dict[str, str]
-    """List of dexes with their program ID and label (public_key: name)."""
-
-# classes used on POST "Swap" endpoint
-# Body
-class PostSwapPriorityLevelWithMaxLamports(BaseModel):
-    """
-        Model used to identify the priority level with max lamports.
-    """
-
-    priority_level: Literal["low", "medium", "high"] | None = Field(default = None, alias = "priorityLevel")
-    """Priority level."""
-
-    max_lamports: int | None = Field(default = None, alias = "maxLamports")
-    """Maximum lamports to cap the priority fee estimation, to prevent overpaying."""
-
-    global_flag: bool = Field(default = False, alias = "global")
-    """A boolean to choose between using a global or local fee market to estimate.
-        If global is set to false, the estimation focuses on fees relevant to the writable accounts involved in the instruction."""
-
-class PostSwapPrioritizationFeeLamports(BaseModel):
-    """
-        Model used to identify the prioritization fee lamports.
-    """
-    priority_level_with_max_lamports: PostSwapPriorityLevelWithMaxLamports | None = Field(default = None, alias = "priorityLevelWithMaxLamports")
-    """Priority level with max lamports."""
-
-    jito_tip_lamports: int | None = Field(default = None, alias = "jitoTipLamports")
-    """Exact amount of tip to use in a tip instruction.  
-        Estimate how much to set using Jito tip percentiles endpoint.  
-        It has to be used together with a connection to a Jito RPC"""
-
-class PostSwapBody(BaseModel):
-    """
-        Model used to identify the body required by a POST **Swap** request.
-    """
-
-    user_public_key: str = Field(serialization_alias = "userPublicKey")
-    """Public Key of the User wallet"""
-
-    quote_response: GetQuoteResponse = Field(serialization_alias = "quoteResponse")
-    """The quote response object from the quote endpoint."""
-
-    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
-    """To automatically wrap/unwrap SOL in the transaction.  
-        Parameter will be ignored if `destination_token_account` is set because it may belong to a 
-        different user that Jupiter has no authority to close."""
-
-    use_shared_accounts: bool= Field(default = True, serialization_alias = "useSharedAccounts")
-    """This enables the usage of shared program accounts, it is essential as complex routing 
-        will require multiple intermediate token accounts which the user might not have."""
-
-    fee_account: str | None = Field(default = None, serialization_alias = "feeAccount")
-    """An associated Token Address (ATA) of specific mints depending on SwapMode to collect fees."""
-
-    tracking_account: str | None = Field(default = None, serialization_alias = "trackingAccount")
-    """Specify any public key that belongs to you to track the transactions.  
-        Useful for integrators to get all the swap transactions from this public key."""
-
-    compute_unit_price_micro_lamports: int | None = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
-    """This number is used to specify a compute unit price to calculate priority fee; 
-        `computeUnitLimit` (1400000) * `compute_unit_price_micro_lamports`.  
-        Jupiter recommends using `prioritization_fee_lamports` and `dynamic_compute_unit_limit` instead of passing in a compute unit price."""
-
-    prioritization_fee_lamports: PostSwapPrioritizationFeeLamports | None = Field(default = None, serialization_alias = "prioritizationFeeLamports")
-    """This object is used to specify a level or amount of additional fees to prioritize the transaction.
-        It can be used for EITHER priority fee OR Jito tip."""
-
-    as_legacy_transaction: bool = Field(default = False, serialization_alias = "asLegacyTransaction")
-    """Request a legacy transaction rather than the default versioned transaction.  
-        Used together with `GetQuoteParams.as_legacy_transaction` in quote, otherwise the transaction might be too large."""
-
-    destination_token_account: str | None = Field(default = None, serialization_alias = "destinationTokenAccount")
-    """Public key of a token account that will be used to receive the token out of the swap.  
-        If not provided, the signer's ATA will be used. If provided, Jupiter assumes that the token account is already initialized."""
-
-    dynamic_compute_unit_limit: bool = Field(default = False, serialization_alias = "dynamicComputeUnitLimit")
-    """When enabled, it will do a swap simulation to get the compute unit used and set it in ComputeBudget's compute unit limit.  
-        This will increase latency slightly since there will be one extra RPC call to simulate this.  
-        This can be useful to estimate compute unit correctly and reduce priority fees needed or have higher chance to be included in a block."""
-
-    skip_user_accounts_rpc_calls: bool = Field(default = False, serialization_alias = "skipUserAccountsRpcCalls")
-    """When enabled, it will not do any additional RPC calls to check on user's accounts.  
-        Enable it only when you already setup all the accounts needed for the trasaction, 
-        like wrapping or unwrapping sol, or destination account is already created."""
-
-    dynamic_slippage: bool = Field(default = False, serialization_alias = "dynamicSlippage")
-    """When enabled, it estimates slippage and apply it in the swap transaction directly, 
-        overwriting the `GetQuoteResponse.slippage_base_points` parameter in the quote response."""
-
-    compute_unit_price_micro_lamports: int | None = Field(default = None, serialization_alias = "computeUnitPriceMicroLamports")
-    """To use an exact compute unit price to calculate priority fee: `computeUnitLimit (1400000) * computeUnitPriceMicroLamports`.  
-        It is recommended using `prioritizationFeeLamports` and `dynamicComputeUnitLimit` instead of passing in your own compute unit price."""
-
-    blockhash_slots_to_expiry: int | None = Field(default = None, serialization_alias = "blockhashSlotsToExpiry")
-    """Number of slots until the blockhash expires.  
-        Example: If you pass in 10 slots, the transaction will be valid for ~400ms * 10 = approximately 4 seconds before it expires."""
+    @field_serializer("broadcast_fee_type")
+    @classmethod
+    def serialize_broadcast_fee_type(cls, fee_type: JupiterBroadcastFeeType | None) -> str | None:
+        return fee_type.value if fee_type else None
 
 # Output
-class PostSwapResponse(BaseModel):
+class GetSwapOrderPlatformFee(BaseModel):
+    """Platform fee details in the GET "Swap - Order" response."""
+
+    amount: str | None = None
+    """Raw platform fee amount (before decimals). None when no platform fee."""
+
+    fee_bps: int = Field(alias = "feeBps")
+    """Platform fee in basis points."""
+
+    fee_mint: str | None = Field(default = None, alias = "feeMint")
+    """Token mint address for the fee. None when no platform fee."""
+
+class GetSwapOrderSwapInfo(BaseModel):
+    """Swap info for a single step in the route plan of the GET "Swap - Order" response."""
+
+    amm_key: str = Field(alias = "ammKey")
+    """Address of the AMM used for this swap step."""
+
+    amm_label: str | None = Field(default = None, alias = "label")
+    """Human-readable label of the AMM."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address for this swap step."""
+
+    input_amount_raw: str = Field(alias = "inAmount")
+    """Raw input amount for this step (before decimals)."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address for this swap step."""
+
+    output_amount_raw: str = Field(alias = "outAmount")
+    """Raw output amount for this step (before decimals)."""
+
+class GetSwapOrderRoutePlan(BaseModel):
+    """A single step in the route plan of the GET "Swap - Order" response."""
+
+    swap_info: GetSwapOrderSwapInfo = Field(alias = "swapInfo")
+    """Swap details for this step."""
+
+    percent: int | None = None
+    """Percentage of the total swap routed through this step."""
+
+    bps: int | None = None
+    """Routing basis points for this step."""
+
+    usd_value: float | None = Field(default = None, alias = "usdValue")
+    """Estimated USD value routed through this step."""
+
+class GetSwapOrderResponse(BaseModel):
     """
-        Model representing the POST **Swap** endpoint 
-        response from Jupiter API.
+        Model referring to the response schema of the GET
+        "**Swap - Order**" endpoint from Jupiter Swap v2 API.
     """
 
-    swap_transaction: str = Field(alias = "swapTransaction")
-    """Base-64 encoded transaction."""
+    mode: str | None = None
+    """Order mode: "ultra" or "manual"."""
 
-    last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
+    input_token: str = Field(alias = "inputMint")
+    """Input token mint address."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token mint address."""
+
+    input_amount_raw: str = Field(alias = "inAmount")
+    """Raw input amount (before decimals)."""
+
+    output_amount_raw: str = Field(alias = "outAmount")
+    """Raw output amount (before decimals)."""
+
+    input_usd_value: float | None = Field(default = None, alias = "inUsdValue")
+    """USD value of the input amount."""
+
+    output_usd_value: float | None = Field(default = None, alias = "outUsdValue")
+    """USD value of the output amount."""
+
+    price_impact: float | None = Field(default = None, alias = "priceImpact")
+    """Price impact as a decimal (e.g. -0.001 = -0.1%)."""
+
+    swap_usd_value: float | None = Field(default = None, alias = "swapUsdValue")
+    """USD value of the entire swap."""
+
+    other_amount_threshold: str = Field(alias = "otherAmountThreshold")
+    """Minimum output amount after slippage."""
+
+    swap_mode: str = Field(alias = "swapMode")
+    """Swap mode used (currently only ExactIn)."""
+
+    slippage_bps: int = Field(alias = "slippageBps")
+    """Slippage tolerance applied in basis points."""
+
+    route_plan: list[GetSwapOrderRoutePlan] = Field(alias = "routePlan")
+    """Execution route broken into individual swap steps."""
+
+    referral_account: str | None = Field(default = None, alias = "referralAccount")
+    """Referral account address, if provided."""
+
+    fee_mint: str | None = Field(default = None, alias = "feeMint")
+    """Token mint used for fees."""
+
+    fee_bps: int | None = Field(default = None, alias = "feeBps")
+    """Total fees in basis points, including platform fee and other fees."""
+
+    platform_fee: GetSwapOrderPlatformFee | None = Field(default = None, alias = "platformFee")
+    """Platform fee breakdown."""
+
+    signature_fee_lamports: int | None = Field(default = None, alias = "signatureFeeLamports")
+    """Lamports required for the base network signature fee."""
+
+    signature_fee_payer: str | None = Field(default = None, alias = "signatureFeePayer")
+    """Account paying the signature fee. None when taker pays."""
+
+    prioritization_fee_lamports: int | None = Field(default = None, alias = "prioritizationFeeLamports")
+    """Lamports required for priority fees and tips (Jito, Nozomi)."""
+
+    prioritization_fee_payer: str | None = Field(default = None, alias = "prioritizationFeePayer")
+    """Account paying the prioritization fee. None when taker pays."""
+
+    rent_fee_lamports: int | None = Field(default = None, alias = "rentFeeLamports")
+    """Estimated rent fee in lamports."""
+
+    rent_fee_payer: str | None = Field(default = None, alias = "rentFeePayer")
+    """Account paying the rent fee. None when taker pays."""
+
+    router: JupiterRouter | None = None
+    """Router that won the quote competition."""
+
+    transaction: str | None = None
+    """Base64-encoded assembled transaction. None when taker is not provided."""
+
+    last_valid_block_height: str | None = Field(default = None, alias = "lastValidBlockHeight")
     """Last valid block height for the transaction."""
 
-    prioritization_fee_lamports: int = Field(default = 0, alias = "prioritizationFeeLamports")
-    """Amount of prioritization fee in lamports."""
+    gasless: bool | None = None
+    """True when the swap is executed gasless."""
 
-# Output (Instructions)
-class PostSwapAccount(BaseModel):
-    """Model describing a generic account in the swap transaction."""
+    request_id: str = Field(alias = "requestId")
+    """Unique request ID required to call post_swap_execute."""
+
+    total_time: int | None = Field(default = None, alias = "totalTime")
+    """Total response time in milliseconds."""
+
+    taker: str | None = None
+    """Public key of the taker wallet."""
+
+    quote_id: str | None = Field(default = None, alias = "quoteId")
+    """Quote ID for RFQ swaps. None for non-RFQ routes."""
+
+    maker: str | None = None
+    """Market maker address for RFQ swaps. None for non-RFQ routes."""
+
+    expire_at: str | None = Field(default = None, alias = "expireAt")
+    """Quote expiration timestamp for RFQ swaps. None for non-RFQ routes."""
+
+    error_code: int | None = Field(default = None, alias = "errorCode")
+    """Error code when the transaction could not be built."""
+
+    error_message: str | None = Field(default = None, alias = "errorMessage")
+    """Human-readable error description when the transaction could not be built."""
+
+
+# classes used on POST "Swap v2 - Execute" endpoint
+# Body
+class PostSwapExecuteBody(BaseModel):
+    """
+        Model referring to the body schema of the POST
+        "**Swap - Execute**" endpoint from Jupiter Swap v2 API.
+    """
+
+    signed_transaction: str = Field(serialization_alias = "signedTransaction")
+    """Base64-encoded signed transaction from get_swap_order."""
+
+    request_id: str = Field(serialization_alias = "requestId")
+    """Request ID from the get_swap_order response."""
+
+    last_valid_block_height: str | None = Field(default = None, serialization_alias = "lastValidBlockHeight")
+    """Optional block height for nonce validation."""
+
+# Output
+class PostSwapExecuteSwapEvent(BaseModel):
+    """A single swap event in the POST "Swap - Execute" response."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address for this swap event."""
+
+    input_amount: str = Field(alias = "inputAmount")
+    """Input token amount used."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address for this swap event."""
+
+    output_amount: str = Field(alias = "outputAmount")
+    """Output token amount received."""
+
+class PostSwapExecuteResponse(BaseModel):
+    """
+        Model referring to the response schema of the POST
+        "**Swap - Execute**" endpoint from Jupiter Swap v2 API.
+    """
+
+    status: JupiterSwapExecutionStatus
+    """Execution status: Success or Failed."""
+
+    code: int | None = None
+    """Status code (0 = success; non-zero values indicate specific failure types)."""
+
+    signature: str | None = None
+    """Transaction signature on success."""
+
+    slot: str | None = None
+    """Confirmed slot number."""
+
+    total_input_amount: str | None = Field(default = None, alias = "totalInputAmount")
+    """Total input token amount before fees."""
+
+    total_output_amount: str | None = Field(default = None, alias = "totalOutputAmount")
+    """Total output token amount after fees."""
+
+    input_amount_result: str | None = Field(default = None, alias = "inputAmountResult")
+    """Input token amount used for the swap."""
+
+    output_amount_result: str | None = Field(default = None, alias = "outputAmountResult")
+    """Output token amount received from the swap."""
+
+    swap_events: list[PostSwapExecuteSwapEvent] | None = Field(default = None, alias = "swapEvents")
+    """Individual swap events comprising the transaction."""
+
+    error: str | None = None
+    """Error message when status is Failed."""
+
+
+# classes used on GET "Swap v2 - Build" endpoint
+# Input
+class GetSwapBuildParams(BaseModel):
+    """
+        Model referring to the input params schema of the GET
+        "**Swap - Build**" endpoint from Jupiter Swap v2 API.
+    """
+
+    input_token: str = Field(serialization_alias = "inputMint")
+    """Address of the input token mint."""
+
+    output_token: str = Field(serialization_alias = "outputMint")
+    """Address of the output token mint."""
+
+    amount: int
+    """Amount to swap in the smallest unit of the input token (factoring in token decimals)."""
+
+    taker: str | None = None
+    """Public key of the wallet initiating the swap."""
+
+    slippage_bps: int | None = Field(default = None, serialization_alias = "slippageBps")
+    """Slippage tolerance in basis points (0–10000). Defaults to 50 when unset."""
+
+    mode: str | None = None
+    """Quoting mode. Pass "fast" for reduced latency."""
+
+    dexes: str | None = None
+    """Comma-separated list of DEXes to restrict routing to. See [`JupiterSwapDex`][cyhole.jupiter.param.JupiterSwapDex] for valid values."""
+
+    exclude_dexes: str | None = Field(default = None, serialization_alias = "excludeDexes")
+    """Comma-separated list of DEXes to exclude from routing."""
+
+    platform_fee_bps: int | None = Field(default = None, serialization_alias = "platformFeeBps")
+    """Platform fee in basis points (0–10000). Requires fee_account."""
+
+    fee_account: str | None = Field(default = None, serialization_alias = "feeAccount")
+    """Token account for collecting platform fees."""
+
+    max_accounts: int | None = Field(default = None, serialization_alias = "maxAccounts")
+    """Maximum accounts for the swap route (1–64). Defaults to 64."""
+
+    payer: str | None = None
+    """Account paying transaction and rent fees. Defaults to taker."""
+
+    wrap_unwrap_sol: bool | None = Field(default = None, serialization_alias = "wrapAndUnwrapSol")
+    """Whether to automatically wrap/unwrap SOL. Defaults to True."""
+
+    destination_token_account: str | None = Field(default = None, serialization_alias = "destinationTokenAccount")
+    """SPL token account for receiving output tokens."""
+
+    blockhash_slots_to_expiry: int | None = Field(default = None, serialization_alias = "blockhashSlotsToExpiry")
+    """Slots until the blockhash expires (1–300). Defaults to 150."""
+
+    tip_amount: str | None = Field(default = None, serialization_alias = "tipAmount")
+    """SOL tip in lamports added as a tip instruction."""
+
+    compute_unit_price_percentile: str | None = Field(default = None, serialization_alias = "computeUnitPricePercentile")
+    """Named priority level ("medium", "high", "veryHigh") or basis points (0–10000) for compute unit price."""
+
+    @field_serializer("amount")
+    @classmethod
+    def serialize_amount(cls, amount: int) -> str:
+        return str(amount)
+
+# Output
+class GetSwapBuildAccount(BaseModel):
+    """A single account entry in a swap instruction."""
 
     public_key: str = Field(alias = "pubkey")
     """Public key of the account."""
 
     is_signer: bool = Field(alias = "isSigner")
-    """Flag indicating if the account is a signer."""
+    """True when this account must sign the transaction."""
 
     is_writable: bool = Field(alias = "isWritable")
-    """Flag indicating if the account is writable."""
+    """True when this account is modified by the instruction."""
 
-class PostSwapInstruction(BaseModel):
-    """Model describing a generic instruction in the swap transaction."""
+class GetSwapBuildInstruction(BaseModel):
+    """A single Solana instruction in the swap transaction."""
 
     program_id: str = Field(alias = "programId")
-    """Program ID of the instruction."""
+    """Program ID executing this instruction."""
 
-    accounts: list[PostSwapAccount]
-    """List of accounts used in the instruction."""
+    accounts: list[GetSwapBuildAccount]
+    """Accounts referenced by this instruction."""
 
     data: str
-    """Data of the instruction."""
+    """Base64-encoded instruction data."""
 
-class PostSwapInstructionsResponse(BaseModel):
+class GetSwapBuildBlockhashMetadata(BaseModel):
+    """Blockhash metadata in the GET "Swap - Build" response."""
+
+    blockhash: list[int]
+    """Blockhash represented as a byte array."""
+
+    last_valid_block_height: int = Field(alias = "lastValidBlockHeight")
+    """Block height at which this blockhash expires."""
+
+class GetSwapBuildSwapInfo(BaseModel):
+    """Swap info for a single step in the route plan of the GET "Swap - Build" response."""
+
+    amm_key: str = Field(alias = "ammKey")
+    """Address of the AMM used for this swap step."""
+
+    amm_label: str | None = Field(default = None, alias = "label")
+    """Human-readable label of the AMM."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address for this swap step."""
+
+    input_amount_raw: str = Field(alias = "inAmount")
+    """Raw input amount for this step (before decimals)."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address for this swap step."""
+
+    output_amount_raw: str = Field(alias = "outAmount")
+    """Raw output amount for this step (before decimals)."""
+
+class GetSwapBuildRoutePlan(BaseModel):
+    """A single step in the route plan of the GET "Swap - Build" response."""
+
+    swap_info: GetSwapBuildSwapInfo = Field(alias = "swapInfo")
+    """Swap details for this step."""
+
+    percent: int | None = None
+    """Percentage of the total swap routed through this step."""
+
+    bps: int | None = None
+    """Routing basis points for this step."""
+
+    usd_value: float | None = Field(default = None, alias = "usdValue")
+    """Estimated USD value routed through this step."""
+
+class GetSwapBuildResponse(BaseModel):
     """
-        Model used to represent the **Swap Instructions** endpoint response from 
-        Jupiter API in the case of instructions are requested.
+        Model referring to the response schema of the GET
+        "**Swap - Build**" endpoint from Jupiter Swap v2 API.
     """
 
-    swap: PostSwapInstruction = Field(alias = "swapInstruction")
-    """Swap instruction."""
+    input_token: str = Field(alias = "inputMint")
+    """Input token mint address."""
 
-    setup: list[PostSwapInstruction] = Field(alias = "setupInstructions")
-    """Setup instructions."""
+    output_token: str = Field(alias = "outputMint")
+    """Output token mint address."""
 
-    compute_budget: list[PostSwapInstruction] = Field(alias = "computeBudgetInstructions")
-    """Compute budget instructions."""
+    input_amount_raw: str = Field(alias = "inAmount")
+    """Raw input amount (before decimals)."""
 
-    cleanup: PostSwapInstruction | None = Field(default = None, alias = "cleanupInstruction")
-    """Cleanup instruction."""
+    output_amount_raw: str = Field(alias = "outAmount")
+    """Raw output amount (before decimals)."""
 
-    other: list[PostSwapInstruction] | None = Field(default = None, alias = "otherInstructions")
-    """Other instructions."""
+    other_amount_threshold: str = Field(alias = "otherAmountThreshold")
+    """Minimum output amount after slippage."""
 
-    address_lookup_table_addresses: list[str] = Field(alias = "addressLookupTableAddresses")
-    """Address lookup table addresses."""
+    swap_mode: str = Field(alias = "swapMode")
+    """Swap mode used."""
+
+    slippage_bps: int = Field(alias = "slippageBps")
+    """Slippage tolerance applied in basis points."""
+
+    route_plan: list[GetSwapBuildRoutePlan] = Field(alias = "routePlan")
+    """Execution route broken into individual swap steps."""
+
+    compute_budget_instructions: list[GetSwapBuildInstruction] = Field(alias = "computeBudgetInstructions")
+    """Compute unit price instructions."""
+
+    setup_instructions: list[GetSwapBuildInstruction] = Field(alias = "setupInstructions")
+    """Pre-swap setup instructions (e.g. ATA creation)."""
+
+    swap_instruction: GetSwapBuildInstruction = Field(alias = "swapInstruction")
+    """Primary swap instruction."""
+
+    cleanup_instruction: GetSwapBuildInstruction | None = Field(default = None, alias = "cleanupInstruction")
+    """Post-swap cleanup instruction. None when not needed."""
+
+    other_instructions: list[GetSwapBuildInstruction] | None = Field(default = None, alias = "otherInstructions")
+    """Additional instructions. None when not applicable."""
+
+    tip_instruction: GetSwapBuildInstruction | None = Field(default = None, alias = "tipInstruction")
+    """SOL tip instruction. None when tipAmount was not provided."""
+
+    addresses_by_lookup_table: dict[str, list[str]] | None = Field(default = None, alias = "addressesByLookupTableAddress")
+    """Address lookup table mappings for v0 transactions. None when not needed."""
+
+    blockhash_with_metadata: GetSwapBuildBlockhashMetadata | None = Field(default = None, alias = "blockhashWithMetadata")
+    """Blockhash and expiry metadata for the transaction."""
+
+
+# classes used on POST "Swap - Submit" endpoint
+# Body
+class PostSwapSubmitBody(BaseModel):
+    """
+        Model referring to the body schema of the POST
+        "**Swap - Submit**" endpoint from Jupiter.
+    """
+
+    signed_transaction: str = Field(serialization_alias = "signedTransaction")
+    """Base64-encoded signed Solana transaction."""
+
+# Output
+class PostSwapSubmitResponse(BaseModel):
+    """
+        Model referring to the response schema of the POST
+        "**Swap - Submit**" endpoint from Jupiter.
+    """
+
+    signature: str
+    """Transaction signature returned after successful submission."""
 
 # *************
 # * Token API *
@@ -659,695 +860,157 @@ class GetTokenCategoryResponse(GetTokenSearchResponse):
 # classes used on GET "Token New" endpoint
 class GetTokenRecentResponse(GetTokenSearchResponse):
     """
-        Model used to represent a token information 
+        Model used to represent a token information
         on the GET **Token Recent** endpoint.
     """
     pass
 
-# *************
-# * Ultra API *
-# *************
-
-# classes used on GET "Ultra - Order" endpoint
-class GetUltraOrderDynamicSlippageReport(BaseModel):
+# classes used on GET "Token Verify - Check Eligibility" endpoint
+class GetTokenVerifyCheckEligibilityResponse(BaseModel):
     """
-        Model used to represent the **Ultra - Order** endpoint dynamic slippage report from Jupiter API.
-    """
-    amplification_ratio: str | None = Field(default = None, alias = "amplificationRatio")
-    other_amount: int | None = Field(default = None, alias = "otherAmount")
-    simulated_incurred_slippage_base_points: int | None = Field(default = None, alias = "simulatedIncurredSlippageBps")
-    slippage_base_points: int = Field(alias = "slippageBps")
-    """
-        Amount of slippage the order can be executed with.  
-        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
+        Model representing the response object from the GET
+        "**Token Verify - Check Eligibility**" endpoint from Jupiter API.
     """
 
-    category_name: str = Field(alias = "categoryName")
-    heuristic_max_slippage_base_points: int = Field(alias = "heuristicMaxSlippageBps")
+    token_exists: bool = Field(alias = "tokenExists")
+    """Whether Jupiter recognises the token."""
 
-class GetUltraOrderPlatformFee(GetQuotePlatformFees):
-    pass
+    is_verified: bool = Field(alias = "isVerified")
+    """Whether the token already has verified status."""
 
-class GetUltraOrderRoutePlan(GetQuoteRoutePlan):
-    pass
+    can_verify: bool = Field(alias = "canVerify")
+    """Whether a verification submission is currently permitted."""
 
-class GetUltraOrderBody(BaseModel):
+    can_metadata: bool = Field(alias = "canMetadata")
+    """Whether a metadata update submission is currently permitted."""
+
+    verification_error: str | None = Field(default = None, alias = "verificationError")
+    """Reason verification is blocked; `None` when verification is permitted."""
+
+    metadata_error: str | None = Field(default = None, alias = "metadataError")
+    """Reason metadata update is blocked; `None` when metadata update is permitted."""
+
+# classes used on GET "Token Verify - Craft Transaction" endpoint
+class GetTokenVerifyCraftTxnResponse(BaseModel):
     """
-        Model refering to the body schema of the GET
-        "**Ultra - Order**" endpoint from Jupiter API.
-    """
-
-    input_token: str = Field(serialization_alias = "inputMint")
-    """Address of the input token."""
-
-    output_token: str = Field(serialization_alias = "outputMint")
-    """Address of the output token."""
-
-    input_amount: int = Field(serialization_alias = "amount")
-    """
-        Amount of input token to swap.
-        The amount to swap **must** be factored in the token decimals. 
-        For example, if the token has 6 decimals, then `1.0` = `1_000_000`.
+        Model representing the response object from the GET
+        "**Token Verify - Craft Transaction**" endpoint from Jupiter API.
     """
 
-    taker_wallet_key: str = Field(default = "vBXNsd5SRtTPpW7GWv3wREA6Ztm2jCWp5eqqTsVhyG5", serialization_alias = "taker")
-    """
-        Address of the taker wallet. 
-        If the `taker_wallet_key` is not provided, then the response will have `transaction_id` equals `None`.
-    """
+    transaction: str
+    """Base64-encoded unsigned transaction for the 1000 JUP payment."""
 
-    receiver: str | None = None
-    """
-        The public key of the account that will receive the output tokens.
-        If not provided, the output tokens will be sent to the taker.
-    """
+    request_id: str = Field(alias = "requestId")
+    """Unique identifier to be passed to the execute step."""
 
-    payer: str | None = None
-    """
-        The public key of an account that will be used to cover gas-related fees on behalf of the taker.
-        When `payer` is passed in, `close_authority` is required.
-    """
+    mint: str
+    """JUP token mint address used for the payment."""
 
-    close_authority: str | None = Field(default = None, serialization_alias = "closeAuthority")
-    """
-        The public key of an account to set as the close authority of ATAs created during the swap.
-        When `payer` is passed in, `close_authority` is required.
-    """
+    amount: str
+    """Payment amount in the smallest JUP units (1000 JUP = `1000000000`)."""
 
-    referral_account: str | None = Field(default = None, serialization_alias = "referralAccount")
-    """Referral account address for integrator fees."""
-
-    referral_fee: int | None = Field(default = None, serialization_alias = "referralFee")
-    """Referral fee in basis points. Required range: 50 <= x <= 255."""
-
-    exclude_routers: list[JupiterRouter] | None = Field(default = None, serialization_alias = "excludeRouters")
-    """List of routers to exclude from the swap. Available options: `iris`, `jupiterz`, `dflow`, `okx`."""
-
-    exclude_dexes: str | None = Field(default = None, serialization_alias = "excludeDexes")
-    """
-        Comma-separated list of DEXes to exclude (e.g., "Raydium,Orca V2,Meteora DLMM").
-        This only excludes DEXes on the Iris router.
-    """
-
-    @field_serializer("input_amount")
-    @classmethod
-    def serialize_input_amount(cls, amount: int) -> str:
-        return str(amount)
-    
-    @field_validator("exclude_routers")
-    @classmethod
-    def validator_exclude_routers(cls, routers: list[JupiterRouter]) -> list[str]:
-        return [router.value for router in routers]
-
-class GetUltraOrderResponse(BaseModel):
-    """
-        Model refering to the response schema of the GET
-        "**Ultra - Order**" endpoint from Jupiter API.
-    """
-
-    mode: str
-    """Mode of the order."""
-
-    input_token: str = Field(alias = "inputMint")
-    """The address of the input token on the chain used to buy."""
-
-    output_token: str = Field(alias = "outputMint")
-    """The address of the output token on the chain that will bought."""
-
-    input_amount_raw: int = Field(alias = "inAmount")
-    """Raw amount of input token to use to buy (before decimals)."""
-
-    output_amount_raw: int = Field(alias = "outAmount")
-    """Raw amount of output token to buy (before decimals)."""
-
-    other_amount_threshold_raw: int = Field(alias = "otherAmountThreshold")
-    """Raw calculated minimum output amount after accounting for `slippage_base_points` and `platform_fees` (before decimals)."""
-
-    swap_mode: JupiterSwapMode = Field(alias = "swapMode")
-    """Mode of the swap."""
-
-    slippage_base_points: int = Field(alias = "slippageBps")
-    """
-        Amount of slippage the order can be executed with.  
-        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
-    """
-
-    price_impact_percent: float = Field(alias = "priceImpactPct")
-    """Percentage of price impact for the swap (deprecated, use price_impact instead)."""
-
-    route_plan: list[GetUltraOrderRoutePlan] = Field(alias = "routePlan")
-    """List of route plans for the swap."""
-
-    fee_base_points: int = Field(alias = "feeBps")
-    """
-        Amount of fee that the `referral_public_key` collects.
-        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
-    """
-
-    platform_fee: GetUltraOrderPlatformFee = Field(alias = "platformFee")
-    """Platform fees for the swap."""
-
-    signature_fee_lamports: int = Field(alias = "signatureFeeLamports")
-    """The number of lamports the taker, maker or payer has to pay for the base network fee."""
-
-    signature_fee_payer: str | None = Field(default = None, alias = "signatureFeePayer")
-    """The public key of the account that will cover the signature fee."""
-
-    prioritization_fee_lamports: int = Field(alias = "prioritizationFeeLamports")
-    """The number of lamports the taker, maker or payer has to pay for higher priority landing."""
-
-    prioritization_fee_payer: str | None = Field(default = None, alias = "prioritizationFeePayer")
-    """The public key of the account that will cover the prioritization fee."""
-
-    rent_fee_lamports: int = Field(alias = "rentFeeLamports")
-    """The number of lamports the taker or payer has to pay for account rent."""
-
-    rent_fee_payer: str | None = Field(default = None, alias = "rentFeePayer")
-    """The public key of the account that will cover the rent fee."""
-
-    swap_type: str = Field(default = "", alias = "swapType")
-    """Type of the swap (deprecated, in favour of router)."""
-
-    router: JupiterRouter = Field(alias = "router")
-    """Router used for the swap."""
-
-    transaction_id: str | None = Field(default = None, alias = "transaction")
-    """Base-64 encoded transaction."""
+    expire_at: str = Field(alias = "expireAt")
+    """ISO-8601 timestamp after which the transaction is no longer valid."""
 
     gasless: bool
-    """Flag indicating if the order is gasless."""
+    """Whether the transaction requires no SOL fees."""
 
-    request_id: str = Field(alias = "requestId")
-    """Unique ID required to make a request to `post_ultra_execute`."""
+# classes used on POST "Token Verify - Execute" endpoint
+class PostTokenVerifyExecuteTokenMetadata(BaseModel):
+    """Optional token metadata fields submitted alongside a verification request."""
 
-    total_time: int = Field(alias = "totalTime")
-    """Total time taken to process the request."""
+    token_id: str = Field(serialization_alias = "tokenId")
+    """Mint address of the token being updated."""
 
-    taker_wallet_key: str | None = Field(default = None, alias = "taker")
-    """Wallet address of the user who wants to create an order."""
+    name: str | None = None
+    """Display name of the token."""
 
-    input_usd_value: float | None = Field(default = None, alias = "inUsdValue")
-    """USD value of the input amount."""
+    symbol: str | None = None
+    """Ticker symbol of the token."""
 
-    output_usd_value: float | None = Field(default = None, alias = "outUsdValue")
-    """USD value of the output amount."""
+    icon: str | None = None
+    """URL to the token icon image."""
 
-    price_impact: float | None = Field(default = None, alias = "priceImpact")
-    """Price impact of the swap."""
+    website: str | None = None
+    """Official website URL."""
 
-    swap_usd_value: float | None = Field(default = None, alias = "swapUsdValue")
-    """USD value of the swap."""
+    twitter: str | None = None
+    """Official Twitter/X profile URL."""
 
-    referral_account: str | None = Field(default = None, alias = "referralAccount")
-    """Referral account address."""
+    twitter_community: str | None = Field(default = None, serialization_alias = "twitterCommunity")
+    """Twitter/X community URL."""
 
-    fee_mint: str | None = Field(default = None, alias = "feeMint")
-    """Token mint address for the fee."""
+    telegram: str | None = None
+    """Official Telegram URL."""
 
-    quote_id: str | None = Field(default = None, alias = "quoteId")
-    """Unique ID of the quote."""
+    discord: str | None = None
+    """Official Discord URL."""
 
-    maker_wallet_key: str | None = Field(default = None, alias = "maker")
-    """Wallet address of the maker."""
+    instagram: str | None = None
+    """Official Instagram URL."""
 
-    expire_at: str | None = Field(default = None, alias = "expireAt")
-    """Expiration time for the order."""
+    tiktok: str | None = None
+    """Official TikTok URL."""
 
-    error_code: int | None = Field(default = None, alias = "errorCode")
-    """Error code if transaction field is empty."""
+    token_description: str | None = Field(default = None, serialization_alias = "tokenDescription")
+    """Short description of the token."""
 
-    error_message: str | None = Field(default = None, alias = "errorMessage")
-    """Error message if transaction field is empty."""
+    circulating_supply: str | None = Field(default = None, serialization_alias = "circulatingSupply")
+    """Current circulating supply as a string."""
 
-    @field_serializer("swap_mode")
-    @classmethod
-    def serialize_swap_mode(cls, mode: JupiterSwapMode) -> str:
-        return mode.value
+    circulating_supply_url: str | None = Field(default = None, serialization_alias = "circulatingSupplyUrl")
+    """URL to a data source for circulating supply."""
 
-# classes used on POST "Ultra - Execute Order" endpoint
-class PostUltraExecuteOrderSwapEvent(BaseModel):
+    coingecko_coin_id: str | None = Field(default = None, serialization_alias = "coingeckoCoinId")
+    """CoinGecko coin identifier for the token."""
+
+    other_url: str | None = Field(default = None, serialization_alias = "otherUrl")
+    """Any additional reference URL."""
+
+class PostTokenVerifyExecuteBody(BaseModel):
     """
-        Model refering to the schema of a swap event in the POST 
-        "**Ultra - Execute Order**" endpoint from Jupiter API.
-    """
-
-    input_token: str = Field(alias = "inputMint")
-    """Input token address."""
-
-    input_amount_raw: int = Field(alias = "inputAmount")
-    """Raw amount of input token used to buy (before decimals)."""
-
-    output_token: str = Field(alias = "outputMint")
-    """Output token address."""
-
-    output_amount_raw: int = Field(alias = "outputAmount")
-    """Raw amount of output token bought (before decimals)."""
-
-class PostUltraExecuteOrderResponse(BaseModel):
-    """
-        Model refering to the response schema of the POST 
-        "**Ultra - Execute Order**" endpoint from Jupiter API.
+        Model referring to the body schema of the POST
+        "**Token Verify - Execute**" endpoint from Jupiter API.
     """
 
-    status: JupiterSwapExecutionStatus
-    """Status of the order."""
+    transaction: str
+    """Base64-encoded signed transaction from the craft-txn step."""
 
-    code: int
-    """Code indicating the status of the operation."""
+    request_id: str = Field(serialization_alias = "requestId")
+    """Request ID from the craft-txn response."""
 
-    signature_transaction_id: str | None = Field(default = None, alias = "signature")
-    """Signature of the successful transaction."""
+    sender_address: str = Field(serialization_alias = "senderAddress")
+    """Wallet address that signed and submitted the payment."""
 
-    slot: int | None = None
-    """Slot number of the transaction."""
+    token_id: str = Field(serialization_alias = "tokenId")
+    """Mint address of the token to verify."""
 
-    input_amount_result_raw: int | None = Field(default = None, alias = "inputAmountResult")
-    """Raw amount of input token used to buy (before decimals)."""
+    twitter_handle: str = Field(serialization_alias = "twitterHandle")
+    """X profile URL of the project."""
 
-    total_input_amount_raw: int | None = Field(default = None, alias = "totalInputAmount")
-    """Raw total amount of input token used to buy (before decimals)."""
+    description: str
+    """Rationale for the verification submission."""
 
-    output_amount_result_raw: int | None = Field(default = None, alias = "outputAmountResult")
-    """Raw amount of output token bought (before decimals)."""
+    token_metadata: PostTokenVerifyExecuteTokenMetadata | None = Field(default = None, serialization_alias = "tokenMetadata")
+    """Optional metadata to update alongside the verification request."""
 
-    total_output_amount_raw: int | None = Field(default = None, alias = "totalOutputAmount")
-    """Raw total amount of output token bought (before decimals)."""
-
-    swap_events: PostUltraExecuteOrderSwapEvent | None = Field(default = None, alias = "swapEvents")
-    """List of swap events."""
-
-    error: str | None = None
-    """Error message in case of failure."""
-
-# classes used on GET "Ultra - Holdings" endpoint
-class GetUltraHoldingsToken(BaseModel):
+class PostTokenVerifyExecuteResponse(BaseModel):
     """
-        Model representing a specific token holding coming 
-        from the GET "**Ultra - Holdings**" endpoint of Jupiter API.
+        Model representing the response object from the POST
+        "**Token Verify - Execute**" endpoint from Jupiter API.
     """
 
-    address: str = Field(alias = "account")
-    """The token account address."""
+    status: str
+    """Execution result: `Success` or `Failed`."""
 
-    amount_raw: str = Field(alias = "amount")
-    """Amount of the token in raw format as string; i.e., lamports for SOL."""
+    signature: str
+    """On-chain transaction signature."""
 
-    amount: float = Field(alias = "uiAmount")
-    """Amount of the token in UI units after applying decimals."""
+    verification_created: bool = Field(alias = "verificationCreated")
+    """Whether a verification request was submitted."""
 
-    amount_string: str = Field(alias = "uiAmountString")
-    """Amount of the token as string in UI units after applying decimals."""
-
-    is_frozen: bool = Field(alias = "isFrozen")
-    """Flag indicating if the token account is frozen."""
-
-    is_associated_token_account: bool = Field(alias = "isAssociatedTokenAccount")
-    """Flag indicating if this is an associated token account."""
-
-    decimals: int
-    """Number of decimal places for the token."""
-
-    program_id: str = Field(alias = "programId")
-    """The token program ID."""
-
-    exclude_from_net_worth: bool | None = Field(default = None, alias = "excludeFromNetWorth")
-    """Flag indicating if the token should be excluded from net worth calculations."""
-
-class GetUltraHoldingsResponse(BaseModel):
-    """
-        Model representing the response object from the 
-        GET "**Ultra - Holdings**" endpoint from Jupiter API.
-    """
-
-    amount_raw: str = Field(alias = "amount")
-    """Total SOL in lamports as string."""
-
-    amount: float = Field(alias = "uiAmount")
-    """Total SOL in UI units after applying decimals."""
-
-    amount_string: str = Field(alias = "uiAmountString")
-    """Total SOL as string in UI units after applying decimals."""
-
-    tokens: dict[str, list[GetUltraHoldingsToken]]
-    """Other token holdings organized by mint address as keys."""
-
-# classes used on GET "Ultra - Shield" endpoint
-class GetUltraShieldWarning(BaseModel):
-    """
-        Model representing a specific warning for a token mint 
-        from the GET "**Ultra - Shield**" endpoint of Jupiter API.
-    """
-
-    type: str
-    """
-        Type of warning for the token.  
-        See [`JupiterShieldWarningType`][cyhole.jupiter.param.JupiterShieldWarningType] for all the supported types.
-    """
-
-    message: str
-    """Human-readable warning message."""
-
-    severity: str
-    """
-        Severity level of the warning.  
-        See [`JupiterShieldWarningSeverity`][cyhole.jupiter.param.JupiterShieldWarningSeverity] for all the supported severity levels.
-    """
-
-    source: str | None = None
-    """
-        Optional external source of the warning.  
-        See [`JupiterShieldWarningSource`][cyhole.jupiter.param.JupiterShieldWarningSource] for all the supported sources.
-    """
-
-    @field_validator("type")
-    @classmethod
-    def validator_type(cls, warning_type: str) -> str:
-        JupiterShieldWarningType.check(warning_type)
-        return warning_type
-
-    @field_validator("severity")
-    @classmethod
-    def validator_severity(cls, severity: str) -> str:
-        JupiterShieldWarningSeverity.check(severity)
-        return severity
-
-    @field_validator("source")
-    @classmethod
-    def validator_source(cls, source: str | None) -> str | None:
-        if source is not None:
-            JupiterShieldWarningSource.check(source)
-        return source
-
-class GetUltraShieldResponse(BaseModel):
-    """
-        Model representing the response object from the 
-        GET "**Ultra - Shield**" endpoint from Jupiter API.
-    """
-
-    warnings: dict[str, list[GetUltraShieldWarning]]
-    """Dictionary containing lists of warnings for each mint address as keys."""
-
-# ***************
-# * Trigger API *
-# ***************
-
-# classes used on POST "Trigger - Create Order" endpoint
-class PostTriggerCreateOrderParams(BaseModel):
-    """
-        Model used to identify the amounts required by a POST **Limit Order Create** request.  
-        Observe that the amounts are in raw format (integer values without decimals).
-    """
-
-    input_amount: int = Field(serialization_alias = "makingAmount")
-    """Amount of input token to sell in the limit order."""
-
-    output_amount: int = Field(serialization_alias = "takingAmount")
-    """Amount of output token to buy in the limit order."""
-
-    expired_at_unix_time: int | None = Field(default = None, serialization_alias = "expiredAt")
-    """Expiring date for the Limit Order expressed in UNIX time"""
-
-    slippage_base_points: int | None = Field(default = None, serialization_alias = "slippageBps")
-    """
-        Amount of slippage the order can be executed with.  
-        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
-    """
-
-    fee_base_points: int | None = Field(default = None, serialization_alias = "feeBps")
-    """
-        Amount of fee that the `referral_public_key` collects.  
-        **1%** = `100`, **50%** = `5_000`, **100%** = `10_000`.
-    """
-
-    @field_serializer("input_amount", "output_amount", "fee_base_points", "expired_at_unix_time", "slippage_base_points", when_used = "unless-none")
-    @classmethod
-    def serialize_amounts(cls, amount_raw: int | None) -> str | None:
-        if amount_raw is not None:
-            return str(amount_raw)
-
-class PostTriggerCreateOrderBody(BaseModel):
-    """
-        Model refering to the input body of the POST 
-        "**Trigger - Create Order**" endpoint from Jupiter API.
-    """
-
-    maker_wallet_key: str = Field(serialization_alias = "maker")
-    """Wallet address of the user who wants to create an order."""
-
-    payer_wallet_key: str = Field(serialization_alias = "payer")
-    """Wallet address of who is paying to open an order (usually the `maker` wallet)."""
-
-    input_token: str = Field(serialization_alias = "inputMint")
-    """The address of the input token on the chain used to buy."""
-
-    output_token: str = Field(serialization_alias = "outputMint")
-    """The address of the output token on the chain that will bought."""
-
-    params: PostTriggerCreateOrderParams
-    """The amounts of output-to-buy and input-to-sell tokens in the limit order."""
-
-    compute_unit_price: str = Field(default = "auto", serialization_alias = "computeUnitPrice")
-    """Used to determine a transaction's prioritization fee. Defaults to `auto`."""
-
-    referral_public_key: str | None = Field(default = None, serialization_alias = "feeAccount")
-    """A token account (via the Referral Program) that will receive the fees."""
-
-    wrap_unwrap_sol: bool = Field(default = True, serialization_alias = "wrapAndUnwrapSol")
-    """To automatically wrap/unwrap SOL in the transaction."""
-
-class PostTriggerCreateOrderResponse(BaseModel):
-    """
-        Model refering to the response schema of the POST 
-        "**Trigger - Create Order**" endpoint from Jupiter API.
-    """
-
-    request_id: str = Field(alias = "requestId")
-    """Unique ID required to make a request to `post_trigger_execute`"""
-
-    transaction_id: str = Field(alias = "transaction")
-    """Unsigned base-64 encoded transaction."""
-
-    order_public_key: str = Field(alias = "order")
-    """Base-58 account which is the Trigger Order account."""
-
-# classes used on POST "Trigger - Execute" endpoint
-class PostTriggerExecuteResponse(BaseModel):
-    """
-        Model refering to the response schema of the POST 
-        "**Trigger - Execute**" endpoint from Jupiter API.
-    """
-
-    status: JupiterSwapExecutionStatus
-    """Status of the order."""
-
-    code: int
-    """Code of the status."""
-
-    signature_transaction_id: str | None = Field(default = None, alias = "signature")
-    """Signature of the successful transaction."""
-
-    error: str | None = None
-    """Error message in case of failure."""
-
-# classes used on POST "Trigger - Cancel Order" endpoint
-class PostTriggerCancelOrderResponse(BaseModel):
-    """
-        Model refering to the response schema of the POST 
-        "**Trigger - Cancel Order**" endpoint from Jupiter API.
-    """
-
-    request_id: str = Field(alias = "requestId")
-    """Unique ID required to make a request to `post_trigger_execute`"""
-
-    transaction_id: str | list[str] = Field(validation_alias = AliasChoices("transaction", "transactions"))
-    """Unsigned base-64 encoded transaction."""
-
-    @model_serializer
-    def serialize_response(self) -> dict[str, str | list[str]]:
-        """Custom serializer to manage transaction response according to type."""
-
-        # set root
-        resonse_model: dict[str, str | list[str]] = {"requestId": self.request_id}
-
-        # set transaction id
-        if isinstance(self.transaction_id, str):
-            resonse_model["transaction"] = self.transaction_id
-        elif isinstance(self.transaction_id, list):
-            resonse_model["transactions"] = self.transaction_id
-
-        return resonse_model
-
-# classes used on GET "Trigger - Orders" endpoint
-class GetTriggerOrdersTrade(BaseModel):
-    """
-        Model refering to the schema of a trade in the GET 
-        "**Trigger - Orders**" endpoint from Jupiter
-    """
-
-    order_key: str = Field(alias = "orderKey")
-    """Unique identifier of the order associated with the trade."""
-
-    keeper: str
-    """Wallet address of the user who made the trade."""
-
-    input_token: str = Field(alias = "inputMint")
-    """Input token address."""
-
-    input_amount: float = Field(alias = "inputAmount")
-    """Amount of input token sent in the trade."""
-
-    input_amount_raw: int = Field(alias = "rawInputAmount")
-    """Amount of input token sent in raw format; i.e. integer value without decimals."""
-
-    output_token: str = Field(alias = "outputMint")
-    """Output token address."""
-
-    output_amount: float = Field(alias = "outputAmount")
-    """Amount of output token received in the trade."""
-
-    output_amount_raw: int = Field(alias = "rawOutputAmount")
-    """Amount of output token received in raw format; i.e. integer value without decimals."""
-
-    fee_token: str = Field(alias = "feeMint")
-    """Fee token address."""
-
-    fee_amount: float = Field(alias = "feeAmount")
-    """Amount of fee token paid in the trade."""
-
-    fee_amount_raw: int = Field(alias = "rawFeeAmount")
-    """Amount of fee token paid in raw format; i.e. integer value without decimals."""
-
-    transaction_id: str = Field(alias = "txId")
-    """Unique identifier of the transaction associated with the trade."""
-
-    confirmed_at: datetime = Field(alias = "confirmedAt")
-    """Date and time when the trade was confirmed."""
-
-    action: str
-    """Action made in the trade."""
-
-    @field_validator("input_amount", "output_amount", "fee_amount")
-    def parse_amounts(cls, amount_raw: str) -> float:
-        return float(amount_raw)
-
-    @field_validator("input_amount_raw", "output_amount_raw", "fee_amount_raw")
-    def parse_amounts_raw(cls, amount_raw: str) -> int:
-        return int(amount_raw)
-
-    @field_validator("confirmed_at")
-    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
-        if isinstance(datetime_raw, str):
-            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
-        return datetime_raw
-
-class GetTriggerOrdersOrder(BaseModel):
-    """
-        Model refering to the schema of an order in the GET 
-        "**Trigger - Orders**" endpoint from Jupiter API.
-    """
-
-    user_public_key: str = Field(alias = "userPubkey")
-    """User wallet address."""
-
-    order_key: str = Field(alias = "orderKey")
-    """Unique identifier of the order."""
-
-    input_token: str = Field(alias = "inputMint")
-    """Input token address."""
-
-    input_amount: float = Field(alias = "makingAmount")
-    """Amount of input token to sell in the order."""
-
-    input_amount_raw: int = Field(alias = "rawMakingAmount")
-    """Amount of input token to sell in raw format; i.e. integer value without decimals."""
-
-    input_remaining_token: float = Field(alias = "remainingMakingAmount")
-    """Amount of input token remaining to sell in the order."""
-
-    input_remaining_token_raw: int = Field(alias = "rawRemainingMakingAmount")
-    """Amount of input token remaining to sell in raw format; i.e. integer value without decimals."""
-
-    output_token: str = Field(alias = "outputMint")
-    """Output token address."""
-
-    output_amount: float = Field(alias = "takingAmount")
-    """Amount of output token to buy in the order."""
-
-    output_amount_raw: int = Field(alias = "rawTakingAmount")
-    """Amount of output token to buy in raw format; i.e. integer value without decimals."""
-
-    output_remaining_amount: float = Field(alias = "remainingTakingAmount")
-    """Amount of output token remaining to buy in the order."""
-
-    output_remaining_amount_raw: int = Field(alias = "rawRemainingTakingAmount")
-    """Amount of output token remaining to buy in raw format; i.e. integer value without decimals."""
-
-    expired_at_unix_time: int | None = Field(default = None, alias = "expiredAt")
-    """Expiring date for the Limit Order expressed in UNIX time"""
-
-    created_at: datetime = Field(alias = "createdAt")
-    """Date and time when the order was created."""
-
-    updated_at: datetime = Field(alias = "updatedAt")
-    """Date and time when the order was last updated."""
-
-    status: JupiterOrderState
-    """Status of the order."""
-
-    open_transaction_id: str = Field(alias = "openTx")
-    """Transaction ID of the open order."""
-
-    close_transaction_id: str | None = Field(default = None, alias = "closeTx")
-    """Transaction ID of the close order."""
-
-    program_version_id: str = Field(alias = "programVersion")
-    """Program version public key used for the order."""
-
-    trades: list[GetTriggerOrdersTrade]
-    """List of trades made in the order."""
-
-    @field_validator("input_amount", "input_remaining_token", "output_amount", "output_remaining_amount")
-    def parse_amounts(cls, amount_raw: str) -> float:
-        return float(amount_raw)
-
-    @field_validator("input_amount_raw", "input_remaining_token_raw", "output_amount_raw", "output_remaining_amount_raw")
-    def parse_amounts_raw(cls, amount_raw: str) -> int:
-        return int(amount_raw)
-
-    @field_validator("created_at", "updated_at")
-    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
-        if isinstance(datetime_raw, str):
-            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
-        return datetime_raw
-
-    @field_validator("status")
-    @classmethod
-    def validator_status(cls, status_raw: str | JupiterOrderState) -> JupiterOrderState:
-        if isinstance(status_raw, str):
-            JupiterOrderState.check(status_raw)
-            return JupiterOrderState[status_raw]
-        return status_raw
-
-class GetTriggerOrdersResponse(BaseModel):
-    """
-        Model refering to the response schema of the GET 
-        "**Trigger - Orders**" endpoint from Jupiter API.
-    """
-
-    user_public_key: str = Field(alias = "user")
-    """User wallet address."""
-
-    order_status: JupiterOrderStatus = Field(alias = "orderStatus")
-    """Status of the order."""
-
-    orders: list[GetTriggerOrdersOrder]
-    """List of orders."""
-
-    page: int
-    """Current page."""
-
-    total_pages: int = Field(alias = "totalPages")
-    """Total number of pages."""
+    metadata_created: bool = Field(alias = "metadataCreated")
+    """Whether a metadata update request was submitted."""
 
 # *****************
 # * Recurring API *
@@ -1455,15 +1118,71 @@ class PostRecurringCreateOrderResponse(PostRecurringTransactionResponse):
     pass
 
 # classes used on GET "Recurring - Orders" endpoint
-class GetRecurringOrdersTrade(GetTriggerOrdersTrade):
+class GetRecurringOrdersTrade(BaseModel):
     """
-        Model refering to the response schema of the GET 
+        Model refering to the response schema of the GET
         "**Recurring - Orders**" endpoint from Jupiter API
         identifing a trade.
     """
 
+    order_key: str = Field(alias = "orderKey")
+    """Unique identifier of the order associated with the trade."""
+
+    keeper: str
+    """Wallet address of the user who made the trade."""
+
+    input_token: str = Field(alias = "inputMint")
+    """Input token address."""
+
+    input_amount: float = Field(alias = "inputAmount")
+    """Amount of input token sent in the trade."""
+
+    input_amount_raw: int = Field(alias = "rawInputAmount")
+    """Amount of input token sent in raw format; i.e. integer value without decimals."""
+
+    output_token: str = Field(alias = "outputMint")
+    """Output token address."""
+
+    output_amount: float = Field(alias = "outputAmount")
+    """Amount of output token received in the trade."""
+
+    output_amount_raw: int = Field(alias = "rawOutputAmount")
+    """Amount of output token received in raw format; i.e. integer value without decimals."""
+
+    fee_token: str = Field(alias = "feeMint")
+    """Fee token address."""
+
+    fee_amount: float = Field(alias = "feeAmount")
+    """Amount of fee token paid in the trade."""
+
+    fee_amount_raw: int = Field(alias = "rawFeeAmount")
+    """Amount of fee token paid in raw format; i.e. integer value without decimals."""
+
+    transaction_id: str = Field(alias = "txId")
+    """Unique identifier of the transaction associated with the trade."""
+
+    confirmed_at: datetime = Field(alias = "confirmedAt")
+    """Date and time when the trade was confirmed."""
+
+    action: str
+    """Action made in the trade."""
+
     product_meta: dict | None = Field(default = None, alias = "productMeta")
     """Additional metadata of the trade."""
+
+    @field_validator("input_amount", "output_amount", "fee_amount")
+    def parse_amounts(cls, amount_raw: str) -> float:
+        return float(amount_raw)
+
+    @field_validator("input_amount_raw", "output_amount_raw", "fee_amount_raw")
+    def parse_amounts_raw(cls, amount_raw: str) -> int:
+        return int(amount_raw)
+
+    @field_validator("confirmed_at")
+    def parse_datetime(cls, datetime_raw: str | datetime) -> datetime:
+        if isinstance(datetime_raw, str):
+            return datetime.strptime(datetime_raw, "%Y-%m-%dT%H:%M:%S")
+        return datetime_raw
 
 class GetRecurringOrdersOrder(BaseModel):
     """
@@ -1628,22 +1347,6 @@ class GetRecurringOrdersResponse(BaseModel):
 
     total_pages: int = Field(alias = "totalPages")
     """Total number of pages."""
-
-# classes used on POST "Recurring - Withdraw Price" endpoint
-class PostRecurringWithdrawPriceResponse(PostRecurringTransactionResponse):
-    """
-        Model refering to the response schema of the POST 
-        "**Recurring - Withdraw Price**" endpoint from Jupiter API.
-    """
-    pass
-
-# classes used on POST "Recurring - Deposit Price" endpoint
-class PostRecurringDepositPriceResponse(PostRecurringTransactionResponse):
-    """
-        Model refering to the response schema of the POST 
-        "**Recurring - Deposit Price**" endpoint from Jupiter API.
-    """
-    pass
 
 # classes used on POST "Recurring - Cancel Order" endpoint
 class PostRecurringCancelOrderResponse(PostRecurringTransactionResponse):

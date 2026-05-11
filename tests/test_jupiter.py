@@ -1,45 +1,37 @@
 import pytest
 from pathlib import Path
-from unittest.mock import MagicMock
-from requests.exceptions import HTTPError
 
 from pytest_mock import MockerFixture
 
 from cyhole.jupiter import Jupiter
 from cyhole.jupiter.schema import (
     GetPriceResponse,
-    GetQuoteParams,
-    GetQuoteResponse,
-    GetQuoteProgramIdLabelResponse,
-    PostSwapBody,
-    PostSwapResponse,
-    PostSwapInstructionsResponse,
+    GetSwapOrderParams,
+    GetSwapOrderResponse,
+    PostSwapExecuteBody,
+    PostSwapExecuteResponse,
+    GetSwapBuildParams,
+    GetSwapBuildResponse,
+    PostSwapSubmitBody,
+    PostSwapSubmitResponse,
     GetTokenSearchResponse,
     GetTokenTagResponse,
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
-    PostTriggerCreateOrderParams,
-    GetUltraOrderBody,
-    GetUltraOrderResponse,
-    GetUltraHoldingsResponse,
-    GetUltraShieldResponse,
-    PostTriggerCreateOrderBody, PostTriggerCreateOrderResponse,
-    PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse,
+    GetTokenVerifyCheckEligibilityResponse,
+    GetTokenVerifyCraftTxnResponse,
+    PostTokenVerifyExecuteBody,
+    PostTokenVerifyExecuteResponse,
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderTime, PostRecurringCreateOrderTimeParams,
     PostRecurringCreateOrderPrice, PostRecurringCreateOrderPriceParams,
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
-    PostRecurringWithdrawPriceResponse,
-    PostRecurringDepositPriceResponse,
     PostRecurringCancelOrderResponse
 )
-from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
-from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
+from cyhole.jupiter.param import JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType
 from cyhole.core.token.solana import WSOL, JUP, USDC
 from cyhole.core.token.ethereum import WETH
-from cyhole.core.exception import ParamUnknownError
 
 # load test config
 from .config import load_config, MockerManager
@@ -200,393 +192,175 @@ class TestJupiter:
         assert isinstance(response, GetPriceResponse)
         assert response.data == {}
 
-    def test_get_quote_sync(self, mocker: MockerFixture) -> None:
+    def test_get_swap_order_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote" for synchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Order" for synchronous logic.
 
-            Mock Response File: get_quote_base.json
+            Mock Response File: get_swap_order_default.json
         """
-
-        # load mock response
-        mock_file_name = "get_quote_base"
+        mock_file_name = "get_swap_order_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetSwapOrderResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
-        amount = 1000
-        # execute request
-        input = GetQuoteParams(
+        params = GetSwapOrderParams(
             input_token = WSOL.address,
             output_token = JUP.address,
-            amount = amount
+            amount = 1_000_000_000
         )
-        response = self.jupiter.client.get_quote(input)
+        response = self.jupiter.client.get_swap_order(params)
 
-        # actual test
-        assert isinstance(response, GetQuoteResponse)
-        assert response.input_amount_raw == str(amount)
-        assert response.input_token == WSOL.address
-        assert response.output_token == JUP.address
+        assert isinstance(response, GetSwapOrderResponse)
 
-        # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_quote_async(self, mocker: MockerFixture) -> None:
+    async def test_get_swap_order_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote" for asynchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Order" for asynchronous logic.
 
-            Mock Response File: get_quote_base.json
+            Mock Response File: get_swap_order_default.json
         """
-
-        # load mock response
-        mock_file_name = "get_quote_base"
+        mock_file_name = "get_swap_order_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetSwapOrderResponse)
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
-        amount = 1000
-        # execute request
-        input = GetQuoteParams(
+        params = GetSwapOrderParams(
             input_token = WSOL.address,
             output_token = JUP.address,
-            amount = amount
+            amount = 1_000_000_000
         )
         async with self.jupiter.async_client as client:
-            response = await client.get_quote(input)
+            response = await client.get_swap_order(params)
 
-        # actual test
-        assert isinstance(response, GetQuoteResponse)
-        assert response.input_amount_raw == str(amount)
-        assert response.input_token == WSOL.address
-        assert response.output_token == JUP.address
+        assert isinstance(response, GetSwapOrderResponse)
 
-    def test_get_quote_force_route_sync(self, mocker: MockerFixture) -> None:
+    def test_post_swap_execute_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote" 
-            forcing a route and mode for synchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Execute" for synchronous logic.
 
-            Mock Response File: get_quote_force_route.json
+            Mock Response File: post_swap_execute_default.json
         """
-
-        # load mock response
-        mock_file_name = "get_quote_force_route"
+        mock_file_name = "post_swap_execute_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapExecuteResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
-        amount = 1000
-        # execute request
-        input = GetQuoteParams(
-            input_token = WSOL.address,
-            output_token = JUP.address,
-            amount = amount,
-            dexes = [JupiterSwapDex.METEORA_DLMM.value],
-            swap_mode = JupiterSwapMode.EXACT_IN
+        body = PostSwapExecuteBody(
+            signed_transaction = "FAKE_SIGNED_TX_BASE64",
+            request_id = "req-12345678-abcd-efgh-ijkl-1234567890ab"
         )
-        response = self.jupiter.client.get_quote(input)
+        response = self.jupiter.client.post_swap_execute(body)
 
-        # actual test
-        assert isinstance(response, GetQuoteResponse)
+        assert isinstance(response, PostSwapExecuteResponse)
 
-        # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_quote_force_route_async(self, mocker: MockerFixture) -> None:
+    async def test_post_swap_execute_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote" 
-            forcing a route and mode for asynchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Execute" for asynchronous logic.
 
-            Mock Response File: get_quote_force_route.json
+            Mock Response File: post_swap_execute_default.json
         """
-
-        # load mock response
-        mock_file_name = "get_quote_force_route"
+        mock_file_name = "post_swap_execute_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapExecuteResponse)
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
-        amount = 1000
-        # execute request
-        input = GetQuoteParams(
+        body = PostSwapExecuteBody(
+            signed_transaction = "FAKE_SIGNED_TX_BASE64",
+            request_id = "req-12345678-abcd-efgh-ijkl-1234567890ab"
+        )
+        async with self.jupiter.async_client as client:
+            response = await client.post_swap_execute(body)
+
+        assert isinstance(response, PostSwapExecuteResponse)
+
+    def test_get_swap_build_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Swap - Build" for synchronous logic.
+
+            Mock Response File: get_swap_build_default.json
+        """
+        mock_file_name = "get_swap_build_default"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetSwapBuildResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        params = GetSwapBuildParams(
             input_token = WSOL.address,
             output_token = JUP.address,
-            amount = amount,
-            dexes = [JupiterSwapDex.METEORA_DLMM.value],
-            swap_mode = JupiterSwapMode.EXACT_IN
+            amount = 1_000_000_000
         )
+        response = self.jupiter.client.get_swap_build(params)
 
-        async with self.jupiter.async_client as client:
-            response = await client.get_quote(input)
+        assert isinstance(response, GetSwapBuildResponse)
 
-        # actual test
-        assert isinstance(response, GetQuoteResponse)
-
-    def test_get_quote_error_route_not_found_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote"
-            when no route is found for synchronous logic.
-        """
-
-        if config.mock_response or config.jupiter.mock_response:
-            mock_http_response = MagicMock()
-            mock_http_response.json.return_value = {"errorCode": "COULD_NOT_FIND_ANY_ROUTE", "error": "No route found"}
-            mocker.patch("cyhole.core.client.APIClient.api", side_effect = HTTPError(response = mock_http_response))
-
-        # define input
-        input = GetQuoteParams(
-            input_token = JUP.address,
-            output_token = WSOL.address,
-            amount = 1
-        )
-
-        # actual test
-        with pytest.raises((JupiterNoRouteFoundError, JupiterComputeAmountThresholdError)):
-            self.jupiter.client.get_quote(input)
-
-    @pytest.mark.asyncio
-    async def test_get_quote_error_route_not_found_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote"
-            when no route is found for asynchronous logic.
-        """
-
-        if config.mock_response or config.jupiter.mock_response:
-            mock_http_response = MagicMock()
-            mock_http_response.json.return_value = {"errorCode": "COULD_NOT_FIND_ANY_ROUTE", "error": "No route found"}
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", side_effect = HTTPError(response = mock_http_response))
-
-        # define input
-        input = GetQuoteParams(
-            input_token = JUP.address,
-            output_token = WSOL.address,
-            amount = 1
-        )
-
-        # actual test
-        with pytest.raises((JupiterNoRouteFoundError, JupiterComputeAmountThresholdError)):
-            async with self.jupiter.async_client as client:
-                await client.get_quote(input)
-
-    def test_get_quote_error_unknown_dex(self) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote" 
-            when a not supported DEX is used.
-        """
-
-        # actual test
-        with pytest.raises(ParamUnknownError):
-            GetQuoteParams(
-                input_token = WSOL.address,
-                output_token = JUP.address,
-                amount = 1000,
-                dexes = ["XXX"]
-            )
-
-    def test_get_quote_program_id_label_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Quote/Program ID to Label" 
-            for synchronous logic.
-
-            Mock Response File: get_quote_program_id_label.json
-        """
-
-        # load mock response
-        mock_file_name = "get_quote_program_id_label"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteProgramIdLabelResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["dexes"]))
-            mock_response._content = content
-
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_quote_program_id_label()
-
-        # actual test
-        assert isinstance(response, GetQuoteProgramIdLabelResponse)
-
-        # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_get_quote_program_id_label_async(self, mocker: MockerFixture) -> None:
+    async def test_get_swap_build_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint "Quote/Program ID to Label" 
-            for asynchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Build" for asynchronous logic.
 
-            Mock Response File: get_quote_program_id_label.json
+            Mock Response File: get_swap_build_default.json
         """
-
-        # load mock response
-        mock_file_name = "get_quote_program_id_label"
+        mock_file_name = "get_swap_build_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetQuoteProgramIdLabelResponse)
-
-            # response content to be adjusted
-            content = self.mocker.adjust_content_json(str(mock_response.json()["dexes"]))
-            mock_response._content = content
-
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetSwapBuildResponse)
             mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
-        # execute request
+        params = GetSwapBuildParams(
+            input_token = WSOL.address,
+            output_token = JUP.address,
+            amount = 1_000_000_000
+        )
         async with self.jupiter.async_client as client:
-            response = await client.get_quote_program_id_label()
+            response = await client.get_swap_build(params)
 
-        # actual test
-        assert isinstance(response, GetQuoteProgramIdLabelResponse)
+        assert isinstance(response, GetSwapBuildResponse)
 
-    def test_post_swap_sync(self, mocker: MockerFixture) -> None:
+    def test_post_swap_submit_sync(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint POST "Swap" 
-            for synchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Submit" for synchronous logic.
 
-            Mock Response File: post_swap.json
+            Mock Response File: post_swap_submit_default.json
         """
-
-        # load mock response
-        mock_file_name = "post_swap"
+        mock_file_name = "post_swap_submit_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapSubmitResponse)
             mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
 
-            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
-        else:
-            quote_response = self.jupiter.client.get_quote(
-                input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
-            )
+        body = PostSwapSubmitBody(signed_transaction = "FAKE_SIGNED_TX_BASE64")
+        response = self.jupiter.client.post_swap_submit(body)
 
-        # execute request
-        body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
-        response = self.jupiter.client.post_swap(body)
+        assert isinstance(response, PostSwapSubmitResponse)
 
-        # actual test
-        assert isinstance(response, PostSwapResponse)
-
-        # store request (only not mock)
         if config.mock_file_overwrite and not config.jupiter.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
     @pytest.mark.asyncio
-    async def test_post_swap_async(self, mocker: MockerFixture) -> None:
+    async def test_post_swap_submit_async(self, mocker: MockerFixture) -> None:
         """
-            Unit Test used to check the response schema of endpoint POST "Swap" 
-            for asynchronous logic.
+            Unit Test used to check the response schema of endpoint "Swap - Submit" for asynchronous logic.
 
-            Mock Response File: post_swap.json
+            Mock Response File: post_swap_submit_default.json
         """
-        async with self.jupiter.async_client as client:
-
-            # load mock response
-            mock_file_name = "post_swap"
-            if config.mock_response or config.jupiter.mock_response:
-                mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapResponse)
-                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-                quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
-            else:
-                quote_response = await client.get_quote(
-                    input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
-                )
-
-            # execute request
-            body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
-            response = await client.post_swap(body)
-
-        # actual test
-        assert isinstance(response, PostSwapResponse)
-
-    def test_post_swap_invalid_request_sync(self) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Swap" 
-            when an invalid field is provided in the body for synchronous logic.
-        """
-        body = PostSwapBody(
-            user_public_key = "XXX",
-            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
-        )
-        with pytest.raises(JupiterException):
-            self.jupiter.client.post_swap(body)
-
-    @pytest.mark.asyncio
-    async def test_post_swap_invalid_request_async(self) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Swap" 
-            when an invalid field is provided in the body for asynchronous logic.
-        """
-        body = PostSwapBody(
-            user_public_key = "XXX",
-            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
-        )
-        with pytest.raises(JupiterException):
-            async with self.jupiter.async_client as client:
-                await client.post_swap(body)
-
-    def test_post_swap_instructions_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint POST 
-            "Swap Instructions" for synchronous logic.
-
-            Mock Response File: post_swap_instructions.json
-        """
-
-        # load mock response
-        mock_file_name = "post_swap_instructions"
+        mock_file_name = "post_swap_submit_default"
         if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapInstructionsResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapSubmitResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
 
-            quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
-        else:
-            quote_response = self.jupiter.client.get_quote(
-                input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
-            )
-
-        # execute request
-        body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
-        response = self.jupiter.client.post_swap_instructions(body)
-
-        # actual test
-        assert isinstance(response, PostSwapInstructionsResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_post_swap_instructions_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint POST 
-            "Swap Instructions" for asynchronous logic.
-
-            Mock Response File: post_swap_instructions.json
-        """
+        body = PostSwapSubmitBody(signed_transaction = "FAKE_SIGNED_TX_BASE64")
         async with self.jupiter.async_client as client:
+            response = await client.post_swap_submit(body)
 
-            # load mock response
-            mock_file_name = "post_swap_instructions"
-            if config.mock_response or config.jupiter.mock_response:
-                mock_response = self.mocker.load_mock_response(mock_file_name, PostSwapInstructionsResponse)
-                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-                quote_response = self.mocker.load_mock_model("get_quote_base", GetQuoteResponse)
-            else:
-                quote_response = await client.get_quote(
-                    input = GetQuoteParams(input_token = USDC.address, output_token = JUP.address, amount = USDC.from_decimals(10))
-                )
-
-            # execute request
-            body = PostSwapBody(user_public_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3", quote_response = quote_response)
-            response = await client.post_swap_instructions(body)
-
-        # actual test
-        assert isinstance(response, PostSwapInstructionsResponse)
+        assert isinstance(response, PostSwapSubmitResponse)
 
     def test_get_token_search_sync(self, mocker: MockerFixture) -> None:
         """
@@ -805,413 +579,6 @@ class TestJupiter:
         # actual test
         assert isinstance(response, GetTokenRecentResponse)
 
-    def test_get_ultra_order_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Ultra Order" 
-            for synchronous logic.
-
-            Mock Response File: get_ultra_order.json
-        """
-
-        # load mock response
-        mock_file_name = "get_ultra_order"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraOrderResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        body = GetUltraOrderBody(
-            input_token = USDC.address,
-            output_token = JUP.address,
-            input_amount = USDC.from_decimals(10),
-        )
-        response = self.jupiter.client.get_ultra_order(body)
-
-        # actual test
-        assert isinstance(response, GetUltraOrderResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_ultra_order_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint "Ultra Order" 
-            for asynchronous logic.
-
-            Mock Response File: get_ultra_order.json
-        """
-
-        # load mock response
-        mock_file_name = "get_ultra_order"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraOrderResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        body = GetUltraOrderBody(
-            input_token = USDC.address,
-            output_token = JUP.address,
-            input_amount = USDC.from_decimals(10),
-        )
-        async with self.jupiter.async_client as client:
-            response = await client.get_ultra_order(body)
-
-        # actual test
-        assert isinstance(response, GetUltraOrderResponse)
-
-    def test_get_ultra_holdings_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Ultra - Holdings" for synchronous logic.
-
-            Mock Response File: get_ultra_holdings.json
-        """
-
-        # load mock response
-        mock_file_name = "get_ultra_holdings"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraHoldingsResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_ultra_holdings("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
-
-        # actual test
-        assert isinstance(response, GetUltraHoldingsResponse)
-        assert response.amount_raw is not None
-        assert response.amount is not None
-        assert response.amount_string is not None
-        assert isinstance(response.tokens, dict)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            # store only two random token holdings
-            response.tokens = dict(list(response.tokens.items())[0:2])
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_ultra_holdings_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Ultra - Holdings" for asynchronous logic.
-
-            Mock Response File: get_ultra_holdings.json
-        """
-
-        # load mock response
-        mock_file_name = "get_ultra_holdings"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraHoldingsResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        async with self.jupiter.async_client as client:
-            response = await client.get_ultra_holdings("G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF")
-
-        # actual test
-        assert isinstance(response, GetUltraHoldingsResponse)
-        assert response.amount_raw is not None
-        assert response.amount is not None
-        assert response.amount_string is not None
-        assert isinstance(response.tokens, dict)
-
-    def test_get_ultra_shield_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Ultra - Shield" for synchronous logic.
-
-            Mock Response File: get_ultra_shield.json
-        """
-
-        # load mock response
-        mock_file_name = "get_ultra_shield"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraShieldResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_ultra_shield([WSOL.address, JUP.address, USDC.address])
-
-        # actual test
-        assert isinstance(response, GetUltraShieldResponse)
-        assert isinstance(response.warnings, dict)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_ultra_shield_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Ultra - Shield" for asynchronous logic.
-
-            Mock Response File: get_ultra_shield.json
-        """
-
-        # load mock response
-        mock_file_name = "get_ultra_shield"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetUltraShieldResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        async with self.jupiter.async_client as client:
-            response = await client.get_ultra_shield([WSOL.address, JUP.address, USDC.address])
-
-        # actual test
-        assert isinstance(response, GetUltraShieldResponse)
-        assert isinstance(response.warnings, dict)
-
-    def test_post_trigger_create_order_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Trigger - Create Order" for synchronous logic.
-
-            Mock Response File: post_trigger_create_order.json
-        """
-
-        # load mock response
-        mock_file_name = "post_trigger_create_order"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCreateOrderResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        body = PostTriggerCreateOrderBody(
-            maker_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
-            payer_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
-            input_token = USDC.address,
-            output_token = JUP.address,
-            params = PostTriggerCreateOrderParams(
-                input_amount = USDC.from_decimals(10),
-                output_amount = JUP.from_decimals(10)
-            )
-        )
-        response = self.jupiter.client.post_trigger_create_order(body)
-
-        # actual test
-        assert isinstance(response, PostTriggerCreateOrderResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_post_trigger_create_order_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Trigger - Create Order" for asynchronous logic.
-
-            Mock Response File: post_trigger_create_order.json
-        """
-
-        # load mock response
-        mock_file_name = "post_trigger_create_order"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCreateOrderResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        body = PostTriggerCreateOrderBody(
-            maker_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
-            payer_wallet_key = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
-            input_token = USDC.address,
-            output_token = JUP.address,
-            params = PostTriggerCreateOrderParams(
-                input_amount = USDC.from_decimals(10),
-                output_amount = JUP.from_decimals(10)
-            )
-        )
-        async with self.jupiter.async_client as client:
-            response = await client.post_trigger_create_order(body)
-
-        # actual test
-        assert isinstance(response, PostTriggerCreateOrderResponse)
-
-    def test_get_trigger_orders_active_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Trigger - Orders" for synchronous logic.
-
-            Mock Response File: get_trigger_orders_active.json
-        """
-
-        # load mock response
-        mock_file_name = "get_trigger_orders_active"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_trigger_orders(
-            user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
-            status = JupiterOrderStatus.ACTIVE,
-            output_token = WSOL.address
-        )
-
-        # actual test
-        assert isinstance(response, GetTriggerOrdersResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            response.orders = response.orders[0:5]
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_trigger_orders_active_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Trigger - Orders" for asynchronous logic.
-
-            Mock Response File: get_trigger_orders_active.json
-        """
-
-        # load mock response
-        mock_file_name = "get_trigger_orders_active"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        async with self.jupiter.async_client as client:
-            response = await client.get_trigger_orders(
-                user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
-                status = JupiterOrderStatus.ACTIVE,
-                output_token = WSOL.address
-            )
-
-        # actual test
-        assert isinstance(response, GetTriggerOrdersResponse)
-
-    def test_get_trigger_orders_history_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Trigger - Orders" for synchronous logic.
-
-            Mock Response File: get_trigger_orders_history.json
-        """
-
-        # load mock response
-        mock_file_name = "get_trigger_orders_history"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-
-        # execute request
-        response = self.jupiter.client.get_trigger_orders(
-            user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
-            status = JupiterOrderStatus.HISTORY,
-            output_token = WSOL.address
-        )
-
-        # actual test
-        assert isinstance(response, GetTriggerOrdersResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            response.orders = [response.orders[0]]
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_get_trigger_orders_history_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            GET "Trigger - Orders" for asynchronous logic.
-
-            Mock Response File: get_trigger_orders_history.json
-        """
-
-        # load mock response
-        mock_file_name = "get_trigger_orders_history"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, GetTriggerOrdersResponse)
-            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-
-        # execute request
-        async with self.jupiter.async_client as client:
-            response = await client.get_trigger_orders(
-                user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF",
-                status = JupiterOrderStatus.ACTIVE,
-                output_token = WSOL.address
-            )
-
-        # actual test
-        assert isinstance(response, GetTriggerOrdersResponse)
-
-    def test_post_trigger_cancel_order_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Trigger - Cancel Order" for synchronous logic.
-
-            Mock Response File: post_trigger_cancel_order.json
-        """
-        user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF"
-        order_key = ""
-
-        # load mock response
-        mock_file_name = "post_trigger_cancel_order"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCancelOrderResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-        else:
-            # find open orders
-            open_orders = self.jupiter.client.get_trigger_orders(
-                user_public_key = user_public_key,
-                status = JupiterOrderStatus.ACTIVE,
-                output_token = WSOL.address
-            )
-            order = open_orders.orders[0]
-
-            # set inputs
-            order_key = order.order_key
-
-        # execute request
-        response = self.jupiter.client.post_trigger_cancel_order(user_public_key, order_key)
-
-        # actual test
-        assert isinstance(response, PostTriggerCancelOrderResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_post_trigger_cancel_order_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Trigger - Cancel Order" for asynchronous logic.
-
-            Mock Response File: post_trigger_cancel_order.json
-        """
-        user_public_key = "G96b5mAiKrrDXwsXtnVBh2Gse3HeCwjpAPeJjjAnHANF"
-        order_key = ""
-
-        async with self.jupiter.async_client as client:
-            # load mock response
-            mock_file_name = "post_trigger_cancel_order"
-            if config.mock_response or config.jupiter.mock_response:
-                mock_response = self.mocker.load_mock_response(mock_file_name, PostTriggerCancelOrderResponse)
-                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-            else:
-                # find open orders
-                open_orders = await client.get_trigger_orders(
-                    user_public_key = user_public_key,
-                    status = JupiterOrderStatus.ACTIVE,
-                    output_token = WSOL.address
-                )
-                order = open_orders.orders[0]
-
-                # set inputs
-                order_key = order.order_key
-
-            # execute request
-            response = await client.post_trigger_cancel_order(user_public_key, order_key)
-
-        # actual test
-        assert isinstance(response, PostTriggerCancelOrderResponse)
 
     def test_post_recurring_create_order_time_sync(self, mocker: MockerFixture) -> None:
         """
@@ -1651,150 +1018,6 @@ class TestJupiter:
         assert isinstance(response, GetRecurringOrdersResponse)
         assert response.all
 
-    def test_post_recurring_withdraw_price_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Recurring - Withdraw" price-based for synchronous logic.
-
-            Mock Response File: post_recurring_withdraw_price.json
-        """
-        user_public_key = "EKqKLCF9Sdn7UoCtcP6UmtjyXqVMacMLd5sCa1WgQ1MV"
-        order_key = ""
-
-        # load mock response
-        mock_file_name = "post_recurring_withdraw_price"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringWithdrawPriceResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-        else:
-            # find open orders
-            open_orders = self.jupiter.client.get_recurring_orders(
-                user_public_key = user_public_key,
-                status = JupiterOrderStatus.ACTIVE,
-                recurring_type = JupiterRecurringType.PRICE
-            )
-            order = open_orders.price[0] # type: ignore
-
-            # set inputs
-            order_key = order.order_key
-
-        # execute request
-        response = self.jupiter.client.post_recurring_withdraw_price(order_key, user_public_key, JupiterWithdrawMode.IN)
-
-        # actual test
-        assert isinstance(response, PostRecurringWithdrawPriceResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_post_recurring_withdraw_price_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Recurring - Withdraw" price-based for asynchronous logic.
-
-            Mock Response File: post_recurring_withdraw_price.json
-        """
-        user_public_key = "EKqKLCF9Sdn7UoCtcP6UmtjyXqVMacMLd5sCa1WgQ1MV"
-        order_key = ""
-
-        async with self.jupiter.async_client as client:
-            # load mock response
-            mock_file_name = "post_recurring_withdraw_price"
-            if config.mock_response or config.jupiter.mock_response:
-                mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringWithdrawPriceResponse)
-                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-            else:
-                # find open orders
-                open_orders = await client.get_recurring_orders(
-                    user_public_key = user_public_key,
-                    status = JupiterOrderStatus.ACTIVE,
-                    recurring_type = JupiterRecurringType.PRICE
-                )
-                order = open_orders.price[0] # type: ignore
-
-                # set inputs
-                order_key = order.order_key
-
-            # execute request
-            response = await client.post_recurring_withdraw_price(order_key, user_public_key, JupiterWithdrawMode.IN)
-
-        # actual test
-        assert isinstance(response, PostRecurringWithdrawPriceResponse)
-
-    def test_post_recurring_deposit_price_sync(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Recurring - Deposit" price-based for synchronous logic.
-
-            Mock Response File: post_recurring_deposit_price.json
-        """
-        user_public_key = "EKqKLCF9Sdn7UoCtcP6UmtjyXqVMacMLd5sCa1WgQ1MV"
-        order_key = ""
-
-        # load mock response
-        mock_file_name = "post_recurring_deposit_price"
-        if config.mock_response or config.jupiter.mock_response:
-            mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringDepositPriceResponse)
-            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
-        else:
-            # find open orders
-            open_orders = self.jupiter.client.get_recurring_orders(
-                user_public_key = user_public_key,
-                status = JupiterOrderStatus.ACTIVE,
-                recurring_type = JupiterRecurringType.PRICE
-            )
-            order = open_orders.price[0] # type: ignore
-
-            # set inputs
-            order_key = order.order_key
-
-        # execute request
-        response = self.jupiter.client.post_recurring_deposit_price(order_key, user_public_key, USDC.from_decimals(10))
-
-        # actual test
-        assert isinstance(response, PostRecurringDepositPriceResponse)
-
-        # store request (only not mock)
-        if config.mock_file_overwrite and not config.jupiter.mock_response:
-            self.mocker.store_mock_model(mock_file_name, response)
-
-    @pytest.mark.asyncio
-    async def test_post_recurring_deposit_price_async(self, mocker: MockerFixture) -> None:
-        """
-            Unit Test used to check the response schema of endpoint 
-            POST "Recurring - Deposit" price-based for asynchronous logic.
-
-            Mock Response File: post_recurring_deposit_price.json
-        """
-        user_public_key = "EKqKLCF9Sdn7UoCtcP6UmtjyXqVMacMLd5sCa1WgQ1MV"
-        order_key = ""
-
-        async with self.jupiter.async_client as client:
-            # load mock response
-            mock_file_name = "post_recurring_deposit_price"
-            if config.mock_response or config.jupiter.mock_response:
-                mock_response = self.mocker.load_mock_response(mock_file_name, PostRecurringDepositPriceResponse)
-                mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
-            else:
-                # find open orders
-                open_orders = await client.get_recurring_orders(
-                    user_public_key = user_public_key,
-                    status = JupiterOrderStatus.ACTIVE,
-                    recurring_type = JupiterRecurringType.PRICE
-                )
-                order = open_orders.price[0] # type: ignore
-
-                # set inputs
-                order_key = order.order_key
-
-            # execute request
-            response = await client.post_recurring_deposit_price(order_key, user_public_key, USDC.from_decimals(10))
-
-        # actual test
-        assert isinstance(response, PostRecurringDepositPriceResponse)
-
     def test_post_recurring_cancel_order_sync(self, mocker: MockerFixture) -> None:
         """
             Unit Test used to check the response schema of endpoint 
@@ -1866,3 +1089,157 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostRecurringCancelOrderResponse)
+
+    def test_get_token_verify_check_eligibility_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Check Eligibility" for synchronous logic.
+
+            Mock Response File: get_token_verify_check_eligibility.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_check_eligibility"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCheckEligibilityResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_token_verify_check_eligibility(JUP.address)
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCheckEligibilityResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_verify_check_eligibility_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Check Eligibility" for asynchronous logic.
+
+            Mock Response File: get_token_verify_check_eligibility.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_check_eligibility"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCheckEligibilityResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_token_verify_check_eligibility(JUP.address)
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCheckEligibilityResponse)
+
+    def test_get_token_verify_craft_txn_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Craft Transaction" for synchronous logic.
+
+            Mock Response File: get_token_verify_craft_txn.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_craft_txn"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCraftTxnResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.jupiter.client.get_token_verify_craft_txn("REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3")
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCraftTxnResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_verify_craft_txn_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            "Token Verify - Craft Transaction" for asynchronous logic.
+
+            Mock Response File: get_token_verify_craft_txn.json
+        """
+
+        # load mock response
+        mock_file_name = "get_token_verify_craft_txn"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenVerifyCraftTxnResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        async with self.jupiter.async_client as client:
+            response = await client.get_token_verify_craft_txn("REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3")
+
+        # actual test
+        assert isinstance(response, GetTokenVerifyCraftTxnResponse)
+
+    def test_post_token_verify_execute_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            POST "Token Verify - Execute" for synchronous logic.
+
+            Mock Response File: post_token_verify_execute.json
+        """
+
+        # load mock response
+        mock_file_name = "post_token_verify_execute"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenVerifyExecuteResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostTokenVerifyExecuteBody(
+            transaction = "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAHCw==",
+            request_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            sender_address = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            token_id = JUP.address,
+            twitter_handle = "https://x.com/JupiterExchange",
+            description = "Test verification submission"
+        )
+        response = self.jupiter.client.post_token_verify_execute(body)
+
+        # actual test
+        assert isinstance(response, PostTokenVerifyExecuteResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.jupiter.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_token_verify_execute_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint
+            POST "Token Verify - Execute" for asynchronous logic.
+
+            Mock Response File: post_token_verify_execute.json
+        """
+
+        # load mock response
+        mock_file_name = "post_token_verify_execute"
+        if config.mock_response or config.jupiter.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenVerifyExecuteResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        # execute request
+        body = PostTokenVerifyExecuteBody(
+            transaction = "AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAHCw==",
+            request_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            sender_address = "REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3",
+            token_id = JUP.address,
+            twitter_handle = "https://x.com/JupiterExchange",
+            description = "Test verification submission"
+        )
+        async with self.jupiter.async_client as client:
+            response = await client.post_token_verify_execute(body)
+
+        # actual test
+        assert isinstance(response, PostTokenVerifyExecuteResponse)

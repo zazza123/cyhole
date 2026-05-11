@@ -1,4 +1,3 @@
-from datetime import datetime
 from requests.exceptions import HTTPError
 from typing import Any, Coroutine, overload, Literal, Type
 
@@ -8,39 +7,30 @@ from ..jupiter.client import JupiterClient, JupiterAsyncClient
 from ..jupiter.schema import (
     JupiterHTTPError,
     # Price API
-    GetPriceData,
     GetPriceResponse,
     # Swap API
-    GetQuoteParams,
-    GetQuoteResponse,
-    GetQuoteProgramIdLabelResponse,
-    PostSwapBody,
-    PostSwapResponse,
-    PostSwapInstructionsResponse,
+    GetSwapOrderParams,
+    GetSwapOrderResponse,
+    PostSwapExecuteBody,
+    PostSwapExecuteResponse,
+    GetSwapBuildParams,
+    GetSwapBuildResponse,
+    PostSwapSubmitBody,
+    PostSwapSubmitResponse,
     # Token API
     GetTokenInfo,
     GetTokenSearchResponse,
     GetTokenTagResponse,
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
-    # Ultra API
-    GetUltraOrderBody,
-    GetUltraOrderResponse,
-    GetUltraHoldingsResponse,
-    GetUltraShieldResponse,
-    PostUltraExecuteOrderResponse,
-    # Trigger API
-    PostTriggerCreateOrderBody,
-    PostTriggerCreateOrderResponse,
-    PostTriggerExecuteResponse,
-    PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse,
+    GetTokenVerifyCheckEligibilityResponse,
+    GetTokenVerifyCraftTxnResponse,
+    PostTokenVerifyExecuteBody,
+    PostTokenVerifyExecuteResponse,
     # Recurring API
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
-    PostRecurringWithdrawPriceResponse,
-    PostRecurringDepositPriceResponse,
     PostRecurringCancelOrderResponse,
     PostRecurringExecuteResponse
 )
@@ -57,8 +47,7 @@ from ..jupiter.param import (
     JupiterTokenCategory,
     JupiterTokenInterval,
     JupiterOrderStatus,
-    JupiterRecurringType,
-    JupiterWithdrawMode
+    JupiterRecurringType
 )
 
 class Jupiter(Interaction):
@@ -131,7 +120,6 @@ class Jupiter(Interaction):
         self.async_client = JupiterAsyncClient(self, self.headers)
 
         # API urls
-        self.url_api_trigger = "https://api.jup.ag/trigger/v1/"
         self.url_api_recurring = "https://api.jup.ag/recurring/v1/"
         return
 
@@ -152,17 +140,17 @@ class Jupiter(Interaction):
     @property
     def url_api_swap(self) -> str:
         """Swap API URL composed according to API tier"""
-        return self.url_api_root + "/swap/v1/"
+        return self.url_api_root + "/swap/v2/"
+
+    @property
+    def url_api_tx(self) -> str:
+        """Transaction submission API URL composed according to API tier"""
+        return self.url_api_root + "/tx/v1/"
 
     @property
     def url_api_token(self) -> str:
         """Token API URL composed according to API tier"""
         return self.url_api_root + "/tokens/v2/"
-
-    @property
-    def url_api_ultra(self) -> str:
-        """Ultra API URL composed according to API tier"""
-        return self.url_api_root + "/ultra/v1/"
 
     def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
         """
@@ -191,146 +179,138 @@ class Jupiter(Interaction):
 
     def _get_price(self, sync: bool, address: list[str]) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint, 
-            and it is used to get the current price of a list of tokens on Solana chain from [Jupiter Swap](https://jup.ag).
+            This function refers to the GET **[Price](https://developers.jup.ag/docs/price)** API endpoint,
+            and it is used to get the current USD price for up to 50 tokens on Solana from [Jupiter](https://jup.ag).
 
-            The API returns the unit buy price for the tokens according to the value of `USDC` token. 
-
-            !!! info
-                Observe that when the token address or comparison token address are not found, 
-                the response provided will have a `data` object with the token address as key and
-                the value will be `None`.
+            Returns `None` for a token when price data is unavailable or unreliable
+            (e.g. no trades in the last 7 days, or flagged as suspicious).
 
             Parameters:
-                address: list of tokens addresses to get the price.
+                address: list of token mint addresses to query. Maximum 50 per request.
                     For example, `So11111111111111111111111111111111111111112`.
 
             Returns:
-                tokens' prices.
+                mapping of token mint address to price data.
         """
 
         # set params
-        params = {
+        params: dict[str, str] = {
             "ids": ",".join(address)
         }
 
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, self.url_api_price, params = params)
-            json_data = content_raw.json()
-            data = {str(k): GetPriceData(**v) for k, v in json_data["data"].items()}
-            return GetPriceResponse(data = data, time_unix = json_data.get("time_unix", int(datetime.now().timestamp())))
+            return GetPriceResponse.model_validate(content_raw.json())
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, self.url_api_price, params = params)
-                json_data = content_raw.json()
-                data = {str(k): GetPriceData(**v) for k, v in json_data["data"].items()}
-                return GetPriceResponse(data = data, time_unix = json_data.get("time_unix", int(datetime.now().timestamp())))
+                return GetPriceResponse.model_validate(content_raw.json())
             return async_request()
 
     @overload
-    def _get_quote(self, sync: Literal[True], input: GetQuoteParams) -> GetQuoteResponse: ...
+    def _get_swap_order(self, sync: Literal[True], params: GetSwapOrderParams) -> GetSwapOrderResponse: ...
 
     @overload
-    def _get_quote(self, sync: Literal[False], input: GetQuoteParams) -> Coroutine[None, None, GetQuoteResponse]: ...
+    def _get_swap_order(self, sync: Literal[False], params: GetSwapOrderParams) -> Coroutine[None, None, GetSwapOrderResponse]: ...
 
-    def _get_quote(self, sync: bool, input: GetQuoteParams) -> GetQuoteResponse | Coroutine[None, None, GetQuoteResponse]:
+    def _get_swap_order(self, sync: bool, params: GetSwapOrderParams) -> GetSwapOrderResponse | Coroutine[None, None, GetSwapOrderResponse]:
         """
-            This function refers to the GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint, 
-            and it is used to get a quote for swapping a specific amount of tokens.  
-            The function can be combined with the `post_swap` enpdpoint to implement a payment mechanism.
+            This function refers to the GET **[Swap - Order](https://developers.jup.ag/docs/api-reference/swap/order)** API endpoint,
+            and it is used to get a swap quote and a fully assembled transaction using Jupiter Swap v2 API.
+
+            The Meta-Aggregator path competes across all routing engines (Metis, JupiterZ RFQ, DFlow, OKX)
+            to return the best price. When `taker` is provided the response includes a ready-to-sign
+            base64-encoded transaction; combine with `post_swap_execute` to land it on-chain.
 
             Parameters:
-                input: an input schema used to describe the request.
-                    More details in the object definition.
+                params: input params describing the swap. See [`GetSwapOrderParams`][cyhole.jupiter.schema.GetSwapOrderParams].
 
             Returns:
-                Quote found by Jupiter API.
+                Quote and assembled transaction from Jupiter Swap v2 API.
         """
-        # set params
-        url = self.url_api_swap + "quote"
-        params = input.model_dump(
-            by_alias = True, 
-            exclude_defaults = True
+        url = self.url_api_swap + "order"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetSwapOrderResponse,
+            params = params.model_dump(by_alias = True, exclude_defaults = True)
         )
 
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetQuoteResponse, params = params)
+    @overload
+    def _post_swap_execute(self, sync: Literal[True], body: PostSwapExecuteBody) -> PostSwapExecuteResponse: ...
 
     @overload
-    def _get_quote_program_id_label(self, sync: Literal[True]) -> GetQuoteProgramIdLabelResponse: ...
+    def _post_swap_execute(self, sync: Literal[False], body: PostSwapExecuteBody) -> Coroutine[None, None, PostSwapExecuteResponse]: ...
 
-    @overload
-    def _get_quote_program_id_label(self, sync: Literal[False]) -> Coroutine[None, None, GetQuoteProgramIdLabelResponse]: ...
-
-    def _get_quote_program_id_label(self, sync: bool) -> GetQuoteProgramIdLabelResponse | Coroutine[None, None, GetQuoteProgramIdLabelResponse]:
+    def _post_swap_execute(self, sync: bool, body: PostSwapExecuteBody) -> PostSwapExecuteResponse | Coroutine[None, None, PostSwapExecuteResponse]:
         """
-            This function refers to the GET **[Quote Program ID to Label](https://dev.jup.ag/api-reference/swap/program-id-to-label)** API endpoint, 
-            and it is used to get the list of supported DEXes to use in quote endpoint. 
+            This function refers to the POST **[Swap - Execute](https://developers.jup.ag/docs/api-reference/swap/execute)** API endpoint,
+            and it is used to execute a signed swap transaction created by `get_swap_order`.
 
-            Returns:
-                List of DEXs addresses and labels.
-        """
-        # set params
-        url = self.url_api_swap + "program-id-to-label"
-
-        # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetQuoteProgramIdLabelResponse(dexes = content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_swap(self, sync: Literal[True], body: PostSwapBody, with_instructions: Literal[False]) -> PostSwapResponse: ...
-
-    @overload
-    def _post_swap(self, sync: Literal[True], body: PostSwapBody, with_instructions: Literal[True]) -> PostSwapInstructionsResponse: ...
-
-    @overload
-    def _post_swap(self, sync: Literal[False], body: PostSwapBody, with_instructions: Literal[False]) -> Coroutine[None, None, PostSwapResponse]: ...
-
-    @overload
-    def _post_swap(self, sync: Literal[False], body: PostSwapBody, with_instructions: Literal[True]) -> Coroutine[None, None, PostSwapInstructionsResponse]: ...
-
-    def _post_swap(self, sync: bool, body: PostSwapBody, with_instructions: bool = False) -> PostSwapResponse | PostSwapInstructionsResponse | Coroutine[None, None, PostSwapResponse | PostSwapInstructionsResponse]:
-        """
-            This function refers to the POST **[Swap](https://dev.jup.ag/api-reference/swap/swap)** API endpoint, 
-            and it is used to recive the transaction to perform the swap initialised from Jupiter client 
-            `get_quote` endpoint for the desired pair; for this reason the function should be combined 
-            with the `get_quote` endpoint.
-
-            Jupiter API provides also the possibility to retrieve only the instructions to perform the swap 
-            without the transaction. This is useful to check the instructions before performing the swap, 
-            and in case of need, to modify the instructions before sending the transaction. This behaviour 
-            can be activated by setting the `with_instructions` flag to `True`. Observe that in this case, 
-            the response will be different from the standard swap response. In Jupiter's API documentation,
-            this endpoint is referred to the POST **[Swap Instructions](https://dev.jup.ag/api-reference/swap/swap-instructions)**.
+            First call `get_swap_order` with a valid `taker` to obtain the base64 transaction and the
+            `request_id`. Sign the transaction with the taker's wallet, then submit both via this endpoint.
 
             Parameters:
-                body: the body to sent to Jupiter API that describe the swap.
-                    More details in the object definition.
-                with_instructions: flag to receive only the instructions to perform the swap.
+                body: signed transaction and request ID from `get_swap_order`.
+                    See [`PostSwapExecuteBody`][cyhole.jupiter.schema.PostSwapExecuteBody].
 
             Returns:
-                Transaction found by Jupiter API in case `with_instructions` is `False`, 
-                otherwise instructions to perform the swap.
+                Execution result including status, signature, and amount details.
         """
-        # set params
-        url = self.url_api_swap + "swap"
-        response_model_class = PostSwapResponse
+        url = self.url_api_swap + "execute"
+        return self.api_return_model(sync, RequestType.POST.value, url, PostSwapExecuteResponse,
+            json = body.model_dump(by_alias = True, exclude_none = True)
+        )
 
-        # check instructions
-        if with_instructions:
-            url += "-instructions"
-            response_model_class = PostSwapInstructionsResponse
+    @overload
+    def _get_swap_build(self, sync: Literal[True], params: GetSwapBuildParams) -> GetSwapBuildResponse: ...
 
-        # execute request
-        return self.api_return_model(sync, RequestType.POST.value, url, response_model_class, 
-            json = body.model_dump(by_alias = True, exclude_defaults = True)
+    @overload
+    def _get_swap_build(self, sync: Literal[False], params: GetSwapBuildParams) -> Coroutine[None, None, GetSwapBuildResponse]: ...
+
+    def _get_swap_build(self, sync: bool, params: GetSwapBuildParams) -> GetSwapBuildResponse | Coroutine[None, None, GetSwapBuildResponse]:
+        """
+            This function refers to the GET **[Swap - Build](https://developers.jup.ag/docs/api-reference/swap/build)** API endpoint,
+            and it is used to get raw swap instructions for custom transaction building using Jupiter Swap v2 Router path.
+
+            Unlike `get_swap_order`, this endpoint returns individual Solana instructions rather than an assembled
+            transaction, allowing integrators to compose their own transaction. Routing is handled exclusively
+            by the Metis on-chain router (no RFQ market makers). Combine with `post_swap_submit` to land the
+            transaction via Jupiter's infrastructure.
+
+            Parameters:
+                params: input params describing the swap. See [`GetSwapBuildParams`][cyhole.jupiter.schema.GetSwapBuildParams].
+
+            Returns:
+                Raw instructions and route plan for custom transaction assembly.
+        """
+        url = self.url_api_swap + "build"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetSwapBuildResponse,
+            params = params.model_dump(by_alias = True, exclude_defaults = True)
+        )
+
+    @overload
+    def _post_swap_submit(self, sync: Literal[True], body: PostSwapSubmitBody) -> PostSwapSubmitResponse: ...
+
+    @overload
+    def _post_swap_submit(self, sync: Literal[False], body: PostSwapSubmitBody) -> Coroutine[None, None, PostSwapSubmitResponse]: ...
+
+    def _post_swap_submit(self, sync: bool, body: PostSwapSubmitBody) -> PostSwapSubmitResponse | Coroutine[None, None, PostSwapSubmitResponse]:
+        """
+            This function refers to the POST **[Swap - Submit](https://developers.jup.ag/docs/swap)** API endpoint,
+            and it is used to submit any signed Solana transaction through Jupiter's proprietary landing pipeline.
+
+            The transaction must include a SOL tip (minimum 0.001 SOL / 1,000,000 lamports) to incentivise
+            validators. This endpoint is zero-credit-cost and available on all plans including keyless access.
+
+            Parameters:
+                body: base64-encoded signed Solana transaction.
+                    See [`PostSwapSubmitBody`][cyhole.jupiter.schema.PostSwapSubmitBody].
+
+            Returns:
+                Transaction signature after successful submission.
+        """
+        url = self.url_api_tx + "submit"
+        return self.api_return_model(sync, RequestType.POST.value, url, PostSwapSubmitResponse,
+            json = body.model_dump(by_alias = True)
         )
 
     @overload
@@ -453,168 +433,111 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_token_recent(self, sync: Literal[True]) -> GetTokenRecentResponse: ...
+    def _get_token_recent(self, sync: Literal[True], limit: int | None = None) -> GetTokenRecentResponse: ...
 
     @overload
-    def _get_token_recent(self, sync: Literal[False]) -> Coroutine[None, None, GetTokenRecentResponse]: ...
+    def _get_token_recent(self, sync: Literal[False], limit: int | None = None) -> Coroutine[None, None, GetTokenRecentResponse]: ...
 
-    def _get_token_recent(self, sync: bool) -> GetTokenRecentResponse | Coroutine[None, None, GetTokenRecentResponse]:
+    def _get_token_recent(self, sync: bool, limit: int | None = None) -> GetTokenRecentResponse | Coroutine[None, None, GetTokenRecentResponse]:
         """
-            This function refers to the GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint, 
-            and it is used to retrieved the list of new tokens in the last 30 minutes.
+            This function refers to the GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint,
+            and it is used to retrieve the list of recently created tokens with their first pool information.
+
+            Parameters:
+                limit: maximum number of tokens to return. API defaults to `30` when not provided.
 
             Returns:
-                List of Jupiter's tokens list.
+                List of Jupiter's recently created tokens.
         """
         # set params
         url = self.url_api_token + "recent"
+        params = {}
+        if limit is not None:
+            params["limit"] = limit
 
         # execute request
         if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
             return GetTokenRecentResponse(tokens = content_raw.json())
         else:
             async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetTokenRecentResponse(tokens = content_raw.json())
             return async_request()
 
     @overload
-    def _get_ultra_order(self, sync: Literal[True], body: GetUltraOrderBody) -> GetUltraOrderResponse: ...
+    def _get_token_verify_check_eligibility(self, sync: Literal[True], token_id: str) -> GetTokenVerifyCheckEligibilityResponse: ...
 
     @overload
-    def _get_ultra_order(self, sync: Literal[False], body: GetUltraOrderBody) -> Coroutine[None, None, GetUltraOrderResponse]: ...
+    def _get_token_verify_check_eligibility(self, sync: Literal[False], token_id: str) -> Coroutine[None, None, GetTokenVerifyCheckEligibilityResponse]: ...
 
-    def _get_ultra_order(self, sync: bool, body: GetUltraOrderBody) -> GetUltraOrderResponse | Coroutine[None, None, GetUltraOrderResponse]:
+    def _get_token_verify_check_eligibility(self, sync: bool, token_id: str) -> GetTokenVerifyCheckEligibilityResponse | Coroutine[None, None, GetTokenVerifyCheckEligibilityResponse]:
         """
-            This function refers to the GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint, 
-            and it is used to create a swap order using the Jupiter Ultra API. This API was designed to facilitate 
-            the creation of a swap order without the need to use the `get_quote` endpoint. In fact, the Ultra API 
-            was created over the Swap API to provide a more direct way to create a swap order. This endpoint 
-            can be then combined with the `post_ultra_execute_order` endpoint to perform the swap.
+            This function refers to the GET **[Token Verify - Check Eligibility](https://developers.jup.ag/docs/tokens/verification)** API endpoint,
+            and it is used to determine whether a token is eligible for express verification on Jupiter.
 
             Parameters:
-                body: input body containing all the parameters for the Ultra Order endpoint.
+                token_id: mint address of the token to check.
 
             Returns:
-                Order information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_ultra + "order"
+                Eligibility status indicating whether verification and metadata updates are permitted.
 
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraOrderResponse, 
-            params = body.model_dump(by_alias = True, exclude_defaults = True)
-        )
+            Raises:
+                JupiterException: if the API returns an error.
+        """
+        url = self.url_api_token + "verify/express/check-eligibility"
+        params = {"tokenId": token_id}
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenVerifyCheckEligibilityResponse, params = params)
 
     @overload
-    def _post_ultra_execute_order(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse: ...
+    def _get_token_verify_craft_txn(self, sync: Literal[True], sender_address: str) -> GetTokenVerifyCraftTxnResponse: ...
 
     @overload
-    def _post_ultra_execute_order(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostUltraExecuteOrderResponse]: ...
+    def _get_token_verify_craft_txn(self, sync: Literal[False], sender_address: str) -> Coroutine[None, None, GetTokenVerifyCraftTxnResponse]: ...
 
-    def _post_ultra_execute_order(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse | Coroutine[None, None, PostUltraExecuteOrderResponse]:
+    def _get_token_verify_craft_txn(self, sync: bool, sender_address: str) -> GetTokenVerifyCraftTxnResponse | Coroutine[None, None, GetTokenVerifyCraftTxnResponse]:
         """
-            This function refers to the POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint, 
-            and it is used to execute a swap order created using the Jupiter Ultra API "GET Order" endpoint (`get_ultra_order`). 
-
-            First, it is required to initialize a swap order using the `get_ultra_order` endpoint. From the response, 
-            is possible to get the Request ID (`GetUltraOrderResponse.request_id`) and the transaction ID (`GetUltraOrderResponse.transaction_id`).
-            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be then used
-            to execute the swap order.
+            This function refers to the GET **[Token Verify - Craft Transaction](https://developers.jup.ag/docs/tokens/verification)** API endpoint,
+            and it is used to obtain an unsigned transaction for the 1000 JUP express verification payment.
 
             Parameters:
-                signed_transaction_id: the transaction ID coming from the `get_ultra_order` response **signed** by the payer wallet.
-                request_id: the same request ID coming from the `get_ultra_order` response.
+                sender_address: wallet address that will sign and submit the payment transaction.
 
             Returns:
-                Swap order execution information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_ultra + "execute"
-        body = {
-            "signedTransaction": signed_transaction_id,
-            "requestId": request_id
-        }
+                Unsigned transaction details including the base64-encoded transaction and a `request_id`
+                required by the execute step.
 
-        # execute request
-        return self.api_return_model(sync, RequestType.POST.value, url, PostUltraExecuteOrderResponse, json = body)
+            Raises:
+                JupiterException: if the API returns an error.
+        """
+        url = self.url_api_token + "verify/express/craft-txn"
+        params = {"senderAddress": sender_address}
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenVerifyCraftTxnResponse, params = params)
 
     @overload
-    def _get_ultra_holdings(self, sync: Literal[True], address: str) -> GetUltraHoldingsResponse: ...
+    def _post_token_verify_execute(self, sync: Literal[True], body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse: ...
 
     @overload
-    def _get_ultra_holdings(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetUltraHoldingsResponse]: ...
+    def _post_token_verify_execute(self, sync: Literal[False], body: PostTokenVerifyExecuteBody) -> Coroutine[None, None, PostTokenVerifyExecuteResponse]: ...
 
-    def _get_ultra_holdings(self, sync: bool, address: str) -> GetUltraHoldingsResponse | Coroutine[None, None, GetUltraHoldingsResponse]:
+    def _post_token_verify_execute(self, sync: bool, body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse | Coroutine[None, None, PostTokenVerifyExecuteResponse]:
         """
-            This function refers to the GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint, 
-            and it is used to request for token balances of an account including token account information using the Jupiter Ultra API.
+            This function refers to the POST **[Token Verify - Execute](https://developers.jup.ag/docs/tokens/verification)** API endpoint,
+            and it is used to submit a signed verification transaction and project details to complete the express verification flow.
 
             Parameters:
-                address: wallet address to get holdings for.
+                body: the body containing the signed transaction, request ID, sender address, token mint,
+                    Twitter handle, description, and optional token metadata.
 
             Returns:
-                Token holdings of the wallet including SOL balance and other tokens.
+                Verification execution result including submission status and on-chain transaction signature.
+
+            Raises:
+                JupiterException: if the API returns an error.
         """
-        # set params
-        url = self.url_api_ultra + f"holdings/{address}"
+        url = self.url_api_token + "verify/express/execute"
+        headers = {"Content-Type": "application/json"}
 
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraHoldingsResponse)
-
-    @overload
-    def _get_ultra_shield(self, sync: Literal[True], mints: list[str]) -> GetUltraShieldResponse: ...
-
-    @overload
-    def _get_ultra_shield(self, sync: Literal[False], mints: list[str]) -> Coroutine[None, None, GetUltraShieldResponse]: ...
-
-    def _get_ultra_shield(self, sync: bool, mints: list[str]) -> GetUltraShieldResponse | Coroutine[None, None, GetUltraShieldResponse]:
-        """
-            This function refers to the GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint, 
-            and it is used to request token information and warnings for a list of mint addresses using the Jupiter Ultra API.
-
-            Parameters:
-                mints: list of token mint addresses to get warnings for.
-
-            Returns:
-                Token warnings information for the requested mint addresses.
-        """
-        # set params
-        url = self.url_api_ultra + "shield"
-        params = {
-            "mints": ",".join(mints)
-        }
-
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraShieldResponse, params = params)
-
-    @overload
-    def _post_trigger_create_order(self, sync: Literal[True], body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse: ...
-
-    @overload
-    def _post_trigger_create_order(self, sync: Literal[False], body: PostTriggerCreateOrderBody) -> Coroutine[None, None, PostTriggerCreateOrderResponse]: ...
-
-    def _post_trigger_create_order(self, sync: bool, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse | Coroutine[None, None, PostTriggerCreateOrderResponse]:
-        """
-            This function refers to the POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint, 
-            and it is used to receive an unsigned transaction to perform the creation of an order via Jupiter API.
-
-            Parameters:
-                body: the body to sent to Jupiter API that describe the order.
-                    More details in the object definition.
-
-            Returns:
-                **Unsigned** transaction created by Jupiter API.
-        """
-
-        # set params
-        url = self.url_api_trigger + "createOrder"
-        headers = {
-            "Content-Type": "application/json"
-        }
-
-        # execute request
         if sync:
             try:
                 content_raw = self.client.api(
@@ -625,7 +548,7 @@ class Jupiter(Interaction):
                 )
             except HTTPError as e:
                 raise self._raise(e)
-            return PostTriggerCreateOrderResponse(**content_raw.json())
+            return PostTokenVerifyExecuteResponse(**content_raw.json())
         else:
             async def async_request():
                 try:
@@ -637,196 +560,7 @@ class Jupiter(Interaction):
                     )
                 except HTTPError as e:
                     raise self._raise(e)
-                return PostTriggerCreateOrderResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_trigger_execute(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse: ...
-
-    @overload
-    def _post_trigger_execute(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostTriggerExecuteResponse]: ...
-
-    def _post_trigger_execute(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse | Coroutine[None, None, PostTriggerExecuteResponse]:
-        """
-            This function refers to the POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint, 
-            and it is used to execute an order created using the Jupiter API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
-
-            First, it is required to create a order using the `post_trigger_create_order` endpoint. From the response, 
-            is possible to get the Request ID (`PostTriggerCreateOrderResponse.request_id`) and the transaction ID (`PostTriggerCreateOrderResponse.transaction_id`).
-            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be then used
-            to execute the order.
-
-            The execute endpoint is not used only for creating an order, but it can be also used combined with `post_trigger_cancel_order` 
-            to cancel one or more orders.
-
-            Parameters:
-                signed_transaction_id: the transaction ID coming from the `post_trigger_create_order` response **signed** by the payer wallet.
-                request_id: the same request ID coming from the `post_trigger_create_order` response.
-
-            Returns:
-                Order execution information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_trigger + "execute"
-        headers = {
-            "Content-Type": "application/json"
-        }
-        body = {
-            "signedTransaction": signed_transaction_id,
-            "requestId": request_id
-        }
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostTriggerExecuteResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostTriggerExecuteResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_trigger_cancel_order(self, sync: Literal[True], user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse: ...
-
-    @overload
-    def _post_trigger_cancel_order(self, sync: Literal[False], user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> Coroutine[None, None, PostTriggerCancelOrderResponse]: ...
-
-    def _post_trigger_cancel_order(self, sync: bool, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse | Coroutine[None, None, PostTriggerCancelOrderResponse]:
-        """
-            This function refers to the POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint, 
-            and it is used to cancel one or more orders created using the Jupiter API POST "Trigger - Create Order" endpoint (`post_trigger_create_order`). 
-
-            This endpoint do not directly cancel the order, but it provides the transaction and request ID to it.
-            Similarly to the `post_trigger_create_order` endpoint, the transaction ID **must** be signed by the payer walled to get the `signed_transaction_id`
-            that can be then used to cancel the order by providing it together with the request ID to the `post_trigger_execute` endpoint.
-
-            Note:
-                The endpoint switches to POST **[Trigger - Cancel Orders](https://station.jup.ag/docs/api/trigger-api/cancel-orders)** 
-                if more than one order is provided. The logic and response do not change.
-
-            Parameters:
-                user_public_key: Public Key of the Owner wallet.
-                compute_unit_price: used to determine a transaction's prioritization fee. Defaults to `auto`.
-                orders: List of orders Public Keys to cancel.
-
-            Returns:
-                Order cancellation information provided by Jupiter API.
-        """
-
-        # set params
-        url = self.url_api_trigger + "cancelOrder"
-        headers = {
-            "Content-Type": "application/json"
-        }
-        body: dict[str, str | list[str]] = {
-            "maker": user_public_key,
-            "computeUnitPrice": compute_unit_price
-        }
-
-        # switch to multiple orders
-        if isinstance(orders, list):
-            url += "s"
-            body["orders"] = orders
-        else:
-            body["order"] = orders
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostTriggerCancelOrderResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostTriggerCancelOrderResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _get_trigger_orders(
-        self,
-        sync: Literal[True],
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> GetTriggerOrdersResponse: ...
-
-    @overload
-    def _get_trigger_orders(
-        self,
-        sync: Literal[False],
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> Coroutine[None, None, GetTriggerOrdersResponse]: ...
-
-    def _get_trigger_orders(
-        self,
-        sync: bool,
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> GetTriggerOrdersResponse | Coroutine[None, None, GetTriggerOrdersResponse]:
-        """
-            This function refers to the GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint,
-            and it is used to retrieve the list of orders associated to a wallet via Jupiter API.
-
-            Parameters:
-                user_public_key: Public Key of the Owner wallet.
-                status: status of the orders to retrieve.
-                include_failed: flag to include failed orders.
-                input_token: address of the input token associated to the orders.
-                output_token: address of the output token associated to the orders.
-                page: specify which 'page' of orders to return.
-
-            Returns:
-                List of orders associated to the input wallet.
-        """
-        # set params
-        url = self.url_api_trigger + "getTriggerOrders"
-        params = {
-            "user": user_public_key,
-            "orderStatus": status.value,
-            "includeFailedTx": "true" if include_failed else "false",
-            "inputMint": input_token,
-            "outputMint": output_token,
-            "page": page
-        }
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            except HTTPError as e:
-                raise self._raise(e)
-            return GetTriggerOrdersResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return GetTriggerOrdersResponse(**content_raw.json())
+                return PostTokenVerifyExecuteResponse(**content_raw.json())
             return async_request()
 
     @overload
@@ -901,7 +635,9 @@ class Jupiter(Interaction):
         status: JupiterOrderStatus,
         recurring_type: JupiterRecurringType,
         include_failed: bool = False,
-        page: int = 1
+        page: int = 1,
+        input_mint: str | None = None,
+        output_mint: str | None = None
     ) -> GetRecurringOrdersResponse: ...
 
     @overload
@@ -912,7 +648,9 @@ class Jupiter(Interaction):
         status: JupiterOrderStatus,
         recurring_type: JupiterRecurringType,
         include_failed: bool = False,
-        page: int = 1
+        page: int = 1,
+        input_mint: str | None = None,
+        output_mint: str | None = None
     ) -> Coroutine[None, None, GetRecurringOrdersResponse]: ...
 
     def _get_recurring_orders(
@@ -922,7 +660,9 @@ class Jupiter(Interaction):
         status: JupiterOrderStatus,
         recurring_type: JupiterRecurringType,
         include_failed: bool = False,
-        page: int = 1
+        page: int = 1,
+        input_mint: str | None = None,
+        output_mint: str | None = None
     ) -> GetRecurringOrdersResponse | Coroutine[None, None, GetRecurringOrdersResponse]:
         """
             This function refers to the GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint,
@@ -934,19 +674,25 @@ class Jupiter(Interaction):
                 recurring_type: type of the recurring order to retrieve.
                 include_failed: flag to include failed orders.
                 page: specify which 'page' of orders to return.
+                input_mint: filter orders by input token mint address.
+                output_mint: filter orders by output token mint address.
 
             Returns:
                 List of orders associated to the input wallet.
         """
         # set params
         url = self.url_api_recurring + "getRecurringOrders"
-        params = {
+        params: dict = {
             "user": user_public_key,
             "orderStatus": status.value,
             "recurringType": recurring_type.value,
             "includeFailedTx": "true" if include_failed else "false",
             "page": page
         }
+        if input_mint:
+            params["inputMint"] = input_mint
+        if output_mint:
+            params["outputMint"] = output_mint
 
         # execute request
         if sync:
@@ -962,101 +708,6 @@ class Jupiter(Interaction):
                 except HTTPError as e:
                     raise self._raise(e)
                 return GetRecurringOrdersResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_recurring_withdraw_price(self, sync: Literal[True], order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse: ...
-
-    @overload
-    def _post_recurring_withdraw_price(self, sync: Literal[False], order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> Coroutine[None, None, PostRecurringWithdrawPriceResponse]: ...
-
-    def _post_recurring_withdraw_price(self, sync: bool, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse | Coroutine[None, None, PostRecurringWithdrawPriceResponse]:
-        """
-            This function refers to the POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint, 
-            and it is used to withdraw the price of a recurring order.
-
-            Parameters:
-                order_id: ID of the recurring order.
-                user_public_key: Public Key of the Owner wallet.
-                mode: mode of the withdrawal. 
-                    The available modes are available on [`JupiterWithdrawMode`][cyhole.jupiter.param.JupiterWithdrawMode].
-                amount: amount to withdraw. If not provided, then the entire amount will be withdrawn.
-
-            Returns:
-                Withdrawal information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_recurring + "priceWithdraw"
-        headers = {
-            "Content-Type": "application/json"
-        }
-        body = {
-            "order": order_id,
-            "user": user_public_key,
-            "inputOrOutput": mode.value,
-            "amount": amount
-        }
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostRecurringWithdrawPriceResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostRecurringWithdrawPriceResponse(**content_raw.json())
-            return async_request()
-
-    @overload
-    def _post_recurring_deposit_price(self, sync: Literal[True], order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse: ...
-
-    @overload
-    def _post_recurring_deposit_price(self, sync: Literal[False], order_id: str, user_public_key: str, amount: int) -> Coroutine[None, None, PostRecurringDepositPriceResponse]: ...
-
-    def _post_recurring_deposit_price(self, sync: bool, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse | Coroutine[None, None, PostRecurringDepositPriceResponse]:
-        """
-            This function refers to the POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint, 
-            and it is used to deposit an amount to a price-based recurring order.
-
-            Parameters:
-                order_id: ID of the recurring order.
-                user_public_key: Public Key of the Owner wallet.
-                amount: amount to deposit.
-
-            Returns:
-                Deposit information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_recurring + "priceDeposit"
-        headers = {
-            "Content-Type": "application/json"
-        }
-        body = {
-            "order": order_id,
-            "user": user_public_key,
-            "amount": amount
-        }
-
-        # execute request
-        if sync:
-            try:
-                content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-            except HTTPError as e:
-                raise self._raise(e)
-            return PostRecurringDepositPriceResponse(**content_raw.json())
-        else:
-            async def async_request():
-                try:
-                    content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
-                except HTTPError as e:
-                    raise self._raise(e)
-                return PostRecurringDepositPriceResponse(**content_raw.json())
             return async_request()
 
     @overload

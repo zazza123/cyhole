@@ -117,10 +117,12 @@ class JupiterTokenTagType(CyholeParam):
     """Latest tokens added to Jupiter."""
     VERIFIED = "verified"
     """
-        A list of verified tokens, consisting of community-verified tokens 
-        via [catdetlist.jup.ag](https://catdetlist.jup.ag/) and the previous 
+        A list of verified tokens, consisting of community-verified tokens
+        via [catdetlist.jup.ag](https://catdetlist.jup.ag/) and the previous
         standard of Jupiter Strict.
     """
+    STOCKS = "stocks"
+    """Tokenised real-world stocks available on Jupiter."""
 
 class JupiterTokenCategory(CyholeParam):
     """
@@ -152,15 +154,6 @@ class JupiterRecurringType(CyholeParam):
     TIME = "time"
     """Recurring time-based orders."""
 
-class JupiterWithdrawMode(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's withdraw modes.
-    """
-    IN = "In"
-    """Withdraw in mode."""
-    OUT = "Out"
-    """Withdraw out mode."""
-
 class JupiterOrganicScore(CyholeParam):
     """
         Enum class to get the supported Jupiter's 
@@ -172,6 +165,16 @@ class JupiterOrganicScore(CyholeParam):
     """Tokens with medium organic score."""
     LOW = "low"
     """Tokens with low organic score."""
+
+class JupiterBroadcastFeeType(CyholeParam):
+    """
+        Enum class to get the supported Jupiter's broadcast fee type strategies
+        in the Swap v2 "**Order**" endpoint.
+    """
+    MAX_CAP = "maxCap"
+    """Treat the fee as a maximum cap; actual fee may be lower."""
+    EXACT_FEE = "exactFee"
+    """Use the exact fee amount specified."""
 
 class JupiterRouter(CyholeParam):
     """
@@ -186,55 +189,3 @@ class JupiterRouter(CyholeParam):
     OKX = "okx"
     """OKX router."""
 
-class JupiterShieldWarningType(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's shield warning types.
-    """
-    NOT_VERIFIED = "NOT_VERIFIED"
-    """Token is not verified."""
-    LOW_LIQUIDITY = "LOW_LIQUIDITY"
-    """Token has low liquidity."""
-    NOT_SELLABLE = "NOT_SELLABLE"
-    """Token is not sellable."""
-    LOW_ORGANIC_ACTIVITY = "LOW_ORGANIC_ACTIVITY"
-    """Token has low organic activity."""
-    HAS_MINT_AUTHORITY = "HAS_MINT_AUTHORITY"
-    """Token has mint authority enabled."""
-    HAS_FREEZE_AUTHORITY = "HAS_FREEZE_AUTHORITY"
-    """Token has freeze authority enabled."""
-    HAS_PERMANENT_DELEGATE = "HAS_PERMANENT_DELEGATE"
-    """Token has a permanent delegate."""
-    NEW_LISTING = "NEW_LISTING"
-    """Token is a new listing."""
-    VERY_LOW_TRADING_ACTIVITY = "VERY_LOW_TRADING_ACTIVITY"
-    """Token has very low trading activity."""
-    HIGH_SUPPLY_CONCENTRATION = "HIGH_SUPPLY_CONCENTRATION"
-    """Token has high supply concentration."""
-    NON_TRANSFERABLE = "NON_TRANSFERABLE"
-    """Token is non-transferable."""
-    MUTABLE_TRANSFER_FEES = "MUTABLE_TRANSFER_FEES"
-    """Token has mutable transfer fees."""
-    SUSPICIOUS_DEV_ACTIVITY = "SUSPICIOUS_DEV_ACTIVITY"
-    """Token has suspicious developer activity."""
-    SUSPICIOUS_TOP_HOLDER_ACTIVITY = "SUSPICIOUS_TOP_HOLDER_ACTIVITY"
-    """Token has suspicious top holder activity."""
-    HIGH_SINGLE_OWNERSHIP = "HIGH_SINGLE_OWNERSHIP"
-    """Token has high single ownership concentration."""
-
-class JupiterShieldWarningSeverity(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's shield warning severity levels.
-    """
-    INFO = "info"
-    """Informational severity level."""
-    WARNING = "warning"
-    """Warning severity level."""
-    CRITICAL = "critical"
-    """Critical severity level."""
-
-class JupiterShieldWarningSource(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's shield warning sources.
-    """
-    RUG_CHECK = "RugCheck"
-    """Warning source from RugCheck."""

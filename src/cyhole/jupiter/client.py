@@ -6,35 +6,27 @@ from ..jupiter.schema import (
     # Price API
     GetPriceResponse,
     # Swap API
-    GetQuoteParams,
-    GetQuoteResponse,
-    GetQuoteProgramIdLabelResponse,
-    PostSwapBody,
-    PostSwapResponse,
-    PostSwapInstructionsResponse,
+    GetSwapOrderParams,
+    GetSwapOrderResponse,
+    PostSwapExecuteBody,
+    PostSwapExecuteResponse,
+    GetSwapBuildParams,
+    GetSwapBuildResponse,
+    PostSwapSubmitBody,
+    PostSwapSubmitResponse,
     # Token API
     GetTokenSearchResponse,
     GetTokenTagResponse,
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
-    # Ultra API
-    GetUltraOrderBody,
-    GetUltraOrderResponse,
-    GetUltraHoldingsResponse,
-    GetUltraShieldResponse,
-    PostUltraExecuteOrderResponse,
-    # Trigger API
-    PostTriggerCreateOrderBody,
-    PostTriggerCreateOrderResponse,
-    PostTriggerExecuteResponse,
-    PostTriggerCancelOrderResponse,
-    GetTriggerOrdersResponse,
+    GetTokenVerifyCheckEligibilityResponse,
+    GetTokenVerifyCraftTxnResponse,
+    PostTokenVerifyExecuteBody,
+    PostTokenVerifyExecuteResponse,
     # Recurring API
     PostRecurringCreateOrderBody,
     PostRecurringCreateOrderResponse,
     GetRecurringOrdersResponse,
-    PostRecurringWithdrawPriceResponse,
-    PostRecurringDepositPriceResponse,
     PostRecurringCancelOrderResponse,
     PostRecurringExecuteResponse
 )
@@ -43,8 +35,7 @@ from ..jupiter.param import (
     JupiterTokenCategory,
     JupiterTokenInterval,
     JupiterOrderStatus,
-    JupiterRecurringType,
-    JupiterWithdrawMode
+    JupiterRecurringType
 )
 
 if TYPE_CHECKING:
@@ -61,40 +52,38 @@ class JupiterClient(APIClient):
 
     def get_price(self, address: list[str]) -> GetPriceResponse:
         """
-            Call the Jupiter's GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Price](https://developers.jup.ag/docs/price)** API endpoint for synchronous logic.
             All the API endpoint details are available on [`Jupiter._get_price`][cyhole.jupiter.interaction.Jupiter._get_price].
         """
         return self._interaction._get_price(True, address)
 
-    def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
+    def get_swap_order(self, params: GetSwapOrderParams) -> GetSwapOrderResponse:
         """
-            Call the Jupiter's GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
+            Call the Jupiter's GET **[Swap - Order](https://developers.jup.ag/docs/api-reference/swap/order)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_swap_order`][cyhole.jupiter.interaction.Jupiter._get_swap_order].
         """
-        return self._interaction._get_quote(True, input)
+        return self._interaction._get_swap_order(True, params)
 
-    def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
+    def post_swap_execute(self, body: PostSwapExecuteBody) -> PostSwapExecuteResponse:
         """
-            Call the Jupiter's GET **[Quote Program ID to Label](https://dev.jup.ag/api-reference/swap/program-id-to-label)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+            Call the Jupiter's POST **[Swap - Execute](https://developers.jup.ag/docs/api-reference/swap/execute)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_swap_execute`][cyhole.jupiter.interaction.Jupiter._post_swap_execute].
         """
-        return self._interaction._get_quote_program_id_label(True)
+        return self._interaction._post_swap_execute(True, body)
 
-    def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
+    def get_swap_build(self, params: GetSwapBuildParams) -> GetSwapBuildResponse:
         """
-            Call the Jupiter's POST **[Swap](https://dev.jup.ag/api-reference/swap/swap)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap]. 
-            Observe that this method is a wrapper around the `_post_swap` method with `with_instructions` set to `False`.
+            Call the Jupiter's GET **[Swap - Build](https://developers.jup.ag/docs/api-reference/swap/build)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_swap_build`][cyhole.jupiter.interaction.Jupiter._get_swap_build].
         """
-        return self._interaction._post_swap(True, body, False)
+        return self._interaction._get_swap_build(True, params)
 
-    def post_swap_instructions(self, body: PostSwapBody) -> PostSwapInstructionsResponse:
+    def post_swap_submit(self, body: PostSwapSubmitBody) -> PostSwapSubmitResponse:
         """
-            Call the Jupiter's POST **[Swap Instructions](https://station.jup.ag/docs/api/swap-instructions)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap]. 
-            Observe that this method is a wrapper around the `_post_swap` method with `with_instructions` set to `True`.
+            Call the Jupiter's POST **[Swap - Submit](https://developers.jup.ag/docs/swap)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_swap_submit`][cyhole.jupiter.interaction.Jupiter._post_swap_submit].
         """
-        return self._interaction._post_swap(True, body, True)
+        return self._interaction._post_swap_submit(True, body)
 
     def get_token_search(self, address: str | list[str]) -> GetTokenSearchResponse:
         """
@@ -117,76 +106,33 @@ class JupiterClient(APIClient):
         """
         return self._interaction._get_token_category(True, category, interval)
 
-    def get_token_recent(self) -> GetTokenRecentResponse:
+    def get_token_recent(self, limit: int | None = None) -> GetTokenRecentResponse:
         """
-            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for synchronous logic.
             All the API endpoint details are available on [`Jupiter._get_token_recent`][cyhole.jupiter.interaction.Jupiter._get_token_recent].
         """
-        return self._interaction._get_token_recent(True)
+        return self._interaction._get_token_recent(True, limit)
 
-    def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
+    def get_token_verify_check_eligibility(self, token_id: str) -> GetTokenVerifyCheckEligibilityResponse:
         """
-            Call the Jupiter's GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
+            Call the Jupiter's GET **[Token Verify - Check Eligibility](https://developers.jup.ag/docs/tokens/verification)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_check_eligibility`][cyhole.jupiter.interaction.Jupiter._get_token_verify_check_eligibility].
         """
-        return self._interaction._get_ultra_order(True, body)
+        return self._interaction._get_token_verify_check_eligibility(True, token_id)
 
-    def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
+    def get_token_verify_craft_txn(self, sender_address: str) -> GetTokenVerifyCraftTxnResponse:
         """
-            Call the Jupiter's POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
+            Call the Jupiter's GET **[Token Verify - Craft Transaction](https://developers.jup.ag/docs/tokens/verification)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_craft_txn`][cyhole.jupiter.interaction.Jupiter._get_token_verify_craft_txn].
         """
-        return self._interaction._post_ultra_execute_order(True, signed_transaction_id, request_id)
+        return self._interaction._get_token_verify_craft_txn(True, sender_address)
 
-    def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
+    def post_token_verify_execute(self, body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse:
         """
-            Call the Jupiter's GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_holdings`][cyhole.jupiter.interaction.Jupiter._get_ultra_holdings].
+            Call the Jupiter's POST **[Token Verify - Execute](https://developers.jup.ag/docs/tokens/verification)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
         """
-        return self._interaction._get_ultra_holdings(True, address)
-
-    def get_ultra_shield(self, mints: list[str]) -> GetUltraShieldResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_shield`][cyhole.jupiter.interaction.Jupiter._get_ultra_shield].
-        """
-        return self._interaction._get_ultra_shield(True, mints)
-
-    def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
-        """
-        return self._interaction._post_trigger_create_order(True, body)
-
-    def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_execute`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute].
-        """
-        return self._interaction._post_trigger_execute(True, signed_transaction_id, request_id)
-
-    def post_trigger_cancel_order(self, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
-        """
-        return self._interaction._post_trigger_cancel_order(True, user_public_key, orders, compute_unit_price)
-
-    def get_trigger_orders(
-        self,
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> GetTriggerOrdersResponse:
-        """
-            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
-        """
-        return self._interaction._get_trigger_orders(True, user_public_key, status, include_failed, input_token, output_token, page)
+        return self._interaction._post_token_verify_execute(True, body)
 
     def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
         """
@@ -201,27 +147,15 @@ class JupiterClient(APIClient):
         status: JupiterOrderStatus,
         recurring_type: JupiterRecurringType,
         include_failed: bool = False,
-        page: int = 1
+        page: int = 1,
+        input_mint: str | None = None,
+        output_mint: str | None = None
     ) -> GetRecurringOrdersResponse:
         """
-            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for synchronous logic.
             All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
         """
-        return self._interaction._get_recurring_orders(True, user_public_key, status, recurring_type, include_failed, page)
-
-    def post_recurring_withdraw_price(self, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse:
-        """
-            Call the Jupiter's POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
-        """
-        return self._interaction._post_recurring_withdraw_price(True, order_id, user_public_key, mode, amount)
-
-    def post_recurring_deposit_price(self, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse:
-        """
-            Call the Jupiter's POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
-        """
-        return self._interaction._post_recurring_deposit_price(True, order_id, user_public_key, amount)
+        return self._interaction._get_recurring_orders(True, user_public_key, status, recurring_type, include_failed, page, input_mint, output_mint)
 
     def post_recurring_cancel_order(self, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse:
         """
@@ -248,40 +182,38 @@ class JupiterAsyncClient(AsyncAPIClient):
 
     async def get_price(self, address: list[str]) -> GetPriceResponse:
         """
-            Call the Jupiter's GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Price](https://developers.jup.ag/docs/price)** API endpoint for asynchronous logic.
             All the API endpoint details are available on [`Jupiter._get_price`][cyhole.jupiter.interaction.Jupiter._get_price].
         """
         return await self._interaction._get_price(False, address)
 
-    async def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
+    async def get_swap_order(self, params: GetSwapOrderParams) -> GetSwapOrderResponse:
         """
-            Call the Jupiter's GET **[Quote](https://dev.jup.ag/api-reference/swap/quote)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_quote`][cyhole.jupiter.interaction.Jupiter._get_quote].
+            Call the Jupiter's GET **[Swap - Order](https://developers.jup.ag/docs/api-reference/swap/order)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_swap_order`][cyhole.jupiter.interaction.Jupiter._get_swap_order].
         """
-        return await self._interaction._get_quote(False, input)
+        return await self._interaction._get_swap_order(False, params)
 
-    async def get_quote_program_id_label(self) -> GetQuoteProgramIdLabelResponse:
+    async def post_swap_execute(self, body: PostSwapExecuteBody) -> PostSwapExecuteResponse:
         """
-            Call the Jupiter's GET **[Quote Program ID to Label](https://dev.jup.ag/api-reference/swap/program-id-to-label)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_quote_program_id_label`][cyhole.jupiter.interaction.Jupiter._get_quote_program_id_label].
+            Call the Jupiter's POST **[Swap - Execute](https://developers.jup.ag/docs/api-reference/swap/execute)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_swap_execute`][cyhole.jupiter.interaction.Jupiter._post_swap_execute].
         """
-        return await self._interaction._get_quote_program_id_label(False)
+        return await self._interaction._post_swap_execute(False, body)
 
-    async def post_swap(self, body: PostSwapBody) -> PostSwapResponse:
+    async def get_swap_build(self, params: GetSwapBuildParams) -> GetSwapBuildResponse:
         """
-            Call the Jupiter's POST **[Swap](https://dev.jup.ag/api-reference/swap/swap)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap].
-            Observe that this method is a wrapper around the `_post_swap` method with `with_instructions` set to `False`.
+            Call the Jupiter's GET **[Swap - Build](https://developers.jup.ag/docs/api-reference/swap/build)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_swap_build`][cyhole.jupiter.interaction.Jupiter._get_swap_build].
         """
-        return await self._interaction._post_swap(False, body, False)
+        return await self._interaction._get_swap_build(False, params)
 
-    async def post_swap_instructions(self, body: PostSwapBody) -> PostSwapInstructionsResponse:
+    async def post_swap_submit(self, body: PostSwapSubmitBody) -> PostSwapSubmitResponse:
         """
-            Call the Jupiter's POST **[Swap Instructions](https://station.jup.ag/docs/api/swap-instructions)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_swap`][cyhole.jupiter.interaction.Jupiter._post_swap].
-            Observe that this method is a wrapper around the `_post_swap` method with `with_instructions` set to `True`.
+            Call the Jupiter's POST **[Swap - Submit](https://developers.jup.ag/docs/swap)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_swap_submit`][cyhole.jupiter.interaction.Jupiter._post_swap_submit].
         """
-        return await self._interaction._post_swap(False, body, True)
+        return await self._interaction._post_swap_submit(False, body)
 
     async def get_token_search(self, address: str | list[str]) -> GetTokenSearchResponse:
         """
@@ -304,76 +236,33 @@ class JupiterAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_category(False, category, interval)
 
-    async def get_token_recent(self) -> GetTokenRecentResponse:
+    async def get_token_recent(self, limit: int | None = None) -> GetTokenRecentResponse:
         """
-            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint for asynchronous logic.
             All the API endpoint details are available on [`Jupiter._get_token_recent`][cyhole.jupiter.interaction.Jupiter._get_token_recent].
         """
-        return await self._interaction._get_token_recent(False)
+        return await self._interaction._get_token_recent(False, limit)
 
-    async def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
+    async def get_token_verify_check_eligibility(self, token_id: str) -> GetTokenVerifyCheckEligibilityResponse:
         """
-            Call the Jupiter's GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
+            Call the Jupiter's GET **[Token Verify - Check Eligibility](https://developers.jup.ag/docs/tokens/verification)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_check_eligibility`][cyhole.jupiter.interaction.Jupiter._get_token_verify_check_eligibility].
         """
-        return await self._interaction._get_ultra_order(False, body)
+        return await self._interaction._get_token_verify_check_eligibility(False, token_id)
 
-    async def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
+    async def get_token_verify_craft_txn(self, sender_address: str) -> GetTokenVerifyCraftTxnResponse:
         """
-            Call the Jupiter's POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
+            Call the Jupiter's GET **[Token Verify - Craft Transaction](https://developers.jup.ag/docs/tokens/verification)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._get_token_verify_craft_txn`][cyhole.jupiter.interaction.Jupiter._get_token_verify_craft_txn].
         """
-        return await self._interaction._post_ultra_execute_order(False, signed_transaction_id, request_id)
+        return await self._interaction._get_token_verify_craft_txn(False, sender_address)
 
-    async def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
+    async def post_token_verify_execute(self, body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse:
         """
-            Call the Jupiter's GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_holdings`][cyhole.jupiter.interaction.Jupiter._get_ultra_holdings].
+            Call the Jupiter's POST **[Token Verify - Execute](https://developers.jup.ag/docs/tokens/verification)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
         """
-        return await self._interaction._get_ultra_holdings(False, address)
-
-    async def get_ultra_shield(self, mints: list[str]) -> GetUltraShieldResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_shield`][cyhole.jupiter.interaction.Jupiter._get_ultra_shield].
-        """
-        return await self._interaction._get_ultra_shield(False, mints)
-
-    async def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Create Order](https://station.jup.ag/docs/api/trigger-api/create-order)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_create_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_create_order].
-        """
-        return await self._interaction._post_trigger_create_order(False, body)
-
-    async def post_trigger_execute(self, signed_transaction_id: str, request_id: str) -> PostTriggerExecuteResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Execute](https://station.jup.ag/docs/api/trigger-api/execute)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_execute`][cyhole.jupiter.interaction.Jupiter._post_trigger_execute].
-        """
-        return await self._interaction._post_trigger_execute(False, signed_transaction_id, request_id)
-
-    async def post_trigger_cancel_order(self, user_public_key: str, orders: str | list[str], compute_unit_price: str = 'auto') -> PostTriggerCancelOrderResponse:
-        """
-            Call the Jupiter's POST **[Trigger - Cancel Order](https://station.jup.ag/docs/api/trigger-api/cancel-order)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_trigger_cancel_order`][cyhole.jupiter.interaction.Jupiter._post_trigger_cancel_order].
-        """
-        return await self._interaction._post_trigger_cancel_order(False, user_public_key, orders, compute_unit_price)
-
-    async def get_trigger_orders(
-        self,
-        user_public_key: str,
-        status:  JupiterOrderStatus,
-        include_failed: bool = False,
-        input_token: str | None = None,
-        output_token: str | None = None,
-        page: int = 1
-    ) -> GetTriggerOrdersResponse:
-        """
-            Call the Jupiter's GET **[Trigger - Orders](https://dev.jup.ag/docs/api/trigger-api/get-trigger-orders)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_trigger_orders`][cyhole.jupiter.interaction.Jupiter._get_trigger_orders].
-        """
-        return await self._interaction._get_trigger_orders(False, user_public_key, status, include_failed, input_token, output_token, page)
+        return await self._interaction._post_token_verify_execute(False, body)
 
     async def post_recurring_create_order(self, body: PostRecurringCreateOrderBody) -> PostRecurringCreateOrderResponse:
         """
@@ -388,27 +277,15 @@ class JupiterAsyncClient(AsyncAPIClient):
         status: JupiterOrderStatus,
         recurring_type: JupiterRecurringType,
         include_failed: bool = False,
-        page: int = 1
+        page: int = 1,
+        input_mint: str | None = None,
+        output_mint: str | None = None
     ) -> GetRecurringOrdersResponse:
         """
-            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Recurring - Orders](https://dev.jup.ag/docs/api/recurring-api/get-recurring-orders)** API endpoint for asynchronous logic.
             All the API endpoint details are available on [`Jupiter._get_recurring_orders`][cyhole.jupiter.interaction.Jupiter._get_recurring_orders].
         """
-        return await self._interaction._get_recurring_orders(False, user_public_key, status, recurring_type, include_failed, page)
-
-    async def post_recurring_withdraw_price(self, order_id: str, user_public_key: str, mode: JupiterWithdrawMode, amount: int | None = None) -> PostRecurringWithdrawPriceResponse:
-        """
-            Call the Jupiter's POST **[Recurring - Withdraw Price](https://dev.jup.ag/docs/api/recurring-api/price-withdraw)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_recurring_withdraw_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_withdraw_price].
-        """
-        return await self._interaction._post_recurring_withdraw_price(False, order_id, user_public_key, mode, amount)
-
-    async def post_recurring_deposit_price(self, order_id: str, user_public_key: str, amount: int) -> PostRecurringDepositPriceResponse:
-        """
-            Call the Jupiter's POST **[Recurring - Deposit Price](https://dev.jup.ag/docs/api/recurring-api/price-deposit)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_recurring_deposit_price`][cyhole.jupiter.interaction.Jupiter._post_recurring_deposit_price].
-        """
-        return await self._interaction._post_recurring_deposit_price(False, order_id, user_public_key, amount)
+        return await self._interaction._get_recurring_orders(False, user_public_key, status, recurring_type, include_failed, page, input_mint, output_mint)
 
     async def post_recurring_cancel_order(self, order_id: str, user_public_key: str, recurring_type: JupiterRecurringType) -> PostRecurringCancelOrderResponse:
         """
