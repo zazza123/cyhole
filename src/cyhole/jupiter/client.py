@@ -23,12 +23,6 @@ from ..jupiter.schema import (
     GetTokenVerifyCraftTxnResponse,
     PostTokenVerifyExecuteBody,
     PostTokenVerifyExecuteResponse,
-    # Ultra API
-    GetUltraOrderBody,
-    GetUltraOrderResponse,
-    GetUltraHoldingsResponse,
-    GetUltraShieldResponse,
-    PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
     PostTriggerCreateOrderResponse,
@@ -148,34 +142,6 @@ class JupiterClient(APIClient):
             All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
         """
         return self._interaction._post_token_verify_execute(True, body)
-
-    def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
-        """
-        return self._interaction._get_ultra_order(True, body)
-
-    def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
-        """
-            Call the Jupiter's POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
-        """
-        return self._interaction._post_ultra_execute_order(True, signed_transaction_id, request_id)
-
-    def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_holdings`][cyhole.jupiter.interaction.Jupiter._get_ultra_holdings].
-        """
-        return self._interaction._get_ultra_holdings(True, address)
-
-    def get_ultra_shield(self, mints: list[str]) -> GetUltraShieldResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint for synchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_shield`][cyhole.jupiter.interaction.Jupiter._get_ultra_shield].
-        """
-        return self._interaction._get_ultra_shield(True, mints)
 
     def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
         """
@@ -354,34 +320,6 @@ class JupiterAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Jupiter._post_token_verify_execute`][cyhole.jupiter.interaction.Jupiter._post_token_verify_execute].
         """
         return await self._interaction._post_token_verify_execute(False, body)
-
-    async def get_ultra_order(self, body: GetUltraOrderBody) -> GetUltraOrderResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_order`][cyhole.jupiter.interaction.Jupiter._get_ultra_order].
-        """
-        return await self._interaction._get_ultra_order(False, body)
-
-    async def post_ultra_execute_order(self, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse:
-        """
-            Call the Jupiter's POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._post_ultra_execute_order`][cyhole.jupiter.interaction.Jupiter._post_ultra_execute_order].
-        """
-        return await self._interaction._post_ultra_execute_order(False, signed_transaction_id, request_id)
-
-    async def get_ultra_holdings(self, address: str) -> GetUltraHoldingsResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_holdings`][cyhole.jupiter.interaction.Jupiter._get_ultra_holdings].
-        """
-        return await self._interaction._get_ultra_holdings(False, address)
-
-    async def get_ultra_shield(self, mints: list[str]) -> GetUltraShieldResponse:
-        """
-            Call the Jupiter's GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint for asynchronous logic. 
-            All the API endpoint details are available on [`Jupiter._get_ultra_shield`][cyhole.jupiter.interaction.Jupiter._get_ultra_shield].
-        """
-        return await self._interaction._get_ultra_shield(False, mints)
 
     async def post_trigger_create_order(self, body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse:
         """

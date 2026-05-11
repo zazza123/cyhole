@@ -20,7 +20,7 @@ async def main() -> None:
     jupiter = Jupiter()
     async with jupiter.async_client as client:
         response = await client.get_price([JUP.address])
-        print("Current JUP/USDC:", response.data[JUP.address].price)
+        print("Current JUP/USD:", response.data[JUP.address].usd_price)
 
 asyncio.run(main())
 ```
@@ -123,3 +123,7 @@ The documentation follows the library's structure by providing all the technical
 | Limit Order - Open | `GET` | `get_limit_order_open` | `0.1.0` | `0.3.0` |
 | Limit Order - History | `GET` | `get_limit_order_history` | `0.1.0` | `0.3.0` |
 | Limit Order - Trade History | `GET` | `get_limit_order_trade_history` | `0.1.0` | `0.3.0` |
+| Ultra - Order | `GET` | `get_ultra_order` | `0.3.0` | `0.3.0` |
+| Ultra - Execute | `POST` | `post_ultra_execute_order` | `0.3.0` | `0.3.0` |
+| Ultra - Holdings | `GET` | `get_ultra_holdings` | `0.3.0` | `0.3.0` |
+| Ultra - Shield | `GET` | `get_ultra_shield` | `0.3.0` | `0.3.0` |

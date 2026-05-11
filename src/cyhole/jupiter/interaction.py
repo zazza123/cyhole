@@ -27,12 +27,6 @@ from ..jupiter.schema import (
     GetTokenVerifyCraftTxnResponse,
     PostTokenVerifyExecuteBody,
     PostTokenVerifyExecuteResponse,
-    # Ultra API
-    GetUltraOrderBody,
-    GetUltraOrderResponse,
-    GetUltraHoldingsResponse,
-    GetUltraShieldResponse,
-    PostUltraExecuteOrderResponse,
     # Trigger API
     PostTriggerCreateOrderBody,
     PostTriggerCreateOrderResponse,
@@ -167,11 +161,6 @@ class Jupiter(Interaction):
     def url_api_token(self) -> str:
         """Token API URL composed according to API tier"""
         return self.url_api_root + "/tokens/v2/"
-
-    @property
-    def url_api_ultra(self) -> str:
-        """Ultra API URL composed according to API tier"""
-        return self.url_api_root + "/ultra/v1/"
 
     def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
         """
@@ -583,116 +572,6 @@ class Jupiter(Interaction):
                     raise self._raise(e)
                 return PostTokenVerifyExecuteResponse(**content_raw.json())
             return async_request()
-
-    @overload
-    def _get_ultra_order(self, sync: Literal[True], body: GetUltraOrderBody) -> GetUltraOrderResponse: ...
-
-    @overload
-    def _get_ultra_order(self, sync: Literal[False], body: GetUltraOrderBody) -> Coroutine[None, None, GetUltraOrderResponse]: ...
-
-    def _get_ultra_order(self, sync: bool, body: GetUltraOrderBody) -> GetUltraOrderResponse | Coroutine[None, None, GetUltraOrderResponse]:
-        """
-            This function refers to the GET **[Ultra - Get Order](https://jupiter.mintlify.app/api-reference/ultra/order)** API endpoint, 
-            and it is used to create a swap order using the Jupiter Ultra API. This API was designed to facilitate 
-            the creation of a swap order without the need to use the `get_quote` endpoint. In fact, the Ultra API 
-            was created over the Swap API to provide a more direct way to create a swap order. This endpoint 
-            can be then combined with the `post_ultra_execute_order` endpoint to perform the swap.
-
-            Parameters:
-                body: input body containing all the parameters for the Ultra Order endpoint.
-
-            Returns:
-                Order information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_ultra + "order"
-
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraOrderResponse, 
-            params = body.model_dump(by_alias = True, exclude_defaults = True)
-        )
-
-    @overload
-    def _post_ultra_execute_order(self, sync: Literal[True], signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse: ...
-
-    @overload
-    def _post_ultra_execute_order(self, sync: Literal[False], signed_transaction_id: str, request_id: str) -> Coroutine[None, None, PostUltraExecuteOrderResponse]: ...
-
-    def _post_ultra_execute_order(self, sync: bool, signed_transaction_id: str, request_id: str) -> PostUltraExecuteOrderResponse | Coroutine[None, None, PostUltraExecuteOrderResponse]:
-        """
-            This function refers to the POST **[Ultra - Execute Order](https://jupiter.mintlify.app/api-reference/ultra/execute)** API endpoint, 
-            and it is used to execute a swap order created using the Jupiter Ultra API "GET Order" endpoint (`get_ultra_order`). 
-
-            First, it is required to initialize a swap order using the `get_ultra_order` endpoint. From the response, 
-            is possible to get the Request ID (`GetUltraOrderResponse.request_id`) and the transaction ID (`GetUltraOrderResponse.transaction_id`).
-            The transaction ID **must** be then signed by the payer walled to get the `signed_transaction_id` that can be then used
-            to execute the swap order.
-
-            Parameters:
-                signed_transaction_id: the transaction ID coming from the `get_ultra_order` response **signed** by the payer wallet.
-                request_id: the same request ID coming from the `get_ultra_order` response.
-
-            Returns:
-                Swap order execution information provided by Jupiter API.
-        """
-        # set params
-        url = self.url_api_ultra + "execute"
-        body = {
-            "signedTransaction": signed_transaction_id,
-            "requestId": request_id
-        }
-
-        # execute request
-        return self.api_return_model(sync, RequestType.POST.value, url, PostUltraExecuteOrderResponse, json = body)
-
-    @overload
-    def _get_ultra_holdings(self, sync: Literal[True], address: str) -> GetUltraHoldingsResponse: ...
-
-    @overload
-    def _get_ultra_holdings(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetUltraHoldingsResponse]: ...
-
-    def _get_ultra_holdings(self, sync: bool, address: str) -> GetUltraHoldingsResponse | Coroutine[None, None, GetUltraHoldingsResponse]:
-        """
-            This function refers to the GET **[Ultra - Holdings](https://jupiter.mintlify.app/api-reference/ultra/holdings)** API endpoint, 
-            and it is used to request for token balances of an account including token account information using the Jupiter Ultra API.
-
-            Parameters:
-                address: wallet address to get holdings for.
-
-            Returns:
-                Token holdings of the wallet including SOL balance and other tokens.
-        """
-        # set params
-        url = self.url_api_ultra + f"holdings/{address}"
-
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraHoldingsResponse)
-
-    @overload
-    def _get_ultra_shield(self, sync: Literal[True], mints: list[str]) -> GetUltraShieldResponse: ...
-
-    @overload
-    def _get_ultra_shield(self, sync: Literal[False], mints: list[str]) -> Coroutine[None, None, GetUltraShieldResponse]: ...
-
-    def _get_ultra_shield(self, sync: bool, mints: list[str]) -> GetUltraShieldResponse | Coroutine[None, None, GetUltraShieldResponse]:
-        """
-            This function refers to the GET **[Ultra - Shield](https://jupiter.mintlify.app/api-reference/ultra/shield)** API endpoint, 
-            and it is used to request token information and warnings for a list of mint addresses using the Jupiter Ultra API.
-
-            Parameters:
-                mints: list of token mint addresses to get warnings for.
-
-            Returns:
-                Token warnings information for the requested mint addresses.
-        """
-        # set params
-        url = self.url_api_ultra + "shield"
-        params = {
-            "mints": ",".join(mints)
-        }
-
-        # execute request
-        return self.api_return_model(sync, RequestType.GET.value, url, GetUltraShieldResponse, params = params)
 
     @overload
     def _post_trigger_create_order(self, sync: Literal[True], body: PostTriggerCreateOrderBody) -> PostTriggerCreateOrderResponse: ...
