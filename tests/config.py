@@ -62,6 +62,17 @@ class DexScreenerConfiguration(BaseModel):
     mock_folder: str = "dex_screener"
     """Folder where the mock responses are stored."""
 
+class RugcheckConfiguration(BaseModel):
+    """
+        Model in charge to manage the Rugcheck APIs.
+    """
+    mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
+    mock_folder: str = "rugcheck"
+    """Folder where the mock responses are stored."""
+    api_key: str | None = None
+    """Optional API key (Bearer token) for authenticated endpoints."""
+
 
 class TestConfiguration(BaseModel):
     """
@@ -78,6 +89,8 @@ class TestConfiguration(BaseModel):
     """Birdeye configuration."""
     dex_screener: DexScreenerConfiguration = DexScreenerConfiguration()
     """DexScreener configuration."""
+    rugcheck: RugcheckConfiguration = RugcheckConfiguration()
+    """Rugcheck configuration."""
     jupiter: JupiterConfiguration = JupiterConfiguration()
     """Jupiter configuration."""
     solana_fm: SolanaFMConfiguration = SolanaFMConfiguration()
@@ -116,6 +129,11 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     # dex_screener
     test_config.dex_screener.mock_response = config.getboolean("dex_screener", "mock_response", fallback = test_config.dex_screener.mock_response)
     test_config.dex_screener.mock_folder = config.get("dex_screener", "mock_folder", fallback = test_config.dex_screener.mock_folder)
+
+    # rugcheck
+    test_config.rugcheck.mock_response = config.getboolean("rugcheck", "mock_response", fallback = test_config.rugcheck.mock_response)
+    test_config.rugcheck.mock_folder = config.get("rugcheck", "mock_folder", fallback = test_config.rugcheck.mock_folder)
+    test_config.rugcheck.api_key = config.get("rugcheck", "api_key", fallback = test_config.rugcheck.api_key)
 
     # birdeye
     test_config.birdeye.mock_response_public = config.getboolean("birdeye", "mock_response_public", fallback = test_config.birdeye.mock_response_public)

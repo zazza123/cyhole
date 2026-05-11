@@ -1,0 +1,18 @@
+[
+    {
+        "id": "2d001e26-9ee7-4278-97dc-48f3d3a360f3",
+        "size": 998,
+        "activityType": "transfer",
+        "totalAmount": 384569366889871392,
+        "numActiveAccounts": 998,
+        "simple": false
+    },
+    {
+        "id": "2df7dccf-7504-4070-90bd-0edac5b3fc7e",
+        "size": 48,
+        "activityType": "transfer",
+        "totalAmount": 28954737171604569,
+        "numActiveAccounts": 48,
+        "simple": false
+    }
+]

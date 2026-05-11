@@ -1,0 +1,60 @@
+[
+    {
+        "mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+        "tokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+        "creator": "9AhKqLR67hwapvG8SA2JFXaCshXc9nALJjpKaHZrsbkw",
+        "creatorBalance": 14608186413,
+        "token": {
+            "mintAuthority": null,
+            "supply": 8799473520399442134,
+            "decimals": 5,
+            "isInitialized": true,
+            "freezeAuthority": null
+        },
+        "token_extensions": null,
+        "tokenMeta": {
+            "name": "Bonk",
+            "symbol": "Bonk",
+            "uri": "https://arweave.net/QPC6FYdUn-3V8ytFNuoCS85S2tHAuiDblh6u3CIZLsw",
+            "mutable": true,
+            "updateAuthority": "9AhKqLR67hwapvG8SA2JFXaCshXc9nALJjpKaHZrsbkw"
+        },
+        "topHolders": [],
+        "freezeAuthority": null,
+        "mintAuthority": null,
+        "risks": [
+            {
+                "name": "Mutable metadata",
+                "value": "",
+                "description": "Token metadata can be changed by the owner",
+                "score": 100,
+                "level": "warn"
+            }
+        ],
+        "score": 101,
+        "score_normalised": 7,
+        "fileMeta": {
+            "description": "",
+            "name": "Bonk",
+            "symbol": "Bonk",
+            "image": "https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I"
+        },
+        "lockerOwners": {},
+        "lockers": {},
+        "lockerScanStatus": "none",
+        "markets": [],
+        "totalMarketLiquidity": 0.0,
+        "totalStableLiquidity": 0.0,
+        "totalLPProviders": 0,
+        "totalHolders": 1008383,
+        "price": 0.0000075,
+        "rugged": false,
+        "tokenType": "",
+        "transferFee": {
+            "pct": 0,
+            "maxAmount": 0,
+            "authority": "11111111111111111111111111111111"
+        },
+        "knownAccounts": {}
+    }
+]
