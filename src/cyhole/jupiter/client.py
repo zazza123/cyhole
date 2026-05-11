@@ -59,12 +59,12 @@ class JupiterClient(APIClient):
         super().__init__(interaction, headers)
         self._interaction: Jupiter = self._interaction
 
-    def get_price(self, address: list[str]) -> GetPriceResponse:
+    def get_price(self, address: list[str], vs_address: str | None = None) -> GetPriceResponse:
         """
-            Call the Jupiter's GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint for synchronous logic. 
+            Call the Jupiter's GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint for synchronous logic.
             All the API endpoint details are available on [`Jupiter._get_price`][cyhole.jupiter.interaction.Jupiter._get_price].
         """
-        return self._interaction._get_price(True, address)
+        return self._interaction._get_price(True, address, vs_address)
 
     def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
         """
@@ -246,12 +246,12 @@ class JupiterAsyncClient(AsyncAPIClient):
         super().__init__(interaction, headers)
         self._interaction: Jupiter = self._interaction
 
-    async def get_price(self, address: list[str]) -> GetPriceResponse:
+    async def get_price(self, address: list[str], vs_address: str | None = None) -> GetPriceResponse:
         """
-            Call the Jupiter's GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint for asynchronous logic. 
+            Call the Jupiter's GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint for asynchronous logic.
             All the API endpoint details are available on [`Jupiter._get_price`][cyhole.jupiter.interaction.Jupiter._get_price].
         """
-        return await self._interaction._get_price(False, address)
+        return await self._interaction._get_price(False, address, vs_address)
 
     async def get_quote(self, input: GetQuoteParams) -> GetQuoteResponse:
         """

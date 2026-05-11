@@ -37,7 +37,7 @@ from cyhole.jupiter.schema import (
 )
 from cyhole.jupiter.param import JupiterSwapDex, JupiterSwapMode, JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType, JupiterWithdrawMode
 from cyhole.jupiter.exception import JupiterNoRouteFoundError, JupiterException, JupiterComputeAmountThresholdError
-from cyhole.core.token.solana import WSOL, JUP, USDC
+from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
 from cyhole.core.token.ethereum import WETH
 from cyhole.core.exception import ParamUnknownError
 

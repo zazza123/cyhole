@@ -1,4 +1,3 @@
-from datetime import datetime
 from requests.exceptions import HTTPError
 from typing import Any, Coroutine, overload, Literal, Type
 
@@ -8,7 +7,6 @@ from ..jupiter.client import JupiterClient, JupiterAsyncClient
 from ..jupiter.schema import (
     JupiterHTTPError,
     # Price API
-    GetPriceData,
     GetPriceResponse,
     # Swap API
     GetQuoteParams,
@@ -184,48 +182,48 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_price(self, sync: Literal[True], address: list[str]) -> GetPriceResponse: ...
+    def _get_price(self, sync: Literal[True], address: list[str], vs_address: str | None = None) -> GetPriceResponse: ...
 
     @overload
-    def _get_price(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetPriceResponse]: ...
+    def _get_price(self, sync: Literal[False], address: list[str], vs_address: str | None = None) -> Coroutine[None, None, GetPriceResponse]: ...
 
-    def _get_price(self, sync: bool, address: list[str]) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
+    def _get_price(self, sync: bool, address: list[str], vs_address: str | None = None) -> GetPriceResponse | Coroutine[None, None, GetPriceResponse]:
         """
-            This function refers to the GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint, 
+            This function refers to the GET **[Price](https://dev.jup.ag/api-reference/price/v3/price)** API endpoint,
             and it is used to get the current price of a list of tokens on Solana chain from [Jupiter Swap](https://jup.ag).
 
-            The API returns the unit buy price for the tokens according to the value of `USDC` token. 
+            The API returns the unit buy price for the tokens according to the value of `USDC` token.
 
             !!! info
-                Observe that when the token address or comparison token address are not found, 
+                Observe that when the token address or comparison token address are not found,
                 the response provided will have a `data` object with the token address as key and
                 the value will be `None`.
 
             Parameters:
                 address: list of tokens addresses to get the price.
                     For example, `So11111111111111111111111111111111111111112`.
+                vs_address: optional token address to use as comparison token instead of `USDC`.
+                    When provided, the response will include the comparison token with price `1.0`.
 
             Returns:
                 tokens' prices.
         """
 
         # set params
-        params = {
+        params: dict[str, str] = {
             "ids": ",".join(address)
         }
+        if vs_address is not None:
+            params["vsToken"] = vs_address
 
         # execute request
         if sync:
             content_raw = self.client.api(RequestType.GET.value, self.url_api_price, params = params)
-            json_data = content_raw.json()
-            data = {str(k): GetPriceData(**v) for k, v in json_data["data"].items()}
-            return GetPriceResponse(data = data, time_unix = json_data.get("time_unix", int(datetime.now().timestamp())))
+            return GetPriceResponse.model_validate(content_raw.json())
         else:
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, self.url_api_price, params = params)
-                json_data = content_raw.json()
-                data = {str(k): GetPriceData(**v) for k, v in json_data["data"].items()}
-                return GetPriceResponse(data = data, time_unix = json_data.get("time_unix", int(datetime.now().timestamp())))
+                return GetPriceResponse.model_validate(content_raw.json())
             return async_request()
 
     @overload

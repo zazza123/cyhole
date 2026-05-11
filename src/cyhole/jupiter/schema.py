@@ -119,7 +119,7 @@ class GetPriceData(BaseModel):
     id: str
     """Chain address of the token."""
 
-    price: float = Field(alias = "usdPrice")
+    price: float
     """The price of the token compared to the `USDC` token."""
 
     extra_info: None | GetPriceExtraInfo = Field(default = None, alias = "extraInfo")
