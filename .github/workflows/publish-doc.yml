@@ -25,7 +25,7 @@ jobs:
 
       # set up environment
       - name: setup python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
@@ -46,13 +46,7 @@ jobs:
 
       # setup git bot credentials
       - run: git config user.name github-actions[bot]
-      - run: git config user.email github-actions[bot]@users.noreply.github.com
+      - run: git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
       - name: deploy documentation
         run: mkdocs gh-deploy --force
-      
-      # check workflow output
-      - name: dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
