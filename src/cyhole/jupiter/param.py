@@ -117,10 +117,12 @@ class JupiterTokenTagType(CyholeParam):
     """Latest tokens added to Jupiter."""
     VERIFIED = "verified"
     """
-        A list of verified tokens, consisting of community-verified tokens 
-        via [catdetlist.jup.ag](https://catdetlist.jup.ag/) and the previous 
+        A list of verified tokens, consisting of community-verified tokens
+        via [catdetlist.jup.ag](https://catdetlist.jup.ag/) and the previous
         standard of Jupiter Strict.
     """
+    STOCKS = "stocks"
+    """Tokenised real-world stocks available on Jupiter."""
 
 class JupiterTokenCategory(CyholeParam):
     """

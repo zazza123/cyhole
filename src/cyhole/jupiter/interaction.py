@@ -23,6 +23,10 @@ from ..jupiter.schema import (
     GetTokenTagResponse,
     GetTokenCategoryResponse,
     GetTokenRecentResponse,
+    GetTokenVerifyCheckEligibilityResponse,
+    GetTokenVerifyCraftTxnResponse,
+    PostTokenVerifyExecuteBody,
+    PostTokenVerifyExecuteResponse,
     # Ultra API
     GetUltraOrderBody,
     GetUltraOrderResponse,
@@ -458,30 +462,134 @@ class Jupiter(Interaction):
             return async_request()
 
     @overload
-    def _get_token_recent(self, sync: Literal[True]) -> GetTokenRecentResponse: ...
+    def _get_token_recent(self, sync: Literal[True], limit: int | None = None) -> GetTokenRecentResponse: ...
 
     @overload
-    def _get_token_recent(self, sync: Literal[False]) -> Coroutine[None, None, GetTokenRecentResponse]: ...
+    def _get_token_recent(self, sync: Literal[False], limit: int | None = None) -> Coroutine[None, None, GetTokenRecentResponse]: ...
 
-    def _get_token_recent(self, sync: bool) -> GetTokenRecentResponse | Coroutine[None, None, GetTokenRecentResponse]:
+    def _get_token_recent(self, sync: bool, limit: int | None = None) -> GetTokenRecentResponse | Coroutine[None, None, GetTokenRecentResponse]:
         """
-            This function refers to the GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint, 
-            and it is used to retrieved the list of new tokens in the last 30 minutes.
+            This function refers to the GET **[Token Recent](https://dev.jup.ag/api-reference/tokens/v2/recent)** API endpoint,
+            and it is used to retrieve the list of recently created tokens with their first pool information.
+
+            Parameters:
+                limit: maximum number of tokens to return. API defaults to `30` when not provided.
 
             Returns:
-                List of Jupiter's tokens list.
+                List of Jupiter's recently created tokens.
         """
         # set params
         url = self.url_api_token + "recent"
+        params = {}
+        if limit is not None:
+            params["limit"] = limit
 
         # execute request
         if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
             return GetTokenRecentResponse(tokens = content_raw.json())
         else:
             async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetTokenRecentResponse(tokens = content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_verify_check_eligibility(self, sync: Literal[True], token_id: str) -> GetTokenVerifyCheckEligibilityResponse: ...
+
+    @overload
+    def _get_token_verify_check_eligibility(self, sync: Literal[False], token_id: str) -> Coroutine[None, None, GetTokenVerifyCheckEligibilityResponse]: ...
+
+    def _get_token_verify_check_eligibility(self, sync: bool, token_id: str) -> GetTokenVerifyCheckEligibilityResponse | Coroutine[None, None, GetTokenVerifyCheckEligibilityResponse]:
+        """
+            This function refers to the GET **[Token Verify - Check Eligibility](https://developers.jup.ag/docs/tokens/verification)** API endpoint,
+            and it is used to determine whether a token is eligible for express verification on Jupiter.
+
+            Parameters:
+                token_id: mint address of the token to check.
+
+            Returns:
+                Eligibility status indicating whether verification and metadata updates are permitted.
+
+            Raises:
+                JupiterException: if the API returns an error.
+        """
+        url = self.url_api_token + "verify/express/check-eligibility"
+        params = {"tokenId": token_id}
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenVerifyCheckEligibilityResponse, params = params)
+
+    @overload
+    def _get_token_verify_craft_txn(self, sync: Literal[True], sender_address: str) -> GetTokenVerifyCraftTxnResponse: ...
+
+    @overload
+    def _get_token_verify_craft_txn(self, sync: Literal[False], sender_address: str) -> Coroutine[None, None, GetTokenVerifyCraftTxnResponse]: ...
+
+    def _get_token_verify_craft_txn(self, sync: bool, sender_address: str) -> GetTokenVerifyCraftTxnResponse | Coroutine[None, None, GetTokenVerifyCraftTxnResponse]:
+        """
+            This function refers to the GET **[Token Verify - Craft Transaction](https://developers.jup.ag/docs/tokens/verification)** API endpoint,
+            and it is used to obtain an unsigned transaction for the 1000 JUP express verification payment.
+
+            Parameters:
+                sender_address: wallet address that will sign and submit the payment transaction.
+
+            Returns:
+                Unsigned transaction details including the base64-encoded transaction and a `request_id`
+                required by the execute step.
+
+            Raises:
+                JupiterException: if the API returns an error.
+        """
+        url = self.url_api_token + "verify/express/craft-txn"
+        params = {"senderAddress": sender_address}
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenVerifyCraftTxnResponse, params = params)
+
+    @overload
+    def _post_token_verify_execute(self, sync: Literal[True], body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse: ...
+
+    @overload
+    def _post_token_verify_execute(self, sync: Literal[False], body: PostTokenVerifyExecuteBody) -> Coroutine[None, None, PostTokenVerifyExecuteResponse]: ...
+
+    def _post_token_verify_execute(self, sync: bool, body: PostTokenVerifyExecuteBody) -> PostTokenVerifyExecuteResponse | Coroutine[None, None, PostTokenVerifyExecuteResponse]:
+        """
+            This function refers to the POST **[Token Verify - Execute](https://developers.jup.ag/docs/tokens/verification)** API endpoint,
+            and it is used to submit a signed verification transaction and project details to complete the express verification flow.
+
+            Parameters:
+                body: the body containing the signed transaction, request ID, sender address, token mint,
+                    Twitter handle, description, and optional token metadata.
+
+            Returns:
+                Verification execution result including submission status and on-chain transaction signature.
+
+            Raises:
+                JupiterException: if the API returns an error.
+        """
+        url = self.url_api_token + "verify/express/execute"
+        headers = {"Content-Type": "application/json"}
+
+        if sync:
+            try:
+                content_raw = self.client.api(
+                    type = RequestType.POST.value,
+                    url = url,
+                    headers = headers,
+                    json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                )
+            except HTTPError as e:
+                raise self._raise(e)
+            return PostTokenVerifyExecuteResponse(**content_raw.json())
+        else:
+            async def async_request():
+                try:
+                    content_raw = await self.async_client.api(
+                        type = RequestType.POST.value,
+                        url = url,
+                        headers = headers,
+                        json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
+                    )
+                except HTTPError as e:
+                    raise self._raise(e)
+                return PostTokenVerifyExecuteResponse(**content_raw.json())
             return async_request()
 
     @overload
