@@ -15,7 +15,6 @@ from ..dex_screener.schema import (
     GetTokenPairsResponse,
     GetSearchResponse,
 )
-from ..dex_screener.exception import DexScreenerException
 
 
 class DexScreener(Interaction):
