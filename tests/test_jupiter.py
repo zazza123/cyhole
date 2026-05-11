@@ -30,8 +30,7 @@ from cyhole.jupiter.schema import (
     PostRecurringCancelOrderResponse
 )
 from cyhole.jupiter.param import JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType
-from cyhole.jupiter.exception import JupiterException
-from cyhole.core.token.solana import WSOL, JUP, USDC, BONK
+from cyhole.core.token.solana import WSOL, JUP, USDC
 from cyhole.core.token.ethereum import WETH
 
 # load test config
