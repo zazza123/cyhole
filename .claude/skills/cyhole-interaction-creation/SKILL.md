@@ -1,5 +1,5 @@
 ---
-name: cyhole-new-interaction-creation
+name: cyhole-interaction-creation
 description: >
   Use this skill when implementing a new crypto API Interaction in the cyhole library.
   Trigger whenever the user says "add a new interaction", "implement [API name] interaction",
