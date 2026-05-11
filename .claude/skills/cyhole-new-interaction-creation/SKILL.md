@@ -1,5 +1,5 @@
 ---
-name: create-new-interaction
+name: cyhole-new-interaction-creation
 description: >
   Use this skill when implementing a new crypto API Interaction in the cyhole library.
   Trigger whenever the user says "add a new interaction", "implement [API name] interaction",
@@ -266,7 +266,16 @@ For each endpoint, you need a real or representative JSON response saved to:
 
 Naming: `{endpointMethodName}` = the public client method name in camelCase, e.g. `getPrice_default.json`.
 
-If you cannot fetch live data (API key required, offline, etc.), construct a minimal valid JSON
+**If the API requires no authentication**, generate mock files directly from live API responses on the first test run:
+
+1. In `tests/test.ini` set in `[global]`: `mock_file_overwrite = True`
+2. In `tests/test.ini` set in `[{name}]`: `mock_response = False`
+3. Run `pytest tests/test_{name}.py -v` — tests hit the real API and store responses as JSON fixtures
+4. Reset `mock_file_overwrite = False` in `[global]` for subsequent runs
+
+This ensures mock files contain actual latest API responses, not hand-crafted approximations.
+
+**If the API requires authentication** (or live calls are not possible), construct a minimal valid JSON
 that matches the response schema. Every field in the Pydantic model must appear in the mock.
 
 ### `tests/config.py` — add configuration class
