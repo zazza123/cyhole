@@ -125,5 +125,11 @@ The documentation follows the library's structure by providing all the technical
 | Limit Order - Trade History | `GET` | `get_limit_order_trade_history` | `0.1.0` | `0.3.0` |
 | Ultra - Order | `GET` | `get_ultra_order` | `0.3.0` | `0.3.0` |
 | Ultra - Execute | `POST` | `post_ultra_execute_order` | `0.3.0` | `0.3.0` |
+| Recurring - Create Order | `POST` | [`post_recurring_create_order`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_recurring_create_order) | `0.3.0` | - |
+| Recurring - Orders | `GET` | [`get_recurring_orders`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._get_recurring_orders) | `0.3.0` | - |
+| Recurring - Withdraw Price | `POST` | `post_recurring_withdraw_price` | `0.3.0` | `0.3.0` |
+| Recurring - Deposit Price | `POST` | `post_recurring_deposit_price` | `0.3.0` | `0.3.0` |
+| Recurring - Cancel Order | `POST` | [`post_recurring_cancel_order`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_recurring_cancel_order) | `0.3.0` | - |
+| Recurring - Execute | `POST` | [`post_recurring_execute`](../jupiter/interaction.md#cyhole.jupiter.Jupiter._post_recurring_execute) | `0.3.0` | - |
 | Ultra - Holdings | `GET` | `get_ultra_holdings` | `0.3.0` | `0.3.0` |
 | Ultra - Shield | `GET` | `get_ultra_shield` | `0.3.0` | `0.3.0` |

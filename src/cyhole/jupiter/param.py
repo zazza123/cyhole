@@ -154,15 +154,6 @@ class JupiterRecurringType(CyholeParam):
     TIME = "time"
     """Recurring time-based orders."""
 
-class JupiterWithdrawMode(CyholeParam):
-    """
-        Enum class to get the supported Jupiter's withdraw modes.
-    """
-    IN = "In"
-    """Withdraw in mode."""
-    OUT = "Out"
-    """Withdraw out mode."""
-
 class JupiterOrganicScore(CyholeParam):
     """
         Enum class to get the supported Jupiter's 

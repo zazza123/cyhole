@@ -1596,22 +1596,6 @@ class GetRecurringOrdersResponse(BaseModel):
     total_pages: int = Field(alias = "totalPages")
     """Total number of pages."""
 
-# classes used on POST "Recurring - Withdraw Price" endpoint
-class PostRecurringWithdrawPriceResponse(PostRecurringTransactionResponse):
-    """
-        Model refering to the response schema of the POST 
-        "**Recurring - Withdraw Price**" endpoint from Jupiter API.
-    """
-    pass
-
-# classes used on POST "Recurring - Deposit Price" endpoint
-class PostRecurringDepositPriceResponse(PostRecurringTransactionResponse):
-    """
-        Model refering to the response schema of the POST 
-        "**Recurring - Deposit Price**" endpoint from Jupiter API.
-    """
-    pass
-
 # classes used on POST "Recurring - Cancel Order" endpoint
 class PostRecurringCancelOrderResponse(PostRecurringTransactionResponse):
     """
