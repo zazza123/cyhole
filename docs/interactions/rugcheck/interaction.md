@@ -1,3 +1,6 @@
 # Interaction
 
-::: cyhole.rugcheck.interaction
+::: cyhole.rugcheck.Rugcheck
+    options:
+        filters:
+            - "^_"
