@@ -102,6 +102,8 @@ from .holder import (
     GetHolderProfileToken,
     GetHolderProfileData,
     GetHolderProfileResponse,
+    GetTokenHolderPositionItem,
+    GetTokenHolderPositionsResponse,
 )
 from .wallet import (
     GetWalletSupportedNetworksResponse,
@@ -197,5 +199,7 @@ __all__ = [
     "GetHolderProfileToken",
     "GetHolderProfileData",
     "GetHolderProfileResponse",
+    "GetTokenHolderPositionItem",
+    "GetTokenHolderPositionsResponse",
     "GetWalletSupportedNetworksResponse",
 ]

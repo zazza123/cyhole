@@ -46,6 +46,7 @@ from ..birdeye.schema import (
     PostTokenHolderBatchResponse,
     GetHolderDistributionResponse,
     GetHolderProfileResponse,
+    GetTokenHolderPositionsResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1310,6 +1311,105 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetHolderProfileResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_holder_positions(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        labels: str | None = None,
+        order_type: str = BirdeyeOrder.DESCENDING.value,
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetTokenHolderPositionsResponse: ...
+
+    @overload
+    def _get_token_holder_positions(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        labels: str | None = None,
+        order_type: str = BirdeyeOrder.DESCENDING.value,
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetTokenHolderPositionsResponse]: ...
+
+    def _get_token_holder_positions(
+        self,
+        sync: bool,
+        token_address: str,
+        labels: str | None = None,
+        order_type: str = BirdeyeOrder.DESCENDING.value,
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetTokenHolderPositionsResponse | Coroutine[None, None, GetTokenHolderPositionsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Positions](https://docs.birdeye.so/reference/get-token-v1-holder-positions)** and is used
+            to retrieve a paginated list of wallet positions for a given token, optionally filtered
+            by Birdeye holder tags. Each entry describes the wallet's current holding, percent of
+            supply, average buy price, cumulative buy/sell counts and volumes (both in token UI
+            units and USD), profit-and-loss in USD, and the timestamp of its first observed trade.
+            Useful for drilling from a token down to its individual notable holders / traders.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+                Bundler-tag data may exhibit a short delay versus the other tags per the API docs.
+
+            Parameters:
+                token_address: contract address of the SPL token whose holder positions must be listed.
+                labels: comma-separated list of holder tags (`bundler`, `sniper`, `insider`, `dev`,
+                    `smart_trader`) to restrict the result to wallets carrying at least one of the
+                    tags; `None` returns all wallets regardless of tags.
+                order_type: ascending or descending order on the underlying `amount` sort field
+                    (the only metric the API supports today). Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `desc`.
+                ui_amount_mode: how to format scaled-UI-amount token figures. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`raw`).
+                include_zero_balance: when `True` (the API default) wallets with zero current balance
+                    are kept in the result; set to `False` to exclude them. `None` defers to the
+                    server default.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                limit: number of records to return. Default behaviour: `50`.
+
+            Returns:
+                paginated list of per-wallet positions decoded as
+                [`GetTokenHolderPositionsResponse`][cyhole.birdeye.schema.GetTokenHolderPositionsResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeOrder.check(order_type)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_token_v1 + "holder-positions"
+        params = {
+            "token_address": token_address,
+            "labels": labels,
+            "sort_by": "amount",
+            "order_type": order_type,
+            "ui_amount_mode": ui_amount_mode,
+            "include_zero_balance": str(include_zero_balance).lower() if include_zero_balance is not None else None,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetTokenHolderPositionsResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetTokenHolderPositionsResponse(**content_raw.json())
             return async_request()
 
     @overload

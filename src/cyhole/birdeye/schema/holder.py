@@ -295,3 +295,53 @@ class GetHolderProfileResponse(BaseModel):
     """
     data: GetHolderProfileData
     success: bool
+
+
+# classes used on GET "Token - Holder Positions" endpoint
+class GetTokenHolderPositionItem(BaseModel):
+    """
+        Single per-wallet position entry returned by the v1 Token - Holder Positions endpoint.
+
+        Numeric fields are returned by Birdeye as strings to preserve precision.
+
+        Attributes:
+            wallet_address: wallet that holds the position.
+            labels: list of Birdeye holder tags attached to the wallet (e.g. `bundler`, `sniper`,
+                `insider`, `dev`, `smart_trader`); empty when no tags are assigned.
+            hold_amount: current balance of the wallet in the token, in UI units (string).
+            percent_of_supply: current balance expressed as a percent (`[0, 100]`) of total supply.
+            avg_buy_price: volume-weighted average buy price across all of the wallet's buy trades, in USD (string).
+            buy_count: number of buy trades executed by the wallet on the token over the lookup window.
+            buy_volume: cumulative buy volume in the token UI units (string).
+            buy_volume_usd: cumulative buy volume in USD (string).
+            sell_count: number of sell trades executed by the wallet on the token over the lookup window.
+            sell_volume: cumulative sell volume in the token UI units (string).
+            sell_volume_usd: cumulative sell volume in USD (string).
+            pnl: cumulative profit-and-loss for this wallet on the token, in USD (string).
+            first_trade_at: ISO-8601 timestamp of the wallet's first observed trade on the token.
+    """
+    wallet_address: str
+    labels: list[str] = []
+    hold_amount: str
+    percent_of_supply: float
+    avg_buy_price: str
+    buy_count: int
+    buy_volume: str
+    buy_volume_usd: str
+    sell_count: int
+    sell_volume: str
+    sell_volume_usd: str
+    pnl: str
+    first_trade_at: str
+
+class GetTokenHolderPositionsResponse(BaseModel):
+    """
+        Model used to represent the **Token - Holder Positions** endpoint from birdeye API.
+
+        Attributes:
+            data: paginated list of per-wallet position entries; the API returns the list directly
+                under `data` (no wrapping `items` key).
+            success: `True` when the API call completed without errors.
+    """
+    data: list[GetTokenHolderPositionItem]
+    success: bool
