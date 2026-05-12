@@ -9,6 +9,8 @@ from cyhole.birdeye import Birdeye
 from cyhole.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame, BirdeyeChain
 from cyhole.birdeye.schema import (
     GetTokenListResponse,
+    GetV3TokenListQuery,
+    GetV3TokenListResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -101,6 +103,48 @@ class TestBirdeyePublic:
 
         # actual test
         assert isinstance(response, GetTokenListResponse)
+
+    def test_get_v3_token_list_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - List (V3)"
+            for synchronous logic.
+
+            Mock Response File: get_v3_token_list.json
+        """
+        mock_file_name = "get_v3_token_list"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenListResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # execute request
+        response = self.birdeye.client.get_v3_token_list(GetV3TokenListQuery(limit = 1))
+
+        # actual test
+        assert isinstance(response, GetV3TokenListResponse)
+
+        # store request (only not mock)
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_token_list_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - List (V3)"
+            for asynchronous logic.
+
+            Mock Response File: get_v3_token_list.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_list"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenListResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_token_list(GetV3TokenListQuery(limit = 1))
+
+        assert isinstance(response, GetV3TokenListResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """

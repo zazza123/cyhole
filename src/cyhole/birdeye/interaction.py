@@ -15,10 +15,13 @@ from ..birdeye.param import (
     BirdeyeHourTimeFrame,
     BirdeyeTradeType,
     BirdeyeAddressType,
-    BirdeyeUIAmountMode
+    BirdeyeUIAmountMode,
+    BirdeyeV3TokenListSortBy
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
+    GetV3TokenListQuery,
+    GetV3TokenListResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -198,6 +201,67 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetTokenListResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_list(self, sync: Literal[True], query: GetV3TokenListQuery | None = None) -> GetV3TokenListResponse: ...
+
+    @overload
+    def _get_v3_token_list(self, sync: Literal[False], query: GetV3TokenListQuery | None = None) -> Coroutine[None, None, GetV3TokenListResponse]: ...
+
+    def _get_v3_token_list(
+        self,
+        sync: bool,
+        query: GetV3TokenListQuery | None = None
+    ) -> GetV3TokenListResponse | Coroutine[None, None, GetV3TokenListResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - List (V3)](https://docs.birdeye.so/reference/get-defi-v3-token-list)** and is used
+            to retrieve a paginated ranked list of tokens on the selected chain, with a much richer filter
+            surface than the legacy V1 listing endpoint: callers can rank by any of the 46 metrics exposed
+            on [`BirdeyeV3TokenListSortBy`][cyhole.birdeye.param.BirdeyeV3TokenListSortBy] and restrict
+            results by liquidity, market cap, FDV, holder count, recent-listing time, last-trade time
+            and a wide range of per-window (1m..30d) volume, price-change and trade-count thresholds.
+            Each entry returned by the endpoint mirrors the cyhole [`V3TokenListItem`][cyhole.birdeye.schema.V3TokenListItem]
+            shape (identity, supply, liquidity, price, per-window aggregates).
+
+            !!! info
+                The endpoint is restricted by Birdeye to Solana, Base, BSC, Ethereum and Monad. Pagination
+                must satisfy `offset + limit <= 10000`; each page is capped at 100 entries.
+
+            Parameters:
+                query: optional [`GetV3TokenListQuery`][cyhole.birdeye.schema.GetV3TokenListQuery] instance
+                    holding the desired sort metric, sort direction, pagination cursor and filters. When
+                    `None` (or omitted) the call uses Birdeye's defaults — top 100 tokens sorted by liquidity
+                    descending.
+
+            Returns:
+                paginated list of tokens decoded as [`GetV3TokenListResponse`][cyhole.birdeye.schema.GetV3TokenListResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if query is None:
+            query = GetV3TokenListQuery()
+
+        # check param consistency
+        BirdeyeV3TokenListSortBy.check(query.sort_by)
+        BirdeyeOrder.check(query.sort_type)
+        if query.ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(query.ui_amount_mode)
+
+        # set params - drop None values so we only send what was set
+        url = self.url_api_public + "v3/token/list"
+        params = {k: v for k, v in query.model_dump().items() if v is not None}
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetV3TokenListResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetV3TokenListResponse(**content_raw.json())
             return async_request()
 
     @overload

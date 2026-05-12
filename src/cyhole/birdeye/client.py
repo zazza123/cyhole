@@ -14,6 +14,8 @@ from ..birdeye.param import (
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
+    GetV3TokenListQuery,
+    GetV3TokenListResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -63,6 +65,13 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
         """
         return self._interaction._get_token_list(True, sort_by, order_by, offset, limit, min_liquidity, max_liquidity, ui_amount_mode)
+
+    def get_v3_token_list(self, query: GetV3TokenListQuery | None = None) -> GetV3TokenListResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - List (V3)](https://docs.birdeye.so/reference/get-defi-v3-token-list)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_list`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list].
+        """
+        return self._interaction._get_v3_token_list(True, query)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -191,6 +200,13 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
         """
         return await self._interaction._get_token_list(False, sort_by, order_by, offset, limit, min_liquidity, max_liquidity, ui_amount_mode)
+
+    async def get_v3_token_list(self, query: GetV3TokenListQuery | None = None) -> GetV3TokenListResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - List (V3)](https://docs.birdeye.so/reference/get-defi-v3-token-list)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_list`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list].
+        """
+        return await self._interaction._get_v3_token_list(False, query)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
