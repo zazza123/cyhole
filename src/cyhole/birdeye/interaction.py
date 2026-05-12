@@ -275,16 +275,25 @@ class Birdeye(Interaction):
         address: str
     ) -> GetTokenSecurityResponse | Coroutine[None, None, GetTokenSecurityResponse]:
         """
-            This function refers to the **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get_defi-token-security)** and is used 
-            to get the useful information related to the security of a token  on a specific
-            chain calculated by Birdeye.
+            This function refers to the **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get-defi-token_security)** and is used
+            to retrieve Birdeye's risk profile of a token: ownership and authority addresses, creator/owner
+            balances, top-holder concentration, freeze/mint/Token-2022 flags, lock information and
+            metadata mutability. It is the canonical endpoint behind Birdeye's "is this token safe?"
+            checks and is typically consumed when surfacing scam/rug warnings before showing a swap UI.
+
+            !!! info
+                The endpoint is available on every Birdeye chain except Sui. The response payload
+                differs between Solana (typed schema below) and EVM chains (free-form dictionary).
 
             Parameters:
-                address: CA of the token to search on the chain.
-            
+                address: contract address of the token to analyse on the currently selected chain.
+
             Returns:
-                token's security information.
-                    Observe that the content of `data` value depends on the selected chain.
+                security profile of the token.
+                    Observe that the content of `data` depends on the selected chain: on Solana the
+                    payload is decoded as
+                    [`GetTokenSecurityDataSolana`][cyhole.birdeye.schema.GetTokenSecurityDataSolana];
+                    on other chains it is exposed as a raw dictionary.
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.

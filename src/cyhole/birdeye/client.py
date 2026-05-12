@@ -73,8 +73,8 @@ class BirdeyeClient(APIClient):
 
     def get_token_security(self, address: str) -> GetTokenSecurityResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get_defi-token-security)** for synchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_security`][cyhole.birdeye.interaction.Birdeye._get_token_security].
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get-defi-token_security)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_security`][cyhole.birdeye.interaction.Birdeye._get_token_security].
         """
         return self._interaction._get_token_security(True, address)
 
@@ -196,8 +196,8 @@ class BirdeyeAsyncClient(AsyncAPIClient):
 
     async def get_token_security(self, address: str) -> GetTokenSecurityResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get_defi-token-security)** for asynchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_security`][cyhole.birdeye.interaction.Birdeye._get_token_security].
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get-defi-token_security)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_security`][cyhole.birdeye.interaction.Birdeye._get_token_security].
         """
         return await self._interaction._get_token_security(False, address)
 
