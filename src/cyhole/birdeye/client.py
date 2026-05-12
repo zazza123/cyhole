@@ -17,6 +17,9 @@ from ..birdeye.param import (
     BirdeyeV2TopTradersTimeFrame,
     BirdeyeHolderDistributionAddressType,
     BirdeyeHolderDistributionMode,
+    BirdeyeHolderChartType,
+    BirdeyeHolderChartMode,
+    BirdeyeHolderChartPercentMode,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -41,6 +44,7 @@ from ..birdeye.schema import (
     GetHolderDistributionResponse,
     GetHolderProfileResponse,
     GetTokenHolderPositionsResponse,
+    GetTokenHolderChartResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -286,6 +290,22 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_token_holder_positions`][cyhole.birdeye.interaction.Birdeye._get_token_holder_positions].
         """
         return self._interaction._get_token_holder_positions(True, token_address, labels, order_type, ui_amount_mode, include_zero_balance, offset, limit)
+
+    def get_token_holder_chart(
+        self,
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> GetTokenHolderChartResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Holder Chart](https://docs.birdeye.so/reference/get-token-v1-holder-chart)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_holder_chart`][cyhole.birdeye.interaction.Birdeye._get_token_holder_chart].
+        """
+        return self._interaction._get_token_holder_chart(True, token_address, chart_type, time_from, time_to, mode, percent_mode, count)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -610,6 +630,22 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_token_holder_positions`][cyhole.birdeye.interaction.Birdeye._get_token_holder_positions].
         """
         return await self._interaction._get_token_holder_positions(False, token_address, labels, order_type, ui_amount_mode, include_zero_balance, offset, limit)
+
+    async def get_token_holder_chart(
+        self,
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> GetTokenHolderChartResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Holder Chart](https://docs.birdeye.so/reference/get-token-v1-holder-chart)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_holder_chart`][cyhole.birdeye.interaction.Birdeye._get_token_holder_chart].
+        """
+        return await self._interaction._get_token_holder_chart(False, token_address, chart_type, time_from, time_to, mode, percent_mode, count)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

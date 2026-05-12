@@ -22,7 +22,10 @@ from ..birdeye.param import (
     BirdeyeV2TopTradersSortBy,
     BirdeyeV2TopTradersTimeFrame,
     BirdeyeHolderDistributionAddressType,
-    BirdeyeHolderDistributionMode
+    BirdeyeHolderDistributionMode,
+    BirdeyeHolderChartType,
+    BirdeyeHolderChartMode,
+    BirdeyeHolderChartPercentMode
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -47,6 +50,7 @@ from ..birdeye.schema import (
     GetHolderDistributionResponse,
     GetHolderProfileResponse,
     GetTokenHolderPositionsResponse,
+    GetTokenHolderChartResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1411,6 +1415,95 @@ class Birdeye(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetTokenHolderPositionsResponse(**content_raw.json())
             return async_request()
+
+    @overload
+    def _get_token_holder_chart(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> GetTokenHolderChartResponse: ...
+
+    @overload
+    def _get_token_holder_chart(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> Coroutine[None, None, GetTokenHolderChartResponse]: ...
+
+    def _get_token_holder_chart(
+        self,
+        sync: bool,
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> GetTokenHolderChartResponse | Coroutine[None, None, GetTokenHolderChartResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Chart](https://docs.birdeye.so/reference/get-token-v1-holder-chart)** and is used
+            to retrieve a time-series of holder-count snapshots for a given token, suitable for
+            plotting "holders over time" charts. Each data point exposes the absolute holder count
+            and both an absolute (`net_change`) and relative (`percent_change`) delta versus the
+            chosen reference (window beginning or previous point).
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                token_address: contract address of the SPL token whose holder chart must be retrieved.
+                chart_type: resolution of the chart points. Pick one of the constants on
+                    [`BirdeyeHolderChartType`][cyhole.birdeye.param.BirdeyeHolderChartType].
+                    Default behaviour: `1h`.
+                time_from: optional inclusive lower bound on the data-point timestamp, in unix seconds.
+                    `None` lets Birdeye pick the start of the window.
+                time_to: optional inclusive upper bound on the data-point timestamp, in unix seconds.
+                    `None` lets Birdeye pick the end of the window (typically "now").
+                mode: how Birdeye handles missing data points. Pick one of the constants on
+                    [`BirdeyeHolderChartMode`][cyhole.birdeye.param.BirdeyeHolderChartMode].
+                    Default behaviour: `padding`.
+                percent_mode: reference point for `percent_change`. Pick one of the constants on
+                    [`BirdeyeHolderChartPercentMode`][cyhole.birdeye.param.BirdeyeHolderChartPercentMode].
+                    Default behaviour: `beginning`.
+                count: maximum number of data points to return. Default behaviour: `20`.
+
+            Returns:
+                time-series of holder-count points decoded as
+                [`GetTokenHolderChartResponse`][cyhole.birdeye.schema.GetTokenHolderChartResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeHolderChartType.check(chart_type)
+        BirdeyeHolderChartMode.check(mode)
+        BirdeyeHolderChartPercentMode.check(percent_mode)
+
+        url = self.url_api_token_v1 + "holder/chart"
+        params = {
+            "token_address": token_address,
+            "chart_type": chart_type,
+            "from": time_from,
+            "to": time_to,
+            "mode": mode,
+            "percent_mode": percent_mode,
+            "count": count,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderChartResponse, params = params)
 
     @overload
     def _get_token_creation_info(

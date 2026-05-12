@@ -138,6 +138,38 @@ class BirdeyeV2MarketsSortBy(CyholeParam):
     VOLUME_24H = "volume24h"
     """Sort markets by USD traded volume in the trailing 24h window."""
 
+class BirdeyeHolderChartType(CyholeParam):
+    """
+        Enum class to select the resolution of the Birdeye Token - Holder Chart endpoint.
+    """
+    S1 = "1s"
+    """1-second resolution chart points."""
+    MIN1 = "1m"
+    """1-minute resolution chart points."""
+    H1 = "1h"
+    """1-hour resolution chart points."""
+    D1 = "1d"
+    """1-day resolution chart points."""
+
+class BirdeyeHolderChartMode(CyholeParam):
+    """
+        Enum class to control how the Birdeye Token - Holder Chart endpoint fills missing data points.
+    """
+    PADDING = "padding"
+    """Pad missing data points with the previous known value (default behaviour)."""
+    NO_FILL = "no_fill"
+    """Return only the data points actually observed; gaps remain in the series."""
+
+class BirdeyeHolderChartPercentMode(CyholeParam):
+    """
+        Enum class to control how the Birdeye Token - Holder Chart endpoint computes the
+        `percent_change` field returned for each data point.
+    """
+    BEGINNING = "beginning"
+    """Compute percent change against the very first data point in the requested time window."""
+    PREVIOUS = "previous"
+    """Compute percent change against the immediately preceding data point."""
+
 class BirdeyeHolderDistributionAddressType(CyholeParam):
     """
         Enum class to select the address type used by the Birdeye Token - Holder Distribution endpoint.

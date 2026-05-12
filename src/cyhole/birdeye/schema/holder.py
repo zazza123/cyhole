@@ -345,3 +345,34 @@ class GetTokenHolderPositionsResponse(BaseModel):
     """
     data: list[GetTokenHolderPositionItem]
     success: bool
+
+
+# classes used on GET "Token - Holder Chart" endpoint
+class GetTokenHolderChartItem(BaseModel):
+    """
+        Single time-series data point returned by the Token - Holder Chart endpoint.
+
+        Attributes:
+            timestamp: unix-second timestamp at which the holder count was observed.
+            holder: holder count at `timestamp`.
+            net_change: absolute change in holder count versus the previous data point (positive
+                = holders added).
+            percent_change: relative change versus the reference point chosen via `percent_mode`
+                (beginning of the window or previous point), expressed as a fraction (`-1..1+`).
+    """
+    timestamp: int
+    holder: int
+    net_change: int
+    percent_change: float
+
+class GetTokenHolderChartResponse(BaseModel):
+    """
+        Model used to represent the **Token - Holder Chart** endpoint from birdeye API.
+
+        Attributes:
+            data: time-series of holder-count data points. The API returns the list directly under
+                `data` (no wrapping `items` key).
+            success: `True` when the API call completed without errors.
+    """
+    data: list[GetTokenHolderChartItem]
+    success: bool
