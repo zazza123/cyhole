@@ -126,15 +126,15 @@ The documentation follows the library's structure by providing all the technical
 
 | Endpoint | Type | Method | `cyhole` Release | Deprecated |
 | --- | --- | --- | --- | --- |
-| getAsset | `POST` | [`post_get_asset`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset) | `{{PROJECT_VERSION}}` | - |
-| getAssetBatch | `POST` | [`post_get_asset_batch`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset_batch) | `{{PROJECT_VERSION}}` | - |
-| getAssetProof | `POST` | [`post_get_asset_proof`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset_proof) | `{{PROJECT_VERSION}}` | - |
-| getAssetProofBatch | `POST` | [`post_get_asset_proof_batch`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset_proof_batch) | `{{PROJECT_VERSION}}` | - |
-| getAssetsByOwner | `POST` | [`post_get_assets_by_owner`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_owner) | `{{PROJECT_VERSION}}` | - |
-| getAssetsByGroup | `POST` | [`post_get_assets_by_group`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_group) | `{{PROJECT_VERSION}}` | - |
-| getAssetsByCreator | `POST` | [`post_get_assets_by_creator`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_creator) | `{{PROJECT_VERSION}}` | - |
-| getAssetsByAuthority | `POST` | [`post_get_assets_by_authority`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_authority) | `{{PROJECT_VERSION}}` | - |
-| searchAssets | `POST` | [`post_search_assets`](../helius/interaction.md#cyhole.helius.Helius._post_search_assets) | `{{PROJECT_VERSION}}` | - |
-| getSignaturesForAsset | `POST` | [`post_get_signatures_for_asset`](../helius/interaction.md#cyhole.helius.Helius._post_get_signatures_for_asset) | `{{PROJECT_VERSION}}` | - |
-| getNftEditions | `POST` | [`post_get_nft_editions`](../helius/interaction.md#cyhole.helius.Helius._post_get_nft_editions) | `{{PROJECT_VERSION}}` | - |
-| getTokenAccounts | `POST` | [`post_get_token_accounts`](../helius/interaction.md#cyhole.helius.Helius._post_get_token_accounts) | `{{PROJECT_VERSION}}` | - |
+| getAsset | `POST` | [`post_get_asset`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset) | `0.3.0` | - |
+| getAssetBatch | `POST` | [`post_get_asset_batch`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset_batch) | `0.3.0` | - |
+| getAssetProof | `POST` | [`post_get_asset_proof`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset_proof) | `0.3.0` | - |
+| getAssetProofBatch | `POST` | [`post_get_asset_proof_batch`](../helius/interaction.md#cyhole.helius.Helius._post_get_asset_proof_batch) | `0.3.0` | - |
+| getAssetsByOwner | `POST` | [`post_get_assets_by_owner`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_owner) | `0.3.0` | - |
+| getAssetsByGroup | `POST` | [`post_get_assets_by_group`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_group) | `0.3.0` | - |
+| getAssetsByCreator | `POST` | [`post_get_assets_by_creator`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_creator) | `0.3.0` | - |
+| getAssetsByAuthority | `POST` | [`post_get_assets_by_authority`](../helius/interaction.md#cyhole.helius.Helius._post_get_assets_by_authority) | `0.3.0` | - |
+| searchAssets | `POST` | [`post_search_assets`](../helius/interaction.md#cyhole.helius.Helius._post_search_assets) | `0.3.0` | - |
+| getSignaturesForAsset | `POST` | [`post_get_signatures_for_asset`](../helius/interaction.md#cyhole.helius.Helius._post_get_signatures_for_asset) | `0.3.0` | - |
+| getNftEditions | `POST` | [`post_get_nft_editions`](../helius/interaction.md#cyhole.helius.Helius._post_get_nft_editions) | `0.3.0` | - |
+| getTokenAccounts | `POST` | [`post_get_token_accounts`](../helius/interaction.md#cyhole.helius.Helius._post_get_token_accounts) | `0.3.0` | - |
