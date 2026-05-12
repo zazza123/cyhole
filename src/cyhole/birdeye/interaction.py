@@ -22,6 +22,8 @@ from ..birdeye.schema import (
     GetTokenListResponse,
     GetV3TokenListQuery,
     GetV3TokenListResponse,
+    GetV3TokenListScrollQuery,
+    GetV3TokenListScrollResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -262,6 +264,69 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetV3TokenListResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_list_scroll(self, sync: Literal[True], query: GetV3TokenListScrollQuery | None = None) -> GetV3TokenListScrollResponse: ...
+
+    @overload
+    def _get_v3_token_list_scroll(self, sync: Literal[False], query: GetV3TokenListScrollQuery | None = None) -> Coroutine[None, None, GetV3TokenListScrollResponse]: ...
+
+    def _get_v3_token_list_scroll(
+        self,
+        sync: bool,
+        query: GetV3TokenListScrollQuery | None = None
+    ) -> GetV3TokenListScrollResponse | Coroutine[None, None, GetV3TokenListScrollResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - List (V3) Scroll](https://docs.birdeye.so/reference/get-defi-v3-token-list-scroll)** and is used
+            to iterate through the full v3 token list using a server-issued opaque cursor instead of
+            offset/limit pagination. Each call returns up to 5 000 token entries (vs the 100/page cap
+            of the offset-based v3 list) and an `next_scroll_id` cursor; pass that cursor back as
+            `scroll_id` on the next call to fetch the next batch of the same scroll session. Filters
+            (liquidity, market cap, FDV, holder, recent listing time, per-window thresholds, ...) are
+            honoured only on the first call (with `scroll_id` left to `None`) and ignored on
+            continuation calls. Items share the [`V3TokenListItem`][cyhole.birdeye.schema.V3TokenListItem]
+            shape used by the regular v3 list, with the additional `creation_time` field populated
+            on scroll results.
+
+            !!! info
+                Birdeye enforces a hard cap of one active `scroll_id` per account per 30 seconds.
+
+            Parameters:
+                query: optional [`GetV3TokenListScrollQuery`][cyhole.birdeye.schema.GetV3TokenListScrollQuery]
+                    instance. Leave `None` to start a fresh scroll with Birdeye's defaults (top 5 000
+                    tokens by liquidity descending). To continue a previous scroll set
+                    `query = GetV3TokenListScrollQuery(scroll_id = <previous next_scroll_id>)`.
+
+            Returns:
+                scroll batch decoded as [`GetV3TokenListScrollResponse`][cyhole.birdeye.schema.GetV3TokenListScrollResponse].
+                Inspect `data.next_scroll_id` / `data.has_next` to decide whether to keep iterating.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if query is None:
+            query = GetV3TokenListScrollQuery()
+
+        # check param consistency
+        BirdeyeV3TokenListSortBy.check(query.sort_by)
+        BirdeyeOrder.check(query.sort_type)
+        if query.ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(query.ui_amount_mode)
+
+        # set params - drop None values so we only send what was set
+        url = self.url_api_public + "v3/token/list/scroll"
+        params = {k: v for k, v in query.model_dump().items() if v is not None}
+
+        # execute request
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetV3TokenListScrollResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetV3TokenListScrollResponse(**content_raw.json())
             return async_request()
 
     @overload

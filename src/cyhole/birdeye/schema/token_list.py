@@ -397,3 +397,160 @@ class GetV3TokenListQuery(BaseModel):
     min_trade_24h_count: int | None = None
     min_trade_7d_count: int | None = None
     min_trade_30d_count: int | None = None
+
+# classes used on GET "Token - List (V3) Scroll" endpoint
+class GetV3TokenListScrollData(BaseModel):
+    """
+        Payload of the v3 Token - List Scroll response.
+
+        The scroll endpoint pages results via a server-issued opaque cursor instead of an
+        offset. Pass the returned `next_scroll_id` back as the `scroll_id` query parameter
+        on the next call to continue the same scroll session.
+
+        Attributes:
+            items: list of token entries returned in this batch.
+            next_scroll_id: opaque cursor to fetch the next batch; `None` (or missing) when no
+                additional batches are available.
+            scroll_time: server-side scroll session expiration timestamp; `None` (or missing) when
+                not provided by the API.
+            has_next: convenience flag indicating whether at least one more batch is available
+                (aliased to `hasNext`); `None` when the API does not include the flag.
+    """
+    items: list[V3TokenListItem]
+    next_scroll_id: str | None = None
+    scroll_time: str | None = None
+    has_next: bool | None = Field(alias = "hasNext", default = None)
+
+class GetV3TokenListScrollResponse(BaseModel):
+    """
+        Model used to represent the **Token - List (V3) Scroll** endpoint from birdeye API.
+
+        Attributes:
+            data: scroll payload (current batch + cursor metadata).
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenListScrollData
+    success: bool
+
+class GetV3TokenListScrollQuery(BaseModel):
+    """
+        Query-parameter bag for the v3 Token - List Scroll endpoint.
+
+        Pagination is cursor-based: leave `scroll_id` `None` for the first call (then any
+        other filter is honoured), and pass back the `next_scroll_id` value from the previous
+        response on subsequent calls (filters are ignored once `scroll_id` is set).
+
+        Attributes:
+            scroll_id: cursor returned by a previous scroll response (`next_scroll_id`). When set, all other filters are ignored and Birdeye returns the next page of the original scroll session; `None` to start a fresh scroll. Birdeye limits a given API key to one active scroll per 30 seconds.
+            sort_by: metric used to rank the returned tokens. Pick one of the constants on [`BirdeyeV3TokenListSortBy`][cyhole.birdeye.param.BirdeyeV3TokenListSortBy].
+            sort_type: ascending or descending order. Pick one of the constants on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
+            limit: number of records to return per batch (1..5000).
+            min_liquidity: inclusive lower bound on token liquidity in USD; `None` to disable the filter.
+            max_liquidity: inclusive upper bound on token liquidity in USD; `None` to disable the filter.
+            min_market_cap: inclusive lower bound on market cap in USD; `None` to disable the filter.
+            max_market_cap: inclusive upper bound on market cap in USD; `None` to disable the filter.
+            min_fdv: inclusive lower bound on FDV in USD; `None` to disable the filter.
+            max_fdv: inclusive upper bound on FDV in USD; `None` to disable the filter.
+            min_recent_listing_time: inclusive lower bound (unix seconds) on the token recent-listing timestamp; `None` to disable the filter.
+            max_recent_listing_time: inclusive upper bound (unix seconds) on the token recent-listing timestamp; `None` to disable the filter.
+            min_last_trade_unix_time: inclusive lower bound (unix seconds) on the last-trade timestamp; `None` to disable the filter.
+            max_last_trade_unix_time: inclusive upper bound (unix seconds) on the last-trade timestamp; `None` to disable the filter.
+            min_holder: inclusive minimum number of distinct token holders; `None` to disable the filter.
+            ui_amount_mode: how to format scaled-UI-amount token figures on Solana; pick a [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave `None` for the server default (`scaled`).
+            min_volume_1m_usd: inclusive minimum USD volume in the trailing 1m window; `None` to disable the filter.
+            min_volume_5m_usd: inclusive minimum USD volume in the trailing 5m window; `None` to disable the filter.
+            min_volume_30m_usd: inclusive minimum USD volume in the trailing 30m window; `None` to disable the filter.
+            min_volume_1h_usd: inclusive minimum USD volume in the trailing 1h window; `None` to disable the filter.
+            min_volume_2h_usd: inclusive minimum USD volume in the trailing 2h window; `None` to disable the filter.
+            min_volume_4h_usd: inclusive minimum USD volume in the trailing 4h window; `None` to disable the filter.
+            min_volume_8h_usd: inclusive minimum USD volume in the trailing 8h window; `None` to disable the filter.
+            min_volume_24h_usd: inclusive minimum USD volume in the trailing 24h window; `None` to disable the filter.
+            min_volume_7d_usd: inclusive minimum USD volume in the trailing 7d window; `None` to disable the filter.
+            min_volume_30d_usd: inclusive minimum USD volume in the trailing 30d window; `None` to disable the filter.
+            min_volume_1m_change_percent: inclusive minimum percent change of USD volume between the current and previous 1m windows; `None` to disable the filter.
+            min_volume_5m_change_percent: inclusive minimum percent change of USD volume between the current and previous 5m windows; `None` to disable the filter.
+            min_volume_30m_change_percent: inclusive minimum percent change of USD volume between the current and previous 30m windows; `None` to disable the filter.
+            min_volume_1h_change_percent: inclusive minimum percent change of USD volume between the current and previous 1h windows; `None` to disable the filter.
+            min_volume_2h_change_percent: inclusive minimum percent change of USD volume between the current and previous 2h windows; `None` to disable the filter.
+            min_volume_4h_change_percent: inclusive minimum percent change of USD volume between the current and previous 4h windows; `None` to disable the filter.
+            min_volume_8h_change_percent: inclusive minimum percent change of USD volume between the current and previous 8h windows; `None` to disable the filter.
+            min_volume_24h_change_percent: inclusive minimum percent change of USD volume between the current and previous 24h windows; `None` to disable the filter.
+            min_volume_7d_change_percent: inclusive minimum percent change of USD volume between the current and previous 7d windows; `None` to disable the filter.
+            min_volume_30d_change_percent: inclusive minimum percent change of USD volume between the current and previous 30d windows; `None` to disable the filter.
+            min_price_change_1m_percent: inclusive minimum percent price change vs the start of the trailing 1m window; `None` to disable the filter.
+            min_price_change_5m_percent: inclusive minimum percent price change vs the start of the trailing 5m window; `None` to disable the filter.
+            min_price_change_30m_percent: inclusive minimum percent price change vs the start of the trailing 30m window; `None` to disable the filter.
+            min_price_change_1h_percent: inclusive minimum percent price change vs the start of the trailing 1h window; `None` to disable the filter.
+            min_price_change_2h_percent: inclusive minimum percent price change vs the start of the trailing 2h window; `None` to disable the filter.
+            min_price_change_4h_percent: inclusive minimum percent price change vs the start of the trailing 4h window; `None` to disable the filter.
+            min_price_change_8h_percent: inclusive minimum percent price change vs the start of the trailing 8h window; `None` to disable the filter.
+            min_price_change_24h_percent: inclusive minimum percent price change vs the start of the trailing 24h window; `None` to disable the filter.
+            min_price_change_7d_percent: inclusive minimum percent price change vs the start of the trailing 7d window; `None` to disable the filter.
+            min_price_change_30d_percent: inclusive minimum percent price change vs the start of the trailing 30d window; `None` to disable the filter.
+            min_trade_1m_count: inclusive minimum number of trades during the trailing 1m window; `None` to disable the filter.
+            min_trade_5m_count: inclusive minimum number of trades during the trailing 5m window; `None` to disable the filter.
+            min_trade_30m_count: inclusive minimum number of trades during the trailing 30m window; `None` to disable the filter.
+            min_trade_1h_count: inclusive minimum number of trades during the trailing 1h window; `None` to disable the filter.
+            min_trade_2h_count: inclusive minimum number of trades during the trailing 2h window; `None` to disable the filter.
+            min_trade_4h_count: inclusive minimum number of trades during the trailing 4h window; `None` to disable the filter.
+            min_trade_8h_count: inclusive minimum number of trades during the trailing 8h window; `None` to disable the filter.
+            min_trade_24h_count: inclusive minimum number of trades during the trailing 24h window; `None` to disable the filter.
+            min_trade_7d_count: inclusive minimum number of trades during the trailing 7d window; `None` to disable the filter.
+            min_trade_30d_count: inclusive minimum number of trades during the trailing 30d window; `None` to disable the filter.
+    """
+    scroll_id: str | None = None
+    sort_by: str = BirdeyeV3TokenListSortBy.LIQUIDITY.value
+    sort_type: str = BirdeyeOrder.DESCENDING.value
+    limit: int = 5000
+    min_liquidity: float | None = None
+    max_liquidity: float | None = None
+    min_market_cap: float | None = None
+    max_market_cap: float | None = None
+    min_fdv: float | None = None
+    max_fdv: float | None = None
+    min_recent_listing_time: int | None = None
+    max_recent_listing_time: int | None = None
+    min_last_trade_unix_time: int | None = None
+    max_last_trade_unix_time: int | None = None
+    min_holder: int | None = None
+    ui_amount_mode: str | None = None
+    min_volume_1m_usd: float | None = None
+    min_volume_5m_usd: float | None = None
+    min_volume_30m_usd: float | None = None
+    min_volume_1h_usd: float | None = None
+    min_volume_2h_usd: float | None = None
+    min_volume_4h_usd: float | None = None
+    min_volume_8h_usd: float | None = None
+    min_volume_24h_usd: float | None = None
+    min_volume_7d_usd: float | None = None
+    min_volume_30d_usd: float | None = None
+    min_volume_1m_change_percent: float | None = None
+    min_volume_5m_change_percent: float | None = None
+    min_volume_30m_change_percent: float | None = None
+    min_volume_1h_change_percent: float | None = None
+    min_volume_2h_change_percent: float | None = None
+    min_volume_4h_change_percent: float | None = None
+    min_volume_8h_change_percent: float | None = None
+    min_volume_24h_change_percent: float | None = None
+    min_volume_7d_change_percent: float | None = None
+    min_volume_30d_change_percent: float | None = None
+    min_price_change_1m_percent: float | None = None
+    min_price_change_5m_percent: float | None = None
+    min_price_change_30m_percent: float | None = None
+    min_price_change_1h_percent: float | None = None
+    min_price_change_2h_percent: float | None = None
+    min_price_change_4h_percent: float | None = None
+    min_price_change_8h_percent: float | None = None
+    min_price_change_24h_percent: float | None = None
+    min_price_change_7d_percent: float | None = None
+    min_price_change_30d_percent: float | None = None
+    min_trade_1m_count: int | None = None
+    min_trade_5m_count: int | None = None
+    min_trade_30m_count: int | None = None
+    min_trade_1h_count: int | None = None
+    min_trade_2h_count: int | None = None
+    min_trade_4h_count: int | None = None
+    min_trade_8h_count: int | None = None
+    min_trade_24h_count: int | None = None
+    min_trade_7d_count: int | None = None
+    min_trade_30d_count: int | None = None

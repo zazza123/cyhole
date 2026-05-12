@@ -16,6 +16,8 @@ from ..birdeye.schema import (
     GetTokenListResponse,
     GetV3TokenListQuery,
     GetV3TokenListResponse,
+    GetV3TokenListScrollQuery,
+    GetV3TokenListScrollResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -72,6 +74,13 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_list`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list].
         """
         return self._interaction._get_v3_token_list(True, query)
+
+    def get_v3_token_list_scroll(self, query: GetV3TokenListScrollQuery | None = None) -> GetV3TokenListScrollResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - List (V3) Scroll](https://docs.birdeye.so/reference/get-defi-v3-token-list-scroll)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_list_scroll`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list_scroll].
+        """
+        return self._interaction._get_v3_token_list_scroll(True, query)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -207,6 +216,13 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_list`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list].
         """
         return await self._interaction._get_v3_token_list(False, query)
+
+    async def get_v3_token_list_scroll(self, query: GetV3TokenListScrollQuery | None = None) -> GetV3TokenListScrollResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - List (V3) Scroll](https://docs.birdeye.so/reference/get-defi-v3-token-list-scroll)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_list_scroll`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list_scroll].
+        """
+        return await self._interaction._get_v3_token_list_scroll(False, query)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
