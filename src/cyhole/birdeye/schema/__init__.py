@@ -107,6 +107,15 @@ from .holder import (
     GetTokenHolderChartItem,
     GetTokenHolderChartResponse,
 )
+from .transfer import (
+    PostTokenTransferBody,
+    PostTokenTransferItemTokenInfo,
+    PostTokenTransferItem,
+    PostTokenTransferResponse,
+    PostTokenTransferTotalBody,
+    PostTokenTransferTotalData,
+    PostTokenTransferTotalResponse,
+)
 from .wallet import (
     GetWalletSupportedNetworksResponse,
 )
@@ -205,5 +214,12 @@ __all__ = [
     "GetTokenHolderPositionsResponse",
     "GetTokenHolderChartItem",
     "GetTokenHolderChartResponse",
+    "PostTokenTransferBody",
+    "PostTokenTransferItemTokenInfo",
+    "PostTokenTransferItem",
+    "PostTokenTransferResponse",
+    "PostTokenTransferTotalBody",
+    "PostTokenTransferTotalData",
+    "PostTokenTransferTotalResponse",
     "GetWalletSupportedNetworksResponse",
 ]

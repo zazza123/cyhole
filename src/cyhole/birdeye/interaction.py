@@ -51,6 +51,8 @@ from ..birdeye.schema import (
     GetHolderProfileResponse,
     GetTokenHolderPositionsResponse,
     GetTokenHolderChartResponse,
+    PostTokenTransferBody,
+    PostTokenTransferResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1504,6 +1506,54 @@ class Birdeye(Interaction):
         }
 
         return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderChartResponse, params = params)
+
+    @overload
+    def _post_token_transfer(self, sync: Literal[True], body: PostTokenTransferBody) -> PostTokenTransferResponse: ...
+
+    @overload
+    def _post_token_transfer(self, sync: Literal[False], body: PostTokenTransferBody) -> Coroutine[None, None, PostTokenTransferResponse]: ...
+
+    def _post_token_transfer(
+        self,
+        sync: bool,
+        body: PostTokenTransferBody
+    ) -> PostTokenTransferResponse | Coroutine[None, None, PostTokenTransferResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Transfer List](https://docs.birdeye.so/reference/post-token-v1-transfer)** and is used
+            to retrieve the list of on-chain transfer transactions of a given SPL token, optionally
+            filtered by time window, transferred amount, USD value, and either side wallet address.
+            Each entry exposes the sender / receiver wallet and SPL token account, raw and
+            UI-formatted amount, per-token price, total USD value, slot/block and timestamp.
+            Pagination is cursor-based: pass the cursor returned by Birdeye on the previous call
+            via `body.cursor` to fetch the next page.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                body: filled-in [`PostTokenTransferBody`][cyhole.birdeye.schema.PostTokenTransferBody]
+                    instance carrying the required `token_address` and any optional filters and the
+                    pagination cursor/limit.
+
+            Returns:
+                paginated list of transfer entries decoded as
+                [`PostTokenTransferResponse`][cyhole.birdeye.schema.PostTokenTransferResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_token_v1 + "transfer"
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+
+        return self.api_return_model(
+            sync,
+            RequestType.POST.value,
+            url,
+            PostTokenTransferResponse,
+            json = body.model_dump(exclude_none = True),
+            headers = headers,
+        )
 
     @overload
     def _get_token_creation_info(

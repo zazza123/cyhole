@@ -45,6 +45,8 @@ from ..birdeye.schema import (
     GetHolderProfileResponse,
     GetTokenHolderPositionsResponse,
     GetTokenHolderChartResponse,
+    PostTokenTransferBody,
+    PostTokenTransferResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -306,6 +308,13 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_token_holder_chart`][cyhole.birdeye.interaction.Birdeye._get_token_holder_chart].
         """
         return self._interaction._get_token_holder_chart(True, token_address, chart_type, time_from, time_to, mode, percent_mode, count)
+
+    def post_token_transfer(self, body: PostTokenTransferBody) -> PostTokenTransferResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Transfer List](https://docs.birdeye.so/reference/post-token-v1-transfer)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._post_token_transfer`][cyhole.birdeye.interaction.Birdeye._post_token_transfer].
+        """
+        return self._interaction._post_token_transfer(True, body)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -646,6 +655,13 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_token_holder_chart`][cyhole.birdeye.interaction.Birdeye._get_token_holder_chart].
         """
         return await self._interaction._get_token_holder_chart(False, token_address, chart_type, time_from, time_to, mode, percent_mode, count)
+
+    async def post_token_transfer(self, body: PostTokenTransferBody) -> PostTokenTransferResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Transfer List](https://docs.birdeye.so/reference/post-token-v1-transfer)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._post_token_transfer`][cyhole.birdeye.interaction.Birdeye._post_token_transfer].
+        """
+        return await self._interaction._post_token_transfer(False, body)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
