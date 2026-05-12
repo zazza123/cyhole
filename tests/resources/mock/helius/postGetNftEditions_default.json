@@ -1,0 +1,24 @@
+{
+    "jsonrpc": "2.0",
+    "id": "cyhole",
+    "result": {
+        "total": 2,
+        "limit": 1000,
+        "page": 1,
+        "master_edition_address": "MASTER11111111111111111111111111111111111111",
+        "supply": 2,
+        "max_supply": 100,
+        "editions": [
+            {
+                "mint": "MINT1111111111111111111111111111111111111111",
+                "edition_address": "EDITION1111111111111111111111111111111111111",
+                "edition": 1
+            },
+            {
+                "mint": "MINT2222222222222222222222222222222222222222",
+                "edition_address": "EDITION2222222222222222222222222222222222222",
+                "edition": 2
+            }
+        ]
+    }
+}

@@ -1,0 +1,51 @@
+{
+    "jsonrpc": "2.0",
+    "id": "cyhole",
+    "result": {
+        "total": 1,
+        "limit": 1000,
+        "page": 1,
+        "items": [
+            {
+                "interface": "V1_NFT",
+                "id": "4ZkS7zADmEFnkLPMHqJfPvHDN8oqfPjqDFGEQHiqPbEz",
+                "content": {
+                    "metadata": {
+                        "name": "Example NFT #1",
+                        "symbol": "EXNFT"
+                    }
+                },
+                "authorities": [],
+                "compression": {
+                    "eligible": false,
+                    "compressed": false
+                },
+                "grouping": [
+                    {
+                        "group_key": "collection",
+                        "group_value": "COLL1111111111111111111111111111111111111111",
+                        "verified": true
+                    }
+                ],
+                "royalty": {
+                    "royalty_model": "creators",
+                    "target": null,
+                    "percent": 0.05,
+                    "basis_points": 500,
+                    "primary_sale_happened": true,
+                    "locked": false
+                },
+                "creators": [],
+                "ownership": {
+                    "frozen": false,
+                    "delegated": false,
+                    "delegate": null,
+                    "ownership_model": "single",
+                    "owner": "OWNER1111111111111111111111111111111111111111"
+                },
+                "mutable": true,
+                "burnt": false
+            }
+        ]
+    }
+}

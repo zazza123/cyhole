@@ -147,6 +147,13 @@ An endpoint is **modified** when its parameters or response shape changes.
 - Add new param enums to `param.py` for any new fixed-value parameters.
 - Preserve all docstrings and add descriptions for any new fields — explain what the
   field represents, its units, and any edge cases (e.g. `None` when not applicable).
+  `cyhole` is a user-facing library, so this functional description is what end-users
+  actually consume in the docs site — it is not optional.
+- Field-level docs go under the Google-style `Attributes:` section, **never** `Parameters:`.
+  Griffe interprets `Parameters:` as a function/`__init__` signature and emits
+  "Parameter X does not appear in the function signature" warnings that abort
+  `mkdocs build --strict`. If you encounter an existing class that uses `Parameters:`
+  for its fields, fix it as part of this update.
 
 **Update `interaction.py`:**
 
@@ -207,14 +214,20 @@ def _{request_type}_{endpoint_name}(self, sync: bool, ...) -> {Response}Model | 
     """
     This function refers to the **{EndpointName}** API endpoint.
 
-    [One-sentence description of what this endpoint returns/does and why it is useful.]
+    [One-or-two-sentence functional description: what this endpoint returns, what it is
+    useful for, and any important caveats — e.g. pagination defaults, rate limits, units
+    of returned values. Do NOT just restate the endpoint name. This docstring is what
+    end-users see in the mkdocs site since public client methods are intentionally thin
+    wrappers that link here.]
 
     Parameters:
         sync: if True run synchronously, else return a coroutine.
-        ...: [each param with type, description, and valid values or enum reference]
+        ...: [each param with type, description, units/default, and valid values
+              or enum reference]
 
     Returns:
-        {Response}Model: [description of the response, what key fields contain]
+        {Response}Model: [description of the response, calling out the key fields
+                          a caller is most likely to use]
 
     Raises:
         {Name}Exception: if the API returns an error.
@@ -343,13 +356,27 @@ are still correct relative to the new base.
 
 ---
 
-## Step 5: Run Tests
+## Step 5: Run Tests, Lint, and Docs Build
+
+These three checks are mandatory — do not skip any of them, and do not declare the task done until all three are clean.
 
 ```bash
+# 1. Tests must pass with mock responses
 pytest tests/test_{name}.py -v
+
+# 2. Lint must be clean for the modified code
+ruff check src/
+
+# 3. Docs build must succeed in strict mode (zero WARNINGs, zero ERRORs)
+mkdocs build --strict
 ```
 
-All tests must pass with mock responses. Fix any schema mismatches or import errors before proceeding.
+Fix every issue before proceeding. Common failures:
+- `ruff` flags: imports left behind by removing a deprecated endpoint (schemas, enums, exceptions no longer referenced); unused helper variables.
+- `mkdocs --strict` failures:
+  - Pydantic class docstrings using `Parameters:` instead of `Attributes:` for fields.
+  - Cross-reference links in `client.py` or `index.md` pointing to a method that was deprecated/renamed.
+  - `index.md` endpoint table row still linking to a now-removed private method anchor.
 
 ---
 
@@ -360,11 +387,14 @@ All tests must pass with mock responses. Fix any schema mismatches or import err
 - [ ] **Modified**: schema updated, overload signature updated, client signatures updated, mock JSON matches new schema, tests pass
 - [ ] **New**: two `@overload` + implementation in `interaction.py`; sync + async in `client.py`; response model + sub-schemas in `schema.py`; param enums in `param.py` if needed; mock JSON created; `_sync` + `_async` tests added; `index.md` row added
 - [ ] **Auth added**: `api_key` param in `__init__`, header injection, `config.py` + `test.default.ini` updated, test class updated, docs updated
-- [ ] All Pydantic models have docstrings describing fields, units, and `None` conditions
+- [ ] All Pydantic models have docstrings, and field-level docs use `Attributes:` (never `Parameters:`)
+- [ ] Every documented field describes meaning, units, and `None` conditions
+- [ ] Every new or modified private endpoint method (`_{verb}_{name}`) has a true functional description (what the endpoint returns, why a user would call it), not just a name restatement
 - [ ] All param enum members have docstrings
 - [ ] Overload pattern correct on every private method (two `@overload` + implementation)
 - [ ] `api_return_model` used — no raw `client.api()` calls in `interaction.py`
-- [ ] `mkdocs build` runs with no WARNINGs or ERRORs
+- [ ] `ruff check src/` is clean
+- [ ] `mkdocs build --strict` runs with zero WARNINGs and zero ERRORs
 - [ ] `pytest tests/test_{name}.py` passes
 
 ---

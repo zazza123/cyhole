@@ -95,8 +95,25 @@ def _get_foo(self, sync: bool) -> FooResponse | Coroutine[None, None, FooRespons
 
 - Python 3.12+. All code fully typed. Use `list`/`dict`/`str | None` — not `List`/`Dict`/`Optional`.
 - All classes, methods, and functions need docstrings with `Parameters`, `Returns`, `Raises` sections (mkdocs-compatible).
+- For `pydantic.BaseModel` subclasses (response/body schemas, sub-schemas), use the `Attributes:` section to document fields — **not** `Parameters:`. Griffe (mkdocstrings' parser) matches `Parameters:` against the function/`__init__` signature and will raise "Parameter X does not appear in the function signature" warnings on pydantic classes, aborting `mkdocs build --strict`.
 - Operators surrounded by spaces: `x = 1`, not `x=1`.
 - If endpoint takes >3 inputs, define a `Body` pydantic model instead of individual params.
+
+### Functional descriptions are mandatory
+
+`cyhole` is a **library consumed by end-users** as their central interface to crypto APIs. Users rely on docstrings (rendered into the mkdocs site) to understand what each endpoint does without reading the upstream API docs. Two surfaces require special care:
+
+- **Endpoint methods** (private `_{verb}_{name}` on the `Interaction` class, plus public `{verb}_{name}` on sync and async clients): the docstring MUST open with a one-or-two-sentence functional description explaining *what the endpoint returns, what it is useful for, and any important caveats* — not just restate the method name. The `Parameters` section must describe each parameter's meaning, units, defaults, and any valid-value enum it must come from.
+- **Schema classes** (response models, POST body models, sub-schemas in `schema.py`): every class needs a docstring saying what it represents, and every documented field needs a description covering its meaning, units, and the condition under which it is `None` (for optional fields).
+
+If a function or schema lacks a functional description, the change is not complete.
+
+## Verification before completion
+
+These checks are mandatory before declaring any task done. Run them and fix anything they surface — do not commit or open a PR with outstanding warnings.
+
+- **After any code change in `src/`**: run `ruff check src/` and resolve every reported issue.
+- **After any docs change** (anything in `docs/`, `mkdocs.yml`, or any docstring referenced by mkdocstrings — i.e. virtually every change in `src/cyhole/`): run `mkdocs build --strict` and ensure it completes with zero WARNINGs and zero ERRORs. Strict mode aborts on warnings, so this catches broken cross-references, missing modules, and griffe docstring issues that the non-strict build silently hides.
 
 ## Adding a New Interaction
 

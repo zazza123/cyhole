@@ -1,0 +1,27 @@
+{
+    "jsonrpc": "2.0",
+    "id": "cyhole",
+    "result": {
+        "total": 2,
+        "limit": 100,
+        "page": 1,
+        "token_accounts": [
+            {
+                "address": "ACCOUNT1111111111111111111111111111111111111",
+                "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "owner": "OWNER1111111111111111111111111111111111111111",
+                "amount": 1000000,
+                "delegated_amount": 0,
+                "frozen": false
+            },
+            {
+                "address": "ACCOUNT2222222222222222222222222222222222222",
+                "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+                "owner": "OWNER2222222222222222222222222222222222222222",
+                "amount": 5000000,
+                "delegated_amount": 0,
+                "frozen": false
+            }
+        ]
+    }
+}

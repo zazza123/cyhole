@@ -135,7 +135,21 @@ Rules:
 - All models inherit from `pydantic.BaseModel`
 - Use `list[X]` / `dict[K, V]` / `str | None`, never `List` / `Dict` / `Optional`
 - Use `Field(alias="originalName")` when JSON field names differ from Python naming conventions
-- Add a concise docstring to every class
+- **Every class needs a functional docstring.** `cyhole` is a user-facing library — the docstring must explain what the schema represents (e.g. "Response payload from the `getAssetsByOwner` DAS endpoint, containing the paginated list of assets owned by the wallet"). A one-line restatement of the class name is NOT enough.
+- **Field-level documentation uses the `Attributes:` section** (Google-style). Never use `Parameters:` for a pydantic BaseModel — griffe interprets `Parameters:` as the function/`__init__` signature and emits "Parameter X does not appear in the function signature" warnings that abort `mkdocs build --strict`. Each documented field must describe its meaning, units (if any), and the condition under which it is `None` (for optional fields).
+
+```python
+class GetFooResponse(BaseModel):
+    """
+    Response payload from the `getFoo` endpoint.
+
+    Attributes:
+        price: token price in USD; `None` when the API has no recent quote.
+        last_updated: unix timestamp (seconds) of the latest quote.
+    """
+    price: float | None = None
+    last_updated: int
+```
 
 ### `interaction.py`
 
@@ -183,12 +197,18 @@ class {Name}(Interaction):
         """
         This function refers to the **{EndpointName}** API endpoint.
 
+        [One-or-two-sentence functional description: what this endpoint returns, what
+        it is useful for, and any important caveats — e.g. pagination defaults, rate
+        limits, or units of returned values. Do NOT just restate the endpoint name.]
+
         Parameters:
             sync: if True run synchronously, else return a coroutine.
-            ...: other params
+            ...: each param described with its meaning, units, default, and the
+                 enum it must come from (if a fixed-value param).
 
         Returns:
-            {Response}Model: ...
+            {Response}Model: description of the response payload — call out the
+                              key fields a caller is most likely to use.
 
         Raises:
             {Name}Exception: if the API returns an error.
@@ -204,6 +224,7 @@ class {Name}(Interaction):
 - Use `self.api_return_model(sync, ...)` — never call `client.api()` directly inside `interaction.py`
 - If the endpoint has >3 inputs, define a `Body` Pydantic model in `schema.py` and accept it as a single param
 - Authentication: add API key to headers in `__init__` if required
+- **The functional description on the private method docstring is mandatory.** `cyhole` is a user-facing library and this docstring is what end-users see in the mkdocs site. Public client methods are intentionally thin wrappers; users land on the private method's docs via the cross-reference link. If the description is missing or just restates the name, the endpoint is not done.
 
 ### `client.py`
 
@@ -524,13 +545,27 @@ Find the `nav:` → `Interactions:` section and add:
 
 ---
 
-## Step 8: Run Tests
+## Step 8: Run Tests, Lint, and Docs Build
+
+These three checks are mandatory — do not skip any of them, and do not declare the task done until all three are clean.
 
 ```bash
+# 1. Tests must pass with mock responses
 pytest tests/test_{name}.py -v
+
+# 2. Lint must be clean for the new code
+ruff check src/
+
+# 3. Docs build must succeed in strict mode (zero WARNINGs, zero ERRORs)
+mkdocs build --strict
 ```
 
-All tests must pass (using mock responses). Fix any schema mismatches or import errors before proceeding.
+Fix every issue before proceeding. Common failures:
+- `ruff` flags: unused imports left from scaffolding, unsorted imports, missing newlines.
+- `mkdocs --strict` failures:
+  - Pydantic class docstrings using `Parameters:` instead of `Attributes:` → 76-style griffe warnings per class.
+  - Cross-references in `client.py` docstrings pointing to a private `_method` while `interaction.md` uses module-level `:::` without `filters: ["^_"]` → broken anchors.
+  - Missing entries in `mkdocs.yml` `nav:` for the new interaction.
 
 ---
 
@@ -543,7 +578,9 @@ Before declaring the implementation complete, verify:
 - [ ] Every endpoint has `@overload` × 2 + implementation
 - [ ] `api_return_model` used (no raw `client.api()` in interaction.py)
 - [ ] POST endpoints with >3 params use a `Body` schema
-- [ ] All Pydantic models have docstrings
+- [ ] All Pydantic models have docstrings, and field-level docs use `Attributes:` (never `Parameters:`)
+- [ ] Every private endpoint method (`_{verb}_{name}`) has a true functional description (what the endpoint returns, why a user would call it), not just a name restatement
+- [ ] Every documented field on a response/body schema describes meaning, units, and `None` conditions
 - [ ] Param enums inherit from `CyholeParam`
 - [ ] Exception hierarchy: `{Name}Exception` → `CyholeException`
 - [ ] Mock JSON files created for every endpoint
@@ -555,7 +592,8 @@ Before declaring the implementation complete, verify:
 - [ ] `index.md` uses grid cards for Content section and full Endpoints table with all methods
 - [ ] `mkdocs.yml` updated under `nav: Interactions:`
 - [ ] `README.md` interactions table updated with new row for `{name}`
-- [ ] `mkdocs build` runs with no WARNINGs or ERRORs
+- [ ] `ruff check src/` is clean
+- [ ] `mkdocs build --strict` runs with zero WARNINGs and zero ERRORs
 - [ ] `pytest tests/test_{name}.py` passes
 
 ---
