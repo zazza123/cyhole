@@ -19,6 +19,8 @@ from cyhole.birdeye.schema import (
     GetV3TokenMetaDataMultipleResponse,
     GetV3TokenMarketDataResponse,
     GetV3TokenMarketDataMultipleResponse,
+    GetV3TokenTradeDataResponse,
+    GetV3TokenTradeDataMultipleResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -420,6 +422,82 @@ class TestBirdeyePublic:
             response = await client.get_v3_token_market_data([WSOL.address, USDC.address])
 
         assert isinstance(response, GetV3TokenMarketDataMultipleResponse)
+
+    def test_get_v3_token_trade_data_single_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Trade Data" with a single token address (synchronous logic).
+
+            Mock Response File: get_v3_token_trade_data_single.json
+        """
+        mock_file_name = "get_v3_token_trade_data_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenTradeDataResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_token_trade_data(WSOL.address)
+        assert isinstance(response, GetV3TokenTradeDataResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_token_trade_data_single_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Trade Data" with a single token address (asynchronous logic).
+
+            Mock Response File: get_v3_token_trade_data_single.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_trade_data_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenTradeDataResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_token_trade_data(WSOL.address)
+
+        assert isinstance(response, GetV3TokenTradeDataResponse)
+
+    def test_get_v3_token_trade_data_multiple_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Trade Data" with a list of token addresses (synchronous logic).
+
+            Mock Response File: get_v3_token_trade_data_multiple.json
+        """
+        mock_file_name = "get_v3_token_trade_data_multiple"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenTradeDataMultipleResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_token_trade_data([WSOL.address, USDC.address])
+        assert isinstance(response, GetV3TokenTradeDataMultipleResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_token_trade_data_multiple_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Trade Data" with a list of token addresses (asynchronous logic).
+
+            Mock Response File: get_v3_token_trade_data_multiple.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_trade_data_multiple"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenTradeDataMultipleResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_token_trade_data([WSOL.address, USDC.address])
+
+        assert isinstance(response, GetV3TokenTradeDataMultipleResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """

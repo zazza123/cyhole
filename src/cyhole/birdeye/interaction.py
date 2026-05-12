@@ -31,6 +31,8 @@ from ..birdeye.schema import (
     GetV3TokenMetaDataMultipleResponse,
     GetV3TokenMarketDataResponse,
     GetV3TokenMarketDataMultipleResponse,
+    GetV3TokenTradeDataResponse,
+    GetV3TokenTradeDataMultipleResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -605,6 +607,89 @@ class Birdeye(Interaction):
             url = self.url_api_public + "v3/token/market-data/multiple"
             params = {"list_address": ",".join(address)}
             response_model = GetV3TokenMarketDataMultipleResponse
+        if ui_amount_mode is not None:
+            params["ui_amount_mode"] = ui_amount_mode
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return response_model(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return response_model(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[True], address: str, frames: str | None = None, ui_amount_mode: str | None = None) -> GetV3TokenTradeDataResponse: ...
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[True], address: list[str], frames: str | None = None, ui_amount_mode: str | None = None) -> GetV3TokenTradeDataMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[False], address: str, frames: str | None = None, ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenTradeDataResponse]: ...
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[False], address: list[str], frames: str | None = None, ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenTradeDataMultipleResponse]: ...
+
+    def _get_v3_token_trade_data(
+        self,
+        sync: bool,
+        address: str | list[str],
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
+    ) -> (
+        GetV3TokenTradeDataResponse
+        | GetV3TokenTradeDataMultipleResponse
+        | Coroutine[None, None, GetV3TokenTradeDataResponse]
+        | Coroutine[None, None, GetV3TokenTradeDataMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token trade-data endpoints **[Token - Trade Data (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-trade-data-single)**
+            and **[Token - Trade Data (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-trade-data-multiple)**.
+            They return the full trading-activity snapshot of a token: latest price, price history at the
+            1m/5m/30m/1h/2h/4h/6h/8h/12h/24h windows, per-window (1m..24h) unique-wallet counts and full
+            sell/buy/volume breakdowns, all aligned with the equivalent metric over the previous window.
+            This is the "give me everything about how this token is trading" call — heavier than
+            Token - Market Data but lighter than Token - Overview as it skips the identity and supply
+            sections.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/trade-data/single`, returning a [`GetV3TokenTradeDataResponse`][cyhole.birdeye.schema.GetV3TokenTradeDataResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/trade-data/multiple`,
+            returning a [`GetV3TokenTradeDataMultipleResponse`][cyhole.birdeye.schema.GetV3TokenTradeDataMultipleResponse]
+            whose `data` is a dict keyed by token address.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+                frames: optional comma-separated list of additional custom time intervals to include in
+                    the response (up to 8 entries). Same grammar as on Token - Overview: minute intervals
+                    `1m..1440m`, multiples-of-5 second intervals `5s..3600s`, and `1h/2h/4h/8h/24h`.
+                    Default behaviour: only the standard windows listed above are returned.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
+
+            Returns:
+                trading-activity snapshot for the requested token(s); the concrete type depends on the
+                input cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/trade-data/single"
+            params: dict[str, Any] = {"address": address}
+            response_model: type = GetV3TokenTradeDataResponse
+        else:
+            url = self.url_api_public + "v3/token/trade-data/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenTradeDataMultipleResponse
+        if frames is not None:
+            params["frames"] = frames
         if ui_amount_mode is not None:
             params["ui_amount_mode"] = ui_amount_mode
 

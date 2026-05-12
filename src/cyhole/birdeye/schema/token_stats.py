@@ -644,3 +644,534 @@ class GetV3TokenMarketDataMultipleResponse(BaseModel):
     """
     data: dict[str, GetV3TokenMarketDataItem]
     success: bool
+
+
+# classes used on GET "Token - Trade Data (Single)" and "Token - Trade Data (Multiple)" endpoints
+class GetV3TokenTradeDataItem(BaseModel):
+    """
+        Per-token trading-activity snapshot returned by the v3 Token - Trade Data endpoints.
+
+        Bundles holder count, market count, latest price, price history at 1m/5m/30m/1h/2h/4h/6h/8h/12h/24h
+        windows together with per-window (1m/5m/30m/1h/2h/4h/8h/24h) unique-wallet counts and full
+        sell/buy/volume breakdowns vs the previous window. All field names are snake_case to mirror
+        the API's JSON shape; no aliases are needed.
+
+        Attributes:
+            address: contract address of the token on the selected chain.
+            holder: number of distinct holders of the token; `None` if undetermined.
+            market: number of active markets (trading pairs) Birdeye tracks for the token; `None` if undetermined.
+            last_trade_unix_time: unix-second timestamp of the last observed trade; `None` if no trades have been recorded.
+            last_trade_human_time: ISO-8601 timestamp of the last observed trade; `None` if no trades have been recorded.
+            price: latest known price of the token in USD; `None` if no price datapoint is available.
+            history_1m_price: snapshot price of the token in USD at the start of the trailing 1m window; `None` if no datapoint for that window.
+            price_change_1m_percent: price change vs the start of the trailing 1m window expressed in percent; `None` if the change cannot be computed.
+            history_5m_price: snapshot price of the token in USD at the start of the trailing 5m window; `None` if no datapoint for that window.
+            price_change_5m_percent: price change vs the start of the trailing 5m window expressed in percent; `None` if the change cannot be computed.
+            history_30m_price: snapshot price of the token in USD at the start of the trailing 30m window; `None` if no datapoint for that window.
+            price_change_30m_percent: price change vs the start of the trailing 30m window expressed in percent; `None` if the change cannot be computed.
+            history_1h_price: snapshot price of the token in USD at the start of the trailing 1h window; `None` if no datapoint for that window.
+            price_change_1h_percent: price change vs the start of the trailing 1h window expressed in percent; `None` if the change cannot be computed.
+            history_2h_price: snapshot price of the token in USD at the start of the trailing 2h window; `None` if no datapoint for that window.
+            price_change_2h_percent: price change vs the start of the trailing 2h window expressed in percent; `None` if the change cannot be computed.
+            history_4h_price: snapshot price of the token in USD at the start of the trailing 4h window; `None` if no datapoint for that window.
+            price_change_4h_percent: price change vs the start of the trailing 4h window expressed in percent; `None` if the change cannot be computed.
+            history_6h_price: snapshot price of the token in USD at the start of the trailing 6h window; `None` if no datapoint for that window.
+            price_change_6h_percent: price change vs the start of the trailing 6h window expressed in percent; `None` if the change cannot be computed.
+            history_8h_price: snapshot price of the token in USD at the start of the trailing 8h window; `None` if no datapoint for that window.
+            price_change_8h_percent: price change vs the start of the trailing 8h window expressed in percent; `None` if the change cannot be computed.
+            history_12h_price: snapshot price of the token in USD at the start of the trailing 12h window; `None` if no datapoint for that window.
+            price_change_12h_percent: price change vs the start of the trailing 12h window expressed in percent; `None` if the change cannot be computed.
+            history_24h_price: snapshot price of the token in USD at the start of the trailing 24h window; `None` if no datapoint for that window.
+            price_change_24h_percent: price change vs the start of the trailing 24h window expressed in percent; `None` if the change cannot be computed.
+            unique_wallet_1m: count of unique wallets that traded the token during the trailing 1m window.
+            unique_wallet_history_1m: count of unique wallets that traded the token during the previous 1m window.
+            unique_wallet_1m_change_percent: percent change of unique wallets between the current and previous 1m windows; `None` if it cannot be computed.
+            unique_wallet_5m: count of unique wallets that traded the token during the trailing 5m window.
+            unique_wallet_history_5m: count of unique wallets that traded the token during the previous 5m window.
+            unique_wallet_5m_change_percent: percent change of unique wallets between the current and previous 5m windows; `None` if it cannot be computed.
+            unique_wallet_30m: count of unique wallets that traded the token during the trailing 30m window.
+            unique_wallet_history_30m: count of unique wallets that traded the token during the previous 30m window.
+            unique_wallet_30m_change_percent: percent change of unique wallets between the current and previous 30m windows; `None` if it cannot be computed.
+            unique_wallet_1h: count of unique wallets that traded the token during the trailing 1h window.
+            unique_wallet_history_1h: count of unique wallets that traded the token during the previous 1h window.
+            unique_wallet_1h_change_percent: percent change of unique wallets between the current and previous 1h windows; `None` if it cannot be computed.
+            unique_wallet_2h: count of unique wallets that traded the token during the trailing 2h window.
+            unique_wallet_history_2h: count of unique wallets that traded the token during the previous 2h window.
+            unique_wallet_2h_change_percent: percent change of unique wallets between the current and previous 2h windows; `None` if it cannot be computed.
+            unique_wallet_4h: count of unique wallets that traded the token during the trailing 4h window.
+            unique_wallet_history_4h: count of unique wallets that traded the token during the previous 4h window.
+            unique_wallet_4h_change_percent: percent change of unique wallets between the current and previous 4h windows; `None` if it cannot be computed.
+            unique_wallet_8h: count of unique wallets that traded the token during the trailing 8h window.
+            unique_wallet_history_8h: count of unique wallets that traded the token during the previous 8h window.
+            unique_wallet_8h_change_percent: percent change of unique wallets between the current and previous 8h windows; `None` if it cannot be computed.
+            unique_wallet_24h: count of unique wallets that traded the token during the trailing 24h window.
+            unique_wallet_history_24h: count of unique wallets that traded the token during the previous 24h window.
+            unique_wallet_24h_change_percent: percent change of unique wallets between the current and previous 24h windows; `None` if it cannot be computed.
+            trade_1m: total number of trades during the trailing 1m window.
+            trade_history_1m: total number of trades during the previous 1m window.
+            trade_1m_change_percent: percent change of trade count between the current and previous 1m windows.
+            sell_1m: number of sell trades during the trailing 1m window.
+            sell_history_1m: number of sell trades during the previous 1m window.
+            sell_1m_change_percent: percent change of sell count between the current and previous 1m windows.
+            buy_1m: number of buy trades during the trailing 1m window.
+            buy_history_1m: number of buy trades during the previous 1m window.
+            buy_1m_change_percent: percent change of buy count between the current and previous 1m windows.
+            volume_1m: traded volume during the trailing 1m window in token UI units.
+            volume_1m_usd: traded volume during the trailing 1m window in USD.
+            volume_history_1m: traded volume during the previous 1m window in token UI units.
+            volume_history_1m_usd: traded volume during the previous 1m window in USD.
+            volume_1m_change_percent: percent change of traded volume between the current and previous 1m windows.
+            volume_buy_1m: buy-side traded volume during the trailing 1m window in token UI units.
+            volume_buy_1m_usd: buy-side traded volume during the trailing 1m window in USD.
+            volume_buy_history_1m: buy-side traded volume during the previous 1m window in token UI units.
+            volume_buy_history_1m_usd: buy-side traded volume during the previous 1m window in USD.
+            volume_buy_1m_change_percent: percent change of buy-side traded volume between the current and previous 1m windows.
+            volume_sell_1m: sell-side traded volume during the trailing 1m window in token UI units.
+            volume_sell_1m_usd: sell-side traded volume during the trailing 1m window in USD.
+            volume_sell_history_1m: sell-side traded volume during the previous 1m window in token UI units.
+            volume_sell_history_1m_usd: sell-side traded volume during the previous 1m window in USD.
+            volume_sell_1m_change_percent: percent change of sell-side traded volume between the current and previous 1m windows.
+            trade_5m: total number of trades during the trailing 5m window.
+            trade_history_5m: total number of trades during the previous 5m window.
+            trade_5m_change_percent: percent change of trade count between the current and previous 5m windows.
+            sell_5m: number of sell trades during the trailing 5m window.
+            sell_history_5m: number of sell trades during the previous 5m window.
+            sell_5m_change_percent: percent change of sell count between the current and previous 5m windows.
+            buy_5m: number of buy trades during the trailing 5m window.
+            buy_history_5m: number of buy trades during the previous 5m window.
+            buy_5m_change_percent: percent change of buy count between the current and previous 5m windows.
+            volume_5m: traded volume during the trailing 5m window in token UI units.
+            volume_5m_usd: traded volume during the trailing 5m window in USD.
+            volume_history_5m: traded volume during the previous 5m window in token UI units.
+            volume_history_5m_usd: traded volume during the previous 5m window in USD.
+            volume_5m_change_percent: percent change of traded volume between the current and previous 5m windows.
+            volume_buy_5m: buy-side traded volume during the trailing 5m window in token UI units.
+            volume_buy_5m_usd: buy-side traded volume during the trailing 5m window in USD.
+            volume_buy_history_5m: buy-side traded volume during the previous 5m window in token UI units.
+            volume_buy_history_5m_usd: buy-side traded volume during the previous 5m window in USD.
+            volume_buy_5m_change_percent: percent change of buy-side traded volume between the current and previous 5m windows.
+            volume_sell_5m: sell-side traded volume during the trailing 5m window in token UI units.
+            volume_sell_5m_usd: sell-side traded volume during the trailing 5m window in USD.
+            volume_sell_history_5m: sell-side traded volume during the previous 5m window in token UI units.
+            volume_sell_history_5m_usd: sell-side traded volume during the previous 5m window in USD.
+            volume_sell_5m_change_percent: percent change of sell-side traded volume between the current and previous 5m windows.
+            trade_30m: total number of trades during the trailing 30m window.
+            trade_history_30m: total number of trades during the previous 30m window.
+            trade_30m_change_percent: percent change of trade count between the current and previous 30m windows.
+            sell_30m: number of sell trades during the trailing 30m window.
+            sell_history_30m: number of sell trades during the previous 30m window.
+            sell_30m_change_percent: percent change of sell count between the current and previous 30m windows.
+            buy_30m: number of buy trades during the trailing 30m window.
+            buy_history_30m: number of buy trades during the previous 30m window.
+            buy_30m_change_percent: percent change of buy count between the current and previous 30m windows.
+            volume_30m: traded volume during the trailing 30m window in token UI units.
+            volume_30m_usd: traded volume during the trailing 30m window in USD.
+            volume_history_30m: traded volume during the previous 30m window in token UI units.
+            volume_history_30m_usd: traded volume during the previous 30m window in USD.
+            volume_30m_change_percent: percent change of traded volume between the current and previous 30m windows.
+            volume_buy_30m: buy-side traded volume during the trailing 30m window in token UI units.
+            volume_buy_30m_usd: buy-side traded volume during the trailing 30m window in USD.
+            volume_buy_history_30m: buy-side traded volume during the previous 30m window in token UI units.
+            volume_buy_history_30m_usd: buy-side traded volume during the previous 30m window in USD.
+            volume_buy_30m_change_percent: percent change of buy-side traded volume between the current and previous 30m windows.
+            volume_sell_30m: sell-side traded volume during the trailing 30m window in token UI units.
+            volume_sell_30m_usd: sell-side traded volume during the trailing 30m window in USD.
+            volume_sell_history_30m: sell-side traded volume during the previous 30m window in token UI units.
+            volume_sell_history_30m_usd: sell-side traded volume during the previous 30m window in USD.
+            volume_sell_30m_change_percent: percent change of sell-side traded volume between the current and previous 30m windows.
+            trade_1h: total number of trades during the trailing 1h window.
+            trade_history_1h: total number of trades during the previous 1h window.
+            trade_1h_change_percent: percent change of trade count between the current and previous 1h windows.
+            sell_1h: number of sell trades during the trailing 1h window.
+            sell_history_1h: number of sell trades during the previous 1h window.
+            sell_1h_change_percent: percent change of sell count between the current and previous 1h windows.
+            buy_1h: number of buy trades during the trailing 1h window.
+            buy_history_1h: number of buy trades during the previous 1h window.
+            buy_1h_change_percent: percent change of buy count between the current and previous 1h windows.
+            volume_1h: traded volume during the trailing 1h window in token UI units.
+            volume_1h_usd: traded volume during the trailing 1h window in USD.
+            volume_history_1h: traded volume during the previous 1h window in token UI units.
+            volume_history_1h_usd: traded volume during the previous 1h window in USD.
+            volume_1h_change_percent: percent change of traded volume between the current and previous 1h windows.
+            volume_buy_1h: buy-side traded volume during the trailing 1h window in token UI units.
+            volume_buy_1h_usd: buy-side traded volume during the trailing 1h window in USD.
+            volume_buy_history_1h: buy-side traded volume during the previous 1h window in token UI units.
+            volume_buy_history_1h_usd: buy-side traded volume during the previous 1h window in USD.
+            volume_buy_1h_change_percent: percent change of buy-side traded volume between the current and previous 1h windows.
+            volume_sell_1h: sell-side traded volume during the trailing 1h window in token UI units.
+            volume_sell_1h_usd: sell-side traded volume during the trailing 1h window in USD.
+            volume_sell_history_1h: sell-side traded volume during the previous 1h window in token UI units.
+            volume_sell_history_1h_usd: sell-side traded volume during the previous 1h window in USD.
+            volume_sell_1h_change_percent: percent change of sell-side traded volume between the current and previous 1h windows.
+            trade_2h: total number of trades during the trailing 2h window.
+            trade_history_2h: total number of trades during the previous 2h window.
+            trade_2h_change_percent: percent change of trade count between the current and previous 2h windows.
+            sell_2h: number of sell trades during the trailing 2h window.
+            sell_history_2h: number of sell trades during the previous 2h window.
+            sell_2h_change_percent: percent change of sell count between the current and previous 2h windows.
+            buy_2h: number of buy trades during the trailing 2h window.
+            buy_history_2h: number of buy trades during the previous 2h window.
+            buy_2h_change_percent: percent change of buy count between the current and previous 2h windows.
+            volume_2h: traded volume during the trailing 2h window in token UI units.
+            volume_2h_usd: traded volume during the trailing 2h window in USD.
+            volume_history_2h: traded volume during the previous 2h window in token UI units.
+            volume_history_2h_usd: traded volume during the previous 2h window in USD.
+            volume_2h_change_percent: percent change of traded volume between the current and previous 2h windows.
+            volume_buy_2h: buy-side traded volume during the trailing 2h window in token UI units.
+            volume_buy_2h_usd: buy-side traded volume during the trailing 2h window in USD.
+            volume_buy_history_2h: buy-side traded volume during the previous 2h window in token UI units.
+            volume_buy_history_2h_usd: buy-side traded volume during the previous 2h window in USD.
+            volume_buy_2h_change_percent: percent change of buy-side traded volume between the current and previous 2h windows.
+            volume_sell_2h: sell-side traded volume during the trailing 2h window in token UI units.
+            volume_sell_2h_usd: sell-side traded volume during the trailing 2h window in USD.
+            volume_sell_history_2h: sell-side traded volume during the previous 2h window in token UI units.
+            volume_sell_history_2h_usd: sell-side traded volume during the previous 2h window in USD.
+            volume_sell_2h_change_percent: percent change of sell-side traded volume between the current and previous 2h windows.
+            trade_4h: total number of trades during the trailing 4h window.
+            trade_history_4h: total number of trades during the previous 4h window.
+            trade_4h_change_percent: percent change of trade count between the current and previous 4h windows.
+            sell_4h: number of sell trades during the trailing 4h window.
+            sell_history_4h: number of sell trades during the previous 4h window.
+            sell_4h_change_percent: percent change of sell count between the current and previous 4h windows.
+            buy_4h: number of buy trades during the trailing 4h window.
+            buy_history_4h: number of buy trades during the previous 4h window.
+            buy_4h_change_percent: percent change of buy count between the current and previous 4h windows.
+            volume_4h: traded volume during the trailing 4h window in token UI units.
+            volume_4h_usd: traded volume during the trailing 4h window in USD.
+            volume_history_4h: traded volume during the previous 4h window in token UI units.
+            volume_history_4h_usd: traded volume during the previous 4h window in USD.
+            volume_4h_change_percent: percent change of traded volume between the current and previous 4h windows.
+            volume_buy_4h: buy-side traded volume during the trailing 4h window in token UI units.
+            volume_buy_4h_usd: buy-side traded volume during the trailing 4h window in USD.
+            volume_buy_history_4h: buy-side traded volume during the previous 4h window in token UI units.
+            volume_buy_history_4h_usd: buy-side traded volume during the previous 4h window in USD.
+            volume_buy_4h_change_percent: percent change of buy-side traded volume between the current and previous 4h windows.
+            volume_sell_4h: sell-side traded volume during the trailing 4h window in token UI units.
+            volume_sell_4h_usd: sell-side traded volume during the trailing 4h window in USD.
+            volume_sell_history_4h: sell-side traded volume during the previous 4h window in token UI units.
+            volume_sell_history_4h_usd: sell-side traded volume during the previous 4h window in USD.
+            volume_sell_4h_change_percent: percent change of sell-side traded volume between the current and previous 4h windows.
+            trade_8h: total number of trades during the trailing 8h window.
+            trade_history_8h: total number of trades during the previous 8h window.
+            trade_8h_change_percent: percent change of trade count between the current and previous 8h windows.
+            sell_8h: number of sell trades during the trailing 8h window.
+            sell_history_8h: number of sell trades during the previous 8h window.
+            sell_8h_change_percent: percent change of sell count between the current and previous 8h windows.
+            buy_8h: number of buy trades during the trailing 8h window.
+            buy_history_8h: number of buy trades during the previous 8h window.
+            buy_8h_change_percent: percent change of buy count between the current and previous 8h windows.
+            volume_8h: traded volume during the trailing 8h window in token UI units.
+            volume_8h_usd: traded volume during the trailing 8h window in USD.
+            volume_history_8h: traded volume during the previous 8h window in token UI units.
+            volume_history_8h_usd: traded volume during the previous 8h window in USD.
+            volume_8h_change_percent: percent change of traded volume between the current and previous 8h windows.
+            volume_buy_8h: buy-side traded volume during the trailing 8h window in token UI units.
+            volume_buy_8h_usd: buy-side traded volume during the trailing 8h window in USD.
+            volume_buy_history_8h: buy-side traded volume during the previous 8h window in token UI units.
+            volume_buy_history_8h_usd: buy-side traded volume during the previous 8h window in USD.
+            volume_buy_8h_change_percent: percent change of buy-side traded volume between the current and previous 8h windows.
+            volume_sell_8h: sell-side traded volume during the trailing 8h window in token UI units.
+            volume_sell_8h_usd: sell-side traded volume during the trailing 8h window in USD.
+            volume_sell_history_8h: sell-side traded volume during the previous 8h window in token UI units.
+            volume_sell_history_8h_usd: sell-side traded volume during the previous 8h window in USD.
+            volume_sell_8h_change_percent: percent change of sell-side traded volume between the current and previous 8h windows.
+            trade_24h: total number of trades during the trailing 24h window.
+            trade_history_24h: total number of trades during the previous 24h window.
+            trade_24h_change_percent: percent change of trade count between the current and previous 24h windows.
+            sell_24h: number of sell trades during the trailing 24h window.
+            sell_history_24h: number of sell trades during the previous 24h window.
+            sell_24h_change_percent: percent change of sell count between the current and previous 24h windows.
+            buy_24h: number of buy trades during the trailing 24h window.
+            buy_history_24h: number of buy trades during the previous 24h window.
+            buy_24h_change_percent: percent change of buy count between the current and previous 24h windows.
+            volume_24h: traded volume during the trailing 24h window in token UI units.
+            volume_24h_usd: traded volume during the trailing 24h window in USD.
+            volume_history_24h: traded volume during the previous 24h window in token UI units.
+            volume_history_24h_usd: traded volume during the previous 24h window in USD.
+            volume_24h_change_percent: percent change of traded volume between the current and previous 24h windows.
+            volume_buy_24h: buy-side traded volume during the trailing 24h window in token UI units.
+            volume_buy_24h_usd: buy-side traded volume during the trailing 24h window in USD.
+            volume_buy_history_24h: buy-side traded volume during the previous 24h window in token UI units.
+            volume_buy_history_24h_usd: buy-side traded volume during the previous 24h window in USD.
+            volume_buy_24h_change_percent: percent change of buy-side traded volume between the current and previous 24h windows.
+            volume_sell_24h: sell-side traded volume during the trailing 24h window in token UI units.
+            volume_sell_24h_usd: sell-side traded volume during the trailing 24h window in USD.
+            volume_sell_history_24h: sell-side traded volume during the previous 24h window in token UI units.
+            volume_sell_history_24h_usd: sell-side traded volume during the previous 24h window in USD.
+            volume_sell_24h_change_percent: percent change of sell-side traded volume between the current and previous 24h windows.
+            is_scaled_ui_token: `True` when the token is a scaled-UI-amount SPL token (Solana only); `None` outside Solana or when undetermined.
+            multiplier: scaling multiplier applied by the API to UI amounts of scaled-UI-amount tokens; `None` when not applicable.
+    """
+    address: str = None
+    holder: int | None = None
+    market: int | None = None
+    last_trade_unix_time: int | None = None
+    last_trade_human_time: datetime | None = None
+    price: float | None = None
+    history_1m_price: float | None = None
+    price_change_1m_percent: float | None = None
+    history_5m_price: float | None = None
+    price_change_5m_percent: float | None = None
+    history_30m_price: float | None = None
+    price_change_30m_percent: float | None = None
+    history_1h_price: float | None = None
+    price_change_1h_percent: float | None = None
+    history_2h_price: float | None = None
+    price_change_2h_percent: float | None = None
+    history_4h_price: float | None = None
+    price_change_4h_percent: float | None = None
+    history_6h_price: float | None = None
+    price_change_6h_percent: float | None = None
+    history_8h_price: float | None = None
+    price_change_8h_percent: float | None = None
+    history_12h_price: float | None = None
+    price_change_12h_percent: float | None = None
+    history_24h_price: float | None = None
+    price_change_24h_percent: float | None = None
+    unique_wallet_1m: int | None = None
+    unique_wallet_history_1m: int | None = None
+    unique_wallet_1m_change_percent: float | None = None
+    unique_wallet_5m: int | None = None
+    unique_wallet_history_5m: int | None = None
+    unique_wallet_5m_change_percent: float | None = None
+    unique_wallet_30m: int | None = None
+    unique_wallet_history_30m: int | None = None
+    unique_wallet_30m_change_percent: float | None = None
+    unique_wallet_1h: int | None = None
+    unique_wallet_history_1h: int | None = None
+    unique_wallet_1h_change_percent: float | None = None
+    unique_wallet_2h: int | None = None
+    unique_wallet_history_2h: int | None = None
+    unique_wallet_2h_change_percent: float | None = None
+    unique_wallet_4h: int | None = None
+    unique_wallet_history_4h: int | None = None
+    unique_wallet_4h_change_percent: float | None = None
+    unique_wallet_8h: int | None = None
+    unique_wallet_history_8h: int | None = None
+    unique_wallet_8h_change_percent: float | None = None
+    unique_wallet_24h: int | None = None
+    unique_wallet_history_24h: int | None = None
+    unique_wallet_24h_change_percent: float | None = None
+    trade_1m: int | None = None
+    trade_history_1m: int | None = None
+    trade_1m_change_percent: float | None = None
+    sell_1m: int | None = None
+    sell_history_1m: int | None = None
+    sell_1m_change_percent: float | None = None
+    buy_1m: int | None = None
+    buy_history_1m: int | None = None
+    buy_1m_change_percent: float | None = None
+    volume_1m: float | None = None
+    volume_1m_usd: float | None = None
+    volume_history_1m: float | None = None
+    volume_history_1m_usd: float | None = None
+    volume_1m_change_percent: float | None = None
+    volume_buy_1m: float | None = None
+    volume_buy_1m_usd: float | None = None
+    volume_buy_history_1m: float | None = None
+    volume_buy_history_1m_usd: float | None = None
+    volume_buy_1m_change_percent: float | None = None
+    volume_sell_1m: float | None = None
+    volume_sell_1m_usd: float | None = None
+    volume_sell_history_1m: float | None = None
+    volume_sell_history_1m_usd: float | None = None
+    volume_sell_1m_change_percent: float | None = None
+    trade_5m: int | None = None
+    trade_history_5m: int | None = None
+    trade_5m_change_percent: float | None = None
+    sell_5m: int | None = None
+    sell_history_5m: int | None = None
+    sell_5m_change_percent: float | None = None
+    buy_5m: int | None = None
+    buy_history_5m: int | None = None
+    buy_5m_change_percent: float | None = None
+    volume_5m: float | None = None
+    volume_5m_usd: float | None = None
+    volume_history_5m: float | None = None
+    volume_history_5m_usd: float | None = None
+    volume_5m_change_percent: float | None = None
+    volume_buy_5m: float | None = None
+    volume_buy_5m_usd: float | None = None
+    volume_buy_history_5m: float | None = None
+    volume_buy_history_5m_usd: float | None = None
+    volume_buy_5m_change_percent: float | None = None
+    volume_sell_5m: float | None = None
+    volume_sell_5m_usd: float | None = None
+    volume_sell_history_5m: float | None = None
+    volume_sell_history_5m_usd: float | None = None
+    volume_sell_5m_change_percent: float | None = None
+    trade_30m: int | None = None
+    trade_history_30m: int | None = None
+    trade_30m_change_percent: float | None = None
+    sell_30m: int | None = None
+    sell_history_30m: int | None = None
+    sell_30m_change_percent: float | None = None
+    buy_30m: int | None = None
+    buy_history_30m: int | None = None
+    buy_30m_change_percent: float | None = None
+    volume_30m: float | None = None
+    volume_30m_usd: float | None = None
+    volume_history_30m: float | None = None
+    volume_history_30m_usd: float | None = None
+    volume_30m_change_percent: float | None = None
+    volume_buy_30m: float | None = None
+    volume_buy_30m_usd: float | None = None
+    volume_buy_history_30m: float | None = None
+    volume_buy_history_30m_usd: float | None = None
+    volume_buy_30m_change_percent: float | None = None
+    volume_sell_30m: float | None = None
+    volume_sell_30m_usd: float | None = None
+    volume_sell_history_30m: float | None = None
+    volume_sell_history_30m_usd: float | None = None
+    volume_sell_30m_change_percent: float | None = None
+    trade_1h: int | None = None
+    trade_history_1h: int | None = None
+    trade_1h_change_percent: float | None = None
+    sell_1h: int | None = None
+    sell_history_1h: int | None = None
+    sell_1h_change_percent: float | None = None
+    buy_1h: int | None = None
+    buy_history_1h: int | None = None
+    buy_1h_change_percent: float | None = None
+    volume_1h: float | None = None
+    volume_1h_usd: float | None = None
+    volume_history_1h: float | None = None
+    volume_history_1h_usd: float | None = None
+    volume_1h_change_percent: float | None = None
+    volume_buy_1h: float | None = None
+    volume_buy_1h_usd: float | None = None
+    volume_buy_history_1h: float | None = None
+    volume_buy_history_1h_usd: float | None = None
+    volume_buy_1h_change_percent: float | None = None
+    volume_sell_1h: float | None = None
+    volume_sell_1h_usd: float | None = None
+    volume_sell_history_1h: float | None = None
+    volume_sell_history_1h_usd: float | None = None
+    volume_sell_1h_change_percent: float | None = None
+    trade_2h: int | None = None
+    trade_history_2h: int | None = None
+    trade_2h_change_percent: float | None = None
+    sell_2h: int | None = None
+    sell_history_2h: int | None = None
+    sell_2h_change_percent: float | None = None
+    buy_2h: int | None = None
+    buy_history_2h: int | None = None
+    buy_2h_change_percent: float | None = None
+    volume_2h: float | None = None
+    volume_2h_usd: float | None = None
+    volume_history_2h: float | None = None
+    volume_history_2h_usd: float | None = None
+    volume_2h_change_percent: float | None = None
+    volume_buy_2h: float | None = None
+    volume_buy_2h_usd: float | None = None
+    volume_buy_history_2h: float | None = None
+    volume_buy_history_2h_usd: float | None = None
+    volume_buy_2h_change_percent: float | None = None
+    volume_sell_2h: float | None = None
+    volume_sell_2h_usd: float | None = None
+    volume_sell_history_2h: float | None = None
+    volume_sell_history_2h_usd: float | None = None
+    volume_sell_2h_change_percent: float | None = None
+    trade_4h: int | None = None
+    trade_history_4h: int | None = None
+    trade_4h_change_percent: float | None = None
+    sell_4h: int | None = None
+    sell_history_4h: int | None = None
+    sell_4h_change_percent: float | None = None
+    buy_4h: int | None = None
+    buy_history_4h: int | None = None
+    buy_4h_change_percent: float | None = None
+    volume_4h: float | None = None
+    volume_4h_usd: float | None = None
+    volume_history_4h: float | None = None
+    volume_history_4h_usd: float | None = None
+    volume_4h_change_percent: float | None = None
+    volume_buy_4h: float | None = None
+    volume_buy_4h_usd: float | None = None
+    volume_buy_history_4h: float | None = None
+    volume_buy_history_4h_usd: float | None = None
+    volume_buy_4h_change_percent: float | None = None
+    volume_sell_4h: float | None = None
+    volume_sell_4h_usd: float | None = None
+    volume_sell_history_4h: float | None = None
+    volume_sell_history_4h_usd: float | None = None
+    volume_sell_4h_change_percent: float | None = None
+    trade_8h: int | None = None
+    trade_history_8h: int | None = None
+    trade_8h_change_percent: float | None = None
+    sell_8h: int | None = None
+    sell_history_8h: int | None = None
+    sell_8h_change_percent: float | None = None
+    buy_8h: int | None = None
+    buy_history_8h: int | None = None
+    buy_8h_change_percent: float | None = None
+    volume_8h: float | None = None
+    volume_8h_usd: float | None = None
+    volume_history_8h: float | None = None
+    volume_history_8h_usd: float | None = None
+    volume_8h_change_percent: float | None = None
+    volume_buy_8h: float | None = None
+    volume_buy_8h_usd: float | None = None
+    volume_buy_history_8h: float | None = None
+    volume_buy_history_8h_usd: float | None = None
+    volume_buy_8h_change_percent: float | None = None
+    volume_sell_8h: float | None = None
+    volume_sell_8h_usd: float | None = None
+    volume_sell_history_8h: float | None = None
+    volume_sell_history_8h_usd: float | None = None
+    volume_sell_8h_change_percent: float | None = None
+    trade_24h: int | None = None
+    trade_history_24h: int | None = None
+    trade_24h_change_percent: float | None = None
+    sell_24h: int | None = None
+    sell_history_24h: int | None = None
+    sell_24h_change_percent: float | None = None
+    buy_24h: int | None = None
+    buy_history_24h: int | None = None
+    buy_24h_change_percent: float | None = None
+    volume_24h: float | None = None
+    volume_24h_usd: float | None = None
+    volume_history_24h: float | None = None
+    volume_history_24h_usd: float | None = None
+    volume_24h_change_percent: float | None = None
+    volume_buy_24h: float | None = None
+    volume_buy_24h_usd: float | None = None
+    volume_buy_history_24h: float | None = None
+    volume_buy_history_24h_usd: float | None = None
+    volume_buy_24h_change_percent: float | None = None
+    volume_sell_24h: float | None = None
+    volume_sell_24h_usd: float | None = None
+    volume_sell_history_24h: float | None = None
+    volume_sell_history_24h_usd: float | None = None
+    volume_sell_24h_change_percent: float | None = None
+    is_scaled_ui_token: bool | None = None
+    multiplier: float | None = None
+
+    @field_validator("last_trade_human_time")
+    def parse_last_trade_human_time(cls, dt_raw: str | datetime | None) -> datetime | None:
+        if isinstance(dt_raw, str):
+            return datetime.fromisoformat(dt_raw.replace("Z", "+00:00"))
+        return dt_raw
+
+class GetV3TokenTradeDataResponse(BaseModel):
+    """
+        Model used to represent the **Token - Trade Data (Single)** endpoint from birdeye API.
+
+        Attributes:
+            data: trading-activity snapshot of the requested token.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenTradeDataItem
+    success: bool
+
+class GetV3TokenTradeDataMultipleResponse(BaseModel):
+    """
+        Model used to represent the **Token - Trade Data (Multiple)** endpoint from birdeye API.
+
+        Attributes:
+            data: dictionary keyed by token contract address; each value is the trading-activity
+                snapshot for that token. Unrecognised addresses are omitted from the dict.
+            success: `True` when the API call completed without errors.
+    """
+    data: dict[str, GetV3TokenTradeDataItem]
+    success: bool
