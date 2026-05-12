@@ -1175,3 +1175,86 @@ class GetV3TokenTradeDataMultipleResponse(BaseModel):
     """
     data: dict[str, GetV3TokenTradeDataItem]
     success: bool
+
+# classes used on GET "Token - Liquidity (Single)" and "Token - Liquidity (Multiple)" endpoints
+class GetV3TokenExitLiquidityPrice(BaseModel):
+    """
+        Latest price datapoint used by the Birdeye exit-liquidity computation.
+
+        Attributes:
+            value: the price expressed in the response's `currency` (typically USD).
+            update_unix_time: unix-second timestamp at which Birdeye last refreshed the price.
+            update_human_time: ISO-8601 timestamp matching `update_unix_time`.
+            update_in_slot: chain slot at which the price was observed.
+    """
+    value: float
+    update_unix_time: int
+    update_human_time: str
+    update_in_slot: int
+
+class GetV3TokenExitLiquidityItem(BaseModel):
+    """
+        Single token entry of the Birdeye Token - Liquidity (exit liquidity) endpoint.
+
+        The exit-liquidity figure is Birdeye's estimate of how much value the largest holders could
+        realistically extract by selling without crashing the price, computed from the on-chain
+        liquidity profile of the token's biggest markets.
+
+        Attributes:
+            token: contract address of the token (mirrors `address` and is kept for API compatibility).
+            exit_liquidity: estimated value, in `currency`, that the biggest holders could exit without
+                wrecking the price.
+            liquidity: total on-chain liquidity of the token expressed in `currency`.
+            price: latest price datapoint used to derive `exit_liquidity` and `liquidity`.
+            currency: ISO-style currency code the numeric fields above are expressed in (typically `USD`).
+            address: contract address of the token on the selected chain.
+            name: human-readable name of the token; `None` if unknown.
+            symbol: ticker symbol of the token; `None` if unknown.
+            decimals: number of decimal places used by the token.
+            extensions: free-form metadata bag (website, social links, ...); individual values may be
+                `None`, and the whole dict can be `None` when Birdeye has no extra metadata.
+            logo_uri: URL of the token logo; `None` if Birdeye does not have a logo for the token.
+    """
+    token: str
+    exit_liquidity: float
+    liquidity: float
+    price: GetV3TokenExitLiquidityPrice
+    currency: str
+    address: str
+    name: str | None = None
+    symbol: str | None = None
+    decimals: int
+    extensions: dict[str, str | None] | None = None
+    logo_uri: str | None = None
+
+class GetV3TokenExitLiquidityResponse(BaseModel):
+    """
+        Model used to represent the **Token - Liquidity (Single)** endpoint from birdeye API.
+
+        Attributes:
+            data: exit-liquidity payload of the requested token.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenExitLiquidityItem
+    success: bool
+
+class GetV3TokenExitLiquidityMultipleData(BaseModel):
+    """
+        Payload of the Token - Liquidity (Multiple) response.
+
+        Attributes:
+            items: list of exit-liquidity entries, one per requested token. Unrecognised addresses are
+                omitted from the list.
+    """
+    items: list[GetV3TokenExitLiquidityItem]
+
+class GetV3TokenExitLiquidityMultipleResponse(BaseModel):
+    """
+        Model used to represent the **Token - Liquidity (Multiple)** endpoint from birdeye API.
+
+        Attributes:
+            data: payload containing the list of exit-liquidity entries.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenExitLiquidityMultipleData
+    success: bool

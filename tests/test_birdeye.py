@@ -21,6 +21,8 @@ from cyhole.birdeye.schema import (
     GetV3TokenMarketDataMultipleResponse,
     GetV3TokenTradeDataResponse,
     GetV3TokenTradeDataMultipleResponse,
+    GetV3TokenExitLiquidityResponse,
+    GetV3TokenExitLiquidityMultipleResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -498,6 +500,89 @@ class TestBirdeyePublic:
             response = await client.get_v3_token_trade_data([WSOL.address, USDC.address])
 
         assert isinstance(response, GetV3TokenTradeDataMultipleResponse)
+
+    def test_get_v3_token_exit_liquidity_single_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Liquidity" with a single token address (synchronous logic).
+
+            Mock Response File: get_v3_token_exit_liquidity_single.json
+        """
+        mock_file_name = "get_v3_token_exit_liquidity_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenExitLiquidityResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        # Birdeye exit-liquidity is Base-chain only; use an EVM address placeholder.
+        response = self.birdeye.client.get_v3_token_exit_liquidity("0x60a3E35Cc302bFA44Cb288Bc5a4F316Fdb1adb42")
+        assert isinstance(response, GetV3TokenExitLiquidityResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_token_exit_liquidity_single_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Liquidity" with a single token address (asynchronous logic).
+
+            Mock Response File: get_v3_token_exit_liquidity_single.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_exit_liquidity_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenExitLiquidityResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_token_exit_liquidity("0x60a3E35Cc302bFA44Cb288Bc5a4F316Fdb1adb42")
+
+        assert isinstance(response, GetV3TokenExitLiquidityResponse)
+
+    def test_get_v3_token_exit_liquidity_multiple_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Liquidity" with a list of token addresses (synchronous logic).
+
+            Mock Response File: get_v3_token_exit_liquidity_multiple.json
+        """
+        mock_file_name = "get_v3_token_exit_liquidity_multiple"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenExitLiquidityMultipleResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_token_exit_liquidity([
+            "0x60a3E35Cc302bFA44Cb288Bc5a4F316Fdb1adb42",
+            "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        ])
+        assert isinstance(response, GetV3TokenExitLiquidityMultipleResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_token_exit_liquidity_multiple_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "Token - Liquidity" with a list of token addresses (asynchronous logic).
+
+            Mock Response File: get_v3_token_exit_liquidity_multiple.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_exit_liquidity_multiple"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenExitLiquidityMultipleResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_token_exit_liquidity([
+                "0x60a3E35Cc302bFA44Cb288Bc5a4F316Fdb1adb42",
+                "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            ])
+
+        assert isinstance(response, GetV3TokenExitLiquidityMultipleResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """

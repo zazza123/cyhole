@@ -33,6 +33,8 @@ from ..birdeye.schema import (
     GetV3TokenMarketDataMultipleResponse,
     GetV3TokenTradeDataResponse,
     GetV3TokenTradeDataMultipleResponse,
+    GetV3TokenExitLiquidityResponse,
+    GetV3TokenExitLiquidityMultipleResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -692,6 +694,74 @@ class Birdeye(Interaction):
             params["frames"] = frames
         if ui_amount_mode is not None:
             params["ui_amount_mode"] = ui_amount_mode
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return response_model(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return response_model(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[True], address: str) -> GetV3TokenExitLiquidityResponse: ...
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[True], address: list[str]) -> GetV3TokenExitLiquidityMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetV3TokenExitLiquidityResponse]: ...
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetV3TokenExitLiquidityMultipleResponse]: ...
+
+    def _get_v3_token_exit_liquidity(
+        self,
+        sync: bool,
+        address: str | list[str]
+    ) -> (
+        GetV3TokenExitLiquidityResponse
+        | GetV3TokenExitLiquidityMultipleResponse
+        | Coroutine[None, None, GetV3TokenExitLiquidityResponse]
+        | Coroutine[None, None, GetV3TokenExitLiquidityMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token exit-liquidity endpoints **[Token - Liquidity (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity)**
+            and **[Token - Liquidity (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity-multiple)**.
+            They return Birdeye's estimate of how much value the largest holders of a token could
+            realistically extract by selling without crashing the price, computed from the on-chain
+            liquidity profile of the token's biggest markets. The single variant returns the payload
+            directly under `data`; the multiple variant returns `data.items` as a list (one entry per
+            requested address).
+
+            !!! info
+                Birdeye restricts both endpoints to the **Base** chain at the time of writing.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/exit-liquidity`, returning a [`GetV3TokenExitLiquidityResponse`][cyhole.birdeye.schema.GetV3TokenExitLiquidityResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/exit-liquidity/multiple`,
+            returning a [`GetV3TokenExitLiquidityMultipleResponse`][cyhole.birdeye.schema.GetV3TokenExitLiquidityMultipleResponse]
+            whose `data.items` is a list of entries.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+
+            Returns:
+                exit-liquidity payload for the requested token(s); the concrete type depends on the
+                input cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/exit-liquidity"
+            params: dict[str, Any] = {"address": address}
+            response_model: type = GetV3TokenExitLiquidityResponse
+        else:
+            url = self.url_api_public + "v3/token/exit-liquidity/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenExitLiquidityMultipleResponse
 
         if sync:
             content_raw = self.client.api(RequestType.GET.value, url, params = params)

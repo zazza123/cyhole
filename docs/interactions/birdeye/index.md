@@ -87,6 +87,7 @@ The documentation follows the library's structure by providing all the technical
 | Token - Metadata (Single / Multiple) | `GET` | [`get_v3_token_meta_data`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_meta_data) | `0.3.0` | - |
 | Token - Market Data (Single / Multiple) | `GET` | [`get_v3_token_market_data`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_market_data) | `0.3.0` | - |
 | Token - Trade Data (Single / Multiple) | `GET` | [`get_v3_token_trade_data`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_trade_data) | `0.3.0` | - |
+| Token - Liquidity (Single / Multiple) | `GET` | [`get_v3_token_exit_liquidity`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_exit_liquidity) | `0.3.0` | - |
 | Token - Creation Token Info | `GET` | [`get_token_creation_info`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_creation_info) | `0.0.1-alpha` | - |
 | Token - Security | `GET` | [`get_token_security`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_security) | `0.0.1-alpha` | - |
 | Token - Overview | `GET` | [`get_token_overview`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_overview) | `0.0.1-alpha` | - |

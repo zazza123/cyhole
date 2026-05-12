@@ -27,6 +27,8 @@ from ..birdeye.schema import (
     GetV3TokenMarketDataMultipleResponse,
     GetV3TokenTradeDataResponse,
     GetV3TokenTradeDataMultipleResponse,
+    GetV3TokenExitLiquidityResponse,
+    GetV3TokenExitLiquidityMultipleResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -158,6 +160,20 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_trade_data`][cyhole.birdeye.interaction.Birdeye._get_v3_token_trade_data].
         """
         return self._interaction._get_v3_token_trade_data(True, address, frames, ui_amount_mode)
+
+    @overload
+    def get_v3_token_exit_liquidity(self, address: str) -> GetV3TokenExitLiquidityResponse: ...
+
+    @overload
+    def get_v3_token_exit_liquidity(self, address: list[str]) -> GetV3TokenExitLiquidityMultipleResponse: ...
+
+    def get_v3_token_exit_liquidity(self, address: str | list[str]) -> GetV3TokenExitLiquidityResponse | GetV3TokenExitLiquidityMultipleResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 Token - Liquidity endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity)** /
+            **[multiple](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity-multiple)**) for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_exit_liquidity`][cyhole.birdeye.interaction.Birdeye._get_v3_token_exit_liquidity].
+        """
+        return self._interaction._get_v3_token_exit_liquidity(True, address)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -368,6 +384,20 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_trade_data`][cyhole.birdeye.interaction.Birdeye._get_v3_token_trade_data].
         """
         return await self._interaction._get_v3_token_trade_data(False, address, frames, ui_amount_mode)
+
+    @overload
+    async def get_v3_token_exit_liquidity(self, address: str) -> GetV3TokenExitLiquidityResponse: ...
+
+    @overload
+    async def get_v3_token_exit_liquidity(self, address: list[str]) -> GetV3TokenExitLiquidityMultipleResponse: ...
+
+    async def get_v3_token_exit_liquidity(self, address: str | list[str]) -> GetV3TokenExitLiquidityResponse | GetV3TokenExitLiquidityMultipleResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 Token - Liquidity endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity)** /
+            **[multiple](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity-multiple)**) for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_exit_liquidity`][cyhole.birdeye.interaction.Birdeye._get_v3_token_exit_liquidity].
+        """
+        return await self._interaction._get_v3_token_exit_liquidity(False, address)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
