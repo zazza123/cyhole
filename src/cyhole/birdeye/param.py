@@ -138,6 +138,24 @@ class BirdeyeV2MarketsSortBy(CyholeParam):
     VOLUME_24H = "volume24h"
     """Sort markets by USD traded volume in the trailing 24h window."""
 
+class BirdeyeHolderDistributionAddressType(CyholeParam):
+    """
+        Enum class to select the address type used by the Birdeye Token - Holder Distribution endpoint.
+    """
+    WALLET = "wallet"
+    """Return holder distribution grouped by wallet owner address."""
+    TOKEN_ACCOUNT = "token_account"
+    """Return holder distribution grouped by SPL token account address."""
+
+class BirdeyeHolderDistributionMode(CyholeParam):
+    """
+        Enum class to select the filter mode of the Birdeye Token - Holder Distribution endpoint.
+    """
+    TOP = "top"
+    """Return the top `top_n` holders, ranked by holding amount."""
+    PERCENT = "percent"
+    """Return the holders whose share of total supply falls in `[min_percent, max_percent]`."""
+
 class BirdeyeV2TopTradersSortBy(CyholeParam):
     """
         Enum class to get the supported sorting metrics of the Birdeye v2 Token - Top Traders endpoint.

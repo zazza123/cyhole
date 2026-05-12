@@ -15,6 +15,8 @@ from ..birdeye.param import (
     BirdeyeMintBurnType,
     BirdeyeV2TopTradersSortBy,
     BirdeyeV2TopTradersTimeFrame,
+    BirdeyeHolderDistributionAddressType,
+    BirdeyeHolderDistributionMode,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -36,6 +38,7 @@ from ..birdeye.schema import (
     GetV2TopTradersResponse,
     GetTokenHolderResponse,
     PostTokenHolderBatchResponse,
+    GetHolderDistributionResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -234,6 +237,24 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_token_holder`][cyhole.birdeye.interaction.Birdeye._get_token_holder].
         """
         return self._interaction._get_token_holder(True, token_address, wallets, offset, limit, ui_amount_mode)
+
+    def get_holder_distribution(
+        self,
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetHolderDistributionResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Holder Distribution](https://docs.birdeye.so/reference/get-holder-v1-distribution)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_holder_distribution`][cyhole.birdeye.interaction.Birdeye._get_holder_distribution].
+        """
+        return self._interaction._get_holder_distribution(True, token_address, address_type, mode, top_n, min_percent, max_percent, include_list, offset, limit)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -511,6 +532,24 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_token_holder`][cyhole.birdeye.interaction.Birdeye._get_token_holder].
         """
         return await self._interaction._get_token_holder(False, token_address, wallets, offset, limit, ui_amount_mode)
+
+    async def get_holder_distribution(
+        self,
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetHolderDistributionResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Holder Distribution](https://docs.birdeye.so/reference/get-holder-v1-distribution)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_holder_distribution`][cyhole.birdeye.interaction.Birdeye._get_holder_distribution].
+        """
+        return await self._interaction._get_holder_distribution(False, token_address, address_type, mode, top_n, min_percent, max_percent, include_list, offset, limit)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

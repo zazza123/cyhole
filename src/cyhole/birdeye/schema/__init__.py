@@ -90,6 +90,12 @@ from .holder import (
     PostTokenHolderBatchData,
     PostTokenHolderBatchBody,
     PostTokenHolderBatchResponse,
+    GetHolderDistributionEntry,
+    GetHolderDistributionPagination,
+    GetHolderDistributionRange,
+    GetHolderDistributionSummary,
+    GetHolderDistributionData,
+    GetHolderDistributionResponse,
 )
 from .wallet import (
     GetWalletSupportedNetworksResponse,
@@ -173,5 +179,11 @@ __all__ = [
     "PostTokenHolderBatchData",
     "PostTokenHolderBatchBody",
     "PostTokenHolderBatchResponse",
+    "GetHolderDistributionEntry",
+    "GetHolderDistributionPagination",
+    "GetHolderDistributionRange",
+    "GetHolderDistributionSummary",
+    "GetHolderDistributionData",
+    "GetHolderDistributionResponse",
     "GetWalletSupportedNetworksResponse",
 ]

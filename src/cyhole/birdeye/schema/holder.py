@@ -97,3 +97,90 @@ class PostTokenHolderBatchResponse(BaseModel):
     """
     data: PostTokenHolderBatchData
     success: bool
+
+
+# classes used on GET "Token - Holder Distribution" endpoint
+class GetHolderDistributionEntry(BaseModel):
+    """
+        Single holder entry in a Token - Holder Distribution response.
+
+        Attributes:
+            wallet: wallet (or SPL token-account, depending on the request `address_type`) address.
+            holding: balance of the holder expressed in UI units, as a string to preserve precision.
+            percent_of_supply: share of the token's total supply held, expressed as a fraction in
+                `[0, 1]`.
+    """
+    wallet: str
+    holding: str
+    percent_of_supply: float
+
+class GetHolderDistributionPagination(BaseModel):
+    """
+        Pagination block of a Token - Holder Distribution response.
+
+        Attributes:
+            offset: zero-based offset of the current batch within the full result set.
+            limit: maximum number of entries returned per call.
+            total: total number of entries that match the request filters across all pages.
+    """
+    offset: int
+    limit: int
+    total: int
+
+class GetHolderDistributionRange(BaseModel):
+    """
+        Supply-share range applied by Birdeye when filtering the distribution.
+
+        Attributes:
+            min_percent: inclusive lower bound on `percent_of_supply` (in `percent` mode); echoes the
+                request parameter or Birdeye's default.
+            max_percent: inclusive upper bound on `percent_of_supply` (in `percent` mode); echoes the
+                request parameter or Birdeye's default.
+    """
+    min_percent: float
+    max_percent: float
+
+class GetHolderDistributionSummary(BaseModel):
+    """
+        Aggregate summary of the holders matching the distribution filters.
+
+        Attributes:
+            total_holding: cumulative balance of matched holders in UI units, as a string to preserve
+                precision.
+            percent_of_supply: cumulative `total_holding` expressed as a fraction (`[0, 1]`) of total
+                supply.
+            wallet_count: number of distinct holders that matched the filter range.
+    """
+    total_holding: str
+    percent_of_supply: float
+    wallet_count: int
+
+class GetHolderDistributionData(BaseModel):
+    """
+        Payload of the Token - Holder Distribution response.
+
+        Attributes:
+            token_address: contract address of the token the distribution refers to.
+            mode: filter mode actually applied (`top` or `percent`).
+            range: supply-share range used by the filter.
+            holders: list of individual holder entries (empty when `include_list=false`).
+            pagination: pagination metadata describing the returned batch and total match count.
+            summary: cumulative figures over the holders that matched the filter range.
+    """
+    token_address: str
+    mode: str
+    range: GetHolderDistributionRange
+    holders: list[GetHolderDistributionEntry]
+    pagination: GetHolderDistributionPagination
+    summary: GetHolderDistributionSummary
+
+class GetHolderDistributionResponse(BaseModel):
+    """
+        Model used to represent the **Token - Holder Distribution** endpoint from birdeye API.
+
+        Attributes:
+            data: holder-distribution payload.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetHolderDistributionData
+    success: bool

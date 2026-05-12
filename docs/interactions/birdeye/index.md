@@ -91,6 +91,7 @@ The documentation follows the library's structure by providing all the technical
 | Token - Mint/Burn | `GET` | [`get_v3_token_mint_burn_txs`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_mint_burn_txs) | `0.3.0` | - |
 | Token - Top Traders | `GET` | [`get_v2_tokens_top_traders`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v2_tokens_top_traders) | `0.3.0` | - |
 | Token - Holder (Top / Batch) | `GET / POST` | [`get_token_holder`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_holder) | `0.3.0` | - |
+| Token - Holder Distribution | `GET` | [`get_holder_distribution`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_holder_distribution) | `0.3.0` | - |
 | Token - Creation Token Info | `GET` | [`get_token_creation_info`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_creation_info) | `0.0.1-alpha` | - |
 | Token - Security | `GET` | [`get_token_security`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_security) | `0.0.1-alpha` | - |
 | Token - Overview | `GET` | [`get_token_overview`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_overview) | `0.0.1-alpha` | - |

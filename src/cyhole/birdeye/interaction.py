@@ -20,7 +20,9 @@ from ..birdeye.param import (
     BirdeyeV2MarketsSortBy,
     BirdeyeMintBurnType,
     BirdeyeV2TopTradersSortBy,
-    BirdeyeV2TopTradersTimeFrame
+    BirdeyeV2TopTradersTimeFrame,
+    BirdeyeHolderDistributionAddressType,
+    BirdeyeHolderDistributionMode
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -42,6 +44,7 @@ from ..birdeye.schema import (
     GetV2TopTradersResponse,
     GetTokenHolderResponse,
     PostTokenHolderBatchResponse,
+    GetHolderDistributionResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1118,6 +1121,116 @@ class Birdeye(Interaction):
                 content_raw = await self.async_client.api(RequestType.POST.value, url, json = body, headers = headers, params = post_params or None)
                 return PostTokenHolderBatchResponse(**content_raw.json())
             return async_request_post()
+
+    @overload
+    def _get_holder_distribution(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetHolderDistributionResponse: ...
+
+    @overload
+    def _get_holder_distribution(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetHolderDistributionResponse]: ...
+
+    def _get_holder_distribution(
+        self,
+        sync: bool,
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetHolderDistributionResponse | Coroutine[None, None, GetHolderDistributionResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Distribution](https://docs.birdeye.so/reference/get-holder-v1-distribution)** and is used
+            to summarise how the supply of a token is spread across its holders. The endpoint can run
+            in two modes: in `top` mode it returns the top-N holders by holding amount, in `percent`
+            mode it returns the holders whose share of total supply falls inside a `[min_percent, max_percent]`
+            band. Each call also returns an aggregate `summary` (total holding, cumulative percent of
+            supply, wallet count) over the filtered set — very useful for "how much of the supply is
+            in whale hands" style answers.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                token_address: contract address of the SPL token whose distribution must be analysed.
+                address_type: whether to group holders by wallet owner or by SPL token account address.
+                    Pick one of the constants on
+                    [`BirdeyeHolderDistributionAddressType`][cyhole.birdeye.param.BirdeyeHolderDistributionAddressType].
+                    Default behaviour: `wallet`.
+                mode: filter mode (top-N vs supply-share range). Pick one of the constants on
+                    [`BirdeyeHolderDistributionMode`][cyhole.birdeye.param.BirdeyeHolderDistributionMode].
+                    Default behaviour: `top`.
+                top_n: number of top holders to return when `mode = top`. Ignored otherwise.
+                    Default behaviour: `10`.
+                min_percent: inclusive lower bound on the holder share when `mode = percent`. Expressed
+                    as a fraction in `[0, 1]`. `None` disables the lower bound.
+                max_percent: inclusive upper bound on the holder share when `mode = percent`. `None`
+                    disables the upper bound.
+                include_list: when `False`, omit the `holders` list from the response and return only
+                    the aggregate summary; useful to save bandwidth on large queries. Default
+                    behaviour: `True`.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                    Birdeye requires `offset + limit <= 10000`.
+                limit: number of records to return. Default behaviour: `50`.
+
+            Returns:
+                holder-distribution payload decoded as
+                [`GetHolderDistributionResponse`][cyhole.birdeye.schema.GetHolderDistributionResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeHolderDistributionAddressType.check(address_type)
+        BirdeyeHolderDistributionMode.check(mode)
+
+        url = self.url_api_holder_v1 + "distribution"
+        params = {
+            "token_address": token_address,
+            "address_type": address_type,
+            "mode": mode,
+            "top_n": top_n,
+            "min_percent": min_percent,
+            "max_percent": max_percent,
+            "include_list": str(include_list).lower() if include_list is not None else None,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetHolderDistributionResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetHolderDistributionResponse(**content_raw.json())
+            return async_request()
 
     @overload
     def _get_token_creation_info(

@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "data": {
+    "token_address": "11111Zxp8hv4GVzZTWcgcFTcFCfPzW8YmbwvGahTBP",
+    "mode": "percent",
+    "range": {
+      "min_percent": 0,
+      "max_percent": 1
+    },
+    "pagination": {
+      "limit": 50,
+      "offset": 0,
+      "total": 2
+    },
+    "summary": {
+      "wallet_count": 2,
+      "total_holding": "0.007374018405092705",
+      "percent_of_supply": 1.7374018405092703e-06
+    },
+    "holders": [
+      {
+        "wallet": "aXG7W1eYYHN3SyAp515Dqu595wzNJxdGtcG5sjLVky1",
+        "holding": "0.000017910381239401126",
+        "percent_of_supply": 1.7910381239401128e-06
+      },
+      {
+        "wallet": "aXG7W1wjjgiNnu8emgqJsTqbN86B8KEeKhN4J4JChqd",
+        "holding": "0.0000007910381239401126",
+        "percent_of_supply": 1.7910381239401128e-06
+      }
+    ]
+  }
+}
