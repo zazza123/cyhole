@@ -138,6 +138,28 @@ class BirdeyeV2MarketsSortBy(CyholeParam):
     VOLUME_24H = "volume24h"
     """Sort markets by USD traded volume in the trailing 24h window."""
 
+class BirdeyeTokenTrendingSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye Token - Trending List endpoint.
+    """
+    RANK = "rank"
+    """Sort tokens by Birdeye's internal trending rank."""
+    VOLUME_USD = "volumeUSD"
+    """Sort tokens by USD traded volume over the selected interval."""
+    LIQUIDITY = "liquidity"
+    """Sort tokens by current liquidity (USD)."""
+
+class BirdeyeTokenTrendingInterval(CyholeParam):
+    """
+        Enum class to select the trending time window of the Birdeye Token - Trending List endpoint.
+    """
+    H1 = "1h"
+    """Trailing 1 hour."""
+    H4 = "4h"
+    """Trailing 4 hours."""
+    H24 = "24h"
+    """Trailing 24 hours."""
+
 class BirdeyeHolderChartType(CyholeParam):
     """
         Enum class to select the resolution of the Birdeye Token - Holder Chart endpoint.

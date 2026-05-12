@@ -97,6 +97,7 @@ The documentation follows the library's structure by providing all the technical
 | Token - Holder Chart | `GET` | [`get_token_holder_chart`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_holder_chart) | `0.3.0` | - |
 | Token - Transfer List | `POST` | [`post_token_transfer`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._post_token_transfer) | `0.3.0` | - |
 | Token - Transfer Total | `POST` | [`post_token_transfer_total`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._post_token_transfer_total) | `0.3.0` | - |
+| Token - Trending List | `GET` | [`get_token_trending`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_trending) | `0.3.0` | - |
 | Token - Creation Token Info | `GET` | [`get_token_creation_info`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_creation_info) | `0.0.1-alpha` | - |
 | Token - Security | `GET` | [`get_token_security`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_security) | `0.0.1-alpha` | - |
 | Token - Overview | `GET` | [`get_token_overview`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_overview) | `0.0.1-alpha` | - |

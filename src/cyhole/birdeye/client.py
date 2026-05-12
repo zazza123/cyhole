@@ -20,6 +20,8 @@ from ..birdeye.param import (
     BirdeyeHolderChartType,
     BirdeyeHolderChartMode,
     BirdeyeHolderChartPercentMode,
+    BirdeyeTokenTrendingSortBy,
+    BirdeyeTokenTrendingInterval,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -49,6 +51,7 @@ from ..birdeye.schema import (
     PostTokenTransferResponse,
     PostTokenTransferTotalBody,
     PostTokenTransferTotalResponse,
+    GetTokenTrendingResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -324,6 +327,21 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._post_token_transfer_total`][cyhole.birdeye.interaction.Birdeye._post_token_transfer_total].
         """
         return self._interaction._post_token_transfer_total(True, body)
+
+    def get_token_trending(
+        self,
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenTrendingResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Trending List](https://docs.birdeye.so/reference/get-defi-token_trending)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_trending`][cyhole.birdeye.interaction.Birdeye._get_token_trending].
+        """
+        return self._interaction._get_token_trending(True, sort_by, sort_type, interval, offset, limit, ui_amount_mode)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -678,6 +696,21 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._post_token_transfer_total`][cyhole.birdeye.interaction.Birdeye._post_token_transfer_total].
         """
         return await self._interaction._post_token_transfer_total(False, body)
+
+    async def get_token_trending(
+        self,
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenTrendingResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Trending List](https://docs.birdeye.so/reference/get-defi-token_trending)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_trending`][cyhole.birdeye.interaction.Birdeye._get_token_trending].
+        """
+        return await self._interaction._get_token_trending(False, sort_by, sort_type, interval, offset, limit, ui_amount_mode)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

@@ -48,6 +48,9 @@ from .token_stats import (
 from .creation_trending import (
     GetTokenCreationInfoData,
     GetTokenCreationInfoResponse,
+    GetTokenTrendingItem,
+    GetTokenTrendingData,
+    GetTokenTrendingResponse,
 )
 from .price import (
     GetPriceData,
@@ -162,6 +165,9 @@ __all__ = [
     "GetV3TokenExitLiquidityMultipleResponse",
     "GetTokenCreationInfoData",
     "GetTokenCreationInfoResponse",
+    "GetTokenTrendingItem",
+    "GetTokenTrendingData",
+    "GetTokenTrendingResponse",
     "GetPriceData",
     "GetPriceResponse",
     "GetPriceMultipleData",

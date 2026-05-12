@@ -25,7 +25,9 @@ from ..birdeye.param import (
     BirdeyeHolderDistributionMode,
     BirdeyeHolderChartType,
     BirdeyeHolderChartMode,
-    BirdeyeHolderChartPercentMode
+    BirdeyeHolderChartPercentMode,
+    BirdeyeTokenTrendingSortBy,
+    BirdeyeTokenTrendingInterval
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -55,6 +57,7 @@ from ..birdeye.schema import (
     PostTokenTransferResponse,
     PostTokenTransferTotalBody,
     PostTokenTransferTotalResponse,
+    GetTokenTrendingResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1602,6 +1605,89 @@ class Birdeye(Interaction):
             json = body.model_dump(exclude_none = True),
             headers = headers,
         )
+
+    @overload
+    def _get_token_trending(
+        self,
+        sync: Literal[True],
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenTrendingResponse: ...
+
+    @overload
+    def _get_token_trending(
+        self,
+        sync: Literal[False],
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetTokenTrendingResponse]: ...
+
+    def _get_token_trending(
+        self,
+        sync: bool,
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenTrendingResponse | Coroutine[None, None, GetTokenTrendingResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Trending List](https://docs.birdeye.so/reference/get-defi-token_trending)** and is used
+            to retrieve Birdeye's up-to-date ranking of trending tokens on the selected chain. Each
+            entry exposes the trending rank, identity, current price, liquidity, market cap, FDV
+            and the 24h USD volume / price change figures. Useful when surfacing "what is hot right
+            now" on a token discovery UI.
+
+            Parameters:
+                sort_by: ranking metric. Pick one of the constants on
+                    [`BirdeyeTokenTrendingSortBy`][cyhole.birdeye.param.BirdeyeTokenTrendingSortBy].
+                    Default behaviour: `rank` (i.e. Birdeye's own ordering).
+                sort_type: ascending or descending order. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `asc`
+                    (so position 1 — most trending — comes first).
+                interval: trailing window used for the trending computation. Pick one of the
+                    constants on [`BirdeyeTokenTrendingInterval`][cyhole.birdeye.param.BirdeyeTokenTrendingInterval].
+                    Default behaviour: `24h`.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                limit: number of records to return per page. Default behaviour: `20`.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`scaled`).
+
+            Returns:
+                trending-list payload decoded as
+                [`GetTokenTrendingResponse`][cyhole.birdeye.schema.GetTokenTrendingResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeTokenTrendingSortBy.check(sort_by)
+        BirdeyeOrder.check(sort_type)
+        BirdeyeTokenTrendingInterval.check(interval)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_public + "token_trending"
+        params = {
+            "sort_by": sort_by,
+            "sort_type": sort_type,
+            "interval": interval,
+            "offset": offset,
+            "limit": limit,
+            "ui_amount_mode": ui_amount_mode,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenTrendingResponse, params = params)
 
     @overload
     def _get_token_creation_info(
