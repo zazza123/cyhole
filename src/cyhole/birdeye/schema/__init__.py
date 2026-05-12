@@ -27,6 +27,9 @@ from .security import (
 from .token_stats import (
     GetTokenOverviewData,
     GetTokenOverviewResponse,
+    GetV3TokenMetaDataItem,
+    GetV3TokenMetaDataResponse,
+    GetV3TokenMetaDataMultipleResponse,
 )
 from .creation_trending import (
     GetTokenCreationInfoData,
@@ -89,6 +92,9 @@ __all__ = [
     "GetTokenSecurityResponse",
     "GetTokenOverviewData",
     "GetTokenOverviewResponse",
+    "GetV3TokenMetaDataItem",
+    "GetV3TokenMetaDataResponse",
+    "GetV3TokenMetaDataMultipleResponse",
     "GetTokenCreationInfoData",
     "GetTokenCreationInfoResponse",
     "GetPriceData",

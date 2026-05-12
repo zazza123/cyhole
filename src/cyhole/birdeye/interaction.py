@@ -27,6 +27,8 @@ from ..birdeye.schema import (
     GetV3TokenListScrollResponse,
     GetV2TokensNewListingResponse,
     GetV2MarketsResponse,
+    GetV3TokenMetaDataResponse,
+    GetV3TokenMetaDataMultipleResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -473,6 +475,71 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetV2MarketsResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[True], address: str) -> GetV3TokenMetaDataResponse: ...
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[True], address: list[str]) -> GetV3TokenMetaDataMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetV3TokenMetaDataResponse]: ...
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetV3TokenMetaDataMultipleResponse]: ...
+
+    def _get_v3_token_meta_data(
+        self,
+        sync: bool,
+        address: str | list[str]
+    ) -> (
+        GetV3TokenMetaDataResponse
+        | GetV3TokenMetaDataMultipleResponse
+        | Coroutine[None, None, GetV3TokenMetaDataResponse]
+        | Coroutine[None, None, GetV3TokenMetaDataMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token-metadata endpoints **[Token - Metadata (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-meta-data-single)**
+            and **[Token - Metadata (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-meta-data-multiple)**.
+            They return the lightweight identity payload for one or more tokens on the selected chain
+            (address, symbol, name, decimals, logo URL and the free-form `extensions` bag of social
+            links / CoinGecko id). This is the right call when a caller just needs to resolve a token
+            address to a display name and icon without paying for the full Token - Overview payload.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/meta-data/single`, returning a [`GetV3TokenMetaDataResponse`][cyhole.birdeye.schema.GetV3TokenMetaDataResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/meta-data/multiple`,
+            returning a [`GetV3TokenMetaDataMultipleResponse`][cyhole.birdeye.schema.GetV3TokenMetaDataMultipleResponse]
+            whose `data` is a dict keyed by token address.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+                    The list flavour issues one HTTP call instead of N.
+
+            Returns:
+                metadata payload for the requested token(s); the concrete type depends on the input
+                cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/meta-data/single"
+            params = {"address": address}
+            response_model: type = GetV3TokenMetaDataResponse
+        else:
+            url = self.url_api_public + "v3/token/meta-data/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenMetaDataMultipleResponse
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return response_model(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return response_model(**content_raw.json())
             return async_request()
 
     @overload

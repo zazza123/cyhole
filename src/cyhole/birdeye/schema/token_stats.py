@@ -544,3 +544,49 @@ class GetTokenOverviewResponse(BaseModel):
     data: GetTokenOverviewData
     success: bool
 
+
+
+# classes used on GET "Token - Metadata (Single)" and "Token - Metadata (Multiple)" endpoints
+class GetV3TokenMetaDataItem(BaseModel):
+    """
+        Metadata payload of a single token returned by the v3 Token - Metadata endpoint
+        (whether the single-address or multiple-address variant was called).
+
+        Attributes:
+            address: contract address of the token on the selected chain.
+            symbol: ticker symbol of the token; `None` if unknown.
+            name: human-readable name of the token; `None` if unknown.
+            decimals: number of decimal places used by the token.
+            extensions: free-form metadata bag (CoinGecko id, website, social links, ...);
+                individual values may be `None`. `None` itself when Birdeye has no extra metadata.
+            logo_uri: URL of the token logo; `None` if Birdeye has no logo for the token.
+    """
+    address: str
+    symbol: str | None = None
+    name: str | None = None
+    decimals: int
+    extensions: dict[str, str | None] | None = None
+    logo_uri: str | None = None
+
+class GetV3TokenMetaDataResponse(BaseModel):
+    """
+        Model used to represent the **Token - Metadata (Single)** endpoint from birdeye API.
+
+        Attributes:
+            data: metadata of the requested token.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenMetaDataItem
+    success: bool
+
+class GetV3TokenMetaDataMultipleResponse(BaseModel):
+    """
+        Model used to represent the **Token - Metadata (Multiple)** endpoint from birdeye API.
+
+        Attributes:
+            data: dictionary keyed by token contract address; each value is the metadata payload
+                for that token. Addresses that Birdeye does not recognise are omitted from the dict.
+            success: `True` when the API call completed without errors.
+    """
+    data: dict[str, GetV3TokenMetaDataItem]
+    success: bool
