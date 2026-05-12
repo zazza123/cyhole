@@ -39,6 +39,7 @@ from ..birdeye.schema import (
     GetTokenHolderResponse,
     PostTokenHolderBatchResponse,
     GetHolderDistributionResponse,
+    GetHolderProfileResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -255,6 +256,19 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_holder_distribution`][cyhole.birdeye.interaction.Birdeye._get_holder_distribution].
         """
         return self._interaction._get_holder_distribution(True, token_address, address_type, mode, top_n, min_percent, max_percent, include_list, offset, limit)
+
+    def get_token_holder_profile(
+        self,
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> GetHolderProfileResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Holder Profile](https://docs.birdeye.so/reference/get-token-v1-holder-profile)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_holder_profile`][cyhole.birdeye.interaction.Birdeye._get_token_holder_profile].
+        """
+        return self._interaction._get_token_holder_profile(True, token_address, interval, ui_amount_mode, include_zero_balance)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -550,6 +564,19 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_holder_distribution`][cyhole.birdeye.interaction.Birdeye._get_holder_distribution].
         """
         return await self._interaction._get_holder_distribution(False, token_address, address_type, mode, top_n, min_percent, max_percent, include_list, offset, limit)
+
+    async def get_token_holder_profile(
+        self,
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> GetHolderProfileResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Holder Profile](https://docs.birdeye.so/reference/get-token-v1-holder-profile)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_holder_profile`][cyhole.birdeye.interaction.Birdeye._get_token_holder_profile].
+        """
+        return await self._interaction._get_token_holder_profile(False, token_address, interval, ui_amount_mode, include_zero_balance)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

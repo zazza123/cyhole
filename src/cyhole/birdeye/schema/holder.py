@@ -184,3 +184,114 @@ class GetHolderDistributionResponse(BaseModel):
     """
     data: GetHolderDistributionData
     success: bool
+
+
+# classes used on GET "Token - Holder Profile" endpoint
+class GetHolderProfileSummary(BaseModel):
+    """
+        Headline counts of the holders aggregated by the Token - Holder Profile endpoint.
+
+        Attributes:
+            total_holder: total number of distinct holders Birdeye has observed for the token.
+            total_holding: cumulative balance of all holders, in UI units.
+            percent_of_supply: cumulative `total_holding` expressed as a percent (`[0, 100]`) of the
+                token total supply.
+    """
+    total_holder: int
+    total_holding: float
+    percent_of_supply: float
+
+class GetHolderProfileTagBreakdown(BaseModel):
+    """
+        Aggregate trading and holding figures for one Birdeye holder-tag bucket
+        (`bundler`, `sniper`, `insider`, `dev`, `smart_trader`).
+
+        Attributes:
+            tag: name of the tag this row describes.
+            holder_count: number of distinct wallets currently classified under `tag`.
+            hold_amount: cumulative holding of wallets in this tag, in UI units (string).
+            percent_of_supply: cumulative `hold_amount` expressed as a percent (`[0, 100]`) of total supply.
+            avg_buy_price: average buy price (USD) across the wallets in this tag (string).
+            buy_volume: cumulative buy volume of wallets in this tag, in the token UI units (string).
+            buy_volume_usd: cumulative buy volume of wallets in this tag, expressed in USD (string).
+            sell_volume: cumulative sell volume of wallets in this tag, in the token UI units (string).
+            sell_volume_usd: cumulative sell volume of wallets in this tag, expressed in USD (string).
+            pnl: cumulative profit-and-loss of wallets in this tag, in USD (string).
+    """
+    tag: str
+    holder_count: int
+    hold_amount: str
+    percent_of_supply: float
+    avg_buy_price: str
+    buy_volume: str
+    buy_volume_usd: str
+    sell_volume: str
+    sell_volume_usd: str
+    pnl: str
+
+class GetHolderProfileTokenTopHolder(BaseModel):
+    """
+        Top-10 holder concentration block of the Token - Holder Profile response.
+
+        Attributes:
+            hold_amount: cumulative balance of the top-10 holders, in UI units (string).
+            percent_of_supply: cumulative `hold_amount` expressed as a percent (`[0, 100]`) of total supply.
+    """
+    hold_amount: str
+    percent_of_supply: float
+
+class GetHolderProfileToken(BaseModel):
+    """
+        Token-level market snapshot returned alongside the holder profile.
+
+        Attributes:
+            creation_time: unix-second timestamp at which Birdeye first detected the token.
+            liquidity: total on-chain liquidity in USD.
+            market_cap: current market capitalisation in USD.
+            volume_1h: traded volume over the trailing 1h window in the token UI units.
+            volume_1h_usd: traded volume over the trailing 1h window in USD.
+            buy_volume_1h: buy-side traded volume over the trailing 1h window in the token UI units.
+            buy_volume_1h_usd: buy-side traded volume over the trailing 1h window in USD.
+            sell_volume_1h: sell-side traded volume over the trailing 1h window in the token UI units.
+            sell_volume_1h_usd: sell-side traded volume over the trailing 1h window in USD.
+            is_scaled_ui_token: `True` when the token is a scaled-UI-amount SPL token; `None` if
+                undetermined.
+            top10_holder: cumulative-holding snapshot of the top-10 holders.
+    """
+    creation_time: int
+    liquidity: float
+    market_cap: float
+    volume_1h: float
+    volume_1h_usd: float
+    buy_volume_1h: float
+    buy_volume_1h_usd: float
+    sell_volume_1h: float
+    sell_volume_1h_usd: float
+    is_scaled_ui_token: bool | None = None
+    top10_holder: GetHolderProfileTokenTopHolder
+
+class GetHolderProfileData(BaseModel):
+    """
+        Payload of the Token - Holder Profile response.
+
+        Attributes:
+            token: token-level market snapshot (creation time, liquidity, 1h volume breakdown,
+                top-10 holder concentration).
+            holder_summary: headline holder counts for the token.
+            tags: per-tag breakdown of holder and trading figures (always five entries: `bundler`,
+                `sniper`, `insider`, `dev`, `smart_trader`).
+    """
+    token: GetHolderProfileToken
+    holder_summary: GetHolderProfileSummary
+    tags: list[GetHolderProfileTagBreakdown]
+
+class GetHolderProfileResponse(BaseModel):
+    """
+        Model used to represent the **Token - Holder Profile** endpoint from birdeye API.
+
+        Attributes:
+            data: holder-profile payload.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetHolderProfileData
+    success: bool

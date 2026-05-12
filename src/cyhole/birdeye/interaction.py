@@ -45,6 +45,7 @@ from ..birdeye.schema import (
     GetTokenHolderResponse,
     PostTokenHolderBatchResponse,
     GetHolderDistributionResponse,
+    GetHolderProfileResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1230,6 +1231,85 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetHolderDistributionResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_token_holder_profile(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> GetHolderProfileResponse: ...
+
+    @overload
+    def _get_token_holder_profile(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> Coroutine[None, None, GetHolderProfileResponse]: ...
+
+    def _get_token_holder_profile(
+        self,
+        sync: bool,
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> GetHolderProfileResponse | Coroutine[None, None, GetHolderProfileResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Profile](https://docs.birdeye.so/reference/get-token-v1-holder-profile)** and is used
+            to retrieve Birdeye's holder-profile summary of a token: headline holder counts, a 1h
+            market snapshot (liquidity, market cap, buy/sell volume breakdown, top-10 holder
+            concentration) and a per-tag aggregate breakdown across the five Birdeye holder tags
+            (`bundler`, `sniper`, `insider`, `dev`, `smart_trader`). Useful for surfacing "who is
+            actually holding this token" at a glance.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+                Bundler-tag data may exhibit a short delay versus the other tags per the API docs.
+
+            Parameters:
+                token_address: contract address of the SPL token whose holder profile must be retrieved.
+                interval: time interval for the volume figures. At the time of writing Birdeye only
+                    supports `1h`. Default behaviour: `1h`.
+                ui_amount_mode: how to format scaled-UI-amount token figures. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`raw`).
+                include_zero_balance: when `True` (the API default) zero-balance wallets are kept in
+                    the per-tag aggregates; set to `False` to exclude them. `None` defers to the
+                    server default.
+
+            Returns:
+                holder-profile payload decoded as
+                [`GetHolderProfileResponse`][cyhole.birdeye.schema.GetHolderProfileResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_token_v1 + "holder-profile"
+        params = {
+            "token_address": token_address,
+            "interval": interval,
+            "ui_amount_mode": ui_amount_mode,
+            "include_zero_balance": str(include_zero_balance).lower() if include_zero_balance is not None else None,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetHolderProfileResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetHolderProfileResponse(**content_raw.json())
             return async_request()
 
     @overload

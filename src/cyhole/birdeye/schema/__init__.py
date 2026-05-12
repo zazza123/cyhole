@@ -96,6 +96,12 @@ from .holder import (
     GetHolderDistributionSummary,
     GetHolderDistributionData,
     GetHolderDistributionResponse,
+    GetHolderProfileSummary,
+    GetHolderProfileTagBreakdown,
+    GetHolderProfileTokenTopHolder,
+    GetHolderProfileToken,
+    GetHolderProfileData,
+    GetHolderProfileResponse,
 )
 from .wallet import (
     GetWalletSupportedNetworksResponse,
@@ -185,5 +191,11 @@ __all__ = [
     "GetHolderDistributionSummary",
     "GetHolderDistributionData",
     "GetHolderDistributionResponse",
+    "GetHolderProfileSummary",
+    "GetHolderProfileTagBreakdown",
+    "GetHolderProfileTokenTopHolder",
+    "GetHolderProfileToken",
+    "GetHolderProfileData",
+    "GetHolderProfileResponse",
     "GetWalletSupportedNetworksResponse",
 ]
