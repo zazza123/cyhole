@@ -42,6 +42,20 @@ class BirdeyeSort(CyholeParam):
     """Sort the results by USD Volume in the last 24h"""
     SORT_V24HCHANGEPERCENT = "v24hChangePercent"
     """Sort the results by percent changing in the last 24h"""
+    SORT_LIQUIDITY = "liquidity"
+    """Sort the results by Liquidity"""
+
+class BirdeyeUIAmountMode(CyholeParam):
+    """
+        Enum class to get the supported Birdeye's UI amount modes.
+
+        Only used on Solana chain to indicate whether the API should return
+        the raw token amounts or the scaled UI amounts for scaled-UI-amount tokens.
+    """
+    RAW = "raw"
+    """Return raw on-chain token amounts (no UI scaling applied)."""
+    SCALED = "scaled"
+    """Return UI-scaled token amounts (default Birdeye behaviour)."""
 
 class BirdeyeTimeFrame(CyholeParam):
     """

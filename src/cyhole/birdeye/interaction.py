@@ -14,7 +14,8 @@ from ..birdeye.param import (
     BirdeyeTimeFrame,
     BirdeyeHourTimeFrame,
     BirdeyeTradeType,
-    BirdeyeAddressType
+    BirdeyeAddressType,
+    BirdeyeUIAmountMode
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -106,7 +107,10 @@ class Birdeye(Interaction):
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
-        limit: int | None = None
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenListResponse: ...
 
     @overload
@@ -116,7 +120,10 @@ class Birdeye(Interaction):
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
-        limit: int | None = None
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
     ) -> Coroutine[None, None, GetTokenListResponse]: ...
 
     def _get_token_list(
@@ -125,26 +132,41 @@ class Birdeye(Interaction):
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
-        limit: int | None = None
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
         """
-            This function refers to the **PUBLIC** API endpoint **[Token - List](https://docs.birdeye.so/reference/get_defi-tokenlist)** and is used 
-            to get the list of Birdeye tokens according on a specific chain.
+            This function refers to the **PUBLIC** API endpoint **[Token - List (V1)](https://docs.birdeye.so/reference/get-defi-tokenlist)** and is used
+            to retrieve a ranked list of tokens on the selected chain, scored by the chosen metric
+            (USD volume, market cap, 24h change, or liquidity). It is the legacy V1 listing endpoint:
+            results are returned in a flat page of at most 50 entries and each row carries the core
+            identity, price/liquidity, market cap and 24h volume fields that power Birdeye's public
+            token discovery views.
 
             Parameters:
-                sort_by: define the type of sorting to apply in the
-                    extraction; e.g. USD volume in the last 24h.
-                    The sorting types are available on [`BirdeyeSort`][cyhole.birdeye.param.BirdeyeSort].
+                sort_by: define the metric used to rank the returned tokens (e.g. USD volume in the
+                    last 24h, market cap, 24h change, or liquidity).
+                    The supported values are available on [`BirdeyeSort`][cyhole.birdeye.param.BirdeyeSort].
                     Import them from the library to use the correct identifier.
-                order_by: define the type of ordering to apply in the 
-                    extraction; e.g. ascending or descending.
-                    The sorting types are available on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
+                order_by: define the order of the ranking (ascending or descending).
+                    The supported values are available on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
                     Import them from the library to use the correct identifier.
-                offset: offset to apply in the extraction.
-                limit: limit the number of returned records in the extraction.
+                offset: zero-based offset to use for pagination. Combined with `limit` it returns the
+                    `[offset, offset + limit)` slice of the ranking. Default behaviour: `0`.
+                limit: number of records to return per page. The API caps this at `50`; values above
+                    `50` are rejected by Birdeye. Default behaviour: `50`.
+                min_liquidity: exclusive lower bound on the on-chain liquidity (USD) of returned tokens.
+                    Birdeye applies a default of `100` server-side when not provided.
+                max_liquidity: exclusive upper bound on the on-chain liquidity (USD) of returned tokens.
+                    If not provided, the API does not apply any upper bound.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
 
             Returns:
-                list of tokens returned by birdeye.so
+                ranked list of tokens for the selected chain along with the snapshot timestamp.
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
@@ -153,6 +175,8 @@ class Birdeye(Interaction):
         # check param consistency
         BirdeyeSort.check(sort_by)
         BirdeyeOrder.check(order_by)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
 
         # set params
         url = self.url_api_public + "tokenlist"
@@ -160,7 +184,10 @@ class Birdeye(Interaction):
             "sort_by" : sort_by,
             "sort_type" : order_by,
             "offset" : offset,
-            "limit": limit
+            "limit": limit,
+            "min_liquidity": min_liquidity,
+            "max_liquidity": max_liquidity,
+            "ui_amount_mode": ui_amount_mode
         }
 
         # execute request

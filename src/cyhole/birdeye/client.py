@@ -10,7 +10,7 @@ from ..birdeye.param import (
     BirdeyeOrder,
     BirdeyeSort,
     BirdeyeTradeType,
-    BirdeyeHourTimeFrame
+    BirdeyeHourTimeFrame,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -48,12 +48,21 @@ class BirdeyeClient(APIClient):
         except AuthorizationAPIKeyError:
             raise BirdeyeAuthorisationError
 
-    def get_token_list(self, sort_by: str = BirdeyeSort.SORT_V24HUSD.value, order_by: str = BirdeyeOrder.DESCENDING.value, offset: int | None = None, limit: int | None = None) -> GetTokenListResponse:
+    def get_token_list(
+        self,
+        sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
+        order_by: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenListResponse:
         """
-            Call the Birdeye's **PUBLIC** API endpoint **[Token - List](https://docs.birdeye.so/reference/get_defi-tokenlist)** for synchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
+            Call the Birdeye's **PUBLIC** API endpoint **[Token - List (V1)](https://docs.birdeye.so/reference/get-defi-tokenlist)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
         """
-        return self._interaction._get_token_list(True, sort_by, order_by, offset, limit)
+        return self._interaction._get_token_list(True, sort_by, order_by, offset, limit, min_liquidity, max_liquidity, ui_amount_mode)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -162,12 +171,21 @@ class BirdeyeAsyncClient(AsyncAPIClient):
         except AuthorizationAPIKeyError:
             raise BirdeyeAuthorisationError
 
-    async def get_token_list(self, sort_by: str = BirdeyeSort.SORT_V24HUSD.value, order_by: str = BirdeyeOrder.DESCENDING.value, offset: int | None = None, limit: int | None = None) -> GetTokenListResponse:
+    async def get_token_list(
+        self,
+        sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
+        order_by: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenListResponse:
         """
-            Call the Birdeye's **PUBLIC** API endpoint **[Token - List](https://docs.birdeye.so/reference/get_defi-tokenlist)** for asynchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
+            Call the Birdeye's **PUBLIC** API endpoint **[Token - List (V1)](https://docs.birdeye.so/reference/get-defi-tokenlist)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_list`][cyhole.birdeye.interaction.Birdeye._get_token_list].
         """
-        return await self._interaction._get_token_list(False, sort_by, order_by, offset, limit)
+        return await self._interaction._get_token_list(False, sort_by, order_by, offset, limit, min_liquidity, max_liquidity, ui_amount_mode)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
