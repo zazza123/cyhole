@@ -73,6 +73,17 @@ class RugcheckConfiguration(BaseModel):
     api_key: str | None = None
     """Optional API key (Bearer token) for authenticated endpoints."""
 
+class HeliusConfiguration(BaseModel):
+    """
+        Model in charge to manage the Helius APIs.
+    """
+    mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
+    mock_folder: str = "helius"
+    """Folder where the mock responses are stored."""
+    api_key: str | None = None
+    """API key required for all Helius DAS API endpoints."""
+
 
 class TestConfiguration(BaseModel):
     """
@@ -97,6 +108,8 @@ class TestConfiguration(BaseModel):
     """SolanaFM configuration."""
     solscan: SolscanConfiguration = SolscanConfiguration()
     """Solscan configuration."""
+    helius: HeliusConfiguration = HeliusConfiguration()
+    """Helius configuration."""
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -155,6 +168,11 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.solscan.mock_folder = config.get("solscan", "mock_folder", fallback = test_config.solscan.mock_folder)
     test_config.solscan.api_v1_key = config.get("solscan", "api_v1_key", fallback = test_config.solscan.api_v1_key)
     test_config.solscan.api_v2_key = config.get("solscan", "api_v2_key", fallback = test_config.solscan.api_v2_key)
+
+    # helius
+    test_config.helius.mock_response = config.getboolean("helius", "mock_response", fallback = test_config.helius.mock_response)
+    test_config.helius.mock_folder = config.get("helius", "mock_folder", fallback = test_config.helius.mock_folder)
+    test_config.helius.api_key = config.get("helius", "api_key", fallback = test_config.helius.api_key)
 
     return test_config
 

@@ -1,0 +1,85 @@
+{
+    "jsonrpc": "2.0",
+    "id": "cyhole",
+    "result": {
+        "interface": "V1_NFT",
+        "id": "4ZkS7zADmEFnkLPMHqJfPvHDN8oqfPjqDFGEQHiqPbEz",
+        "content": {
+            "$schema": "https://schema.metaplex.com/nft1.0.json",
+            "json_uri": "https://example.com/metadata.json",
+            "files": [
+                {
+                    "uri": "https://example.com/image.png",
+                    "cdn_uri": "https://cdn.example.com/image.png",
+                    "mime": "image/png"
+                }
+            ],
+            "metadata": {
+                "attributes": [
+                    {"value": "Blue", "trait_type": "Background"},
+                    {"value": "Gold", "trait_type": "Body"}
+                ],
+                "description": "An example NFT used for unit testing.",
+                "name": "Example NFT #1",
+                "symbol": "EXNFT"
+            },
+            "links": {
+                "image": "https://example.com/image.png",
+                "external_url": "https://example.com"
+            }
+        },
+        "authorities": [
+            {
+                "address": "AUTH1111111111111111111111111111111111111111",
+                "scopes": ["full"]
+            }
+        ],
+        "compression": {
+            "eligible": false,
+            "compressed": false,
+            "data_hash": "",
+            "creator_hash": "",
+            "asset_hash": "",
+            "tree": "",
+            "seq": 0,
+            "leaf_id": 0
+        },
+        "grouping": [
+            {
+                "group_key": "collection",
+                "group_value": "COLL1111111111111111111111111111111111111111",
+                "verified": true
+            }
+        ],
+        "royalty": {
+            "royalty_model": "creators",
+            "target": null,
+            "percent": 0.05,
+            "basis_points": 500,
+            "primary_sale_happened": true,
+            "locked": false
+        },
+        "creators": [
+            {
+                "address": "CREAT1111111111111111111111111111111111111111",
+                "share": 100,
+                "verified": true
+            }
+        ],
+        "ownership": {
+            "frozen": false,
+            "delegated": false,
+            "delegate": null,
+            "ownership_model": "single",
+            "owner": "OWNER1111111111111111111111111111111111111111"
+        },
+        "supply": {
+            "print_max_supply": 0,
+            "print_current_supply": 0,
+            "edition_nonce": null
+        },
+        "mutable": true,
+        "burnt": false,
+        "last_indexed_slot": 250000000
+    }
+}

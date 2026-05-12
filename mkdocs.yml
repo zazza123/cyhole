@@ -90,6 +90,13 @@ nav:
   - Home: index.md
   - Interactions:
     - interactions/index.md
+    - Helius:
+      - interactions/helius/index.md
+      - Interaction: interactions/helius/interaction.md
+      - Client: interactions/helius/client.md
+      - Parameters: interactions/helius/param.md
+      - Schema: interactions/helius/schema.md
+      - Exceptions: interactions/helius/exception.md
     - DexScreener:
       - interactions/dex_screener/index.md
       - Interaction: interactions/dex_screener/interaction.md
