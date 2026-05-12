@@ -25,6 +25,8 @@ from cyhole.birdeye.schema import (
     GetV3TokenExitLiquidityMultipleResponse,
     GetV3TokenMintBurnTxsResponse,
     GetV2TopTradersResponse,
+    GetTokenHolderResponse,
+    PostTokenHolderBatchResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -661,6 +663,88 @@ class TestBirdeyePublic:
             response = await client.get_v2_tokens_top_traders(WSOL.address, limit = 1)
 
         assert isinstance(response, GetV2TopTradersResponse)
+
+    def test_get_token_holder_top_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated Token Holder endpoint
+            in its **top-holder ranking** flavour (synchronous logic).
+
+            Mock Response File: get_v3_token_holder.json
+        """
+        mock_file_name = "get_v3_token_holder"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenHolderResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_token_holder(WSOL.address, limit = 1)
+        assert isinstance(response, GetTokenHolderResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_holder_top_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated Token Holder endpoint
+            in its **top-holder ranking** flavour (asynchronous logic).
+
+            Mock Response File: get_v3_token_holder.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_holder"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTokenHolderResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_holder(WSOL.address, limit = 1)
+
+        assert isinstance(response, GetTokenHolderResponse)
+
+    def test_get_token_holder_batch_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated Token Holder endpoint
+            in its **batch balance lookup** flavour (synchronous logic).
+
+            Mock Response File: post_token_v1_holder_batch.json
+        """
+        mock_file_name = "post_token_v1_holder_batch"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenHolderBatchResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_token_holder(
+            WSOL.address,
+            wallets = ["5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"],
+        )
+        assert isinstance(response, PostTokenHolderBatchResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_token_holder_batch_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated Token Holder endpoint
+            in its **batch balance lookup** flavour (asynchronous logic).
+
+            Mock Response File: post_token_v1_holder_batch.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "post_token_v1_holder_batch"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenHolderBatchResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_token_holder(
+                WSOL.address,
+                wallets = ["5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1"],
+            )
+
+        assert isinstance(response, PostTokenHolderBatchResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """

@@ -34,6 +34,8 @@ from ..birdeye.schema import (
     GetV3TokenExitLiquidityMultipleResponse,
     GetV3TokenMintBurnTxsResponse,
     GetV2TopTradersResponse,
+    GetTokenHolderResponse,
+    PostTokenHolderBatchResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -211,6 +213,27 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v2_tokens_top_traders`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_top_traders].
         """
         return self._interaction._get_v2_tokens_top_traders(True, address, time_frame, sort_by, sort_type, offset, limit, ui_amount_mode)
+
+    @overload
+    def get_token_holder(self, token_address: str, wallets: None = None, offset: int | None = None, limit: int | None = None, ui_amount_mode: str | None = None) -> GetTokenHolderResponse: ...
+
+    @overload
+    def get_token_holder(self, token_address: str, wallets: list[str], offset: int | None = None, limit: int | None = None, ui_amount_mode: str | None = None) -> PostTokenHolderBatchResponse: ...
+
+    def get_token_holder(
+        self,
+        token_address: str,
+        wallets: list[str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenHolderResponse | PostTokenHolderBatchResponse:
+        """
+            Call the Birdeye's **PRIVATE** Token Holder endpoints (**[top-holder ranking](https://docs.birdeye.so/reference/get-defi-v3-token-holder)** /
+            **[batch balance lookup](https://docs.birdeye.so/reference/post-token-v1-holder-batch)**) for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_holder`][cyhole.birdeye.interaction.Birdeye._get_token_holder].
+        """
+        return self._interaction._get_token_holder(True, token_address, wallets, offset, limit, ui_amount_mode)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -467,6 +490,27 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v2_tokens_top_traders`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_top_traders].
         """
         return await self._interaction._get_v2_tokens_top_traders(False, address, time_frame, sort_by, sort_type, offset, limit, ui_amount_mode)
+
+    @overload
+    async def get_token_holder(self, token_address: str, wallets: None = None, offset: int | None = None, limit: int | None = None, ui_amount_mode: str | None = None) -> GetTokenHolderResponse: ...
+
+    @overload
+    async def get_token_holder(self, token_address: str, wallets: list[str], offset: int | None = None, limit: int | None = None, ui_amount_mode: str | None = None) -> PostTokenHolderBatchResponse: ...
+
+    async def get_token_holder(
+        self,
+        token_address: str,
+        wallets: list[str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenHolderResponse | PostTokenHolderBatchResponse:
+        """
+            Call the Birdeye's **PRIVATE** Token Holder endpoints (**[top-holder ranking](https://docs.birdeye.so/reference/get-defi-v3-token-holder)** /
+            **[batch balance lookup](https://docs.birdeye.so/reference/post-token-v1-holder-batch)**) for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_holder`][cyhole.birdeye.interaction.Birdeye._get_token_holder].
+        """
+        return await self._interaction._get_token_holder(False, token_address, wallets, offset, limit, ui_amount_mode)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

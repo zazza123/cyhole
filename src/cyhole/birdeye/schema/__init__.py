@@ -82,6 +82,15 @@ from .transactions import (
     GetV3TokenMintBurnTxsData,
     GetV3TokenMintBurnTxsResponse,
 )
+from .holder import (
+    GetTokenHolderItem,
+    GetTokenHolderData,
+    GetTokenHolderResponse,
+    PostTokenHolderBatchItem,
+    PostTokenHolderBatchData,
+    PostTokenHolderBatchBody,
+    PostTokenHolderBatchResponse,
+)
 from .wallet import (
     GetWalletSupportedNetworksResponse,
 )
@@ -157,5 +166,12 @@ __all__ = [
     "GetV3TokenMintBurnTxsItem",
     "GetV3TokenMintBurnTxsData",
     "GetV3TokenMintBurnTxsResponse",
+    "GetTokenHolderItem",
+    "GetTokenHolderData",
+    "GetTokenHolderResponse",
+    "PostTokenHolderBatchItem",
+    "PostTokenHolderBatchData",
+    "PostTokenHolderBatchBody",
+    "PostTokenHolderBatchResponse",
     "GetWalletSupportedNetworksResponse",
 ]

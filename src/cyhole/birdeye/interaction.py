@@ -40,6 +40,8 @@ from ..birdeye.schema import (
     GetV3TokenExitLiquidityMultipleResponse,
     GetV3TokenMintBurnTxsResponse,
     GetV2TopTradersResponse,
+    GetTokenHolderResponse,
+    PostTokenHolderBatchResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -119,6 +121,8 @@ class Birdeye(Interaction):
         self.url_api_public = "https://public-api.birdeye.so/defi/"
         self.url_api_private = "https://public-api.birdeye.so/defi/"
         self.url_api_private_wallet = "https://public-api.birdeye.so/v1/wallet"
+        self.url_api_token_v1 = "https://public-api.birdeye.so/token/v1/"
+        self.url_api_holder_v1 = "https://public-api.birdeye.so/holder/v1/"
         return
 
     @overload
@@ -974,6 +978,146 @@ class Birdeye(Interaction):
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetV2TopTradersResponse(**content_raw.json())
             return async_request()
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        wallets: None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenHolderResponse: ...
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        wallets: list[str],
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> PostTokenHolderBatchResponse: ...
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        wallets: None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetTokenHolderResponse]: ...
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        wallets: list[str],
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, PostTokenHolderBatchResponse]: ...
+
+    def _get_token_holder(
+        self,
+        sync: bool,
+        token_address: str,
+        wallets: list[str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> (
+        GetTokenHolderResponse
+        | PostTokenHolderBatchResponse
+        | Coroutine[None, None, GetTokenHolderResponse]
+        | Coroutine[None, None, PostTokenHolderBatchResponse]
+    ):
+        """
+            This function consolidates the Birdeye top-holder and batch-balance endpoints
+            **[Token - Holder](https://docs.birdeye.so/reference/get-defi-v3-token-holder)**
+            and **[Token - Holder (Batch)](https://docs.birdeye.so/reference/post-token-v1-holder-batch)**
+            under a single polymorphic call:
+
+            - leave `wallets` to its default `None` to retrieve the ranked list of largest holders
+              of `token_address` (`GET /defi/v3/token/holder`). The response is decoded as
+              [`GetTokenHolderResponse`][cyhole.birdeye.schema.GetTokenHolderResponse] and exposes
+              the `mint`, `owner`, `token_account`, raw and UI-formatted balance for each holder.
+            - pass `wallets` as a list of specific wallet addresses to look up their balance in
+              `token_address` (`POST /token/v1/holder/batch`). The response is decoded as
+              [`PostTokenHolderBatchResponse`][cyhole.birdeye.schema.PostTokenHolderBatchResponse]
+              and exposes `mint`, `owner`, `balance` (raw) and `amount` (UI) per requested wallet.
+
+            !!! info
+                Both endpoints are restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                token_address: contract address of the SPL token to look up.
+                wallets: list of wallet addresses whose balances must be fetched. When `None`
+                    the call switches to the top-holder ranking.
+                offset: zero-based pagination offset for the top-holder ranking. Ignored when
+                    `wallets` is provided. Default behaviour: `0`.
+                limit: number of records to return for the top-holder ranking. Ignored when
+                    `wallets` is provided. Default behaviour: `100`.
+                ui_amount_mode: how to format scaled-UI-amount token figures. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`scaled`).
+
+            Returns:
+                top-holder ranking or per-wallet balance list; the concrete type depends on whether
+                `wallets` was provided.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        if wallets is None:
+            # GET top-holder ranking
+            url = self.url_api_public + "v3/token/holder"
+            params: dict[str, Any] = {
+                "address": token_address,
+                "offset": offset,
+                "limit": limit,
+            }
+            if ui_amount_mode is not None:
+                params["ui_amount_mode"] = ui_amount_mode
+
+            if sync:
+                content_raw = self.client.api(RequestType.GET.value, url, params = params)
+                return GetTokenHolderResponse(**content_raw.json())
+            else:
+                async def async_request_get():
+                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                    return GetTokenHolderResponse(**content_raw.json())
+                return async_request_get()
+
+        # POST batch balance
+        url = self.url_api_token_v1 + "holder/batch"
+        body = {
+            "token_address": token_address,
+            "wallets": wallets,
+        }
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+        post_params = {}
+        if ui_amount_mode is not None:
+            post_params["ui_amount_mode"] = ui_amount_mode
+
+        if sync:
+            content_raw = self.client.api(RequestType.POST.value, url, json = body, headers = headers, params = post_params or None)
+            return PostTokenHolderBatchResponse(**content_raw.json())
+        else:
+            async def async_request_post():
+                content_raw = await self.async_client.api(RequestType.POST.value, url, json = body, headers = headers, params = post_params or None)
+                return PostTokenHolderBatchResponse(**content_raw.json())
+            return async_request_post()
 
     @overload
     def _get_token_creation_info(
