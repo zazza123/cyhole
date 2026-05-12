@@ -17,7 +17,8 @@ from ..birdeye.param import (
     BirdeyeAddressType,
     BirdeyeUIAmountMode,
     BirdeyeV3TokenListSortBy,
-    BirdeyeV2MarketsSortBy
+    BirdeyeV2MarketsSortBy,
+    BirdeyeMintBurnType
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -35,6 +36,7 @@ from ..birdeye.schema import (
     GetV3TokenTradeDataMultipleResponse,
     GetV3TokenExitLiquidityResponse,
     GetV3TokenExitLiquidityMultipleResponse,
+    GetV3TokenMintBurnTxsResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -770,6 +772,102 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return response_model(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_mint_burn_txs(
+        self,
+        sync: Literal[True],
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV3TokenMintBurnTxsResponse: ...
+
+    @overload
+    def _get_v3_token_mint_burn_txs(
+        self,
+        sync: Literal[False],
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetV3TokenMintBurnTxsResponse]: ...
+
+    def _get_v3_token_mint_burn_txs(
+        self,
+        sync: bool,
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV3TokenMintBurnTxsResponse | Coroutine[None, None, GetV3TokenMintBurnTxsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Mint/Burn](https://docs.birdeye.so/reference/get-defi-v3-token-mint-burn-txs)** and is used
+            to retrieve the on-chain mint and burn transactions of an SPL token: every transaction that
+            either increases or decreases the token's total supply. Each entry exposes the on-chain
+            signature, the affected mint, the program that emitted the instruction, raw and UI-formatted
+            amounts, slot, and the block timestamp. Useful for auditing supply changes (rewards,
+            redemptions, buybacks) outside of normal trades.
+
+            !!! info
+                Birdeye restricts this endpoint to the **Solana** chain at the time of writing.
+
+            Parameters:
+                address: contract address of the SPL token whose mint/burn history must be retrieved.
+                type: kind of supply change to return. Pick one of the constants on
+                    [`BirdeyeMintBurnType`][cyhole.birdeye.param.BirdeyeMintBurnType].
+                    Default behaviour: `all`.
+                sort_type: ascending or descending order on `block_time`. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `desc`
+                    (most recent first).
+                after_time: optional inclusive lower bound on the transaction block time, in unix
+                    seconds; `None` to disable.
+                before_time: optional inclusive upper bound on the transaction block time, in unix
+                    seconds; `None` to disable.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                    Birdeye requires `offset + limit <= 10000`.
+                limit: number of records to return (1..100). Default behaviour: `100`.
+
+            Returns:
+                ranked list of mint/burn transactions decoded as
+                [`GetV3TokenMintBurnTxsResponse`][cyhole.birdeye.schema.GetV3TokenMintBurnTxsResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeMintBurnType.check(type)
+        BirdeyeOrder.check(sort_type)
+
+        url = self.url_api_public + "v3/token/mint-burn-txs"
+        params = {
+            "address": address,
+            "sort_by": "block_time",
+            "sort_type": sort_type,
+            "type": type,
+            "after_time": after_time,
+            "before_time": before_time,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetV3TokenMintBurnTxsResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetV3TokenMintBurnTxsResponse(**content_raw.json())
             return async_request()
 
     @overload

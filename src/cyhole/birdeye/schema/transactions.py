@@ -136,3 +136,56 @@ class GetOHLCVBaseQuoteResponse(BaseModel):
     """
     data: GetOHLCVBaseQuoteData
 
+
+
+# classes used on GET "Token - Mint/Burn" endpoint
+class GetV3TokenMintBurnTxsItem(BaseModel):
+    """
+        Single mint or burn transaction returned by the v3 Token - Mint/Burn endpoint.
+
+        Attributes:
+            common_type: kind of supply change, either `"mint"` or `"burn"`.
+            tx_hash: signature of the on-chain transaction that performed the mint/burn.
+            slot: Solana slot at which the transaction was processed.
+            block_time: unix-second timestamp of the block containing the transaction.
+            block_human_time: ISO-8601 timestamp of the same block as `block_time`.
+            mint: contract address of the affected SPL token mint.
+            program_id: address of the on-chain program that emitted the mint/burn instruction
+                (usually the SPL Token program).
+            amount: raw amount minted or burned, expressed in the token's smallest units (string).
+            decimals: number of decimal places used by the token.
+            ui_amount: UI-formatted amount (i.e. `amount` divided by `10 ** decimals`) as a number.
+            ui_amount_string: UI-formatted amount as a string (preserves precision for very large values).
+    """
+    common_type: str
+    tx_hash: str
+    slot: int
+    block_time: int
+    block_human_time: str
+    mint: str
+    program_id: str
+    amount: str
+    decimals: int
+    ui_amount: float
+    ui_amount_string: str
+
+class GetV3TokenMintBurnTxsData(BaseModel):
+    """
+        Payload of the v3 Token - Mint/Burn response.
+
+        Attributes:
+            items: list of mint/burn transactions matching the request, ranked per `sort_by` /
+                `sort_type` (default: most recent first).
+    """
+    items: list[GetV3TokenMintBurnTxsItem]
+
+class GetV3TokenMintBurnTxsResponse(BaseModel):
+    """
+        Model used to represent the **Token - Mint/Burn** endpoint from birdeye API.
+
+        Attributes:
+            data: payload containing the list of mint/burn transactions.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenMintBurnTxsData
+    success: bool

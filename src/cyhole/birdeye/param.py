@@ -138,6 +138,17 @@ class BirdeyeV2MarketsSortBy(CyholeParam):
     VOLUME_24H = "volume24h"
     """Sort markets by USD traded volume in the trailing 24h window."""
 
+class BirdeyeMintBurnType(CyholeParam):
+    """
+        Enum class to filter the Birdeye v3 Token Mint/Burn endpoint by transaction type.
+    """
+    ALL = "all"
+    """Return both mint and burn transactions."""
+    MINT = "mint"
+    """Return only mint (supply increase) transactions."""
+    BURN = "burn"
+    """Return only burn (supply decrease) transactions."""
+
 class BirdeyeV3TokenListSortBy(CyholeParam):
     """
         Enum class to get the supported sorting metrics of the Birdeye v3 Token - List endpoint.

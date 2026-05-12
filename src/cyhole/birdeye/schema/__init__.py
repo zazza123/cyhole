@@ -75,6 +75,9 @@ from .transactions import (
     GetOHLCVBaseQuoteInterval,
     GetOHLCVBaseQuoteData,
     GetOHLCVBaseQuoteResponse,
+    GetV3TokenMintBurnTxsItem,
+    GetV3TokenMintBurnTxsData,
+    GetV3TokenMintBurnTxsResponse,
 )
 from .wallet import (
     GetWalletSupportedNetworksResponse,
@@ -145,5 +148,8 @@ __all__ = [
     "GetOHLCVBaseQuoteInterval",
     "GetOHLCVBaseQuoteData",
     "GetOHLCVBaseQuoteResponse",
+    "GetV3TokenMintBurnTxsItem",
+    "GetV3TokenMintBurnTxsData",
+    "GetV3TokenMintBurnTxsResponse",
     "GetWalletSupportedNetworksResponse",
 ]

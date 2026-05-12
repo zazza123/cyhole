@@ -12,6 +12,7 @@ from ..birdeye.param import (
     BirdeyeTradeType,
     BirdeyeHourTimeFrame,
     BirdeyeV2MarketsSortBy,
+    BirdeyeMintBurnType,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -29,6 +30,7 @@ from ..birdeye.schema import (
     GetV3TokenTradeDataMultipleResponse,
     GetV3TokenExitLiquidityResponse,
     GetV3TokenExitLiquidityMultipleResponse,
+    GetV3TokenMintBurnTxsResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -174,6 +176,22 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_exit_liquidity`][cyhole.birdeye.interaction.Birdeye._get_v3_token_exit_liquidity].
         """
         return self._interaction._get_v3_token_exit_liquidity(True, address)
+
+    def get_v3_token_mint_burn_txs(
+        self,
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV3TokenMintBurnTxsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Mint/Burn](https://docs.birdeye.so/reference/get-defi-v3-token-mint-burn-txs)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_mint_burn_txs`][cyhole.birdeye.interaction.Birdeye._get_v3_token_mint_burn_txs].
+        """
+        return self._interaction._get_v3_token_mint_burn_txs(True, address, type, sort_type, after_time, before_time, offset, limit)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -398,6 +416,22 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_exit_liquidity`][cyhole.birdeye.interaction.Birdeye._get_v3_token_exit_liquidity].
         """
         return await self._interaction._get_v3_token_exit_liquidity(False, address)
+
+    async def get_v3_token_mint_burn_txs(
+        self,
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV3TokenMintBurnTxsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Mint/Burn](https://docs.birdeye.so/reference/get-defi-v3-token-mint-burn-txs)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_mint_burn_txs`][cyhole.birdeye.interaction.Birdeye._get_v3_token_mint_burn_txs].
+        """
+        return await self._interaction._get_v3_token_mint_burn_txs(False, address, type, sort_type, after_time, before_time, offset, limit)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
