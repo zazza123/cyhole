@@ -24,6 +24,7 @@ from ..birdeye.schema import (
     GetV3TokenListResponse,
     GetV3TokenListScrollQuery,
     GetV3TokenListScrollResponse,
+    GetV2TokensNewListingResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -327,6 +328,72 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetV3TokenListScrollResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v2_tokens_new_listing(
+        self,
+        sync: Literal[True],
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> GetV2TokensNewListingResponse: ...
+
+    @overload
+    def _get_v2_tokens_new_listing(
+        self,
+        sync: Literal[False],
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> Coroutine[None, None, GetV2TokensNewListingResponse]: ...
+
+    def _get_v2_tokens_new_listing(
+        self,
+        sync: bool,
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> GetV2TokensNewListingResponse | Coroutine[None, None, GetV2TokensNewListingResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - New Listing](https://docs.birdeye.so/reference/get-defi-v2-tokens-new_listing)** and is used
+            to retrieve a feed of tokens that Birdeye has just detected listings for on the selected
+            chain, ordered most-recent first. It is the canonical way to discover freshly-launched
+            tokens before they show up in the ranked token list, and powers Birdeye's "new pairs"
+            UIs. The endpoint returns a single batch (no offset pagination); call it repeatedly with
+            an updated `time_to` to walk further back in time.
+
+            !!! info
+                Available on every Birdeye chain except Sui. The `meme_platform_enabled` toggle is
+                Solana-only.
+
+            Parameters:
+                time_to: optional unix-second cursor; when set Birdeye returns only listings observed at
+                    or before this timestamp. Default behaviour: most recent listings.
+                limit: number of records to return (1..20). Default behaviour: `10`.
+                meme_platform_enabled: when `True` includes listings detected on meme-coin launchpads
+                    such as pump.fun (Solana only). Default behaviour: `False`.
+
+            Returns:
+                feed of newly-listed tokens decoded as [`GetV2TokensNewListingResponse`][cyhole.birdeye.schema.GetV2TokensNewListingResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_public + "v2/tokens/new_listing"
+        params = {
+            "time_to": time_to,
+            "limit": limit,
+            "meme_platform_enabled": str(meme_platform_enabled).lower() if meme_platform_enabled is not None else None,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetV2TokensNewListingResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetV2TokensNewListingResponse(**content_raw.json())
             return async_request()
 
     @overload

@@ -554,3 +554,47 @@ class GetV3TokenListScrollQuery(BaseModel):
     min_trade_24h_count: int | None = None
     min_trade_7d_count: int | None = None
     min_trade_30d_count: int | None = None
+
+# classes used on GET "Token - New Listing" endpoint
+class GetV2TokensNewListingItem(BaseModel):
+    """
+        Single newly-listed token entry returned by the v2 Token - New Listing endpoint.
+
+        Attributes:
+            address: contract address of the freshly listed token on the selected chain.
+            symbol: ticker symbol of the token.
+            name: human-readable name of the token.
+            decimals: number of decimal places used by the token.
+            source: name of the venue (DEX/aggregator) Birdeye picked up the listing from.
+            liquidity_added_at: ISO-8601 timestamp of the listing event (alias `liquidityAddedAt`).
+            logo_uri: URL of the token logo (alias `logoURI`); `None` if Birdeye has no logo for the token.
+            liquidity: total liquidity of the token at listing time, expressed in USD.
+    """
+    address: str
+    symbol: str
+    name: str
+    decimals: int
+    source: str
+    liquidity_added_at: str = Field(alias = "liquidityAddedAt")
+    logo_uri: str | None = Field(alias = "logoURI", default = None)
+    liquidity: float
+
+class GetV2TokensNewListingData(BaseModel):
+    """
+        Payload of the v2 Token - New Listing response.
+
+        Attributes:
+            items: list of newly-listed tokens, ordered most-recent-first.
+    """
+    items: list[GetV2TokensNewListingItem]
+
+class GetV2TokensNewListingResponse(BaseModel):
+    """
+        Model used to represent the **Token - New Listing** endpoint from birdeye API.
+
+        Attributes:
+            data: payload containing the list of newly-listed tokens.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV2TokensNewListingData
+    success: bool

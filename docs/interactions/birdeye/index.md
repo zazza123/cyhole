@@ -82,6 +82,7 @@ The documentation follows the library's structure by providing all the technical
 | Token - List | `GET` | [`get_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_list) | `0.0.1-alpha` | - |
 | Token - List (V3) | `GET` | [`get_v3_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_list) | `0.3.0` | - |
 | Token - List (V3) Scroll | `GET` | [`get_v3_token_list_scroll`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_list_scroll) | `0.3.0` | - |
+| Token - New Listing | `GET` | [`get_v2_tokens_new_listing`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v2_tokens_new_listing) | `0.3.0` | - |
 | Token - Creation Token Info | `GET` | [`get_token_creation_info`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_creation_info) | `0.0.1-alpha` | - |
 | Token - Security | `GET` | [`get_token_security`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_security) | `0.0.1-alpha` | - |
 | Token - Overview | `GET` | [`get_token_overview`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_overview) | `0.0.1-alpha` | - |

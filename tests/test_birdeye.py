@@ -13,6 +13,7 @@ from cyhole.birdeye.schema import (
     GetV3TokenListResponse,
     GetV3TokenListScrollQuery,
     GetV3TokenListScrollResponse,
+    GetV2TokensNewListingResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -186,6 +187,44 @@ class TestBirdeyePublic:
             response = await client.get_v3_token_list_scroll(GetV3TokenListScrollQuery(limit = 1))
 
         assert isinstance(response, GetV3TokenListScrollResponse)
+
+    def test_get_v2_tokens_new_listing_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - New Listing"
+            for synchronous logic.
+
+            Mock Response File: get_v2_tokens_new_listing.json
+        """
+        mock_file_name = "get_v2_tokens_new_listing"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV2TokensNewListingResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v2_tokens_new_listing(limit = 1)
+        assert isinstance(response, GetV2TokensNewListingResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v2_tokens_new_listing_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - New Listing"
+            for asynchronous logic.
+
+            Mock Response File: get_v2_tokens_new_listing.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v2_tokens_new_listing"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV2TokensNewListingResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v2_tokens_new_listing(limit = 1)
+
+        assert isinstance(response, GetV2TokensNewListingResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """

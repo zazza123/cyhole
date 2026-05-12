@@ -18,6 +18,7 @@ from ..birdeye.schema import (
     GetV3TokenListResponse,
     GetV3TokenListScrollQuery,
     GetV3TokenListScrollResponse,
+    GetV2TokensNewListingResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -81,6 +82,18 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_list_scroll`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list_scroll].
         """
         return self._interaction._get_v3_token_list_scroll(True, query)
+
+    def get_v2_tokens_new_listing(
+        self,
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> GetV2TokensNewListingResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - New Listing](https://docs.birdeye.so/reference/get-defi-v2-tokens-new_listing)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v2_tokens_new_listing`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_new_listing].
+        """
+        return self._interaction._get_v2_tokens_new_listing(True, time_to, limit, meme_platform_enabled)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -223,6 +236,18 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_list_scroll`][cyhole.birdeye.interaction.Birdeye._get_v3_token_list_scroll].
         """
         return await self._interaction._get_v3_token_list_scroll(False, query)
+
+    async def get_v2_tokens_new_listing(
+        self,
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> GetV2TokensNewListingResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - New Listing](https://docs.birdeye.so/reference/get-defi-v2-tokens-new_listing)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v2_tokens_new_listing`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_new_listing].
+        """
+        return await self._interaction._get_v2_tokens_new_listing(False, time_to, limit, meme_platform_enabled)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

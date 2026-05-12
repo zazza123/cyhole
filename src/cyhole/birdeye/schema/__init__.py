@@ -12,6 +12,9 @@ from .token_list import (
     GetV3TokenListScrollData,
     GetV3TokenListScrollResponse,
     GetV3TokenListScrollQuery,
+    GetV2TokensNewListingItem,
+    GetV2TokensNewListingData,
+    GetV2TokensNewListingResponse,
 )
 from .security import (
     GetTokenSecurityDataSolana,
@@ -71,6 +74,9 @@ __all__ = [
     "GetV3TokenListScrollData",
     "GetV3TokenListScrollResponse",
     "GetV3TokenListScrollQuery",
+    "GetV2TokensNewListingItem",
+    "GetV2TokensNewListingData",
+    "GetV2TokensNewListingResponse",
     "GetTokenSecurityDataSolana",
     "GetTokenSecurityResponse",
     "GetTokenOverviewData",
