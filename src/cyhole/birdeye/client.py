@@ -66,8 +66,8 @@ class BirdeyeClient(APIClient):
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get_defi-token-creation-info)** for synchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_creation_info`][cyhole.birdeye.interaction.Birdeye._get_token_creation_info].
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get-defi-token_creation_info)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_creation_info`][cyhole.birdeye.interaction.Birdeye._get_token_creation_info].
         """
         return self._interaction._get_token_creation_info(True, address)
 
@@ -189,8 +189,8 @@ class BirdeyeAsyncClient(AsyncAPIClient):
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get_defi-token-creation-info)** for asynchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_creation_info`][cyhole.birdeye.interaction.Birdeye._get_token_creation_info].
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get-defi-token_creation_info)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_creation_info`][cyhole.birdeye.interaction.Birdeye._get_token_creation_info].
         """
         return await self._interaction._get_token_creation_info(False, address)
 

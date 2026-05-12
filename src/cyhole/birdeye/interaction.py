@@ -220,14 +220,20 @@ class Birdeye(Interaction):
         address: str
     ) -> GetTokenCreationInfoResponse | Coroutine[None, None, GetTokenCreationInfoResponse]:
         """
-            This function refers to the **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get_defi-token-creation-info)** and is used 
-            to get the current price of a token according on a specific chain on Birdeye.
+            This function refers to the **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get-defi-token_creation_info)** and is used
+            to retrieve the on-chain transaction that originally minted a given token together with its
+            slot, block timestamp (both unix and human-readable), creator/owner address and decimals.
+            It is the canonical way to answer "when and by whom was this token created?" on Birdeye-supported
+            chains and is typically used as part of a token vetting flow (age check, deployer profiling).
+
+            !!! info
+                Currently the endpoint is restricted by Birdeye to the Solana, BSC, Base, Ethereum and Monad chains.
 
             Parameters:
-                address: CA of the token to search on the chain.
-            
+                address: contract address of the token whose creation information must be retrieved.
+
             Returns:
-                token's creation information.
+                creation transaction hash, slot, block timestamps, creator/owner address and decimals.
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
