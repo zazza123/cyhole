@@ -83,6 +83,8 @@ def _get_foo(self, sync: bool) -> FooResponse | Coroutine[None, None, FooRespons
     return self.api_return_model(sync, RequestType.GET.value, url, FooResponse, ...)
 ```
 
+**Always use `api_return_model`** for the dispatch — never write the manual `if sync: ... else: async def async_request(): ...` ladder inside `interaction.py`. The helper takes `(sync, type, url, response_model, *args, **kwargs)` and forwards every keyword argument to `client.api()` (so `params=`, `json=`, `headers=` all work). The manual ladder is permitted only when the response is not a single Pydantic model (rare).
+
 ### Tests (`tests/`)
 
 - `config.py` + `test.default.ini`: central config loader (`load_config()`) and `MockerManager` for JSON fixture handling.
@@ -97,7 +99,7 @@ def _get_foo(self, sync: bool) -> FooResponse | Coroutine[None, None, FooRespons
 - All classes, methods, and functions need docstrings with `Parameters`, `Returns`, `Raises` sections (mkdocs-compatible).
 - For `pydantic.BaseModel` subclasses (response/body schemas, sub-schemas), use the `Attributes:` section to document fields — **not** `Parameters:`. Griffe (mkdocstrings' parser) matches `Parameters:` against the function/`__init__` signature and will raise "Parameter X does not appear in the function signature" warnings on pydantic classes, aborting `mkdocs build --strict`.
 - Operators surrounded by spaces: `x = 1`, not `x=1`.
-- If endpoint takes >3 inputs, define a `Body` pydantic model instead of individual params.
+- **If an endpoint takes more than ~3 meaningful inputs, define a Pydantic model and accept it as a single argument** instead of enumerating every param on the method signature. For POST endpoints name it `Post{EndpointName}Body` (the historical name) and pass it via `json = body.model_dump(exclude_none = True)`. For GET endpoints with many filters name it `Get{EndpointName}Query` and pass its `model_dump(exclude_none = True)` (or its fields) as `params`. This applies even when the API doesn't have a "body" — the goal is keeping the method signature usable. Example: `GetV3TokenListQuery` (57 filters) on Birdeye.
 
 ### Functional descriptions are mandatory
 
@@ -114,6 +116,55 @@ These checks are mandatory before declaring any task done. Run them and fix anyt
 
 - **After any code change in `src/`**: run `ruff check src/` and resolve every reported issue.
 - **After any docs change** (anything in `docs/`, `mkdocs.yml`, or any docstring referenced by mkdocstrings — i.e. virtually every change in `src/cyhole/`): run `mkdocs build --strict` and ensure it completes with zero WARNINGs and zero ERRORs. Strict mode aborts on warnings, so this catches broken cross-references, missing modules, and griffe docstring issues that the non-strict build silently hides.
+
+## Scaling patterns for large interactions
+
+When an Interaction grows large enough that the default flat layout becomes unwieldy, apply these patterns. They are project-wide standards, not Birdeye-specific.
+
+### Consolidate single/multiple endpoint pairs
+
+When the upstream API exposes a sibling pair such as `.../single` and `.../multiple` whose only delta is input cardinality (single address vs list of addresses) and the response shape, expose them as **one** cyhole method with a polymorphic argument:
+
+```python
+@overload
+def _get_v3_token_meta_data(self, sync: Literal[True], address: str) -> GetV3TokenMetaDataResponse: ...
+
+@overload
+def _get_v3_token_meta_data(self, sync: Literal[True], address: list[str]) -> GetV3TokenMetaDataMultipleResponse: ...
+# ...same for sync: Literal[False] returning Coroutine[..., ...]
+
+def _get_v3_token_meta_data(self, sync: bool, address: str | list[str]) -> ...:
+    if isinstance(address, str):
+        url = self.url_api_public + "v3/token/meta-data/single"
+        params, response_model = {"address": address}, GetV3TokenMetaDataResponse
+    else:
+        url = self.url_api_public + "v3/token/meta-data/multiple"
+        params, response_model = {"list_address": ",".join(address)}, GetV3TokenMetaDataMultipleResponse
+    return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
+```
+
+The Pydantic response schemas stay distinct (one `Single` + one `Multiple` model per concept) because the payload shapes differ. Mirror the same overload pattern on the sync/async client methods so callers get a narrowed return type.
+
+Apply this even when the two endpoints use different HTTP verbs (e.g. GET single + POST batch — see `_get_token_holder` on Birdeye, which routes to GET `/defi/v3/token/holder` when `wallets=None` and POST `/token/v1/holder/batch` when `wallets=list[str]`).
+
+### Schema sub-package when `schema.py` gets big
+
+When the per-interaction `schema.py` grows hard to navigate (large endpoint surface, many sub-models), split it into a `schema/` sub-package with one file per logical domain and re-export every public name from `schema/__init__.py`:
+
+```
+src/cyhole/{name}/schema/
+├── __init__.py          # re-exports every public name; existing imports keep working
+├── token_list.py
+├── token_stats.py
+├── holder.py
+└── …
+```
+
+The `__init__.py` must re-export everything so existing imports like `from cyhole.{name}.schema import GetFooResponse` continue to work without any caller change.
+
+Apply this when `schema.py` reaches ~10 KB or hosts schemas for multiple distinct API domains; do it as a standalone `REF:` commit (no behavior change) before the commits that add the new endpoints.
+
+The same split applies to tests when a single `test_{name}.py` becomes unwieldy: split into per-domain `test_{name}_<domain>.py` files. Mock fixtures may be organised into subfolders under `tests/resources/mock/{name}/<domain>/`.
 
 ## Adding a New Interaction
 

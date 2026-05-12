@@ -193,7 +193,17 @@ Interaction. Apply these steps:
   when it is `None`.
 - Use `Field(alias="originalName")` when JSON keys differ from Python naming style.
 - Nest sub-schemas for complex structures; name them descriptively without a `Response` suffix.
-- For POST endpoints with >3 inputs, define a `Post{EndpointName}Body` model.
+- For endpoints with more than ~3 meaningful inputs, define a Pydantic model and accept it
+  as a single argument: `Post{EndpointName}Body` for POST endpoints,
+  `Get{EndpointName}Query` for GETs with many filters. Serialise to the request with
+  `model_dump(exclude_none = True)` so unset filters are not sent. Example: Birdeye's
+  `GetV3TokenListQuery` covering 57 optional filter params.
+- For sibling `.../single` and `.../multiple` endpoints whose only delta is input cardinality,
+  define **distinct** response schemas (`…Response` + `…MultipleResponse`) and consolidate
+  them under a single polymorphic interaction method (see the interaction.py block below).
+- If `schema.py` is already large or about to grow further, consider splitting into a
+  `schema/` sub-package per CLAUDE.md → "Scaling patterns for large interactions" as a
+  standalone `REF:` commit before adding the new endpoints.
 
 **`param.py` — add param enums (if needed):**
 
@@ -235,6 +245,30 @@ def _{request_type}_{endpoint_name}(self, sync: bool, ...) -> {Response}Model | 
     url = self.url_api + "endpoint/path"
     return self.api_return_model(sync, RequestType.{TYPE}.value, url, {Response}Model, params=params)
 ```
+
+**Always use `self.api_return_model(sync, type, url, ResponseModel, **kwargs)`** for the dispatch — never write the manual `if sync: ... else: async def async_request(): ...` ladder. The helper forwards every keyword (`params=`, `json=`, `headers=`) to `client.api()`.
+
+**Consolidated single/multiple endpoint pairs.** When the API exposes a `.../single` and `.../multiple` pair whose only delta is input cardinality, expose them as one polymorphic method with four `@overload` declarations narrowing the return type on `sync` × cardinality. Routing happens inside the method body by `isinstance(address, str)`:
+
+```python
+@overload
+def _get_v3_token_meta_data(self, sync: Literal[True], address: str) -> GetV3TokenMetaDataResponse: ...
+
+@overload
+def _get_v3_token_meta_data(self, sync: Literal[True], address: list[str]) -> GetV3TokenMetaDataMultipleResponse: ...
+# … same for sync: Literal[False] returning Coroutine[..., ...]
+
+def _get_v3_token_meta_data(self, sync: bool, address: str | list[str]) -> ...:
+    if isinstance(address, str):
+        url = self.url_api_public + "v3/token/meta-data/single"
+        params, response_model = {"address": address}, GetV3TokenMetaDataResponse
+    else:
+        url = self.url_api_public + "v3/token/meta-data/multiple"
+        params, response_model = {"list_address": ",".join(address)}, GetV3TokenMetaDataMultipleResponse
+    return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
+```
+
+This applies even when the two endpoints use different HTTP verbs (GET single + POST batch). The sync and async client wrappers must mirror the polymorphic overloads so callers get a narrowed return type.
 
 **`client.py` — add sync and async methods:**
 
@@ -391,8 +425,11 @@ Fix every issue before proceeding. Common failures:
 - [ ] Every documented field describes meaning, units, and `None` conditions
 - [ ] Every new or modified private endpoint method (`_{verb}_{name}`) has a true functional description (what the endpoint returns, why a user would call it), not just a name restatement
 - [ ] All param enum members have docstrings
-- [ ] Overload pattern correct on every private method (two `@overload` + implementation)
-- [ ] `api_return_model` used — no raw `client.api()` calls in `interaction.py`
+- [ ] Overload pattern correct on every private method (two `@overload` + implementation; **four** for consolidated single/multiple endpoints)
+- [ ] `api_return_model` used — no raw `client.api()` and no manual `if sync: ... else: async def async_request(): ...` ladder in `interaction.py`
+- [ ] Endpoints with >3 inputs accept a `Post{Name}Body` / `Get{Name}Query` Pydantic model rather than enumerating params; the body/query is serialised via `model_dump(exclude_none = True)`
+- [ ] Sibling `.../single` and `.../multiple` endpoints consolidated under one polymorphic method with `address: str | list[str]`; sync + async clients mirror the overloads
+- [ ] If `schema.py` was split into a sub-package, the split happens in a standalone `REF:` commit before any new-endpoint commit; `schema/__init__.py` re-exports every public name so existing imports keep working
 - [ ] `ruff check src/` is clean
 - [ ] `mkdocs build --strict` runs with zero WARNINGs and zero ERRORs
 - [ ] `pytest tests/test_{name}.py` passes
