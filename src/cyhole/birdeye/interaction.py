@@ -319,41 +319,65 @@ class Birdeye(Interaction):
     def _get_token_overview(
         self,
         sync: Literal[True],
-        address: str
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenOverviewResponse: ...
 
     @overload
     def _get_token_overview(
         self,
         sync: Literal[False],
-        address: str
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
     ) -> Coroutine[None, None, GetTokenOverviewResponse]: ...
 
     def _get_token_overview(
         self,
         sync: bool,
-        address: str
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenOverviewResponse | Coroutine[None, None, GetTokenOverviewResponse]:
         """
-            This function refers to the **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get_defi-token-overview)** and is used 
-            to get all kind of information (token/mint/creator adresses, high level statistics, ...)
-            of a token on a specific chain calculated by Birdeye.
+            This function refers to the **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get-defi-token_overview)** and is used
+            to retrieve Birdeye's full analytics snapshot of a single token: identity (address, symbol,
+            name, social links), pricing (current price and per-window history at 1m/5m/30m/1h/2h/4h/6h/8h/12h/24h),
+            liquidity, supply (total, circulating, holders count), unique-wallet counts and
+            per-side trade activity (sell, buy, volume in both token-UI units and USD) for the trailing
+            1m/5m/30m/1h/2h/4h/8h/24h windows together with the equivalent metric over the previous window
+            and a precomputed percent change. It is the canonical endpoint behind Birdeye's token detail
+            page and is normally used as the "give me everything you know about this token" call.
 
             Parameters:
-                address: CA of the token to search on the chain.
-            
+                address: contract address of the token whose analytics snapshot must be retrieved.
+                frames: comma-separated list of additional custom time intervals to include in the
+                    response (up to 8 entries). Birdeye accepts minute intervals from `1m` to `1440m`,
+                    second intervals in multiples of 5 from `5s` to `3600s`, and hour intervals among
+                    `1h`, `2h`, `4h`, `8h` and `24h`. Default behaviour: only the standard windows
+                    listed above are returned.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
+
             Returns:
-                token's information.
-                    Observe that the content of `data` value depends on the selected chain.
+                token analytics snapshot decoded as [`GetTokenOverviewData`][cyhole.birdeye.schema.GetTokenOverviewData].
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
+        # check param consistency
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
         # set params
         url = self.url_api_public + "token_overview"
         params = {
-            "address" : address
+            "address" : address,
+            "frames" : frames,
+            "ui_amount_mode" : ui_amount_mode
         }
 
         # execute request

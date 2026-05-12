@@ -78,12 +78,17 @@ class BirdeyeClient(APIClient):
         """
         return self._interaction._get_token_security(True, address)
 
-    def get_token_overview(self, address: str) -> GetTokenOverviewResponse:
+    def get_token_overview(
+        self,
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenOverviewResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get_defi-token-overview)** for synchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_overview`][cyhole.birdeye.interaction.Birdeye._get_token_overview].
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get-defi-token_overview)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_overview`][cyhole.birdeye.interaction.Birdeye._get_token_overview].
         """
-        return self._interaction._get_token_overview(True, address)
+        return self._interaction._get_token_overview(True, address, frames, ui_amount_mode)
 
     def get_price(self, address: str, include_liquidity: bool | None = None) -> GetPriceResponse:
         """
@@ -201,12 +206,17 @@ class BirdeyeAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._get_token_security(False, address)
 
-    async def get_token_overview(self, address: str) -> GetTokenOverviewResponse:
+    async def get_token_overview(
+        self,
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenOverviewResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get_defi-token-overview)** for asynchronous logic. 
-            All the API endopint details are available on [`Birdeye._get_token_overview`][cyhole.birdeye.interaction.Birdeye._get_token_overview].
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get-defi-token_overview)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_token_overview`][cyhole.birdeye.interaction.Birdeye._get_token_overview].
         """
-        return await self._interaction._get_token_overview(False, address)
+        return await self._interaction._get_token_overview(False, address, frames, ui_amount_mode)
 
     async def get_price(self, address: str, include_liquidity: bool | None = None) -> GetPriceResponse:
         """
