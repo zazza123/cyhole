@@ -232,14 +232,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenListResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenListResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenListResponse, params = params)
 
     @overload
     def _get_v3_token_list(self, sync: Literal[True], query: GetV3TokenListQuery | None = None) -> GetV3TokenListResponse: ...
@@ -293,14 +286,7 @@ class Birdeye(Interaction):
         params = {k: v for k, v in query.model_dump().items() if v is not None}
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetV3TokenListResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetV3TokenListResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenListResponse, params = params)
 
     @overload
     def _get_v3_token_list_scroll(self, sync: Literal[True], query: GetV3TokenListScrollQuery | None = None) -> GetV3TokenListScrollResponse: ...
@@ -356,14 +342,7 @@ class Birdeye(Interaction):
         params = {k: v for k, v in query.model_dump().items() if v is not None}
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetV3TokenListScrollResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetV3TokenListScrollResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenListScrollResponse, params = params)
 
     @overload
     def _get_v2_tokens_new_listing(
@@ -422,14 +401,7 @@ class Birdeye(Interaction):
             "meme_platform_enabled": str(meme_platform_enabled).lower() if meme_platform_enabled is not None else None,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetV2TokensNewListingResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetV2TokensNewListingResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV2TokensNewListingResponse, params = params)
 
     @overload
     def _get_v2_markets(
@@ -499,14 +471,7 @@ class Birdeye(Interaction):
             "limit": limit,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetV2MarketsResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetV2MarketsResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV2MarketsResponse, params = params)
 
     @overload
     def _get_v3_token_meta_data(self, sync: Literal[True], address: str) -> GetV3TokenMetaDataResponse: ...
@@ -564,14 +529,7 @@ class Birdeye(Interaction):
             params = {"list_address": ",".join(address)}
             response_model = GetV3TokenMetaDataMultipleResponse
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return response_model(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return response_model(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
 
     @overload
     def _get_v3_token_market_data(self, sync: Literal[True], address: str, ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse: ...
@@ -637,14 +595,7 @@ class Birdeye(Interaction):
         if ui_amount_mode is not None:
             params["ui_amount_mode"] = ui_amount_mode
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return response_model(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return response_model(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
 
     @overload
     def _get_v3_token_trade_data(self, sync: Literal[True], address: str, frames: str | None = None, ui_amount_mode: str | None = None) -> GetV3TokenTradeDataResponse: ...
@@ -720,14 +671,7 @@ class Birdeye(Interaction):
         if ui_amount_mode is not None:
             params["ui_amount_mode"] = ui_amount_mode
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return response_model(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return response_model(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
 
     @overload
     def _get_v3_token_exit_liquidity(self, sync: Literal[True], address: str) -> GetV3TokenExitLiquidityResponse: ...
@@ -788,14 +732,7 @@ class Birdeye(Interaction):
             params = {"list_address": ",".join(address)}
             response_model = GetV3TokenExitLiquidityMultipleResponse
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return response_model(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return response_model(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
 
     @overload
     def _get_v3_token_mint_burn_txs(
@@ -884,14 +821,7 @@ class Birdeye(Interaction):
             "limit": limit,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetV3TokenMintBurnTxsResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetV3TokenMintBurnTxsResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMintBurnTxsResponse, params = params)
 
     @overload
     def _get_v2_tokens_top_traders(
@@ -986,14 +916,7 @@ class Birdeye(Interaction):
             "ui_amount_mode": ui_amount_mode,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetV2TopTradersResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetV2TopTradersResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV2TopTradersResponse, params = params)
 
     @overload
     def _get_token_holder(
@@ -1105,14 +1028,7 @@ class Birdeye(Interaction):
             if ui_amount_mode is not None:
                 params["ui_amount_mode"] = ui_amount_mode
 
-            if sync:
-                content_raw = self.client.api(RequestType.GET.value, url, params = params)
-                return GetTokenHolderResponse(**content_raw.json())
-            else:
-                async def async_request_get():
-                    content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                    return GetTokenHolderResponse(**content_raw.json())
-                return async_request_get()
+            return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderResponse, params = params)
 
         # POST batch balance
         url = self.url_api_token_v1 + "holder/batch"
@@ -1126,14 +1042,7 @@ class Birdeye(Interaction):
         if ui_amount_mode is not None:
             post_params["ui_amount_mode"] = ui_amount_mode
 
-        if sync:
-            content_raw = self.client.api(RequestType.POST.value, url, json = body, headers = headers, params = post_params or None)
-            return PostTokenHolderBatchResponse(**content_raw.json())
-        else:
-            async def async_request_post():
-                content_raw = await self.async_client.api(RequestType.POST.value, url, json = body, headers = headers, params = post_params or None)
-                return PostTokenHolderBatchResponse(**content_raw.json())
-            return async_request_post()
+        return self.api_return_model(sync, RequestType.POST.value, url, PostTokenHolderBatchResponse, json = body, headers = headers, params = post_params or None)
 
     @overload
     def _get_holder_distribution(
@@ -1236,14 +1145,7 @@ class Birdeye(Interaction):
             "limit": limit,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetHolderDistributionResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetHolderDistributionResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetHolderDistributionResponse, params = params)
 
     @overload
     def _get_token_holder_profile(
@@ -1315,14 +1217,7 @@ class Birdeye(Interaction):
             "include_zero_balance": str(include_zero_balance).lower() if include_zero_balance is not None else None,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetHolderProfileResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetHolderProfileResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetHolderProfileResponse, params = params)
 
     @overload
     def _get_token_holder_positions(
@@ -1414,14 +1309,7 @@ class Birdeye(Interaction):
             "limit": limit,
         }
 
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenHolderPositionsResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenHolderPositionsResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderPositionsResponse, params = params)
 
     @overload
     def _get_token_holder_chart(
@@ -1735,14 +1623,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenCreationInfoResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenCreationInfoResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenCreationInfoResponse, params = params)
 
     @overload
     def _get_token_security(
@@ -1795,14 +1676,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenSecurityResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenSecurityResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenSecurityResponse, params = params)
 
     @overload
     def _get_token_overview(
@@ -1870,14 +1744,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenOverviewResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenOverviewResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenOverviewResponse, params = params)
 
     @overload
     def _get_price(
@@ -1924,14 +1791,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceResponse, params = params)
 
     @overload
     def _get_price_multiple(
@@ -1979,14 +1839,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceMultipleResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceMultipleResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceMultipleResponse, params = params)
 
     @overload
     def _get_price_historical(
@@ -2067,14 +1920,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceHistoricalResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceHistoricalResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceHistoricalResponse, params = params)
 
     @overload
     def _get_price_volume_single(
@@ -2122,14 +1968,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceVolumeSingleResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceVolumeSingleResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceVolumeSingleResponse, params = params)
 
     @overload
     def _post_price_volume_multi(
@@ -2183,14 +2022,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.POST.value, url, json = body, headers = headers)
-            return PostPriceVolumeMultiResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.POST.value, url, json = body, headers = headers)
-                return PostPriceVolumeMultiResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.POST.value, url, PostPriceVolumeMultiResponse, json = body, headers = headers)
 
     @overload
     def _get_trades_token(
@@ -2252,14 +2084,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTradesTokenResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTradesTokenResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTradesTokenResponse, params = params)
 
     @overload
     def _get_trades_pair(
@@ -2331,14 +2156,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTradesPairResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTradesPairResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTradesPairResponse, params = params)
 
     @overload
     def _get_ohlcv(
@@ -2423,14 +2241,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetOHLCVTokenPairResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetOHLCVTokenPairResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetOHLCVTokenPairResponse, params = params)
 
     @overload
     def _get_ohlcv_base_quote(
@@ -2511,14 +2322,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetOHLCVBaseQuoteResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetOHLCVBaseQuoteResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetOHLCVBaseQuoteResponse, params = params)
 
     @overload
     def _get_wallet_supported_networks(self, sync: Literal[True]) -> GetWalletSupportedNetworksResponse: ...
@@ -2540,11 +2344,4 @@ class Birdeye(Interaction):
         url = self.url_api_private_wallet + "/list_supported_chain"
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetWalletSupportedNetworksResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetWalletSupportedNetworksResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetWalletSupportedNetworksResponse)
