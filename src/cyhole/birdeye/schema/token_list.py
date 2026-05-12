@@ -670,3 +670,76 @@ class GetV2MarketsResponse(BaseModel):
     """
     data: GetV2MarketsData
     success: bool
+
+
+# classes used on GET "Token - Top Traders" endpoint
+class GetV2TopTradersItem(BaseModel):
+    """
+        Single trader entry returned by the v2 Token - Top Traders endpoint.
+
+        Numeric fields with `pnl` in their name and `volume_usd` are only meaningful on the Solana
+        chain — on other chains Birdeye returns them but they may be `0` or unreliable.
+
+        Attributes:
+            token_address: contract address of the token the trader has been ranked for
+                (alias `tokenAddress`).
+            owner: on-chain wallet address of the trader.
+            type: time frame the metrics in this entry refer to (mirrors the request `time_frame`).
+            tags: list of optional Birdeye tags attached to the wallet (e.g. `whale`, `bot`); empty
+                when no tags are assigned.
+            trade: total number of trades the wallet executed on the token within the time frame.
+            trade_buy: number of buy trades within the time frame (alias `tradeBuy`).
+            trade_sell: number of sell trades within the time frame (alias `tradeSell`).
+            volume: total traded volume in the token's UI units.
+            volume_buy: buy-side traded volume in the token's UI units (alias `volumeBuy`).
+            volume_sell: sell-side traded volume in the token's UI units (alias `volumeSell`).
+            volume_usd: total traded volume expressed in USD (alias `volumeUsd`).
+            volume_buy_usd: buy-side traded volume expressed in USD (alias `volumeBuyUSD`).
+            volume_sell_usd: sell-side traded volume expressed in USD (alias `volumeSellUSD`).
+            total_pnl: total profit-and-loss of the wallet on the token over the time frame, in USD
+                (alias `totalPnl`); Solana-only, may be `0` on other chains.
+            realized_pnl: realised profit-and-loss in USD (alias `realizedPnl`); Solana-only.
+            unrealized_pnl: unrealised profit-and-loss in USD (alias `unrealizedPnl`); Solana-only.
+            is_scaled_ui_token: `True` when the underlying token is a scaled-UI-amount SPL token
+                (Solana only) (alias `isScaledUiToken`); `None` outside Solana or undetermined.
+            multiplier: scaling multiplier applied to UI amounts for scaled-UI-amount tokens; `None`
+                when not applicable.
+    """
+    token_address: str = Field(alias = "tokenAddress")
+    owner: str
+    type: str
+    tags: list[str] = []
+    trade: int
+    trade_buy: int = Field(alias = "tradeBuy")
+    trade_sell: int = Field(alias = "tradeSell")
+    volume: float
+    volume_buy: float = Field(alias = "volumeBuy")
+    volume_sell: float = Field(alias = "volumeSell")
+    volume_usd: float = Field(alias = "volumeUsd")
+    volume_buy_usd: float = Field(alias = "volumeBuyUSD")
+    volume_sell_usd: float = Field(alias = "volumeSellUSD")
+    total_pnl: float = Field(alias = "totalPnl")
+    realized_pnl: float = Field(alias = "realizedPnl")
+    unrealized_pnl: float = Field(alias = "unrealizedPnl")
+    is_scaled_ui_token: bool | None = Field(alias = "isScaledUiToken", default = None)
+    multiplier: float | None = None
+
+class GetV2TopTradersData(BaseModel):
+    """
+        Payload of the v2 Token - Top Traders response.
+
+        Attributes:
+            items: ranked list of trader entries matching the request.
+    """
+    items: list[GetV2TopTradersItem]
+
+class GetV2TopTradersResponse(BaseModel):
+    """
+        Model used to represent the **Token - Top Traders** endpoint from birdeye API.
+
+        Attributes:
+            data: payload containing the ranked trader list.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV2TopTradersData
+    success: bool

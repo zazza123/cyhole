@@ -138,6 +138,63 @@ class BirdeyeV2MarketsSortBy(CyholeParam):
     VOLUME_24H = "volume24h"
     """Sort markets by USD traded volume in the trailing 24h window."""
 
+class BirdeyeV2TopTradersSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye v2 Token - Top Traders endpoint.
+
+        The PnL-based metrics (`total_pnl`, `unrealized_pnl`, `realized_pnl`, `volume_usd`) and the
+        long time frames (2d..90d) are restricted by Birdeye to the Solana chain at the time of writing.
+    """
+    VOLUME = "volume"
+    """Sort traders by raw traded volume in the token's UI units."""
+    TRADE = "trade"
+    """Sort traders by number of trades on the token."""
+    TOTAL_PNL = "total_pnl"
+    """Sort traders by total profit-and-loss (Solana-only)."""
+    UNREALIZED_PNL = "unrealized_pnl"
+    """Sort traders by unrealised profit-and-loss (Solana-only)."""
+    REALIZED_PNL = "realized_pnl"
+    """Sort traders by realised profit-and-loss (Solana-only)."""
+    VOLUME_USD = "volume_usd"
+    """Sort traders by traded volume expressed in USD (Solana-only)."""
+
+class BirdeyeV2TopTradersTimeFrame(CyholeParam):
+    """
+        Enum class to get the supported time frames of the Birdeye v2 Token - Top Traders endpoint.
+
+        Frames longer than 24h (2d..90d) are restricted by Birdeye to the Solana chain.
+    """
+    MIN30 = "30m"
+    """Trailing 30 minutes."""
+    H1 = "1h"
+    """Trailing 1 hour."""
+    H2 = "2h"
+    """Trailing 2 hours."""
+    H4 = "4h"
+    """Trailing 4 hours."""
+    H6 = "6h"
+    """Trailing 6 hours."""
+    H8 = "8h"
+    """Trailing 8 hours."""
+    H12 = "12h"
+    """Trailing 12 hours."""
+    H24 = "24h"
+    """Trailing 24 hours."""
+    D2 = "2d"
+    """Trailing 2 days (Solana-only)."""
+    D3 = "3d"
+    """Trailing 3 days (Solana-only)."""
+    D7 = "7d"
+    """Trailing 7 days (Solana-only)."""
+    D14 = "14d"
+    """Trailing 14 days (Solana-only)."""
+    D30 = "30d"
+    """Trailing 30 days (Solana-only)."""
+    D60 = "60d"
+    """Trailing 60 days (Solana-only)."""
+    D90 = "90d"
+    """Trailing 90 days (Solana-only)."""
+
 class BirdeyeMintBurnType(CyholeParam):
     """
         Enum class to filter the Birdeye v3 Token Mint/Burn endpoint by transaction type.

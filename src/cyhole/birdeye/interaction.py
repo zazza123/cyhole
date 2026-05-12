@@ -18,7 +18,9 @@ from ..birdeye.param import (
     BirdeyeUIAmountMode,
     BirdeyeV3TokenListSortBy,
     BirdeyeV2MarketsSortBy,
-    BirdeyeMintBurnType
+    BirdeyeMintBurnType,
+    BirdeyeV2TopTradersSortBy,
+    BirdeyeV2TopTradersTimeFrame
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -37,6 +39,7 @@ from ..birdeye.schema import (
     GetV3TokenExitLiquidityResponse,
     GetV3TokenExitLiquidityMultipleResponse,
     GetV3TokenMintBurnTxsResponse,
+    GetV2TopTradersResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -868,6 +871,108 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetV3TokenMintBurnTxsResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v2_tokens_top_traders(
+        self,
+        sync: Literal[True],
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetV2TopTradersResponse: ...
+
+    @overload
+    def _get_v2_tokens_top_traders(
+        self,
+        sync: Literal[False],
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetV2TopTradersResponse]: ...
+
+    def _get_v2_tokens_top_traders(
+        self,
+        sync: bool,
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetV2TopTradersResponse | Coroutine[None, None, GetV2TopTradersResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Top Traders](https://docs.birdeye.so/reference/get-defi-v2-tokens-top_traders)** and is used
+            to retrieve the wallets that traded the most of a given token over a configurable time
+            frame, ranked by raw volume, USD volume, trade count, or realised/unrealised PnL. Each
+            entry exposes the wallet address, optional Birdeye tags (`whale`, `bot`, ...), trade and
+            volume splits between buy and sell sides, and Solana-only profit-and-loss figures.
+            Useful when surfacing the dominant participants behind a token's recent activity.
+
+            !!! info
+                The PnL-based sort metrics (`total_pnl`, `unrealized_pnl`, `realized_pnl`,
+                `volume_usd`) and the longer time frames (2d..90d) are restricted by Birdeye to
+                Solana. On every other chain only `volume` / `trade` sort and time frames up to 24h
+                are honoured.
+
+            Parameters:
+                address: contract address of the token whose top traders must be listed.
+                time_frame: trailing window for the metrics. Pick one of the constants on
+                    [`BirdeyeV2TopTradersTimeFrame`][cyhole.birdeye.param.BirdeyeV2TopTradersTimeFrame].
+                    Default behaviour: `24h`.
+                sort_by: ranking metric. Pick one of the constants on
+                    [`BirdeyeV2TopTradersSortBy`][cyhole.birdeye.param.BirdeyeV2TopTradersSortBy].
+                    Default behaviour: `volume`.
+                sort_type: ascending or descending order. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `desc`.
+                offset: zero-based pagination offset. Default behaviour: `0`. Birdeye requires
+                    `offset + limit <= 10000`.
+                limit: number of records to return. Default behaviour: `10`.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`scaled`).
+
+            Returns:
+                ranked list of top trader entries decoded as
+                [`GetV2TopTradersResponse`][cyhole.birdeye.schema.GetV2TopTradersResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeV2TopTradersTimeFrame.check(time_frame)
+        BirdeyeV2TopTradersSortBy.check(sort_by)
+        BirdeyeOrder.check(sort_type)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_public + "v2/tokens/top_traders"
+        params = {
+            "address": address,
+            "time_frame": time_frame,
+            "sort_type": sort_type,
+            "sort_by": sort_by,
+            "offset": offset,
+            "limit": limit,
+            "ui_amount_mode": ui_amount_mode,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetV2TopTradersResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetV2TopTradersResponse(**content_raw.json())
             return async_request()
 
     @overload

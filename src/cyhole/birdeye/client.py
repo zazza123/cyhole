@@ -13,6 +13,8 @@ from ..birdeye.param import (
     BirdeyeHourTimeFrame,
     BirdeyeV2MarketsSortBy,
     BirdeyeMintBurnType,
+    BirdeyeV2TopTradersSortBy,
+    BirdeyeV2TopTradersTimeFrame,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -31,6 +33,7 @@ from ..birdeye.schema import (
     GetV3TokenExitLiquidityResponse,
     GetV3TokenExitLiquidityMultipleResponse,
     GetV3TokenMintBurnTxsResponse,
+    GetV2TopTradersResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -192,6 +195,22 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_mint_burn_txs`][cyhole.birdeye.interaction.Birdeye._get_v3_token_mint_burn_txs].
         """
         return self._interaction._get_v3_token_mint_burn_txs(True, address, type, sort_type, after_time, before_time, offset, limit)
+
+    def get_v2_tokens_top_traders(
+        self,
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetV2TopTradersResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Top Traders](https://docs.birdeye.so/reference/get-defi-v2-tokens-top_traders)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v2_tokens_top_traders`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_top_traders].
+        """
+        return self._interaction._get_v2_tokens_top_traders(True, address, time_frame, sort_by, sort_type, offset, limit, ui_amount_mode)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -432,6 +451,22 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_mint_burn_txs`][cyhole.birdeye.interaction.Birdeye._get_v3_token_mint_burn_txs].
         """
         return await self._interaction._get_v3_token_mint_burn_txs(False, address, type, sort_type, after_time, before_time, offset, limit)
+
+    async def get_v2_tokens_top_traders(
+        self,
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetV2TopTradersResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Top Traders](https://docs.birdeye.so/reference/get-defi-v2-tokens-top_traders)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v2_tokens_top_traders`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_top_traders].
+        """
+        return await self._interaction._get_v2_tokens_top_traders(False, address, time_frame, sort_by, sort_type, offset, limit, ui_amount_mode)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
