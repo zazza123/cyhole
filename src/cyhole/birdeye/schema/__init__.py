@@ -15,6 +15,10 @@ from .token_list import (
     GetV2TokensNewListingItem,
     GetV2TokensNewListingData,
     GetV2TokensNewListingResponse,
+    GetV2MarketsTokenSide,
+    GetV2MarketsItem,
+    GetV2MarketsData,
+    GetV2MarketsResponse,
 )
 from .security import (
     GetTokenSecurityDataSolana,
@@ -77,6 +81,10 @@ __all__ = [
     "GetV2TokensNewListingItem",
     "GetV2TokensNewListingData",
     "GetV2TokensNewListingResponse",
+    "GetV2MarketsTokenSide",
+    "GetV2MarketsItem",
+    "GetV2MarketsData",
+    "GetV2MarketsResponse",
     "GetTokenSecurityDataSolana",
     "GetTokenSecurityResponse",
     "GetTokenOverviewData",

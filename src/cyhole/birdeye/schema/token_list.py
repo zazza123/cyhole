@@ -598,3 +598,75 @@ class GetV2TokensNewListingResponse(BaseModel):
     """
     data: GetV2TokensNewListingData
     success: bool
+
+
+# classes used on GET "Token - All Market List" endpoint
+class GetV2MarketsTokenSide(BaseModel):
+    """
+        Identity of one side (base or quote) of a market returned by the v2 Token - All Market List endpoint.
+
+        Attributes:
+            address: contract address of the token making up this side of the market.
+            decimals: number of decimal places used by the token.
+            symbol: ticker symbol of the token; `None` if Birdeye does not know it.
+            icon: URL of the token logo; `None` if Birdeye does not have a logo for the token.
+    """
+    address: str
+    decimals: int
+    symbol: str | None = None
+    icon: str | None = None
+
+class GetV2MarketsItem(BaseModel):
+    """
+        Single market (trading pair) entry returned by the v2 Token - All Market List endpoint.
+
+        Attributes:
+            address: on-chain address of the market/pool.
+            base: identity of the base side of the market.
+            quote: identity of the quote side of the market.
+            created_at: ISO-8601 timestamp at which Birdeye first observed the market (alias `createdAt`).
+            liquidity: total liquidity of the market in USD.
+            name: human-readable market name (e.g. `JitoSOL-SOL`).
+            price: current price of the market quoted in USD; `None` when Birdeye cannot compute it.
+            source: name of the venue (DEX/aggregator) that hosts the market.
+            trade_24h: total number of trades on the market during the trailing 24h window (alias `trade24h`).
+            trade_24h_change_percent: percent change of the 24h trade count vs the previous 24h window (alias `trade24hChangePercent`).
+            unique_wallet_24h: number of unique wallets that traded the market in the trailing 24h window (alias `uniqueWallet24h`).
+            unique_wallet_24h_change_percent: percent change of unique wallets vs the previous 24h window (alias `uniqueWallet24hChangePercent`).
+            volume_24h: traded volume during the trailing 24h window expressed in USD (alias `volume24h`).
+    """
+    address: str
+    base: GetV2MarketsTokenSide
+    quote: GetV2MarketsTokenSide
+    created_at: str = Field(alias = "createdAt")
+    liquidity: float
+    name: str
+    price: float | None = None
+    source: str
+    trade_24h: int = Field(alias = "trade24h")
+    trade_24h_change_percent: float = Field(alias = "trade24hChangePercent")
+    unique_wallet_24h: int = Field(alias = "uniqueWallet24h")
+    unique_wallet_24h_change_percent: float = Field(alias = "uniqueWallet24hChangePercent")
+    volume_24h: float = Field(alias = "volume24h")
+
+class GetV2MarketsData(BaseModel):
+    """
+        Payload of the v2 Token - All Market List response.
+
+        Attributes:
+            total: total number of markets known to Birdeye for the requested token.
+            items: paginated list of markets matching the request, ranked per `sort_by` / `sort_type`.
+    """
+    total: int
+    items: list[GetV2MarketsItem]
+
+class GetV2MarketsResponse(BaseModel):
+    """
+        Model used to represent the **Token - All Market List** endpoint from birdeye API.
+
+        Attributes:
+            data: paginated list of markets for the requested token.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV2MarketsData
+    success: bool

@@ -129,6 +129,15 @@ class BirdeyeTradeType(CyholeParam):
     ALL = "all"
     """All type of transactions (swap, add, remove)."""
 
+class BirdeyeV2MarketsSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye v2 Token - All Market List endpoint.
+    """
+    LIQUIDITY = "liquidity"
+    """Sort markets by current liquidity (USD)."""
+    VOLUME_24H = "volume24h"
+    """Sort markets by USD traded volume in the trailing 24h window."""
+
 class BirdeyeV3TokenListSortBy(CyholeParam):
     """
         Enum class to get the supported sorting metrics of the Birdeye v3 Token - List endpoint.

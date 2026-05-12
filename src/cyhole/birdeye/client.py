@@ -11,6 +11,7 @@ from ..birdeye.param import (
     BirdeyeSort,
     BirdeyeTradeType,
     BirdeyeHourTimeFrame,
+    BirdeyeV2MarketsSortBy,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -19,6 +20,7 @@ from ..birdeye.schema import (
     GetV3TokenListScrollQuery,
     GetV3TokenListScrollResponse,
     GetV2TokensNewListingResponse,
+    GetV2MarketsResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -94,6 +96,20 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v2_tokens_new_listing`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_new_listing].
         """
         return self._interaction._get_v2_tokens_new_listing(True, time_to, limit, meme_platform_enabled)
+
+    def get_v2_markets(
+        self,
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV2MarketsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - All Market List](https://docs.birdeye.so/reference/get-defi-v2-markets)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v2_markets`][cyhole.birdeye.interaction.Birdeye._get_v2_markets].
+        """
+        return self._interaction._get_v2_markets(True, address, sort_by, sort_type, offset, limit)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -248,6 +264,20 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v2_tokens_new_listing`][cyhole.birdeye.interaction.Birdeye._get_v2_tokens_new_listing].
         """
         return await self._interaction._get_v2_tokens_new_listing(False, time_to, limit, meme_platform_enabled)
+
+    async def get_v2_markets(
+        self,
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV2MarketsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - All Market List](https://docs.birdeye.so/reference/get-defi-v2-markets)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v2_markets`][cyhole.birdeye.interaction.Birdeye._get_v2_markets].
+        """
+        return await self._interaction._get_v2_markets(False, address, sort_by, sort_type, offset, limit)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

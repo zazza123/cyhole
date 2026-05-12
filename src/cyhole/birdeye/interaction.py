@@ -16,7 +16,8 @@ from ..birdeye.param import (
     BirdeyeTradeType,
     BirdeyeAddressType,
     BirdeyeUIAmountMode,
-    BirdeyeV3TokenListSortBy
+    BirdeyeV3TokenListSortBy,
+    BirdeyeV2MarketsSortBy
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -25,6 +26,7 @@ from ..birdeye.schema import (
     GetV3TokenListScrollQuery,
     GetV3TokenListScrollResponse,
     GetV2TokensNewListingResponse,
+    GetV2MarketsResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -394,6 +396,83 @@ class Birdeye(Interaction):
             async def async_request():
                 content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 return GetV2TokensNewListingResponse(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v2_markets(
+        self,
+        sync: Literal[True],
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV2MarketsResponse: ...
+
+    @overload
+    def _get_v2_markets(
+        self,
+        sync: Literal[False],
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetV2MarketsResponse]: ...
+
+    def _get_v2_markets(
+        self,
+        sync: bool,
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV2MarketsResponse | Coroutine[None, None, GetV2MarketsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - All Market List](https://docs.birdeye.so/reference/get-defi-v2-markets)** and is used
+            to retrieve the list of markets (trading pairs) Birdeye knows for a given token, ranked
+            by liquidity or 24h USD volume. Each entry describes the market address, its source
+            (DEX/aggregator), the base/quote token identities, current liquidity, price, and 24h
+            trade/volume/unique-wallet aggregates plus the percent change vs the previous 24h window.
+            Useful when a caller wants to drill down from a token to where it actually trades.
+
+            Parameters:
+                address: contract address of the token whose markets must be listed.
+                sort_by: ranking metric. Pick one of the constants on
+                    [`BirdeyeV2MarketsSortBy`][cyhole.birdeye.param.BirdeyeV2MarketsSortBy].
+                sort_type: ascending or descending order. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                limit: number of records to return (1..20). Default behaviour: `10`.
+
+            Returns:
+                paginated list of markets decoded as [`GetV2MarketsResponse`][cyhole.birdeye.schema.GetV2MarketsResponse],
+                plus the total number of markets Birdeye tracks for the token in `data.total`.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeV2MarketsSortBy.check(sort_by)
+        BirdeyeOrder.check(sort_type)
+
+        url = self.url_api_public + "v2/markets"
+        params = {
+            "address": address,
+            "sort_by": sort_by,
+            "sort_type": sort_type,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return GetV2MarketsResponse(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return GetV2MarketsResponse(**content_raw.json())
             return async_request()
 
     @overload

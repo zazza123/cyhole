@@ -14,6 +14,7 @@ from cyhole.birdeye.schema import (
     GetV3TokenListScrollQuery,
     GetV3TokenListScrollResponse,
     GetV2TokensNewListingResponse,
+    GetV2MarketsResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -225,6 +226,44 @@ class TestBirdeyePublic:
             response = await client.get_v2_tokens_new_listing(limit = 1)
 
         assert isinstance(response, GetV2TokensNewListingResponse)
+
+    def test_get_v2_markets_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - All Market List"
+            for synchronous logic.
+
+            Mock Response File: get_v2_markets.json
+        """
+        mock_file_name = "get_v2_markets"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV2MarketsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v2_markets(address = WSOL.address, limit = 1)
+        assert isinstance(response, GetV2MarketsResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v2_markets_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - All Market List"
+            for asynchronous logic.
+
+            Mock Response File: get_v2_markets.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v2_markets"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV2MarketsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v2_markets(address = WSOL.address, limit = 1)
+
+        assert isinstance(response, GetV2MarketsResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """
