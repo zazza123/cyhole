@@ -53,6 +53,8 @@ from ..birdeye.schema import (
     GetTokenHolderChartResponse,
     PostTokenTransferBody,
     PostTokenTransferResponse,
+    PostTokenTransferTotalBody,
+    PostTokenTransferTotalResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -1551,6 +1553,52 @@ class Birdeye(Interaction):
             RequestType.POST.value,
             url,
             PostTokenTransferResponse,
+            json = body.model_dump(exclude_none = True),
+            headers = headers,
+        )
+
+    @overload
+    def _post_token_transfer_total(self, sync: Literal[True], body: PostTokenTransferTotalBody) -> PostTokenTransferTotalResponse: ...
+
+    @overload
+    def _post_token_transfer_total(self, sync: Literal[False], body: PostTokenTransferTotalBody) -> Coroutine[None, None, PostTokenTransferTotalResponse]: ...
+
+    def _post_token_transfer_total(
+        self,
+        sync: bool,
+        body: PostTokenTransferTotalBody
+    ) -> PostTokenTransferTotalResponse | Coroutine[None, None, PostTokenTransferTotalResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Transfer Total](https://docs.birdeye.so/reference/post-token-v1-transfer-total)** and is used
+            to return the **count** of SPL token transfer transactions of a given token matching the
+            same filter set as the Transfer List endpoint (time window, transferred amount, USD
+            value, sender / receiver wallet). It is the cheap counterpart of
+            [`_post_token_transfer`][cyhole.birdeye.interaction.Birdeye._post_token_transfer] when
+            only the aggregate count is needed (no individual entries, no pagination).
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                body: filled-in [`PostTokenTransferTotalBody`][cyhole.birdeye.schema.PostTokenTransferTotalBody]
+                    instance carrying the required `token_address` and any optional filters.
+
+            Returns:
+                aggregate count payload decoded as
+                [`PostTokenTransferTotalResponse`][cyhole.birdeye.schema.PostTokenTransferTotalResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_token_v1 + "transfer/total"
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+
+        return self.api_return_model(
+            sync,
+            RequestType.POST.value,
+            url,
+            PostTokenTransferTotalResponse,
             json = body.model_dump(exclude_none = True),
             headers = headers,
         )

@@ -33,6 +33,8 @@ from cyhole.birdeye.schema import (
     GetTokenHolderChartResponse,
     PostTokenTransferBody,
     PostTokenTransferResponse,
+    PostTokenTransferTotalBody,
+    PostTokenTransferTotalResponse,
     GetTokenCreationInfoResponse,
     GetTokenSecurityResponse, GetTokenSecurityDataSolana,
     GetTokenOverviewResponse,
@@ -943,6 +945,46 @@ class TestBirdeyePublic:
             response = await client.post_token_transfer(body)
 
         assert isinstance(response, PostTokenTransferResponse)
+
+    def test_post_token_transfer_total_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Transfer Total"
+            for synchronous logic.
+
+            Mock Response File: post_token_v1_transfer_total.json
+        """
+        mock_file_name = "post_token_v1_transfer_total"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenTransferTotalResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        body = PostTokenTransferTotalBody(token_address = WSOL.address)
+        response = self.birdeye.client.post_token_transfer_total(body)
+        assert isinstance(response, PostTokenTransferTotalResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_token_transfer_total_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Token - Transfer Total"
+            for asynchronous logic.
+
+            Mock Response File: post_token_v1_transfer_total.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "post_token_v1_transfer_total"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostTokenTransferTotalResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        body = PostTokenTransferTotalBody(token_address = WSOL.address)
+        async with self.birdeye.async_client as client:
+            response = await client.post_token_transfer_total(body)
+
+        assert isinstance(response, PostTokenTransferTotalResponse)
 
     def test_get_price_sync(self, mocker: MockerFixture) -> None:
         """

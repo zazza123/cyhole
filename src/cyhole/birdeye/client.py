@@ -47,6 +47,8 @@ from ..birdeye.schema import (
     GetTokenHolderChartResponse,
     PostTokenTransferBody,
     PostTokenTransferResponse,
+    PostTokenTransferTotalBody,
+    PostTokenTransferTotalResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -315,6 +317,13 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._post_token_transfer`][cyhole.birdeye.interaction.Birdeye._post_token_transfer].
         """
         return self._interaction._post_token_transfer(True, body)
+
+    def post_token_transfer_total(self, body: PostTokenTransferTotalBody) -> PostTokenTransferTotalResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Transfer Total](https://docs.birdeye.so/reference/post-token-v1-transfer-total)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._post_token_transfer_total`][cyhole.birdeye.interaction.Birdeye._post_token_transfer_total].
+        """
+        return self._interaction._post_token_transfer_total(True, body)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -662,6 +671,13 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._post_token_transfer`][cyhole.birdeye.interaction.Birdeye._post_token_transfer].
         """
         return await self._interaction._post_token_transfer(False, body)
+
+    async def post_token_transfer_total(self, body: PostTokenTransferTotalBody) -> PostTokenTransferTotalResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Token - Transfer Total](https://docs.birdeye.so/reference/post-token-v1-transfer-total)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._post_token_transfer_total`][cyhole.birdeye.interaction.Birdeye._post_token_transfer_total].
+        """
+        return await self._interaction._post_token_transfer_total(False, body)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
