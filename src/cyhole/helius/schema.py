@@ -7,7 +7,7 @@ class HeliusSortConfig(BaseModel):
     """
     Sort configuration used in DAS asset collection request bodies.
 
-    Parameters:
+    Attributes:
         sort_by: field to sort by (see [`HeliusSortBy`][cyhole.helius.param.HeliusSortBy]).
         sort_direction: sort order (see [`HeliusSortDirection`][cyhole.helius.param.HeliusSortDirection]).
     """
@@ -297,7 +297,7 @@ class PostGetAssetsByOwnerBody(BaseModel):
     """
     Request body for the `getAssetsByOwner` DAS endpoint.
 
-    Parameters:
+    Attributes:
         owner_address: wallet address of the asset owner.
         page: page number for pagination (default 1).
         limit: results per page, max 1,000 (default 1,000).
@@ -317,7 +317,7 @@ class PostGetAssetsByGroupBody(BaseModel):
     """
     Request body for the `getAssetsByGroup` DAS endpoint.
 
-    Parameters:
+    Attributes:
         group_key: grouping key, typically `"collection"`.
         group_value: collection mint address.
         page: page number for pagination (default 1).
@@ -339,7 +339,7 @@ class PostGetAssetsByCreatorBody(BaseModel):
     """
     Request body for the `getAssetsByCreator` DAS endpoint.
 
-    Parameters:
+    Attributes:
         creator_address: wallet address of the creator.
         only_verified: if True, return only assets where the creator is verified (default False).
         page: page number for pagination (default 1).
@@ -361,7 +361,7 @@ class PostGetAssetsByAuthorityBody(BaseModel):
     """
     Request body for the `getAssetsByAuthority` DAS endpoint.
 
-    Parameters:
+    Attributes:
         authority_address: update authority address.
         page: page number for pagination (default 1).
         limit: results per page, max 1,000 (default 1,000).
@@ -383,7 +383,7 @@ class PostSearchAssetsBody(BaseModel):
 
     All fields are optional — combine filters as needed.
 
-    Parameters:
+    Attributes:
         page: page number for pagination (default 1).
         limit: results per page, max 1,000 (default 1,000).
         owner_address: filter by owner wallet address.
@@ -415,7 +415,7 @@ class PostGetTokenAccountsBody(BaseModel):
 
     Provide at least one of `mint` or `owner` to narrow the results.
 
-    Parameters:
+    Attributes:
         mint: SPL token mint address to filter by.
         owner: wallet address of the token account owner.
         page: page number for pagination (default 1).
