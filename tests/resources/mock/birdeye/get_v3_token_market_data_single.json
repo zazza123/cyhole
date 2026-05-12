@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "data": {
+    "address": "So11111111111111111111111111111111111111112",
+    "price": 185.74132384799458,
+    "liquidity": 23338480211.61425,
+    "total_supply": 607187823.0928401,
+    "circulating_supply": 539542621.8877238,
+    "fdv": 112779870085.64606,
+    "market_cap": 100215360861.8438,
+    "holder": 3498897,
+    "is_scaled_ui_token": false,
+    "multiplier": null
+  }
+}

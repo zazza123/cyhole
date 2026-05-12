@@ -23,6 +23,8 @@ from ..birdeye.schema import (
     GetV2MarketsResponse,
     GetV3TokenMetaDataResponse,
     GetV3TokenMetaDataMultipleResponse,
+    GetV3TokenMarketDataResponse,
+    GetV3TokenMarketDataMultipleResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -126,6 +128,20 @@ class BirdeyeClient(APIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_meta_data`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meta_data].
         """
         return self._interaction._get_v3_token_meta_data(True, address)
+
+    @overload
+    def get_v3_token_market_data(self, address: str, ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse: ...
+
+    @overload
+    def get_v3_token_market_data(self, address: list[str], ui_amount_mode: str | None = None) -> GetV3TokenMarketDataMultipleResponse: ...
+
+    def get_v3_token_market_data(self, address: str | list[str], ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse | GetV3TokenMarketDataMultipleResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 Token - Market Data endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-token-market-data)** /
+            **[multiple](https://docs.birdeye.so/reference/get-defi-v3-token-market-data-multiple)**) for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_market_data`][cyhole.birdeye.interaction.Birdeye._get_v3_token_market_data].
+        """
+        return self._interaction._get_v3_token_market_data(True, address, ui_amount_mode)
 
     def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """
@@ -308,6 +324,20 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_token_meta_data`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meta_data].
         """
         return await self._interaction._get_v3_token_meta_data(False, address)
+
+    @overload
+    async def get_v3_token_market_data(self, address: str, ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse: ...
+
+    @overload
+    async def get_v3_token_market_data(self, address: list[str], ui_amount_mode: str | None = None) -> GetV3TokenMarketDataMultipleResponse: ...
+
+    async def get_v3_token_market_data(self, address: str | list[str], ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse | GetV3TokenMarketDataMultipleResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 Token - Market Data endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-token-market-data)** /
+            **[multiple](https://docs.birdeye.so/reference/get-defi-v3-token-market-data-multiple)**) for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_market_data`][cyhole.birdeye.interaction.Birdeye._get_v3_token_market_data].
+        """
+        return await self._interaction._get_v3_token_market_data(False, address, ui_amount_mode)
 
     async def get_token_creation_info(self, address: str) -> GetTokenCreationInfoResponse:
         """

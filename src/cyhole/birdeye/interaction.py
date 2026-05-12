@@ -1,5 +1,5 @@
 import os
-from typing import Coroutine, Literal, overload
+from typing import Any, Coroutine, Literal, overload
 from datetime import datetime
 
 from ..core.param import RequestType
@@ -29,6 +29,8 @@ from ..birdeye.schema import (
     GetV2MarketsResponse,
     GetV3TokenMetaDataResponse,
     GetV3TokenMetaDataMultipleResponse,
+    GetV3TokenMarketDataResponse,
+    GetV3TokenMarketDataMultipleResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -532,6 +534,79 @@ class Birdeye(Interaction):
             url = self.url_api_public + "v3/token/meta-data/multiple"
             params = {"list_address": ",".join(address)}
             response_model = GetV3TokenMetaDataMultipleResponse
+
+        if sync:
+            content_raw = self.client.api(RequestType.GET.value, url, params = params)
+            return response_model(**content_raw.json())
+        else:
+            async def async_request():
+                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
+                return response_model(**content_raw.json())
+            return async_request()
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[True], address: str, ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse: ...
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[True], address: list[str], ui_amount_mode: str | None = None) -> GetV3TokenMarketDataMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[False], address: str, ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenMarketDataResponse]: ...
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[False], address: list[str], ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenMarketDataMultipleResponse]: ...
+
+    def _get_v3_token_market_data(
+        self,
+        sync: bool,
+        address: str | list[str],
+        ui_amount_mode: str | None = None
+    ) -> (
+        GetV3TokenMarketDataResponse
+        | GetV3TokenMarketDataMultipleResponse
+        | Coroutine[None, None, GetV3TokenMarketDataResponse]
+        | Coroutine[None, None, GetV3TokenMarketDataMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token market-data endpoints **[Token - Market Data (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-market-data)**
+            and **[Token - Market Data (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-market-data-multiple)**.
+            They return a compact market snapshot per token: price, liquidity, total/circulating supply,
+            FDV, market cap and holder count. It is a cheaper alternative to Token - Overview when a
+            caller only needs the headline numbers without the per-window trade/volume breakdown.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/market-data`, returning a [`GetV3TokenMarketDataResponse`][cyhole.birdeye.schema.GetV3TokenMarketDataResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/market-data/multiple`,
+            returning a [`GetV3TokenMarketDataMultipleResponse`][cyhole.birdeye.schema.GetV3TokenMarketDataMultipleResponse]
+            whose `data` is a dict keyed by token address.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
+
+            Returns:
+                market snapshot payload for the requested token(s); the concrete type depends on the
+                input cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/market-data"
+            params: dict[str, Any] = {"address": address}
+            response_model: type = GetV3TokenMarketDataResponse
+        else:
+            url = self.url_api_public + "v3/token/market-data/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenMarketDataMultipleResponse
+        if ui_amount_mode is not None:
+            params["ui_amount_mode"] = ui_amount_mode
 
         if sync:
             content_raw = self.client.api(RequestType.GET.value, url, params = params)

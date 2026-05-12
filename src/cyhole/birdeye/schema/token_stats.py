@@ -590,3 +590,57 @@ class GetV3TokenMetaDataMultipleResponse(BaseModel):
     """
     data: dict[str, GetV3TokenMetaDataItem]
     success: bool
+
+
+# classes used on GET "Token - Market Data (Single)" and "Token - Market Data (Multiple)" endpoints
+class GetV3TokenMarketDataItem(BaseModel):
+    """
+        Per-token market snapshot returned by the v3 Token - Market Data endpoints.
+
+        Attributes:
+            address: contract address of the token on the selected chain.
+            price: latest known price of the token in USD; `None` if no price datapoint is available.
+            liquidity: total on-chain liquidity of the token in USD; `None` if undetermined.
+            total_supply: total on-chain supply of the token in UI units; `None` if undetermined.
+            circulating_supply: currently circulating supply of the token in UI units; `None` if undetermined.
+            fdv: fully-diluted valuation in USD; `None` when Birdeye cannot compute it.
+            market_cap: current market capitalisation in USD; `None` when Birdeye cannot compute it.
+            holder: number of distinct holders of the token; `None` if undetermined.
+            is_scaled_ui_token: `True` when the token is a scaled-UI-amount SPL token (Solana only);
+                `None` outside Solana or when undetermined.
+            multiplier: scaling multiplier applied by the API to UI amounts of scaled-UI-amount tokens;
+                `None` when not applicable.
+    """
+    address: str
+    price: float | None = None
+    liquidity: float | None = None
+    total_supply: float | None = None
+    circulating_supply: float | None = None
+    fdv: float | None = None
+    market_cap: float | None = None
+    holder: int | None = None
+    is_scaled_ui_token: bool | None = None
+    multiplier: float | None = None
+
+class GetV3TokenMarketDataResponse(BaseModel):
+    """
+        Model used to represent the **Token - Market Data (Single)** endpoint from birdeye API.
+
+        Attributes:
+            data: market snapshot of the requested token.
+            success: `True` when the API call completed without errors.
+    """
+    data: GetV3TokenMarketDataItem
+    success: bool
+
+class GetV3TokenMarketDataMultipleResponse(BaseModel):
+    """
+        Model used to represent the **Token - Market Data (Multiple)** endpoint from birdeye API.
+
+        Attributes:
+            data: dictionary keyed by token contract address; each value is the market snapshot for
+                that token. Unrecognised addresses are omitted from the dict.
+            success: `True` when the API call completed without errors.
+    """
+    data: dict[str, GetV3TokenMarketDataItem]
+    success: bool
