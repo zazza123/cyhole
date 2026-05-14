@@ -138,3 +138,5 @@ The documentation follows the library's structure by providing all the technical
 | getSignaturesForAsset | `POST` | [`post_get_signatures_for_asset`](../helius/interaction.md#cyhole.helius.Helius._post_get_signatures_for_asset) | `0.3.0` | - |
 | getNftEditions | `POST` | [`post_get_nft_editions`](../helius/interaction.md#cyhole.helius.Helius._post_get_nft_editions) | `0.3.0` | - |
 | getTokenAccounts | `POST` | [`post_get_token_accounts`](../helius/interaction.md#cyhole.helius.Helius._post_get_token_accounts) | `0.3.0` | - |
+| getTransfersByAddress | `POST` | [`post_get_transfers_by_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transfers_by_address) | `0.3.0` | - |
+| getTransactionsForAddress | `POST` | [`post_get_transactions_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions_for_address) | `0.3.0` | - |

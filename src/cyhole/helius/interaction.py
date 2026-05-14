@@ -12,6 +12,8 @@ from ..helius.schema import (
     PostGetAssetsByAuthorityBody,
     PostSearchAssetsBody,
     PostGetTokenAccountsBody,
+    PostGetTransfersByAddressBody,
+    PostGetTransactionsForAddressBody,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -24,6 +26,8 @@ from ..helius.schema import (
     PostGetSignaturesForAssetResponse,
     PostGetNftEditionsResponse,
     PostGetTokenAccountsResponse,
+    PostGetTransfersByAddressResponse,
+    PostGetTransactionsForAddressResponse,
 )
 
 
@@ -440,3 +444,103 @@ class Helius(Interaction):
             "params": body.model_dump(exclude_none = True),
         }
         return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTokenAccountsResponse, json = rpc_body)
+
+    # ─── getTransfersByAddress ────────────────────────────────────────────────
+
+    @overload
+    def _post_get_transfers_by_address(self, sync: Literal[True], address: str, body: PostGetTransfersByAddressBody | None = None) -> PostGetTransfersByAddressResponse: ...
+    @overload
+    def _post_get_transfers_by_address(self, sync: Literal[False], address: str, body: PostGetTransfersByAddressBody | None = None) -> Coroutine[None, None, PostGetTransfersByAddressResponse]: ...
+    def _post_get_transfers_by_address(self, sync: bool, address: str, body: PostGetTransfersByAddressBody | None = None) -> PostGetTransfersByAddressResponse | Coroutine[None, None, PostGetTransfersByAddressResponse]:
+        """
+        This function refers to the **getTransfersByAddress** Helius RPC endpoint.
+
+        Returns parsed, human-readable token and native SOL transfer records for a
+        wallet owner address, suitable for ledgers, payment tracking, and balance
+        reconciliation. Results can be narrowed by counterparty, direction, mint,
+        amount/time/slot ranges and paginated via `pagination_token`.
+
+        The endpoint is a Helius-exclusive feature (not part of standard Solana RPC),
+        requires a Developer plan or higher, costs 10 credits per request, and
+        returns at most the most recent 1 year of transfer history. Failed
+        transactions and hidden SOL balance-change movements are not included.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            address: base58-encoded wallet **owner** address to query. Must be the
+                owner wallet, not an associated token account (ATA).
+            body: optional configuration object — see
+                [`PostGetTransfersByAddressBody`][cyhole.helius.schema.PostGetTransfersByAddressBody].
+                All fields are optional. Use it to filter by counterparty, direction
+                ([`HeliusTransferDirection`][cyhole.helius.param.HeliusTransferDirection]),
+                mint, SOL/WSOL mode ([`HeliusSolMode`][cyhole.helius.param.HeliusSolMode]),
+                numeric ranges, commitment ([`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]),
+                ordering ([`HeliusSortOrder`][cyhole.helius.param.HeliusSortOrder]),
+                and pagination (`limit`, `pagination_token`).
+
+        Returns:
+            PostGetTransfersByAddressResponse: paginated transfer rows wrapped in a
+                JSON-RPC 2.0 envelope. Access the rows via `response.result.data`
+                and the next-page cursor via `response.result.pagination_token`
+                (`None` when there are no more pages).
+        """
+        params: list = [address]
+        if body is not None:
+            params.append(body.model_dump(by_alias = True, exclude_none = True))
+        rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransfersByAddress", "params": params}
+        return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTransfersByAddressResponse, json = rpc_body)
+
+    # ─── getTransactionsForAddress ────────────────────────────────────────────
+
+    @overload
+    def _post_get_transactions_for_address(self, sync: Literal[True], address: str, body: PostGetTransactionsForAddressBody | None = None) -> PostGetTransactionsForAddressResponse: ...
+    @overload
+    def _post_get_transactions_for_address(self, sync: Literal[False], address: str, body: PostGetTransactionsForAddressBody | None = None) -> Coroutine[None, None, PostGetTransactionsForAddressResponse]: ...
+    def _post_get_transactions_for_address(self, sync: bool, address: str, body: PostGetTransactionsForAddressBody | None = None) -> PostGetTransactionsForAddressResponse | Coroutine[None, None, PostGetTransactionsForAddressResponse]:
+        """
+        This function refers to the **getTransactionsForAddress** Helius RPC endpoint.
+
+        Returns the transaction history for any Solana account with advanced
+        filtering (time, slot, signature, success/failure status, token-account
+        inclusion), bidirectional sorting (`asc` / `desc`), and cursor-based
+        pagination. Unlike `getSignaturesForAddress`, this endpoint can optionally
+        return the **full transaction payload** in a single call and can include
+        activity on token accounts owned by the queried wallet via
+        `filters.token_accounts`.
+
+        The endpoint is a Helius-exclusive feature (not part of standard Solana RPC),
+        requires a Developer plan or higher, costs 50 credits per request and
+        returns up to 100 full transactions or 1,000 signatures per page. The
+        `token_accounts` filter does not see transactions prior to December 2022;
+        devnet retention is limited to 2 weeks while mainnet retention is unlimited.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            address: base58-encoded account address to query (wallet, program, mint,
+                pool, or token account).
+            body: optional configuration object — see
+                [`PostGetTransactionsForAddressBody`][cyhole.helius.schema.PostGetTransactionsForAddressBody].
+                All fields are optional. Use it to choose detail level
+                ([`HeliusTransactionDetails`][cyhole.helius.param.HeliusTransactionDetails]),
+                sort order ([`HeliusSortOrder`][cyhole.helius.param.HeliusSortOrder]),
+                commitment ([`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]),
+                encoding ([`HeliusEncoding`][cyhole.helius.param.HeliusEncoding]),
+                and filters such as status
+                ([`HeliusTransactionStatus`][cyhole.helius.param.HeliusTransactionStatus])
+                and token-account inclusion
+                ([`HeliusTokenAccountFilter`][cyhole.helius.param.HeliusTokenAccountFilter]).
+
+        Returns:
+            PostGetTransactionsForAddressResponse: paginated transaction list wrapped
+                in a JSON-RPC 2.0 envelope. Access the rows via `response.result.data`
+                and the next-page cursor via `response.result.pagination_token`
+                (`None` when there are no more pages). Each
+                [`TransactionForAddressItem`][cyhole.helius.schema.TransactionForAddressItem]
+                exposes signature-mode or full-mode fields depending on the
+                `transaction_details` parameter.
+        """
+        params: list = [address]
+        if body is not None:
+            params.append(body.model_dump(by_alias = True, exclude_none = True))
+        rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransactionsForAddress", "params": params}
+        return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTransactionsForAddressResponse, json = rpc_body)
