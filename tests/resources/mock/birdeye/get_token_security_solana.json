@@ -1,7 +1,9 @@
 {
     "data": {
         "creatorAddress": "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+        "creatorOwnerAddress": null,
         "ownerAddress": "6zFyLiWgnftQqzHqVN45bdNXwjQKHYoXEq45qcn3Edj3",
+        "ownerOfOwnerAddress": null,
         "creationTx": "JDTguxbKYUrp1ZGd4aXXxD5rcGs2PS92B1oWpy5T6Jq89QBcyuM9Z8Gnu55AcsyXdikpWAqgJ9q1JrARRLbjXUg",
         "creationTime": 1705804861,
         "creationSlot": 243102941,
@@ -15,6 +17,7 @@
         "ownerBalance": 4000000000.0,
         "ownerPercentage": 0.40001780014013216,
         "metaplexUpdateAuthority": "5unTfT2kssBuNvHPY6LbJfJpLqEcdMxGYLWHwShaeTLi",
+        "metaplexOwnerUpdateAuthority": null,
         "metaplexUpdateAuthorityBalance": 0.0,
         "metaplexUpdateAuthorityPercent": 0.0,
         "mutableMetadata": false,
@@ -23,6 +26,7 @@
         "top10UserBalance": 9743120763.146584,
         "top10UserPercent": 0.9743554335433856,
         "isTrueToken": null,
+        "fakeToken": null,
         "totalSupply": 9999555016.298626,
         "preMarketHolder": [],
         "lockInfo": null,
@@ -31,7 +35,8 @@
         "transferFeeEnable": null,
         "transferFeeData": null,
         "isToken2022": false,
-        "nonTransferable": null
+        "nonTransferable": null,
+        "jupStrictList": false
     },
     "success": true
 }

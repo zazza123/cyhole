@@ -42,6 +42,20 @@ class BirdeyeSort(CyholeParam):
     """Sort the results by USD Volume in the last 24h"""
     SORT_V24HCHANGEPERCENT = "v24hChangePercent"
     """Sort the results by percent changing in the last 24h"""
+    SORT_LIQUIDITY = "liquidity"
+    """Sort the results by Liquidity"""
+
+class BirdeyeUIAmountMode(CyholeParam):
+    """
+        Enum class to get the supported Birdeye's UI amount modes.
+
+        Only used on Solana chain to indicate whether the API should return
+        the raw token amounts or the scaled UI amounts for scaled-UI-amount tokens.
+    """
+    RAW = "raw"
+    """Return raw on-chain token amounts (no UI scaling applied)."""
+    SCALED = "scaled"
+    """Return UI-scaled token amounts (default Birdeye behaviour)."""
 
 class BirdeyeTimeFrame(CyholeParam):
     """
@@ -114,3 +128,252 @@ class BirdeyeTradeType(CyholeParam):
     """Transactions that remove liquidity."""
     ALL = "all"
     """All type of transactions (swap, add, remove)."""
+
+class BirdeyeV2MarketsSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye v2 Token - All Market List endpoint.
+    """
+    LIQUIDITY = "liquidity"
+    """Sort markets by current liquidity (USD)."""
+    VOLUME_24H = "volume24h"
+    """Sort markets by USD traded volume in the trailing 24h window."""
+
+class BirdeyeTokenTrendingSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye Token - Trending List endpoint.
+    """
+    RANK = "rank"
+    """Sort tokens by Birdeye's internal trending rank."""
+    VOLUME_USD = "volumeUSD"
+    """Sort tokens by USD traded volume over the selected interval."""
+    LIQUIDITY = "liquidity"
+    """Sort tokens by current liquidity (USD)."""
+
+class BirdeyeTokenTrendingInterval(CyholeParam):
+    """
+        Enum class to select the trending time window of the Birdeye Token - Trending List endpoint.
+    """
+    H1 = "1h"
+    """Trailing 1 hour."""
+    H4 = "4h"
+    """Trailing 4 hours."""
+    H24 = "24h"
+    """Trailing 24 hours."""
+
+class BirdeyeHolderChartType(CyholeParam):
+    """
+        Enum class to select the resolution of the Birdeye Token - Holder Chart endpoint.
+    """
+    S1 = "1s"
+    """1-second resolution chart points."""
+    MIN1 = "1m"
+    """1-minute resolution chart points."""
+    H1 = "1h"
+    """1-hour resolution chart points."""
+    D1 = "1d"
+    """1-day resolution chart points."""
+
+class BirdeyeHolderChartMode(CyholeParam):
+    """
+        Enum class to control how the Birdeye Token - Holder Chart endpoint fills missing data points.
+    """
+    PADDING = "padding"
+    """Pad missing data points with the previous known value (default behaviour)."""
+    NO_FILL = "no_fill"
+    """Return only the data points actually observed; gaps remain in the series."""
+
+class BirdeyeHolderChartPercentMode(CyholeParam):
+    """
+        Enum class to control how the Birdeye Token - Holder Chart endpoint computes the
+        `percent_change` field returned for each data point.
+    """
+    BEGINNING = "beginning"
+    """Compute percent change against the very first data point in the requested time window."""
+    PREVIOUS = "previous"
+    """Compute percent change against the immediately preceding data point."""
+
+class BirdeyeHolderDistributionAddressType(CyholeParam):
+    """
+        Enum class to select the address type used by the Birdeye Token - Holder Distribution endpoint.
+    """
+    WALLET = "wallet"
+    """Return holder distribution grouped by wallet owner address."""
+    TOKEN_ACCOUNT = "token_account"
+    """Return holder distribution grouped by SPL token account address."""
+
+class BirdeyeHolderDistributionMode(CyholeParam):
+    """
+        Enum class to select the filter mode of the Birdeye Token - Holder Distribution endpoint.
+    """
+    TOP = "top"
+    """Return the top `top_n` holders, ranked by holding amount."""
+    PERCENT = "percent"
+    """Return the holders whose share of total supply falls in `[min_percent, max_percent]`."""
+
+class BirdeyeV2TopTradersSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye v2 Token - Top Traders endpoint.
+
+        The PnL-based metrics (`total_pnl`, `unrealized_pnl`, `realized_pnl`, `volume_usd`) and the
+        long time frames (2d..90d) are restricted by Birdeye to the Solana chain at the time of writing.
+    """
+    VOLUME = "volume"
+    """Sort traders by raw traded volume in the token's UI units."""
+    TRADE = "trade"
+    """Sort traders by number of trades on the token."""
+    TOTAL_PNL = "total_pnl"
+    """Sort traders by total profit-and-loss (Solana-only)."""
+    UNREALIZED_PNL = "unrealized_pnl"
+    """Sort traders by unrealised profit-and-loss (Solana-only)."""
+    REALIZED_PNL = "realized_pnl"
+    """Sort traders by realised profit-and-loss (Solana-only)."""
+    VOLUME_USD = "volume_usd"
+    """Sort traders by traded volume expressed in USD (Solana-only)."""
+
+class BirdeyeV2TopTradersTimeFrame(CyholeParam):
+    """
+        Enum class to get the supported time frames of the Birdeye v2 Token - Top Traders endpoint.
+
+        Frames longer than 24h (2d..90d) are restricted by Birdeye to the Solana chain.
+    """
+    MIN30 = "30m"
+    """Trailing 30 minutes."""
+    H1 = "1h"
+    """Trailing 1 hour."""
+    H2 = "2h"
+    """Trailing 2 hours."""
+    H4 = "4h"
+    """Trailing 4 hours."""
+    H6 = "6h"
+    """Trailing 6 hours."""
+    H8 = "8h"
+    """Trailing 8 hours."""
+    H12 = "12h"
+    """Trailing 12 hours."""
+    H24 = "24h"
+    """Trailing 24 hours."""
+    D2 = "2d"
+    """Trailing 2 days (Solana-only)."""
+    D3 = "3d"
+    """Trailing 3 days (Solana-only)."""
+    D7 = "7d"
+    """Trailing 7 days (Solana-only)."""
+    D14 = "14d"
+    """Trailing 14 days (Solana-only)."""
+    D30 = "30d"
+    """Trailing 30 days (Solana-only)."""
+    D60 = "60d"
+    """Trailing 60 days (Solana-only)."""
+    D90 = "90d"
+    """Trailing 90 days (Solana-only)."""
+
+class BirdeyeMintBurnType(CyholeParam):
+    """
+        Enum class to filter the Birdeye v3 Token Mint/Burn endpoint by transaction type.
+    """
+    ALL = "all"
+    """Return both mint and burn transactions."""
+    MINT = "mint"
+    """Return only mint (supply increase) transactions."""
+    BURN = "burn"
+    """Return only burn (supply decrease) transactions."""
+
+class BirdeyeV3TokenListSortBy(CyholeParam):
+    """
+        Enum class to get the supported sorting metrics of the Birdeye v3 Token - List endpoint.
+
+        The endpoint supports a single sort metric per request; pick one of the constants below
+        and pair it with a [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder] direction.
+    """
+    LIQUIDITY = "liquidity"
+    """Sort by current liquidity (USD)."""
+    MARKET_CAP = "market_cap"
+    """Sort by market capitalisation (USD)."""
+    FDV = "fdv"
+    """Sort by fully-diluted valuation (USD)."""
+    RECENT_LISTING_TIME = "recent_listing_time"
+    """Sort by the time Birdeye first detected the token listing."""
+    LAST_TRADE_UNIX_TIME = "last_trade_unix_time"
+    """Sort by the unix timestamp of the last observed trade."""
+    HOLDER = "holder"
+    """Sort by the number of distinct token holders."""
+    VOLUME_1M_USD = "volume_1m_usd"
+    """Sort by USD traded volume during the trailing 1m window."""
+    VOLUME_5M_USD = "volume_5m_usd"
+    """Sort by USD traded volume during the trailing 5m window."""
+    VOLUME_30M_USD = "volume_30m_usd"
+    """Sort by USD traded volume during the trailing 30m window."""
+    VOLUME_1H_USD = "volume_1h_usd"
+    """Sort by USD traded volume during the trailing 1h window."""
+    VOLUME_2H_USD = "volume_2h_usd"
+    """Sort by USD traded volume during the trailing 2h window."""
+    VOLUME_4H_USD = "volume_4h_usd"
+    """Sort by USD traded volume during the trailing 4h window."""
+    VOLUME_8H_USD = "volume_8h_usd"
+    """Sort by USD traded volume during the trailing 8h window."""
+    VOLUME_24H_USD = "volume_24h_usd"
+    """Sort by USD traded volume during the trailing 24h window."""
+    VOLUME_7D_USD = "volume_7d_usd"
+    """Sort by USD traded volume during the trailing 7d window."""
+    VOLUME_30D_USD = "volume_30d_usd"
+    """Sort by USD traded volume during the trailing 30d window."""
+    VOLUME_1M_CHANGE_PERCENT = "volume_1m_change_percent"
+    """Sort by percent change of USD volume vs the previous 1m window."""
+    VOLUME_5M_CHANGE_PERCENT = "volume_5m_change_percent"
+    """Sort by percent change of USD volume vs the previous 5m window."""
+    VOLUME_30M_CHANGE_PERCENT = "volume_30m_change_percent"
+    """Sort by percent change of USD volume vs the previous 30m window."""
+    VOLUME_1H_CHANGE_PERCENT = "volume_1h_change_percent"
+    """Sort by percent change of USD volume vs the previous 1h window."""
+    VOLUME_2H_CHANGE_PERCENT = "volume_2h_change_percent"
+    """Sort by percent change of USD volume vs the previous 2h window."""
+    VOLUME_4H_CHANGE_PERCENT = "volume_4h_change_percent"
+    """Sort by percent change of USD volume vs the previous 4h window."""
+    VOLUME_8H_CHANGE_PERCENT = "volume_8h_change_percent"
+    """Sort by percent change of USD volume vs the previous 8h window."""
+    VOLUME_24H_CHANGE_PERCENT = "volume_24h_change_percent"
+    """Sort by percent change of USD volume vs the previous 24h window."""
+    VOLUME_7D_CHANGE_PERCENT = "volume_7d_change_percent"
+    """Sort by percent change of USD volume vs the previous 7d window."""
+    VOLUME_30D_CHANGE_PERCENT = "volume_30d_change_percent"
+    """Sort by percent change of USD volume vs the previous 30d window."""
+    PRICE_CHANGE_1M_PERCENT = "price_change_1m_percent"
+    """Sort by percent price change over the trailing 1m window."""
+    PRICE_CHANGE_5M_PERCENT = "price_change_5m_percent"
+    """Sort by percent price change over the trailing 5m window."""
+    PRICE_CHANGE_30M_PERCENT = "price_change_30m_percent"
+    """Sort by percent price change over the trailing 30m window."""
+    PRICE_CHANGE_1H_PERCENT = "price_change_1h_percent"
+    """Sort by percent price change over the trailing 1h window."""
+    PRICE_CHANGE_2H_PERCENT = "price_change_2h_percent"
+    """Sort by percent price change over the trailing 2h window."""
+    PRICE_CHANGE_4H_PERCENT = "price_change_4h_percent"
+    """Sort by percent price change over the trailing 4h window."""
+    PRICE_CHANGE_8H_PERCENT = "price_change_8h_percent"
+    """Sort by percent price change over the trailing 8h window."""
+    PRICE_CHANGE_24H_PERCENT = "price_change_24h_percent"
+    """Sort by percent price change over the trailing 24h window."""
+    PRICE_CHANGE_7D_PERCENT = "price_change_7d_percent"
+    """Sort by percent price change over the trailing 7d window."""
+    PRICE_CHANGE_30D_PERCENT = "price_change_30d_percent"
+    """Sort by percent price change over the trailing 30d window."""
+    TRADE_1M_COUNT = "trade_1m_count"
+    """Sort by the number of trades during the trailing 1m window."""
+    TRADE_5M_COUNT = "trade_5m_count"
+    """Sort by the number of trades during the trailing 5m window."""
+    TRADE_30M_COUNT = "trade_30m_count"
+    """Sort by the number of trades during the trailing 30m window."""
+    TRADE_1H_COUNT = "trade_1h_count"
+    """Sort by the number of trades during the trailing 1h window."""
+    TRADE_2H_COUNT = "trade_2h_count"
+    """Sort by the number of trades during the trailing 2h window."""
+    TRADE_4H_COUNT = "trade_4h_count"
+    """Sort by the number of trades during the trailing 4h window."""
+    TRADE_8H_COUNT = "trade_8h_count"
+    """Sort by the number of trades during the trailing 8h window."""
+    TRADE_24H_COUNT = "trade_24h_count"
+    """Sort by the number of trades during the trailing 24h window."""
+    TRADE_7D_COUNT = "trade_7d_count"
+    """Sort by the number of trades during the trailing 7d window."""
+    TRADE_30D_COUNT = "trade_30d_count"
+    """Sort by the number of trades during the trailing 30d window."""

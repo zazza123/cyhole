@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "address": "Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb",
+        "base": {
+          "address": "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn",
+          "decimals": 9,
+          "symbol": "JitoSOL",
+          "icon": "https://img.fotofolio.xyz/?url=https%3A%2F%2Fstorage.googleapis.com%2Ftoken-metadata%2FJitoSOL-256.png"
+        },
+        "createdAt": "2024-05-28T07:19:22.813Z",
+        "liquidity": 1733225301.1348372,
+        "name": "JitoSOL-SOL",
+        "price": null,
+        "quote": {
+          "address": "So11111111111111111111111111111111111111112",
+          "decimals": 9,
+          "icon": "https://img.fotofolio.xyz/?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsolana-labs%2Ftoken-list%2Fmain%2Fassets%2Fmainnet%2FSo11111111111111111111111111111111111111112%2Flogo.png",
+          "symbol": "SOL"
+        },
+        "source": "Stake Pool",
+        "trade24h": 1021,
+        "trade24hChangePercent": 72.46621621621621,
+        "uniqueWallet24h": 382,
+        "uniqueWallet24hChangePercent": -13.769751693002258,
+        "volume24h": 7610352.270776577
+      }
+    ],
+    "total": 1523
+  }
+}

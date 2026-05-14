@@ -4,7 +4,9 @@
         "slot": 231220478,
         "tokenAddress": "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
         "decimals": 6,
-        "owner": "wifq4CRwpXCK8NYtKNsQAYoDethT1aR7R1DaKCLFgAd"
+        "owner": "wifq4CRwpXCK8NYtKNsQAYoDethT1aR7R1DaKCLFgAd",
+        "blockUnixTime": 1697044029,
+        "blockHumanTime": "2023-10-11T17:07:09.000Z"
     },
     "success": true
 }

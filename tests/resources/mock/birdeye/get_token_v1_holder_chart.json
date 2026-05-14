@@ -1,0 +1,17 @@
+{
+  "data": [
+    {
+      "timestamp": 1763608550,
+      "holder": 4451715,
+      "net_change": -160,
+      "percent_change": -0.0035939912958023305
+    },
+    {
+      "timestamp": 1763608548,
+      "holder": 4451713,
+      "net_change": -162,
+      "percent_change": -0.00363891618699986
+    }
+  ],
+  "success": true
+}

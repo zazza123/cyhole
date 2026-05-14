@@ -80,6 +80,24 @@ The documentation follows the library's structure by providing all the technical
 | Endpoint  | Type      | Method    | `cyhole` Release  | Deprecated    |
 | ---       | ---       | ---       | ---               | ---           |
 | Token - List | `GET` | [`get_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_list) | `0.0.1-alpha` | - |
+| Token - List (V3) | `GET` | [`get_v3_token_list`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_list) | `0.3.0` | - |
+| Token - List (V3) Scroll | `GET` | [`get_v3_token_list_scroll`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_list_scroll) | `0.3.0` | - |
+| Token - New Listing | `GET` | [`get_v2_tokens_new_listing`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v2_tokens_new_listing) | `0.3.0` | - |
+| Token - All Market List | `GET` | [`get_v2_markets`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v2_markets) | `0.3.0` | - |
+| Token - Metadata (Single / Multiple) | `GET` | [`get_v3_token_meta_data`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_meta_data) | `0.3.0` | - |
+| Token - Market Data (Single / Multiple) | `GET` | [`get_v3_token_market_data`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_market_data) | `0.3.0` | - |
+| Token - Trade Data (Single / Multiple) | `GET` | [`get_v3_token_trade_data`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_trade_data) | `0.3.0` | - |
+| Token - Liquidity (Single / Multiple) | `GET` | [`get_v3_token_exit_liquidity`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_exit_liquidity) | `0.3.0` | - |
+| Token - Mint/Burn | `GET` | [`get_v3_token_mint_burn_txs`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_mint_burn_txs) | `0.3.0` | - |
+| Token - Top Traders | `GET` | [`get_v2_tokens_top_traders`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v2_tokens_top_traders) | `0.3.0` | - |
+| Token - Holder (Top / Batch) | `GET / POST` | [`get_token_holder`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_holder) | `0.3.0` | - |
+| Token - Holder Distribution | `GET` | [`get_holder_distribution`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_holder_distribution) | `0.3.0` | - |
+| Token - Holder Profile | `GET` | [`get_token_holder_profile`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_holder_profile) | `0.3.0` | - |
+| Token - Holder Positions | `GET` | [`get_token_holder_positions`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_holder_positions) | `0.3.0` | - |
+| Token - Holder Chart | `GET` | [`get_token_holder_chart`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_holder_chart) | `0.3.0` | - |
+| Token - Transfer List | `POST` | [`post_token_transfer`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._post_token_transfer) | `0.3.0` | - |
+| Token - Transfer Total | `POST` | [`post_token_transfer_total`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._post_token_transfer_total) | `0.3.0` | - |
+| Token - Trending List | `GET` | [`get_token_trending`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_trending) | `0.3.0` | - |
 | Token - Creation Token Info | `GET` | [`get_token_creation_info`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_creation_info) | `0.0.1-alpha` | - |
 | Token - Security | `GET` | [`get_token_security`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_security) | `0.0.1-alpha` | - |
 | Token - Overview | `GET` | [`get_token_overview`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_token_overview) | `0.0.1-alpha` | - |

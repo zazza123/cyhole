@@ -1,5 +1,5 @@
 import os
-from typing import Coroutine, Literal, overload
+from typing import Any, Coroutine, Literal, overload
 from datetime import datetime
 
 from ..core.param import RequestType
@@ -14,10 +14,50 @@ from ..birdeye.param import (
     BirdeyeTimeFrame,
     BirdeyeHourTimeFrame,
     BirdeyeTradeType,
-    BirdeyeAddressType
+    BirdeyeAddressType,
+    BirdeyeUIAmountMode,
+    BirdeyeV3TokenListSortBy,
+    BirdeyeV2MarketsSortBy,
+    BirdeyeMintBurnType,
+    BirdeyeV2TopTradersSortBy,
+    BirdeyeV2TopTradersTimeFrame,
+    BirdeyeHolderDistributionAddressType,
+    BirdeyeHolderDistributionMode,
+    BirdeyeHolderChartType,
+    BirdeyeHolderChartMode,
+    BirdeyeHolderChartPercentMode,
+    BirdeyeTokenTrendingSortBy,
+    BirdeyeTokenTrendingInterval
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
+    GetV3TokenListQuery,
+    GetV3TokenListResponse,
+    GetV3TokenListScrollQuery,
+    GetV3TokenListScrollResponse,
+    GetV2TokensNewListingResponse,
+    GetV2MarketsResponse,
+    GetV3TokenMetaDataResponse,
+    GetV3TokenMetaDataMultipleResponse,
+    GetV3TokenMarketDataResponse,
+    GetV3TokenMarketDataMultipleResponse,
+    GetV3TokenTradeDataResponse,
+    GetV3TokenTradeDataMultipleResponse,
+    GetV3TokenExitLiquidityResponse,
+    GetV3TokenExitLiquidityMultipleResponse,
+    GetV3TokenMintBurnTxsResponse,
+    GetV2TopTradersResponse,
+    GetTokenHolderResponse,
+    PostTokenHolderBatchResponse,
+    GetHolderDistributionResponse,
+    GetHolderProfileResponse,
+    GetTokenHolderPositionsResponse,
+    GetTokenHolderChartResponse,
+    PostTokenTransferBody,
+    PostTokenTransferResponse,
+    PostTokenTransferTotalBody,
+    PostTokenTransferTotalResponse,
+    GetTokenTrendingResponse,
     GetTokenSecurityResponse,
     GetTokenCreationInfoResponse,
     GetTokenOverviewResponse,
@@ -97,6 +137,8 @@ class Birdeye(Interaction):
         self.url_api_public = "https://public-api.birdeye.so/defi/"
         self.url_api_private = "https://public-api.birdeye.so/defi/"
         self.url_api_private_wallet = "https://public-api.birdeye.so/v1/wallet"
+        self.url_api_token_v1 = "https://public-api.birdeye.so/token/v1/"
+        self.url_api_holder_v1 = "https://public-api.birdeye.so/holder/v1/"
         return
 
     @overload
@@ -106,7 +148,10 @@ class Birdeye(Interaction):
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
-        limit: int | None = None
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenListResponse: ...
 
     @overload
@@ -116,7 +161,10 @@ class Birdeye(Interaction):
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
-        limit: int | None = None
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
     ) -> Coroutine[None, None, GetTokenListResponse]: ...
 
     def _get_token_list(
@@ -125,26 +173,41 @@ class Birdeye(Interaction):
         sort_by: str = BirdeyeSort.SORT_V24HUSD.value,
         order_by: str = BirdeyeOrder.DESCENDING.value,
         offset: int | None = None,
-        limit: int | None = None
+        limit: int | None = None,
+        min_liquidity: float | None = None,
+        max_liquidity: float | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenListResponse | Coroutine[None, None, GetTokenListResponse]:
         """
-            This function refers to the **PUBLIC** API endpoint **[Token - List](https://docs.birdeye.so/reference/get_defi-tokenlist)** and is used 
-            to get the list of Birdeye tokens according on a specific chain.
+            This function refers to the **PUBLIC** API endpoint **[Token - List (V1)](https://docs.birdeye.so/reference/get-defi-tokenlist)** and is used
+            to retrieve a ranked list of tokens on the selected chain, scored by the chosen metric
+            (USD volume, market cap, 24h change, or liquidity). It is the legacy V1 listing endpoint:
+            results are returned in a flat page of at most 50 entries and each row carries the core
+            identity, price/liquidity, market cap and 24h volume fields that power Birdeye's public
+            token discovery views.
 
             Parameters:
-                sort_by: define the type of sorting to apply in the
-                    extraction; e.g. USD volume in the last 24h.
-                    The sorting types are available on [`BirdeyeSort`][cyhole.birdeye.param.BirdeyeSort].
+                sort_by: define the metric used to rank the returned tokens (e.g. USD volume in the
+                    last 24h, market cap, 24h change, or liquidity).
+                    The supported values are available on [`BirdeyeSort`][cyhole.birdeye.param.BirdeyeSort].
                     Import them from the library to use the correct identifier.
-                order_by: define the type of ordering to apply in the 
-                    extraction; e.g. ascending or descending.
-                    The sorting types are available on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
+                order_by: define the order of the ranking (ascending or descending).
+                    The supported values are available on [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
                     Import them from the library to use the correct identifier.
-                offset: offset to apply in the extraction.
-                limit: limit the number of returned records in the extraction.
+                offset: zero-based offset to use for pagination. Combined with `limit` it returns the
+                    `[offset, offset + limit)` slice of the ranking. Default behaviour: `0`.
+                limit: number of records to return per page. The API caps this at `50`; values above
+                    `50` are rejected by Birdeye. Default behaviour: `50`.
+                min_liquidity: exclusive lower bound on the on-chain liquidity (USD) of returned tokens.
+                    Birdeye applies a default of `100` server-side when not provided.
+                max_liquidity: exclusive upper bound on the on-chain liquidity (USD) of returned tokens.
+                    If not provided, the API does not apply any upper bound.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
 
             Returns:
-                list of tokens returned by birdeye.so
+                ranked list of tokens for the selected chain along with the snapshot timestamp.
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
@@ -153,6 +216,8 @@ class Birdeye(Interaction):
         # check param consistency
         BirdeyeSort.check(sort_by)
         BirdeyeOrder.check(order_by)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
 
         # set params
         url = self.url_api_public + "tokenlist"
@@ -160,18 +225,1357 @@ class Birdeye(Interaction):
             "sort_by" : sort_by,
             "sort_type" : order_by,
             "offset" : offset,
-            "limit": limit
+            "limit": limit,
+            "min_liquidity": min_liquidity,
+            "max_liquidity": max_liquidity,
+            "ui_amount_mode": ui_amount_mode
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenListResponse(**content_raw.json())
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenListResponse, params = params)
+
+    @overload
+    def _get_v3_token_list(self, sync: Literal[True], query: GetV3TokenListQuery | None = None) -> GetV3TokenListResponse: ...
+
+    @overload
+    def _get_v3_token_list(self, sync: Literal[False], query: GetV3TokenListQuery | None = None) -> Coroutine[None, None, GetV3TokenListResponse]: ...
+
+    def _get_v3_token_list(
+        self,
+        sync: bool,
+        query: GetV3TokenListQuery | None = None
+    ) -> GetV3TokenListResponse | Coroutine[None, None, GetV3TokenListResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - List (V3)](https://docs.birdeye.so/reference/get-defi-v3-token-list)** and is used
+            to retrieve a paginated ranked list of tokens on the selected chain, with a much richer filter
+            surface than the legacy V1 listing endpoint: callers can rank by any of the 46 metrics exposed
+            on [`BirdeyeV3TokenListSortBy`][cyhole.birdeye.param.BirdeyeV3TokenListSortBy] and restrict
+            results by liquidity, market cap, FDV, holder count, recent-listing time, last-trade time
+            and a wide range of per-window (1m..30d) volume, price-change and trade-count thresholds.
+            Each entry returned by the endpoint mirrors the cyhole [`V3TokenListItem`][cyhole.birdeye.schema.V3TokenListItem]
+            shape (identity, supply, liquidity, price, per-window aggregates).
+
+            !!! info
+                The endpoint is restricted by Birdeye to Solana, Base, BSC, Ethereum and Monad. Pagination
+                must satisfy `offset + limit <= 10000`; each page is capped at 100 entries.
+
+            Parameters:
+                query: optional [`GetV3TokenListQuery`][cyhole.birdeye.schema.GetV3TokenListQuery] instance
+                    holding the desired sort metric, sort direction, pagination cursor and filters. When
+                    `None` (or omitted) the call uses Birdeye's defaults — top 100 tokens sorted by liquidity
+                    descending.
+
+            Returns:
+                paginated list of tokens decoded as [`GetV3TokenListResponse`][cyhole.birdeye.schema.GetV3TokenListResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if query is None:
+            query = GetV3TokenListQuery()
+
+        # check param consistency
+        BirdeyeV3TokenListSortBy.check(query.sort_by)
+        BirdeyeOrder.check(query.sort_type)
+        if query.ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(query.ui_amount_mode)
+
+        # set params - drop None values so we only send what was set
+        url = self.url_api_public + "v3/token/list"
+        params = {k: v for k, v in query.model_dump().items() if v is not None}
+
+        # execute request
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenListResponse, params = params)
+
+    @overload
+    def _get_v3_token_list_scroll(self, sync: Literal[True], query: GetV3TokenListScrollQuery | None = None) -> GetV3TokenListScrollResponse: ...
+
+    @overload
+    def _get_v3_token_list_scroll(self, sync: Literal[False], query: GetV3TokenListScrollQuery | None = None) -> Coroutine[None, None, GetV3TokenListScrollResponse]: ...
+
+    def _get_v3_token_list_scroll(
+        self,
+        sync: bool,
+        query: GetV3TokenListScrollQuery | None = None
+    ) -> GetV3TokenListScrollResponse | Coroutine[None, None, GetV3TokenListScrollResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - List (V3) Scroll](https://docs.birdeye.so/reference/get-defi-v3-token-list-scroll)** and is used
+            to iterate through the full v3 token list using a server-issued opaque cursor instead of
+            offset/limit pagination. Each call returns up to 5 000 token entries (vs the 100/page cap
+            of the offset-based v3 list) and an `next_scroll_id` cursor; pass that cursor back as
+            `scroll_id` on the next call to fetch the next batch of the same scroll session. Filters
+            (liquidity, market cap, FDV, holder, recent listing time, per-window thresholds, ...) are
+            honoured only on the first call (with `scroll_id` left to `None`) and ignored on
+            continuation calls. Items share the [`V3TokenListItem`][cyhole.birdeye.schema.V3TokenListItem]
+            shape used by the regular v3 list, with the additional `creation_time` field populated
+            on scroll results.
+
+            !!! info
+                Birdeye enforces a hard cap of one active `scroll_id` per account per 30 seconds.
+
+            Parameters:
+                query: optional [`GetV3TokenListScrollQuery`][cyhole.birdeye.schema.GetV3TokenListScrollQuery]
+                    instance. Leave `None` to start a fresh scroll with Birdeye's defaults (top 5 000
+                    tokens by liquidity descending). To continue a previous scroll set
+                    `query = GetV3TokenListScrollQuery(scroll_id = <previous next_scroll_id>)`.
+
+            Returns:
+                scroll batch decoded as [`GetV3TokenListScrollResponse`][cyhole.birdeye.schema.GetV3TokenListScrollResponse].
+                Inspect `data.next_scroll_id` / `data.has_next` to decide whether to keep iterating.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if query is None:
+            query = GetV3TokenListScrollQuery()
+
+        # check param consistency
+        BirdeyeV3TokenListSortBy.check(query.sort_by)
+        BirdeyeOrder.check(query.sort_type)
+        if query.ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(query.ui_amount_mode)
+
+        # set params - drop None values so we only send what was set
+        url = self.url_api_public + "v3/token/list/scroll"
+        params = {k: v for k, v in query.model_dump().items() if v is not None}
+
+        # execute request
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenListScrollResponse, params = params)
+
+    @overload
+    def _get_v2_tokens_new_listing(
+        self,
+        sync: Literal[True],
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> GetV2TokensNewListingResponse: ...
+
+    @overload
+    def _get_v2_tokens_new_listing(
+        self,
+        sync: Literal[False],
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> Coroutine[None, None, GetV2TokensNewListingResponse]: ...
+
+    def _get_v2_tokens_new_listing(
+        self,
+        sync: bool,
+        time_to: int | None = None,
+        limit: int | None = None,
+        meme_platform_enabled: bool | None = None
+    ) -> GetV2TokensNewListingResponse | Coroutine[None, None, GetV2TokensNewListingResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - New Listing](https://docs.birdeye.so/reference/get-defi-v2-tokens-new_listing)** and is used
+            to retrieve a feed of tokens that Birdeye has just detected listings for on the selected
+            chain, ordered most-recent first. It is the canonical way to discover freshly-launched
+            tokens before they show up in the ranked token list, and powers Birdeye's "new pairs"
+            UIs. The endpoint returns a single batch (no offset pagination); call it repeatedly with
+            an updated `time_to` to walk further back in time.
+
+            !!! info
+                Available on every Birdeye chain except Sui. The `meme_platform_enabled` toggle is
+                Solana-only.
+
+            Parameters:
+                time_to: optional unix-second cursor; when set Birdeye returns only listings observed at
+                    or before this timestamp. Default behaviour: most recent listings.
+                limit: number of records to return (1..20). Default behaviour: `10`.
+                meme_platform_enabled: when `True` includes listings detected on meme-coin launchpads
+                    such as pump.fun (Solana only). Default behaviour: `False`.
+
+            Returns:
+                feed of newly-listed tokens decoded as [`GetV2TokensNewListingResponse`][cyhole.birdeye.schema.GetV2TokensNewListingResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_public + "v2/tokens/new_listing"
+        params = {
+            "time_to": time_to,
+            "limit": limit,
+            "meme_platform_enabled": str(meme_platform_enabled).lower() if meme_platform_enabled is not None else None,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV2TokensNewListingResponse, params = params)
+
+    @overload
+    def _get_v2_markets(
+        self,
+        sync: Literal[True],
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV2MarketsResponse: ...
+
+    @overload
+    def _get_v2_markets(
+        self,
+        sync: Literal[False],
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetV2MarketsResponse]: ...
+
+    def _get_v2_markets(
+        self,
+        sync: bool,
+        address: str,
+        sort_by: str = BirdeyeV2MarketsSortBy.LIQUIDITY.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV2MarketsResponse | Coroutine[None, None, GetV2MarketsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - All Market List](https://docs.birdeye.so/reference/get-defi-v2-markets)** and is used
+            to retrieve the list of markets (trading pairs) Birdeye knows for a given token, ranked
+            by liquidity or 24h USD volume. Each entry describes the market address, its source
+            (DEX/aggregator), the base/quote token identities, current liquidity, price, and 24h
+            trade/volume/unique-wallet aggregates plus the percent change vs the previous 24h window.
+            Useful when a caller wants to drill down from a token to where it actually trades.
+
+            Parameters:
+                address: contract address of the token whose markets must be listed.
+                sort_by: ranking metric. Pick one of the constants on
+                    [`BirdeyeV2MarketsSortBy`][cyhole.birdeye.param.BirdeyeV2MarketsSortBy].
+                sort_type: ascending or descending order. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder].
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                limit: number of records to return (1..20). Default behaviour: `10`.
+
+            Returns:
+                paginated list of markets decoded as [`GetV2MarketsResponse`][cyhole.birdeye.schema.GetV2MarketsResponse],
+                plus the total number of markets Birdeye tracks for the token in `data.total`.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeV2MarketsSortBy.check(sort_by)
+        BirdeyeOrder.check(sort_type)
+
+        url = self.url_api_public + "v2/markets"
+        params = {
+            "address": address,
+            "sort_by": sort_by,
+            "sort_type": sort_type,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV2MarketsResponse, params = params)
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[True], address: str) -> GetV3TokenMetaDataResponse: ...
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[True], address: list[str]) -> GetV3TokenMetaDataMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetV3TokenMetaDataResponse]: ...
+
+    @overload
+    def _get_v3_token_meta_data(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetV3TokenMetaDataMultipleResponse]: ...
+
+    def _get_v3_token_meta_data(
+        self,
+        sync: bool,
+        address: str | list[str]
+    ) -> (
+        GetV3TokenMetaDataResponse
+        | GetV3TokenMetaDataMultipleResponse
+        | Coroutine[None, None, GetV3TokenMetaDataResponse]
+        | Coroutine[None, None, GetV3TokenMetaDataMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token-metadata endpoints **[Token - Metadata (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-meta-data-single)**
+            and **[Token - Metadata (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-meta-data-multiple)**.
+            They return the lightweight identity payload for one or more tokens on the selected chain
+            (address, symbol, name, decimals, logo URL and the free-form `extensions` bag of social
+            links / CoinGecko id). This is the right call when a caller just needs to resolve a token
+            address to a display name and icon without paying for the full Token - Overview payload.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/meta-data/single`, returning a [`GetV3TokenMetaDataResponse`][cyhole.birdeye.schema.GetV3TokenMetaDataResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/meta-data/multiple`,
+            returning a [`GetV3TokenMetaDataMultipleResponse`][cyhole.birdeye.schema.GetV3TokenMetaDataMultipleResponse]
+            whose `data` is a dict keyed by token address.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+                    The list flavour issues one HTTP call instead of N.
+
+            Returns:
+                metadata payload for the requested token(s); the concrete type depends on the input
+                cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/meta-data/single"
+            params = {"address": address}
+            response_model: type = GetV3TokenMetaDataResponse
         else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenListResponse(**content_raw.json())
-            return async_request()
+            url = self.url_api_public + "v3/token/meta-data/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenMetaDataMultipleResponse
+
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[True], address: str, ui_amount_mode: str | None = None) -> GetV3TokenMarketDataResponse: ...
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[True], address: list[str], ui_amount_mode: str | None = None) -> GetV3TokenMarketDataMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[False], address: str, ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenMarketDataResponse]: ...
+
+    @overload
+    def _get_v3_token_market_data(self, sync: Literal[False], address: list[str], ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenMarketDataMultipleResponse]: ...
+
+    def _get_v3_token_market_data(
+        self,
+        sync: bool,
+        address: str | list[str],
+        ui_amount_mode: str | None = None
+    ) -> (
+        GetV3TokenMarketDataResponse
+        | GetV3TokenMarketDataMultipleResponse
+        | Coroutine[None, None, GetV3TokenMarketDataResponse]
+        | Coroutine[None, None, GetV3TokenMarketDataMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token market-data endpoints **[Token - Market Data (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-market-data)**
+            and **[Token - Market Data (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-market-data-multiple)**.
+            They return a compact market snapshot per token: price, liquidity, total/circulating supply,
+            FDV, market cap and holder count. It is a cheaper alternative to Token - Overview when a
+            caller only needs the headline numbers without the per-window trade/volume breakdown.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/market-data`, returning a [`GetV3TokenMarketDataResponse`][cyhole.birdeye.schema.GetV3TokenMarketDataResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/market-data/multiple`,
+            returning a [`GetV3TokenMarketDataMultipleResponse`][cyhole.birdeye.schema.GetV3TokenMarketDataMultipleResponse]
+            whose `data` is a dict keyed by token address.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
+
+            Returns:
+                market snapshot payload for the requested token(s); the concrete type depends on the
+                input cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/market-data"
+            params: dict[str, Any] = {"address": address}
+            response_model: type = GetV3TokenMarketDataResponse
+        else:
+            url = self.url_api_public + "v3/token/market-data/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenMarketDataMultipleResponse
+        if ui_amount_mode is not None:
+            params["ui_amount_mode"] = ui_amount_mode
+
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[True], address: str, frames: str | None = None, ui_amount_mode: str | None = None) -> GetV3TokenTradeDataResponse: ...
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[True], address: list[str], frames: str | None = None, ui_amount_mode: str | None = None) -> GetV3TokenTradeDataMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[False], address: str, frames: str | None = None, ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenTradeDataResponse]: ...
+
+    @overload
+    def _get_v3_token_trade_data(self, sync: Literal[False], address: list[str], frames: str | None = None, ui_amount_mode: str | None = None) -> Coroutine[None, None, GetV3TokenTradeDataMultipleResponse]: ...
+
+    def _get_v3_token_trade_data(
+        self,
+        sync: bool,
+        address: str | list[str],
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
+    ) -> (
+        GetV3TokenTradeDataResponse
+        | GetV3TokenTradeDataMultipleResponse
+        | Coroutine[None, None, GetV3TokenTradeDataResponse]
+        | Coroutine[None, None, GetV3TokenTradeDataMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token trade-data endpoints **[Token - Trade Data (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-trade-data-single)**
+            and **[Token - Trade Data (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-trade-data-multiple)**.
+            They return the full trading-activity snapshot of a token: latest price, price history at the
+            1m/5m/30m/1h/2h/4h/6h/8h/12h/24h windows, per-window (1m..24h) unique-wallet counts and full
+            sell/buy/volume breakdowns, all aligned with the equivalent metric over the previous window.
+            This is the "give me everything about how this token is trading" call — heavier than
+            Token - Market Data but lighter than Token - Overview as it skips the identity and supply
+            sections.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/trade-data/single`, returning a [`GetV3TokenTradeDataResponse`][cyhole.birdeye.schema.GetV3TokenTradeDataResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/trade-data/multiple`,
+            returning a [`GetV3TokenTradeDataMultipleResponse`][cyhole.birdeye.schema.GetV3TokenTradeDataMultipleResponse]
+            whose `data` is a dict keyed by token address.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+                frames: optional comma-separated list of additional custom time intervals to include in
+                    the response (up to 8 entries). Same grammar as on Token - Overview: minute intervals
+                    `1m..1440m`, multiples-of-5 second intervals `5s..3600s`, and `1h/2h/4h/8h/24h`.
+                    Default behaviour: only the standard windows listed above are returned.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
+
+            Returns:
+                trading-activity snapshot for the requested token(s); the concrete type depends on the
+                input cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/trade-data/single"
+            params: dict[str, Any] = {"address": address}
+            response_model: type = GetV3TokenTradeDataResponse
+        else:
+            url = self.url_api_public + "v3/token/trade-data/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenTradeDataMultipleResponse
+        if frames is not None:
+            params["frames"] = frames
+        if ui_amount_mode is not None:
+            params["ui_amount_mode"] = ui_amount_mode
+
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[True], address: str) -> GetV3TokenExitLiquidityResponse: ...
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[True], address: list[str]) -> GetV3TokenExitLiquidityMultipleResponse: ...
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetV3TokenExitLiquidityResponse]: ...
+
+    @overload
+    def _get_v3_token_exit_liquidity(self, sync: Literal[False], address: list[str]) -> Coroutine[None, None, GetV3TokenExitLiquidityMultipleResponse]: ...
+
+    def _get_v3_token_exit_liquidity(
+        self,
+        sync: bool,
+        address: str | list[str]
+    ) -> (
+        GetV3TokenExitLiquidityResponse
+        | GetV3TokenExitLiquidityMultipleResponse
+        | Coroutine[None, None, GetV3TokenExitLiquidityResponse]
+        | Coroutine[None, None, GetV3TokenExitLiquidityMultipleResponse]
+    ):
+        """
+            This function refers to the v3 Birdeye token exit-liquidity endpoints **[Token - Liquidity (Single)](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity)**
+            and **[Token - Liquidity (Multiple)](https://docs.birdeye.so/reference/get-defi-v3-token-exit-liquidity-multiple)**.
+            They return Birdeye's estimate of how much value the largest holders of a token could
+            realistically extract by selling without crashing the price, computed from the on-chain
+            liquidity profile of the token's biggest markets. The single variant returns the payload
+            directly under `data`; the multiple variant returns `data.items` as a list (one entry per
+            requested address).
+
+            !!! info
+                Birdeye restricts both endpoints to the **Base** chain at the time of writing.
+
+            The method is polymorphic: pass a single `str` address and the function routes to
+            `/defi/v3/token/exit-liquidity`, returning a [`GetV3TokenExitLiquidityResponse`][cyhole.birdeye.schema.GetV3TokenExitLiquidityResponse];
+            pass a `list[str]` of addresses and it routes to `/defi/v3/token/exit-liquidity/multiple`,
+            returning a [`GetV3TokenExitLiquidityMultipleResponse`][cyhole.birdeye.schema.GetV3TokenExitLiquidityMultipleResponse]
+            whose `data.items` is a list of entries.
+
+            Parameters:
+                address: a single token contract address (string) or a list of token contract addresses.
+
+            Returns:
+                exit-liquidity payload for the requested token(s); the concrete type depends on the
+                input cardinality (see above).
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/token/exit-liquidity"
+            params: dict[str, Any] = {"address": address}
+            response_model: type = GetV3TokenExitLiquidityResponse
+        else:
+            url = self.url_api_public + "v3/token/exit-liquidity/multiple"
+            params = {"list_address": ",".join(address)}
+            response_model = GetV3TokenExitLiquidityMultipleResponse
+
+        return self.api_return_model(sync, RequestType.GET.value, url, response_model, params = params)
+
+    @overload
+    def _get_v3_token_mint_burn_txs(
+        self,
+        sync: Literal[True],
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV3TokenMintBurnTxsResponse: ...
+
+    @overload
+    def _get_v3_token_mint_burn_txs(
+        self,
+        sync: Literal[False],
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetV3TokenMintBurnTxsResponse]: ...
+
+    def _get_v3_token_mint_burn_txs(
+        self,
+        sync: bool,
+        address: str,
+        type: str = BirdeyeMintBurnType.ALL.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        after_time: int | None = None,
+        before_time: int | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetV3TokenMintBurnTxsResponse | Coroutine[None, None, GetV3TokenMintBurnTxsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Mint/Burn](https://docs.birdeye.so/reference/get-defi-v3-token-mint-burn-txs)** and is used
+            to retrieve the on-chain mint and burn transactions of an SPL token: every transaction that
+            either increases or decreases the token's total supply. Each entry exposes the on-chain
+            signature, the affected mint, the program that emitted the instruction, raw and UI-formatted
+            amounts, slot, and the block timestamp. Useful for auditing supply changes (rewards,
+            redemptions, buybacks) outside of normal trades.
+
+            !!! info
+                Birdeye restricts this endpoint to the **Solana** chain at the time of writing.
+
+            Parameters:
+                address: contract address of the SPL token whose mint/burn history must be retrieved.
+                type: kind of supply change to return. Pick one of the constants on
+                    [`BirdeyeMintBurnType`][cyhole.birdeye.param.BirdeyeMintBurnType].
+                    Default behaviour: `all`.
+                sort_type: ascending or descending order on `block_time`. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `desc`
+                    (most recent first).
+                after_time: optional inclusive lower bound on the transaction block time, in unix
+                    seconds; `None` to disable.
+                before_time: optional inclusive upper bound on the transaction block time, in unix
+                    seconds; `None` to disable.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                    Birdeye requires `offset + limit <= 10000`.
+                limit: number of records to return (1..100). Default behaviour: `100`.
+
+            Returns:
+                ranked list of mint/burn transactions decoded as
+                [`GetV3TokenMintBurnTxsResponse`][cyhole.birdeye.schema.GetV3TokenMintBurnTxsResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeMintBurnType.check(type)
+        BirdeyeOrder.check(sort_type)
+
+        url = self.url_api_public + "v3/token/mint-burn-txs"
+        params = {
+            "address": address,
+            "sort_by": "block_time",
+            "sort_type": sort_type,
+            "type": type,
+            "after_time": after_time,
+            "before_time": before_time,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMintBurnTxsResponse, params = params)
+
+    @overload
+    def _get_v2_tokens_top_traders(
+        self,
+        sync: Literal[True],
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetV2TopTradersResponse: ...
+
+    @overload
+    def _get_v2_tokens_top_traders(
+        self,
+        sync: Literal[False],
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetV2TopTradersResponse]: ...
+
+    def _get_v2_tokens_top_traders(
+        self,
+        sync: bool,
+        address: str,
+        time_frame: str = BirdeyeV2TopTradersTimeFrame.H24.value,
+        sort_by: str = BirdeyeV2TopTradersSortBy.VOLUME.value,
+        sort_type: str = BirdeyeOrder.DESCENDING.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetV2TopTradersResponse | Coroutine[None, None, GetV2TopTradersResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Top Traders](https://docs.birdeye.so/reference/get-defi-v2-tokens-top_traders)** and is used
+            to retrieve the wallets that traded the most of a given token over a configurable time
+            frame, ranked by raw volume, USD volume, trade count, or realised/unrealised PnL. Each
+            entry exposes the wallet address, optional Birdeye tags (`whale`, `bot`, ...), trade and
+            volume splits between buy and sell sides, and Solana-only profit-and-loss figures.
+            Useful when surfacing the dominant participants behind a token's recent activity.
+
+            !!! info
+                The PnL-based sort metrics (`total_pnl`, `unrealized_pnl`, `realized_pnl`,
+                `volume_usd`) and the longer time frames (2d..90d) are restricted by Birdeye to
+                Solana. On every other chain only `volume` / `trade` sort and time frames up to 24h
+                are honoured.
+
+            Parameters:
+                address: contract address of the token whose top traders must be listed.
+                time_frame: trailing window for the metrics. Pick one of the constants on
+                    [`BirdeyeV2TopTradersTimeFrame`][cyhole.birdeye.param.BirdeyeV2TopTradersTimeFrame].
+                    Default behaviour: `24h`.
+                sort_by: ranking metric. Pick one of the constants on
+                    [`BirdeyeV2TopTradersSortBy`][cyhole.birdeye.param.BirdeyeV2TopTradersSortBy].
+                    Default behaviour: `volume`.
+                sort_type: ascending or descending order. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `desc`.
+                offset: zero-based pagination offset. Default behaviour: `0`. Birdeye requires
+                    `offset + limit <= 10000`.
+                limit: number of records to return. Default behaviour: `10`.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`scaled`).
+
+            Returns:
+                ranked list of top trader entries decoded as
+                [`GetV2TopTradersResponse`][cyhole.birdeye.schema.GetV2TopTradersResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeV2TopTradersTimeFrame.check(time_frame)
+        BirdeyeV2TopTradersSortBy.check(sort_by)
+        BirdeyeOrder.check(sort_type)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_public + "v2/tokens/top_traders"
+        params = {
+            "address": address,
+            "time_frame": time_frame,
+            "sort_type": sort_type,
+            "sort_by": sort_by,
+            "offset": offset,
+            "limit": limit,
+            "ui_amount_mode": ui_amount_mode,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV2TopTradersResponse, params = params)
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        wallets: None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenHolderResponse: ...
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        wallets: list[str],
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> PostTokenHolderBatchResponse: ...
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        wallets: None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetTokenHolderResponse]: ...
+
+    @overload
+    def _get_token_holder(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        wallets: list[str],
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, PostTokenHolderBatchResponse]: ...
+
+    def _get_token_holder(
+        self,
+        sync: bool,
+        token_address: str,
+        wallets: list[str] | None = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> (
+        GetTokenHolderResponse
+        | PostTokenHolderBatchResponse
+        | Coroutine[None, None, GetTokenHolderResponse]
+        | Coroutine[None, None, PostTokenHolderBatchResponse]
+    ):
+        """
+            This function consolidates the Birdeye top-holder and batch-balance endpoints
+            **[Token - Holder](https://docs.birdeye.so/reference/get-defi-v3-token-holder)**
+            and **[Token - Holder (Batch)](https://docs.birdeye.so/reference/post-token-v1-holder-batch)**
+            under a single polymorphic call:
+
+            - leave `wallets` to its default `None` to retrieve the ranked list of largest holders
+              of `token_address` (`GET /defi/v3/token/holder`). The response is decoded as
+              [`GetTokenHolderResponse`][cyhole.birdeye.schema.GetTokenHolderResponse] and exposes
+              the `mint`, `owner`, `token_account`, raw and UI-formatted balance for each holder.
+            - pass `wallets` as a list of specific wallet addresses to look up their balance in
+              `token_address` (`POST /token/v1/holder/batch`). The response is decoded as
+              [`PostTokenHolderBatchResponse`][cyhole.birdeye.schema.PostTokenHolderBatchResponse]
+              and exposes `mint`, `owner`, `balance` (raw) and `amount` (UI) per requested wallet.
+
+            !!! info
+                Both endpoints are restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                token_address: contract address of the SPL token to look up.
+                wallets: list of wallet addresses whose balances must be fetched. When `None`
+                    the call switches to the top-holder ranking.
+                offset: zero-based pagination offset for the top-holder ranking. Ignored when
+                    `wallets` is provided. Default behaviour: `0`.
+                limit: number of records to return for the top-holder ranking. Ignored when
+                    `wallets` is provided. Default behaviour: `100`.
+                ui_amount_mode: how to format scaled-UI-amount token figures. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`scaled`).
+
+            Returns:
+                top-holder ranking or per-wallet balance list; the concrete type depends on whether
+                `wallets` was provided.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        if wallets is None:
+            # GET top-holder ranking
+            url = self.url_api_public + "v3/token/holder"
+            params: dict[str, Any] = {
+                "address": token_address,
+                "offset": offset,
+                "limit": limit,
+            }
+            if ui_amount_mode is not None:
+                params["ui_amount_mode"] = ui_amount_mode
+
+            return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderResponse, params = params)
+
+        # POST batch balance
+        url = self.url_api_token_v1 + "holder/batch"
+        body = {
+            "token_address": token_address,
+            "wallets": wallets,
+        }
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+        post_params = {}
+        if ui_amount_mode is not None:
+            post_params["ui_amount_mode"] = ui_amount_mode
+
+        return self.api_return_model(sync, RequestType.POST.value, url, PostTokenHolderBatchResponse, json = body, headers = headers, params = post_params or None)
+
+    @overload
+    def _get_holder_distribution(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetHolderDistributionResponse: ...
+
+    @overload
+    def _get_holder_distribution(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetHolderDistributionResponse]: ...
+
+    def _get_holder_distribution(
+        self,
+        sync: bool,
+        token_address: str,
+        address_type: str = BirdeyeHolderDistributionAddressType.WALLET.value,
+        mode: str = BirdeyeHolderDistributionMode.TOP.value,
+        top_n: int | None = None,
+        min_percent: float | None = None,
+        max_percent: float | None = None,
+        include_list: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetHolderDistributionResponse | Coroutine[None, None, GetHolderDistributionResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Distribution](https://docs.birdeye.so/reference/get-holder-v1-distribution)** and is used
+            to summarise how the supply of a token is spread across its holders. The endpoint can run
+            in two modes: in `top` mode it returns the top-N holders by holding amount, in `percent`
+            mode it returns the holders whose share of total supply falls inside a `[min_percent, max_percent]`
+            band. Each call also returns an aggregate `summary` (total holding, cumulative percent of
+            supply, wallet count) over the filtered set — very useful for "how much of the supply is
+            in whale hands" style answers.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                token_address: contract address of the SPL token whose distribution must be analysed.
+                address_type: whether to group holders by wallet owner or by SPL token account address.
+                    Pick one of the constants on
+                    [`BirdeyeHolderDistributionAddressType`][cyhole.birdeye.param.BirdeyeHolderDistributionAddressType].
+                    Default behaviour: `wallet`.
+                mode: filter mode (top-N vs supply-share range). Pick one of the constants on
+                    [`BirdeyeHolderDistributionMode`][cyhole.birdeye.param.BirdeyeHolderDistributionMode].
+                    Default behaviour: `top`.
+                top_n: number of top holders to return when `mode = top`. Ignored otherwise.
+                    Default behaviour: `10`.
+                min_percent: inclusive lower bound on the holder share when `mode = percent`. Expressed
+                    as a fraction in `[0, 1]`. `None` disables the lower bound.
+                max_percent: inclusive upper bound on the holder share when `mode = percent`. `None`
+                    disables the upper bound.
+                include_list: when `False`, omit the `holders` list from the response and return only
+                    the aggregate summary; useful to save bandwidth on large queries. Default
+                    behaviour: `True`.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                    Birdeye requires `offset + limit <= 10000`.
+                limit: number of records to return. Default behaviour: `50`.
+
+            Returns:
+                holder-distribution payload decoded as
+                [`GetHolderDistributionResponse`][cyhole.birdeye.schema.GetHolderDistributionResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeHolderDistributionAddressType.check(address_type)
+        BirdeyeHolderDistributionMode.check(mode)
+
+        url = self.url_api_holder_v1 + "distribution"
+        params = {
+            "token_address": token_address,
+            "address_type": address_type,
+            "mode": mode,
+            "top_n": top_n,
+            "min_percent": min_percent,
+            "max_percent": max_percent,
+            "include_list": str(include_list).lower() if include_list is not None else None,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetHolderDistributionResponse, params = params)
+
+    @overload
+    def _get_token_holder_profile(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> GetHolderProfileResponse: ...
+
+    @overload
+    def _get_token_holder_profile(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> Coroutine[None, None, GetHolderProfileResponse]: ...
+
+    def _get_token_holder_profile(
+        self,
+        sync: bool,
+        token_address: str,
+        interval: str = "1h",
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None
+    ) -> GetHolderProfileResponse | Coroutine[None, None, GetHolderProfileResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Profile](https://docs.birdeye.so/reference/get-token-v1-holder-profile)** and is used
+            to retrieve Birdeye's holder-profile summary of a token: headline holder counts, a 1h
+            market snapshot (liquidity, market cap, buy/sell volume breakdown, top-10 holder
+            concentration) and a per-tag aggregate breakdown across the five Birdeye holder tags
+            (`bundler`, `sniper`, `insider`, `dev`, `smart_trader`). Useful for surfacing "who is
+            actually holding this token" at a glance.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+                Bundler-tag data may exhibit a short delay versus the other tags per the API docs.
+
+            Parameters:
+                token_address: contract address of the SPL token whose holder profile must be retrieved.
+                interval: time interval for the volume figures. At the time of writing Birdeye only
+                    supports `1h`. Default behaviour: `1h`.
+                ui_amount_mode: how to format scaled-UI-amount token figures. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`raw`).
+                include_zero_balance: when `True` (the API default) zero-balance wallets are kept in
+                    the per-tag aggregates; set to `False` to exclude them. `None` defers to the
+                    server default.
+
+            Returns:
+                holder-profile payload decoded as
+                [`GetHolderProfileResponse`][cyhole.birdeye.schema.GetHolderProfileResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_token_v1 + "holder-profile"
+        params = {
+            "token_address": token_address,
+            "interval": interval,
+            "ui_amount_mode": ui_amount_mode,
+            "include_zero_balance": str(include_zero_balance).lower() if include_zero_balance is not None else None,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetHolderProfileResponse, params = params)
+
+    @overload
+    def _get_token_holder_positions(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        labels: str | None = None,
+        order_type: str = BirdeyeOrder.DESCENDING.value,
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetTokenHolderPositionsResponse: ...
+
+    @overload
+    def _get_token_holder_positions(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        labels: str | None = None,
+        order_type: str = BirdeyeOrder.DESCENDING.value,
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> Coroutine[None, None, GetTokenHolderPositionsResponse]: ...
+
+    def _get_token_holder_positions(
+        self,
+        sync: bool,
+        token_address: str,
+        labels: str | None = None,
+        order_type: str = BirdeyeOrder.DESCENDING.value,
+        ui_amount_mode: str | None = None,
+        include_zero_balance: bool | None = None,
+        offset: int | None = None,
+        limit: int | None = None
+    ) -> GetTokenHolderPositionsResponse | Coroutine[None, None, GetTokenHolderPositionsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Positions](https://docs.birdeye.so/reference/get-token-v1-holder-positions)** and is used
+            to retrieve a paginated list of wallet positions for a given token, optionally filtered
+            by Birdeye holder tags. Each entry describes the wallet's current holding, percent of
+            supply, average buy price, cumulative buy/sell counts and volumes (both in token UI
+            units and USD), profit-and-loss in USD, and the timestamp of its first observed trade.
+            Useful for drilling from a token down to its individual notable holders / traders.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+                Bundler-tag data may exhibit a short delay versus the other tags per the API docs.
+
+            Parameters:
+                token_address: contract address of the SPL token whose holder positions must be listed.
+                labels: comma-separated list of holder tags (`bundler`, `sniper`, `insider`, `dev`,
+                    `smart_trader`) to restrict the result to wallets carrying at least one of the
+                    tags; `None` returns all wallets regardless of tags.
+                order_type: ascending or descending order on the underlying `amount` sort field
+                    (the only metric the API supports today). Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `desc`.
+                ui_amount_mode: how to format scaled-UI-amount token figures. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`raw`).
+                include_zero_balance: when `True` (the API default) wallets with zero current balance
+                    are kept in the result; set to `False` to exclude them. `None` defers to the
+                    server default.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                limit: number of records to return. Default behaviour: `50`.
+
+            Returns:
+                paginated list of per-wallet positions decoded as
+                [`GetTokenHolderPositionsResponse`][cyhole.birdeye.schema.GetTokenHolderPositionsResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeOrder.check(order_type)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_token_v1 + "holder-positions"
+        params = {
+            "token_address": token_address,
+            "labels": labels,
+            "sort_by": "amount",
+            "order_type": order_type,
+            "ui_amount_mode": ui_amount_mode,
+            "include_zero_balance": str(include_zero_balance).lower() if include_zero_balance is not None else None,
+            "offset": offset,
+            "limit": limit,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderPositionsResponse, params = params)
+
+    @overload
+    def _get_token_holder_chart(
+        self,
+        sync: Literal[True],
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> GetTokenHolderChartResponse: ...
+
+    @overload
+    def _get_token_holder_chart(
+        self,
+        sync: Literal[False],
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> Coroutine[None, None, GetTokenHolderChartResponse]: ...
+
+    def _get_token_holder_chart(
+        self,
+        sync: bool,
+        token_address: str,
+        chart_type: str = BirdeyeHolderChartType.H1.value,
+        time_from: int | None = None,
+        time_to: int | None = None,
+        mode: str = BirdeyeHolderChartMode.PADDING.value,
+        percent_mode: str = BirdeyeHolderChartPercentMode.BEGINNING.value,
+        count: int | None = None
+    ) -> GetTokenHolderChartResponse | Coroutine[None, None, GetTokenHolderChartResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Holder Chart](https://docs.birdeye.so/reference/get-token-v1-holder-chart)** and is used
+            to retrieve a time-series of holder-count snapshots for a given token, suitable for
+            plotting "holders over time" charts. Each data point exposes the absolute holder count
+            and both an absolute (`net_change`) and relative (`percent_change`) delta versus the
+            chosen reference (window beginning or previous point).
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                token_address: contract address of the SPL token whose holder chart must be retrieved.
+                chart_type: resolution of the chart points. Pick one of the constants on
+                    [`BirdeyeHolderChartType`][cyhole.birdeye.param.BirdeyeHolderChartType].
+                    Default behaviour: `1h`.
+                time_from: optional inclusive lower bound on the data-point timestamp, in unix seconds.
+                    `None` lets Birdeye pick the start of the window.
+                time_to: optional inclusive upper bound on the data-point timestamp, in unix seconds.
+                    `None` lets Birdeye pick the end of the window (typically "now").
+                mode: how Birdeye handles missing data points. Pick one of the constants on
+                    [`BirdeyeHolderChartMode`][cyhole.birdeye.param.BirdeyeHolderChartMode].
+                    Default behaviour: `padding`.
+                percent_mode: reference point for `percent_change`. Pick one of the constants on
+                    [`BirdeyeHolderChartPercentMode`][cyhole.birdeye.param.BirdeyeHolderChartPercentMode].
+                    Default behaviour: `beginning`.
+                count: maximum number of data points to return. Default behaviour: `20`.
+
+            Returns:
+                time-series of holder-count points decoded as
+                [`GetTokenHolderChartResponse`][cyhole.birdeye.schema.GetTokenHolderChartResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeHolderChartType.check(chart_type)
+        BirdeyeHolderChartMode.check(mode)
+        BirdeyeHolderChartPercentMode.check(percent_mode)
+
+        url = self.url_api_token_v1 + "holder/chart"
+        params = {
+            "token_address": token_address,
+            "chart_type": chart_type,
+            "from": time_from,
+            "to": time_to,
+            "mode": mode,
+            "percent_mode": percent_mode,
+            "count": count,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenHolderChartResponse, params = params)
+
+    @overload
+    def _post_token_transfer(self, sync: Literal[True], body: PostTokenTransferBody) -> PostTokenTransferResponse: ...
+
+    @overload
+    def _post_token_transfer(self, sync: Literal[False], body: PostTokenTransferBody) -> Coroutine[None, None, PostTokenTransferResponse]: ...
+
+    def _post_token_transfer(
+        self,
+        sync: bool,
+        body: PostTokenTransferBody
+    ) -> PostTokenTransferResponse | Coroutine[None, None, PostTokenTransferResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Transfer List](https://docs.birdeye.so/reference/post-token-v1-transfer)** and is used
+            to retrieve the list of on-chain transfer transactions of a given SPL token, optionally
+            filtered by time window, transferred amount, USD value, and either side wallet address.
+            Each entry exposes the sender / receiver wallet and SPL token account, raw and
+            UI-formatted amount, per-token price, total USD value, slot/block and timestamp.
+            Pagination is cursor-based: pass the cursor returned by Birdeye on the previous call
+            via `body.cursor` to fetch the next page.
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                body: filled-in [`PostTokenTransferBody`][cyhole.birdeye.schema.PostTokenTransferBody]
+                    instance carrying the required `token_address` and any optional filters and the
+                    pagination cursor/limit.
+
+            Returns:
+                paginated list of transfer entries decoded as
+                [`PostTokenTransferResponse`][cyhole.birdeye.schema.PostTokenTransferResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_token_v1 + "transfer"
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+
+        return self.api_return_model(
+            sync,
+            RequestType.POST.value,
+            url,
+            PostTokenTransferResponse,
+            json = body.model_dump(exclude_none = True),
+            headers = headers,
+        )
+
+    @overload
+    def _post_token_transfer_total(self, sync: Literal[True], body: PostTokenTransferTotalBody) -> PostTokenTransferTotalResponse: ...
+
+    @overload
+    def _post_token_transfer_total(self, sync: Literal[False], body: PostTokenTransferTotalBody) -> Coroutine[None, None, PostTokenTransferTotalResponse]: ...
+
+    def _post_token_transfer_total(
+        self,
+        sync: bool,
+        body: PostTokenTransferTotalBody
+    ) -> PostTokenTransferTotalResponse | Coroutine[None, None, PostTokenTransferTotalResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Transfer Total](https://docs.birdeye.so/reference/post-token-v1-transfer-total)** and is used
+            to return the **count** of SPL token transfer transactions of a given token matching the
+            same filter set as the Transfer List endpoint (time window, transferred amount, USD
+            value, sender / receiver wallet). It is the cheap counterpart of
+            [`_post_token_transfer`][cyhole.birdeye.interaction.Birdeye._post_token_transfer] when
+            only the aggregate count is needed (no individual entries, no pagination).
+
+            !!! info
+                The endpoint is restricted by Birdeye to the **Solana** chain at the time of writing.
+
+            Parameters:
+                body: filled-in [`PostTokenTransferTotalBody`][cyhole.birdeye.schema.PostTokenTransferTotalBody]
+                    instance carrying the required `token_address` and any optional filters.
+
+            Returns:
+                aggregate count payload decoded as
+                [`PostTokenTransferTotalResponse`][cyhole.birdeye.schema.PostTokenTransferTotalResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_token_v1 + "transfer/total"
+        headers = self.headers.copy()
+        headers["content-type"] = "application/json"
+
+        return self.api_return_model(
+            sync,
+            RequestType.POST.value,
+            url,
+            PostTokenTransferTotalResponse,
+            json = body.model_dump(exclude_none = True),
+            headers = headers,
+        )
+
+    @overload
+    def _get_token_trending(
+        self,
+        sync: Literal[True],
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenTrendingResponse: ...
+
+    @overload
+    def _get_token_trending(
+        self,
+        sync: Literal[False],
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetTokenTrendingResponse]: ...
+
+    def _get_token_trending(
+        self,
+        sync: bool,
+        sort_by: str = BirdeyeTokenTrendingSortBy.RANK.value,
+        sort_type: str = BirdeyeOrder.ASCENDING.value,
+        interval: str = BirdeyeTokenTrendingInterval.H24.value,
+        offset: int | None = None,
+        limit: int | None = None,
+        ui_amount_mode: str | None = None
+    ) -> GetTokenTrendingResponse | Coroutine[None, None, GetTokenTrendingResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Token - Trending List](https://docs.birdeye.so/reference/get-defi-token_trending)** and is used
+            to retrieve Birdeye's up-to-date ranking of trending tokens on the selected chain. Each
+            entry exposes the trending rank, identity, current price, liquidity, market cap, FDV
+            and the 24h USD volume / price change figures. Useful when surfacing "what is hot right
+            now" on a token discovery UI.
+
+            Parameters:
+                sort_by: ranking metric. Pick one of the constants on
+                    [`BirdeyeTokenTrendingSortBy`][cyhole.birdeye.param.BirdeyeTokenTrendingSortBy].
+                    Default behaviour: `rank` (i.e. Birdeye's own ordering).
+                sort_type: ascending or descending order. Pick one of the constants on
+                    [`BirdeyeOrder`][cyhole.birdeye.param.BirdeyeOrder]. Default behaviour: `asc`
+                    (so position 1 — most trending — comes first).
+                interval: trailing window used for the trending computation. Pick one of the
+                    constants on [`BirdeyeTokenTrendingInterval`][cyhole.birdeye.param.BirdeyeTokenTrendingInterval].
+                    Default behaviour: `24h`.
+                offset: zero-based pagination offset. Default behaviour: `0`.
+                limit: number of records to return per page. Default behaviour: `20`.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana. Pick a
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode] member or leave
+                    `None` for the server default (`scaled`).
+
+            Returns:
+                trending-list payload decoded as
+                [`GetTokenTrendingResponse`][cyhole.birdeye.schema.GetTokenTrendingResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
+        """
+        BirdeyeTokenTrendingSortBy.check(sort_by)
+        BirdeyeOrder.check(sort_type)
+        BirdeyeTokenTrendingInterval.check(interval)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        url = self.url_api_public + "token_trending"
+        params = {
+            "sort_by": sort_by,
+            "sort_type": sort_type,
+            "interval": interval,
+            "offset": offset,
+            "limit": limit,
+            "ui_amount_mode": ui_amount_mode,
+        }
+
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenTrendingResponse, params = params)
 
     @overload
     def _get_token_creation_info(
@@ -193,14 +1597,20 @@ class Birdeye(Interaction):
         address: str
     ) -> GetTokenCreationInfoResponse | Coroutine[None, None, GetTokenCreationInfoResponse]:
         """
-            This function refers to the **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get_defi-token-creation-info)** and is used 
-            to get the current price of a token according on a specific chain on Birdeye.
+            This function refers to the **PRIVATE** API endpoint **[Token - Creation Token Info](https://docs.birdeye.so/reference/get-defi-token_creation_info)** and is used
+            to retrieve the on-chain transaction that originally minted a given token together with its
+            slot, block timestamp (both unix and human-readable), creator/owner address and decimals.
+            It is the canonical way to answer "when and by whom was this token created?" on Birdeye-supported
+            chains and is typically used as part of a token vetting flow (age check, deployer profiling).
+
+            !!! info
+                Currently the endpoint is restricted by Birdeye to the Solana, BSC, Base, Ethereum and Monad chains.
 
             Parameters:
-                address: CA of the token to search on the chain.
-            
+                address: contract address of the token whose creation information must be retrieved.
+
             Returns:
-                token's creation information.
+                creation transaction hash, slot, block timestamps, creator/owner address and decimals.
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
@@ -213,14 +1623,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenCreationInfoResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenCreationInfoResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenCreationInfoResponse, params = params)
 
     @overload
     def _get_token_security(
@@ -242,16 +1645,25 @@ class Birdeye(Interaction):
         address: str
     ) -> GetTokenSecurityResponse | Coroutine[None, None, GetTokenSecurityResponse]:
         """
-            This function refers to the **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get_defi-token-security)** and is used 
-            to get the useful information related to the security of a token  on a specific
-            chain calculated by Birdeye.
+            This function refers to the **PRIVATE** API endpoint **[Token - Security](https://docs.birdeye.so/reference/get-defi-token_security)** and is used
+            to retrieve Birdeye's risk profile of a token: ownership and authority addresses, creator/owner
+            balances, top-holder concentration, freeze/mint/Token-2022 flags, lock information and
+            metadata mutability. It is the canonical endpoint behind Birdeye's "is this token safe?"
+            checks and is typically consumed when surfacing scam/rug warnings before showing a swap UI.
+
+            !!! info
+                The endpoint is available on every Birdeye chain except Sui. The response payload
+                differs between Solana (typed schema below) and EVM chains (free-form dictionary).
 
             Parameters:
-                address: CA of the token to search on the chain.
-            
+                address: contract address of the token to analyse on the currently selected chain.
+
             Returns:
-                token's security information.
-                    Observe that the content of `data` value depends on the selected chain.
+                security profile of the token.
+                    Observe that the content of `data` depends on the selected chain: on Solana the
+                    payload is decoded as
+                    [`GetTokenSecurityDataSolana`][cyhole.birdeye.schema.GetTokenSecurityDataSolana];
+                    on other chains it is exposed as a raw dictionary.
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
@@ -264,65 +1676,75 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenSecurityResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenSecurityResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenSecurityResponse, params = params)
 
     @overload
     def _get_token_overview(
         self,
         sync: Literal[True],
-        address: str
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenOverviewResponse: ...
 
     @overload
     def _get_token_overview(
         self,
         sync: Literal[False],
-        address: str
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
     ) -> Coroutine[None, None, GetTokenOverviewResponse]: ...
 
     def _get_token_overview(
         self,
         sync: bool,
-        address: str
+        address: str,
+        frames: str | None = None,
+        ui_amount_mode: str | None = None
     ) -> GetTokenOverviewResponse | Coroutine[None, None, GetTokenOverviewResponse]:
         """
-            This function refers to the **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get_defi-token-overview)** and is used 
-            to get all kind of information (token/mint/creator adresses, high level statistics, ...)
-            of a token on a specific chain calculated by Birdeye.
+            This function refers to the **PRIVATE** API endpoint **[Token - Overview](https://docs.birdeye.so/reference/get-defi-token_overview)** and is used
+            to retrieve Birdeye's full analytics snapshot of a single token: identity (address, symbol,
+            name, social links), pricing (current price and per-window history at 1m/5m/30m/1h/2h/4h/6h/8h/12h/24h),
+            liquidity, supply (total, circulating, holders count), unique-wallet counts and
+            per-side trade activity (sell, buy, volume in both token-UI units and USD) for the trailing
+            1m/5m/30m/1h/2h/4h/8h/24h windows together with the equivalent metric over the previous window
+            and a precomputed percent change. It is the canonical endpoint behind Birdeye's token detail
+            page and is normally used as the "give me everything you know about this token" call.
 
             Parameters:
-                address: CA of the token to search on the chain.
-            
+                address: contract address of the token whose analytics snapshot must be retrieved.
+                frames: comma-separated list of additional custom time intervals to include in the
+                    response (up to 8 entries). Birdeye accepts minute intervals from `1m` to `1440m`,
+                    second intervals in multiples of 5 from `5s` to `3600s`, and hour intervals among
+                    `1h`, `2h`, `4h`, `8h` and `24h`. Default behaviour: only the standard windows
+                    listed above are returned.
+                ui_amount_mode: how to format scaled-UI-amount token figures on Solana.
+                    The supported values are available on [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode].
+                    Only applies on Solana; ignored on other chains. Default behaviour: `scaled`.
+
             Returns:
-                token's information.
-                    Observe that the content of `data` value depends on the selected chain.
+                token analytics snapshot decoded as [`GetTokenOverviewData`][cyhole.birdeye.schema.GetTokenOverviewData].
 
             Raises:
                 BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
                 ParamUnknownError: if one of the input parameter belonging to the value list is aligned to it.
         """
+        # check param consistency
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
         # set params
         url = self.url_api_public + "token_overview"
         params = {
-            "address" : address
+            "address" : address,
+            "frames" : frames,
+            "ui_amount_mode" : ui_amount_mode
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTokenOverviewResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTokenOverviewResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTokenOverviewResponse, params = params)
 
     @overload
     def _get_price(
@@ -369,14 +1791,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceResponse, params = params)
 
     @overload
     def _get_price_multiple(
@@ -424,14 +1839,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceMultipleResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceMultipleResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceMultipleResponse, params = params)
 
     @overload
     def _get_price_historical(
@@ -512,14 +1920,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceHistoricalResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceHistoricalResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceHistoricalResponse, params = params)
 
     @overload
     def _get_price_volume_single(
@@ -567,14 +1968,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetPriceVolumeSingleResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetPriceVolumeSingleResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPriceVolumeSingleResponse, params = params)
 
     @overload
     def _post_price_volume_multi(
@@ -628,14 +2022,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.POST.value, url, json = body, headers = headers)
-            return PostPriceVolumeMultiResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.POST.value, url, json = body, headers = headers)
-                return PostPriceVolumeMultiResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.POST.value, url, PostPriceVolumeMultiResponse, json = body, headers = headers)
 
     @overload
     def _get_trades_token(
@@ -697,14 +2084,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTradesTokenResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTradesTokenResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTradesTokenResponse, params = params)
 
     @overload
     def _get_trades_pair(
@@ -776,14 +2156,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetTradesPairResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetTradesPairResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTradesPairResponse, params = params)
 
     @overload
     def _get_ohlcv(
@@ -868,14 +2241,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetOHLCVTokenPairResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetOHLCVTokenPairResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetOHLCVTokenPairResponse, params = params)
 
     @overload
     def _get_ohlcv_base_quote(
@@ -956,14 +2322,7 @@ class Birdeye(Interaction):
         }
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url, params = params)
-            return GetOHLCVBaseQuoteResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
-                return GetOHLCVBaseQuoteResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetOHLCVBaseQuoteResponse, params = params)
 
     @overload
     def _get_wallet_supported_networks(self, sync: Literal[True]) -> GetWalletSupportedNetworksResponse: ...
@@ -985,11 +2344,4 @@ class Birdeye(Interaction):
         url = self.url_api_private_wallet + "/list_supported_chain"
 
         # execute request
-        if sync:
-            content_raw = self.client.api(RequestType.GET.value, url)
-            return GetWalletSupportedNetworksResponse(**content_raw.json())
-        else:
-            async def async_request():
-                content_raw = await self.async_client.api(RequestType.GET.value, url)
-                return GetWalletSupportedNetworksResponse(**content_raw.json())
-            return async_request()
+        return self.api_return_model(sync, RequestType.GET.value, url, GetWalletSupportedNetworksResponse)

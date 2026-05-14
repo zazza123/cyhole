@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "amount": "870",
+        "block_human_time": "2024-11-08T07:28:18.000Z",
+        "block_time": 1731050898,
+        "common_type": "burn",
+        "decimals": 0,
+        "mint": "fueL3hBZjLLLJHiFH9cqZoozTG3XQZ53diwFPwbzNim",
+        "program_id": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+        "slot": 300145960,
+        "tx_hash": "TyqmrBiZaW6bXsm6fV1owkVL2ea3PF2rbHPNZQtQrLYiZVThHEmkcD4QHKw37W43nyUdrFSdNr2xxTPZkPBY3pZ",
+        "ui_amount": 870,
+        "ui_amount_string": "870"
+      }
+    ]
+  }
+}

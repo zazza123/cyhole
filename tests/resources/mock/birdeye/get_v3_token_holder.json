@@ -1,0 +1,17 @@
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "amount": "4995300410087424",
+        "decimals": 9,
+        "mint": "So11111111111111111111111111111111111111112",
+        "owner": "AVzP2GeRmqGphJsMxWoqjpUifPpCret7LqWhD8NWQK49",
+        "token_account": "BUvduFTd2sWFagCunBPLupG8fBTJqweLw9DuhruNFSCm",
+        "ui_amount": 4995300.410087424,
+        "is_scaled_ui_token": false,
+        "multiplier": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "success": true,
+  "data": {
+    "token": {
+      "creation_time": 1743621183,
+      "market_cap": 76953.927132964,
+      "liquidity": 31093.1204999,
+      "volume_1h": 98369093.075709,
+      "volume_1h_usd": 7724.716658279683,
+      "buy_volume_1h": 55864766.46463199,
+      "buy_volume_1h_usd": 4389.081586003591,
+      "sell_volume_1h": 42504326.61107701,
+      "sell_volume_1h_usd": 3335.6350722760917,
+      "is_scaled_ui_token": false,
+      "top10_holder": {
+        "hold_amount": "328262230.042939",
+        "percent_of_supply": 32.82937
+      }
+    },
+    "holder_summary": {
+      "total_holder": 409,
+      "total_holding": 516552632.417262,
+      "percent_of_supply": 51.660209
+    },
+    "tags": [
+      {
+        "tag": "bundler",
+        "holder_count": 404,
+        "hold_amount": "504468333.328127",
+        "percent_of_supply": 50.45166,
+        "buy_volume": "2323780188.2655096",
+        "sell_volume": "1845315786.9764643",
+        "buy_volume_usd": "329574.1593590265",
+        "sell_volume_usd": "259958.9376750694",
+        "avg_buy_price": "0.00014183",
+        "pnl": "-36019.85710298"
+      },
+      {
+        "tag": "sniper",
+        "holder_count": 0,
+        "hold_amount": "0",
+        "percent_of_supply": 0,
+        "buy_volume": "0",
+        "sell_volume": "0",
+        "buy_volume_usd": "0",
+        "sell_volume_usd": "0",
+        "avg_buy_price": "0",
+        "pnl": "0"
+      },
+      {
+        "tag": "dev",
+        "holder_count": 1,
+        "hold_amount": "0",
+        "percent_of_supply": 0,
+        "buy_volume": "82538461.538461",
+        "sell_volume": "82538461.538461",
+        "buy_volume_usd": "209.95208323574846",
+        "sell_volume_usd": "332.72892173159056",
+        "avg_buy_price": "0.00000254",
+        "pnl": "122.77683849584209"
+      }
+    ]
+  }
+}

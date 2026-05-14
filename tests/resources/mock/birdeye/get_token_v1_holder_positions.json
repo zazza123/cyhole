@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "data": [
+    {
+      "wallet_address": "Ddh8bLNrt44uRttF7wTZcZQAy5LH4vBEJiPHinasW6Ee",
+      "hold_amount": "29071167.107303",
+      "percent_of_supply": 2.90729,
+      "buy_volume": "29071167.107303",
+      "sell_volume": "0",
+      "buy_volume_usd": "503.7999904930808",
+      "sell_volume_usd": "0",
+      "avg_buy_price": "0.00001733",
+      "pnl": "-402.7013196418882",
+      "buy_count": 8,
+      "sell_count": 0,
+      "first_trade_at": "2026-03-30T17:09:53Z",
+      "labels": [
+        "bundler",
+        "sniper"
+      ]
+    }
+  ]
+}

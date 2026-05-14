@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "tokenAddress": "So11111111111111111111111111111111111111112",
+        "owner": "DyvJsgAFToogZ8e9kW3ywKF42MQR5SrP1A4TUVBmNYZP",
+        "tags": [],
+        "type": "90d",
+        "trade": 471892,
+        "tradeBuy": 235946,
+        "tradeSell": 235946,
+        "volume": 3301726000,
+        "volumeBuy": 1650863000,
+        "volumeSell": 1650863000,
+        "volumeUsd": 276994518745.97534,
+        "volumeBuyUSD": 138497260583.49442,
+        "volumeSellUSD": 138497258162.4809,
+        "totalPnl": -2421.0135256550275,
+        "unrealizedPnl": 0,
+        "realizedPnl": -2421.0135256550275,
+        "isScaledUiToken": false,
+        "multiplier": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "address": "6Zk9e3nfXdYLXHYu5NvDiPHGMcjujVBv6gWRr7ckSdhP",
+        "symbol": "TOPCAT",
+        "name": "TOPCAT",
+        "decimals": 9,
+        "source": "raydium",
+        "liquidityAddedAt": "2024-09-18T17:59:23",
+        "logoURI": null,
+        "liquidity": 15507.41635596545
+      },
+      {
+        "address": "DsWUsiseYxAHZXEvq5cVcymYaohk8Gpe8E4otsjFpump",
+        "symbol": "Onigiri",
+        "name": "Onigiri",
+        "decimals": 6,
+        "source": "raydium",
+        "liquidityAddedAt": "2024-09-18T17:57:14",
+        "logoURI": "https://ipfs.io/ipfs/QmfXbLtRVuTTkazYqQix4R8FYW4Xkj2ZEnWKhLpGugaLQr",
+        "liquidity": 32994.397007045525
+      }
+    ]
+  }
+}

@@ -124,12 +124,15 @@ If no fixed-value params exist, keep the file with just the import and a comment
 
 ### `schema.py`
 
-One Pydantic model per endpoint response + one per POST body.
+One Pydantic model per endpoint response + one per POST body (or query bag — see below).
 
 Naming:
 - Response: `{RequestType}{EndpointName}Response` (CamelCase, e.g. `GetPriceResponse`)
 - POST body: `Post{EndpointName}Body`
-- Sub-schemas: descriptive CamelCase names, no `Response`/`Body` suffix
+- GET query bag (when an endpoint has >3 query params): `Get{EndpointName}Query`
+- Sub-schemas: descriptive CamelCase names, no `Response`/`Body`/`Query` suffix
+
+If `schema.py` is going to grow large from day one (10+ endpoints with many sub-schemas, or several distinct API domains), start directly with a `schema/` sub-package as described in CLAUDE.md → "Scaling patterns for large interactions" rather than building a monolithic `schema.py` you'll have to split later.
 
 Rules:
 - All models inherit from `pydantic.BaseModel`
@@ -221,8 +224,12 @@ class {Name}(Interaction):
 **Key rules:**
 - Every endpoint = one private method `_{get|post|...}_{endpoint_name}` on the `Interaction` class
 - Always two `@overload` declarations before the real method
-- Use `self.api_return_model(sync, ...)` — never call `client.api()` directly inside `interaction.py`
-- If the endpoint has >3 inputs, define a `Body` Pydantic model in `schema.py` and accept it as a single param
+- Use `self.api_return_model(sync, ...)` for the dispatch — never call `client.api()` directly inside `interaction.py`, and do **not** write the manual `if sync: ... else: async def async_request(): ...` ladder. The helper takes `(sync, type, url, response_model, *args, **kwargs)` and forwards every keyword to `client.api()`, so `params=`, `json=`, `headers=` all work as expected:
+  ```python
+  return self.api_return_model(sync, RequestType.POST.value, url, FooResponse, json = body.model_dump(exclude_none = True), headers = headers)
+  ```
+- If the endpoint takes more than ~3 meaningful inputs, define a Pydantic model and accept it as a single argument: `Post{EndpointName}Body` for POST endpoints, `Get{EndpointName}Query` for GETs with many filters. Pass it via `json = body.model_dump(exclude_none = True)` (POST) or `params = query.model_dump(exclude_none = True)` (GET). `exclude_none = True` keeps unset filters out of the request.
+- **Consolidate single + multiple endpoint pairs.** When the API exposes a sibling pair like `.../single` and `.../multiple` whose only delta is input cardinality and response shape, expose them as one polymorphic cyhole method with `address: str | list[str]` (or equivalent). Four overloads — `(sync=True, str)`, `(sync=True, list[str])`, `(sync=False, str)`, `(sync=False, list[str])` — narrow the return type for callers. Routing inside the method picks the URL and response model based on `isinstance(address, str)`. Define distinct `…Response` and `…MultipleResponse` schemas (the payload shapes differ). This pattern works even when the two endpoints use different HTTP verbs (GET single + POST batch). See CLAUDE.md → "Scaling patterns for large interactions" for the full example.
 - Authentication: add API key to headers in `__init__` if required
 - **The functional description on the private method docstring is mandatory.** `cyhole` is a user-facing library and this docstring is what end-users see in the mkdocs site. Public client methods are intentionally thin wrappers; users land on the private method's docs via the cross-reference link. If the description is missing or just restates the name, the endpoint is not done.
 
@@ -264,6 +271,20 @@ class {Name}AsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`{Name}._{method_name}`][cyhole.{name}.interaction.{Name}._{method_name}].
         """
         return await self._interaction._{method_name}(False, ...)
+```
+
+**For consolidated single/multiple endpoints**, mirror the polymorphic overloads on both sync and async client wrappers so callers get a narrowed return type:
+
+```python
+@overload
+def get_v3_token_meta_data(self, address: str) -> GetV3TokenMetaDataResponse: ...
+
+@overload
+def get_v3_token_meta_data(self, address: list[str]) -> GetV3TokenMetaDataMultipleResponse: ...
+
+def get_v3_token_meta_data(self, address: str | list[str]) -> GetV3TokenMetaDataResponse | GetV3TokenMetaDataMultipleResponse:
+    """…thin wrapper…"""
+    return self._interaction._get_v3_token_meta_data(True, address)
 ```
 
 ### `__init__.py`
@@ -575,9 +596,11 @@ Before declaring the implementation complete, verify:
 
 - [ ] All 6 source files created in `src/cyhole/{name}/`
 - [ ] `__init__.py` exports only the main class
-- [ ] Every endpoint has `@overload` × 2 + implementation
-- [ ] `api_return_model` used (no raw `client.api()` in interaction.py)
-- [ ] POST endpoints with >3 params use a `Body` schema
+- [ ] Every endpoint has `@overload` × 2 + implementation (× 4 for consolidated single/multiple endpoints)
+- [ ] `api_return_model` used (no raw `client.api()` and no manual sync/async ladder in interaction.py)
+- [ ] Endpoints with >3 params use a `Post{Name}Body` (POST) or `Get{Name}Query` (GET) Pydantic model, serialised with `model_dump(exclude_none = True)`
+- [ ] Sibling `.../single` and `.../multiple` endpoints consolidated under one polymorphic method with `str | list[str]` argument; sync + async clients mirror the overloads for narrowed return types
+- [ ] If `schema.py` grows large or covers multiple domains, use a `schema/` sub-package per CLAUDE.md → "Scaling patterns for large interactions"
 - [ ] All Pydantic models have docstrings, and field-level docs use `Attributes:` (never `Parameters:`)
 - [ ] Every private endpoint method (`_{verb}_{name}`) has a true functional description (what the endpoint returns, why a user would call it), not just a name restatement
 - [ ] Every documented field on a response/body schema describes meaning, units, and `None` conditions
