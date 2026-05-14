@@ -427,6 +427,190 @@ class PostGetTokenAccountsBody(BaseModel):
     limit: int | None = None
 
 
+# ─── getTransfersByAddress schemas ─────────────────────────────────────────────
+
+class HeliusComparisonFilter(BaseModel):
+    """
+    Numeric range filter used by
+    [`PostGetTransfersByAddressFilters`][cyhole.helius.schema.PostGetTransfersByAddressFilters]
+    and [`PostGetTransactionsForAddressFilters`][cyhole.helius.schema.PostGetTransactionsForAddressFilters].
+
+    All operators are optional and can be combined freely; an omitted bound
+    means the value is unconstrained on that side.
+
+    Attributes:
+        gt: greater than this value (exclusive). `None` if no lower bound.
+        gte: greater than or equal to this value (inclusive). `None` if no lower bound.
+        lt: less than this value (exclusive). `None` if no upper bound.
+        lte: less than or equal to this value (inclusive). `None` if no upper bound.
+        eq: exact match. `None` when no equality match is required. Only honored by the
+            `blockTime` filter of the `getTransactionsForAddress` RPC endpoint.
+    """
+    gt: int | None = None
+    gte: int | None = None
+    lt: int | None = None
+    lte: int | None = None
+    eq: int | None = None
+
+
+class HeliusSignatureComparisonFilter(BaseModel):
+    """
+    Lexicographic range filter on a transaction signature, used by the `signature`
+    filter of [`PostGetTransactionsForAddressFilters`][cyhole.helius.schema.PostGetTransactionsForAddressFilters].
+
+    Values are base58-encoded signature strings; comparison is performed
+    lexicographically by the API.
+
+    Attributes:
+        gt: greater than this signature (exclusive). `None` if no lower bound.
+        gte: greater than or equal to this signature (inclusive). `None` if no lower bound.
+        lt: less than this signature (exclusive). `None` if no upper bound.
+        lte: less than or equal to this signature (inclusive). `None` if no upper bound.
+    """
+    gt: str | None = None
+    gte: str | None = None
+    lt: str | None = None
+    lte: str | None = None
+
+
+class PostGetTransfersByAddressFilters(BaseModel):
+    """
+    Optional numeric filters for the `getTransfersByAddress` RPC method.
+
+    Attributes:
+        amount: filter by raw transfer amount (not UI amount). `None` means no constraint on amount.
+        block_time: filter by block timestamp in Unix seconds. `None` means no time bound.
+        slot: filter by slot number. `None` means no slot bound.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    amount: HeliusComparisonFilter | None = None
+    block_time: HeliusComparisonFilter | None = Field(default = None, alias = "blockTime")
+    slot: HeliusComparisonFilter | None = None
+
+
+class PostGetTransfersByAddressBody(BaseModel):
+    """
+    Request body (the `config` object) for the `getTransfersByAddress` RPC method.
+
+    The owner `address` is passed as the first positional parameter of the JSON-RPC
+    call and is therefore handled separately by the
+    [`Helius._post_get_transfers_by_address`][cyhole.helius.interaction.Helius._post_get_transfers_by_address]
+    method; every field of this body model is optional.
+
+    Attributes:
+        with_address: counterparty address — return only transfers to or from this wallet.
+            `None` means no counterparty filter.
+        direction: transfer direction relative to the queried address. Accepts the
+            values of [`HeliusTransferDirection`][cyhole.helius.param.HeliusTransferDirection]
+            (`"in"`, `"out"`, `"any"`). API default: `"any"`.
+        mint: token mint address to filter by. Use `So11111111111111111111111111111111111111111`
+            for native SOL and `So11111111111111111111111111111111111111112` for WSOL.
+            `None` means no mint filter.
+        sol_mode: how native SOL and WSOL are represented. Accepts the values of
+            [`HeliusSolMode`][cyhole.helius.param.HeliusSolMode] (`"merged"`, `"separate"`).
+            API default: `"merged"` (WSOL is collapsed into native SOL, wrap/unwrap
+            lifecycle rows are excluded).
+        filters: optional numeric filters for amount, block time, and slot.
+        limit: maximum number of transfers returned per page (range `1`–`100`).
+            API default: `100`.
+        pagination_token: cursor from the previous response — pass the value
+            received in `result.pagination_token` to fetch the next page.
+        commitment: data commitment level. Accepts the values of
+            [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment] (`"finalized"`,
+            `"confirmed"`). API default: `"finalized"`.
+        sort_order: result ordering. Accepts the values of
+            [`HeliusSortOrder`][cyhole.helius.param.HeliusSortOrder] (`"desc"`, `"asc"`).
+            API default: `"desc"` (newest first).
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    with_address: str | None = Field(default = None, alias = "with")
+    direction: str | None = None
+    mint: str | None = None
+    sol_mode: str | None = Field(default = None, alias = "solMode")
+    filters: PostGetTransfersByAddressFilters | None = None
+    limit: int | None = None
+    pagination_token: str | None = Field(default = None, alias = "paginationToken")
+    commitment: str | None = None
+    sort_order: str | None = Field(default = None, alias = "sortOrder")
+
+
+class Transfer(BaseModel):
+    """
+    A single parsed transfer record returned by the `getTransfersByAddress` RPC method.
+
+    Attributes:
+        signature: transaction signature this transfer belongs to.
+        slot: slot at which the transaction landed.
+        block_time: block timestamp in Unix seconds.
+        type: transfer behavior — one of `"transfer"`, `"mint"`, `"burn"`, `"wrap"`,
+            `"unwrap"`, `"changeOwner"`, `"withdrawWithheldFee"`.
+            See the Helius docs for the exact semantics of each value.
+        from_user_account: sender wallet (owner) address. `None` for `mint`, `wrap`
+            and `withdrawWithheldFee` rows, where the row has no sender side.
+        to_user_account: recipient wallet (owner) address. `None` for `burn` and
+            certain `unwrap` rows, where the row has no recipient side.
+        from_token_account: source SPL token account address. `None` for native SOL
+            transfers or rows where a source token account is not meaningful.
+        to_token_account: destination SPL token account address. `None` for native SOL
+            transfers or rows where a destination token account is not meaningful.
+        mint: token mint address for the transfer. In `solMode: "merged"`, WSOL
+            transfers are rewritten to the native SOL mint.
+        amount: raw transfer amount as a string (token base units). For Token-2022
+            transfers with fees, this is the amount credited to the destination.
+        decimals: number of decimal places for the mint.
+        ui_amount: human-readable amount (already scaled by `decimals`), returned as a string.
+        fee_amount: raw Token-2022 withheld fee as a string. `None` when the transfer
+            is not a Token-2022 `TransferCheckedWithFee` (i.e. no fees applied).
+        fee_ui_amount: human-readable Token-2022 withheld fee, returned as a string.
+            `None` when no fee applies.
+        confirmation_status: commitment level at the time of the response —
+            `"finalized"` or `"confirmed"`.
+        transaction_idx: index of the transaction within its block.
+        instruction_idx: index of the originating top-level instruction within the transaction.
+        inner_instruction_idx: index of the inner instruction (CPI) within its parent
+            top-level instruction.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    signature: str
+    slot: int
+    block_time: int = Field(alias = "blockTime")
+    type: str
+    from_user_account: str | None = Field(default = None, alias = "fromUserAccount")
+    to_user_account: str | None = Field(default = None, alias = "toUserAccount")
+    from_token_account: str | None = Field(default = None, alias = "fromTokenAccount")
+    to_token_account: str | None = Field(default = None, alias = "toTokenAccount")
+    mint: str
+    amount: str
+    decimals: int
+    ui_amount: str = Field(alias = "uiAmount")
+    fee_amount: str | None = Field(default = None, alias = "feeAmount")
+    fee_ui_amount: str | None = Field(default = None, alias = "feeUiAmount")
+    confirmation_status: str = Field(alias = "confirmationStatus")
+    transaction_idx: int = Field(alias = "transactionIdx")
+    instruction_idx: int = Field(alias = "instructionIdx")
+    inner_instruction_idx: int = Field(alias = "innerInstructionIdx")
+
+
+class TransferList(BaseModel):
+    """
+    Paginated list of parsed transfer rows returned inside the
+    `getTransfersByAddress` JSON-RPC result.
+
+    Attributes:
+        data: list of transfer rows for the current page, ordered as requested by
+            `sort_order`.
+        pagination_token: cursor to retrieve the next page, or `None` when no
+            further pages remain.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    data: list[Transfer]
+    pagination_token: str | None = Field(default = None, alias = "paginationToken")
+
+
 # ─── Response schemas (JSON-RPC 2.0 wrapper) ────────────────────────────────────
 
 class PostGetAssetResponse(BaseModel):
@@ -511,3 +695,157 @@ class PostGetTokenAccountsResponse(BaseModel):
     jsonrpc: str
     id: str | int
     result: TokenAccountList
+
+
+class PostGetTransfersByAddressResponse(BaseModel):
+    """JSON-RPC 2.0 response for the `getTransfersByAddress` RPC method."""
+    jsonrpc: str
+    id: str | int
+    result: TransferList
+
+
+# ─── getTransactionsForAddress schemas ─────────────────────────────────────────
+
+class PostGetTransactionsForAddressFilters(BaseModel):
+    """
+    Optional filters for the `getTransactionsForAddress` RPC method.
+
+    Attributes:
+        slot: filter by slot number using numeric comparison operators. `None` if not used.
+        block_time: filter by block timestamp in Unix seconds. `None` if not used.
+            This filter additionally accepts the `eq` operator on
+            [`HeliusComparisonFilter`][cyhole.helius.schema.HeliusComparisonFilter] for exact matches.
+        signature: filter by transaction signature with lexicographic comparison. `None` if not used.
+        status: filter by transaction success/failure. Accepts the values of
+            [`HeliusTransactionStatus`][cyhole.helius.param.HeliusTransactionStatus]
+            (`"succeeded"`, `"failed"`, `"any"`). `None` means no status filter (defaults to `"any"`).
+        token_accounts: include transactions for token accounts owned by the
+            queried address. Accepts the values of
+            [`HeliusTokenAccountFilter`][cyhole.helius.param.HeliusTokenAccountFilter]
+            (`"none"`, `"balanceChanged"`, `"all"`). API default: `"none"`.
+            Not supported for transactions older than December 2022.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    slot: HeliusComparisonFilter | None = None
+    block_time: HeliusComparisonFilter | None = Field(default = None, alias = "blockTime")
+    signature: HeliusSignatureComparisonFilter | None = None
+    status: str | None = None
+    token_accounts: str | None = Field(default = None, alias = "tokenAccounts")
+
+
+class PostGetTransactionsForAddressBody(BaseModel):
+    """
+    Request body (the `config` object) for the `getTransactionsForAddress` RPC method.
+
+    The queried `address` is passed as the first positional parameter of the JSON-RPC
+    call and is therefore handled separately by the
+    [`Helius._post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address]
+    method; every field of this body model is optional.
+
+    Attributes:
+        transaction_details: level of detail returned for each transaction. Accepts the
+            values of [`HeliusTransactionDetails`][cyhole.helius.param.HeliusTransactionDetails]
+            (`"signatures"`, `"full"`). API default: `"signatures"`. Use `"full"` to obtain
+            the complete transaction payload in a single call (`limit` must be `<= 100`).
+        sort_order: result ordering. Accepts the values of
+            [`HeliusSortOrder`][cyhole.helius.param.HeliusSortOrder] (`"desc"`, `"asc"`).
+            API default: `"desc"` (newest first).
+        limit: maximum number of transactions returned. Up to `1000` in `"signatures"`
+            mode and up to `100` in `"full"` mode. API default: `1000`.
+        pagination_token: cursor from the previous response — pass the value received
+            in `result.pagination_token` (format `"slot:position"`) to fetch the next page.
+        commitment: data commitment level. Accepts the values of
+            [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment] (`"finalized"`,
+            `"confirmed"`). API default: `"finalized"` (`"processed"` is **not** supported).
+        filters: advanced filters — see
+            [`PostGetTransactionsForAddressFilters`][cyhole.helius.schema.PostGetTransactionsForAddressFilters].
+        encoding: encoding format for the transaction payload — only meaningful when
+            `transaction_details = "full"`. Accepts the values of
+            [`HeliusEncoding`][cyhole.helius.param.HeliusEncoding]
+            (`"json"`, `"jsonParsed"`, `"base64"`, `"base58"`).
+        max_supported_transaction_version: maximum transaction version to return.
+            When `None`, the API only returns legacy transactions; set to `0` to include
+            all versioned transactions.
+        min_context_slot: minimum slot at which the request may be evaluated.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    transaction_details: str | None = Field(default = None, alias = "transactionDetails")
+    sort_order: str | None = Field(default = None, alias = "sortOrder")
+    limit: int | None = None
+    pagination_token: str | None = Field(default = None, alias = "paginationToken")
+    commitment: str | None = None
+    filters: PostGetTransactionsForAddressFilters | None = None
+    encoding: str | None = None
+    max_supported_transaction_version: int | None = Field(default = None, alias = "maxSupportedTransactionVersion")
+    min_context_slot: int | None = Field(default = None, alias = "minContextSlot")
+
+
+class TransactionForAddressItem(BaseModel):
+    """
+    A single transaction record returned by `getTransactionsForAddress`.
+
+    Fields populated depend on the `transaction_details` mode requested:
+
+    * `"signatures"` mode (API default) populates `signature`, `err`, `memo`, and `confirmation_status`.
+    * `"full"` mode populates `transaction` and `meta` instead.
+
+    Fields outside the active mode are `None`.
+
+    Attributes:
+        slot: slot containing the block with this transaction. Always present.
+        transaction_index: zero-based index of the transaction within its block.
+            Always present; unique to `getTransactionsForAddress` (not exposed by
+            `getSignaturesForAddress` / `getTransaction`).
+        block_time: estimated production time as a Unix timestamp (seconds).
+            `None` when the block time cannot be determined.
+        signature: base58-encoded transaction signature. Populated only in `"signatures"` mode.
+        err: transaction error object, or `None` if the transaction succeeded.
+            Populated only in `"signatures"` mode.
+        memo: memo attached to the transaction, or `None` if no memo. Populated only
+            in `"signatures"` mode.
+        confirmation_status: cluster confirmation status (`"finalized"`, `"confirmed"`).
+            Populated only in `"signatures"` mode.
+        transaction: full transaction payload (message, signatures, instructions) in the
+            shape returned by Solana's `getTransaction` RPC method. Populated only in
+            `"full"` mode. Encoding follows the body's `encoding` parameter.
+        meta: transaction metadata (fee, pre/post balances, inner instructions, log
+            messages, etc.) in the shape returned by Solana's `getTransaction` RPC
+            method. Populated only in `"full"` mode.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    slot: int
+    transaction_index: int = Field(alias = "transactionIndex")
+    block_time: int | None = Field(default = None, alias = "blockTime")
+    signature: str | None = None
+    err: dict | None = None
+    memo: str | None = None
+    confirmation_status: str | None = Field(default = None, alias = "confirmationStatus")
+    transaction: dict | None = None
+    meta: dict | None = None
+
+
+class TransactionForAddressList(BaseModel):
+    """
+    Paginated list of transactions returned inside the `getTransactionsForAddress`
+    JSON-RPC result.
+
+    Attributes:
+        data: list of transaction items for the current page, ordered as requested
+            by `sort_order`.
+        pagination_token: cursor (format `"slot:position"`) to retrieve the next page,
+            or `None` when no further pages remain.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    data: list[TransactionForAddressItem]
+    pagination_token: str | None = Field(default = None, alias = "paginationToken")
+
+
+class PostGetTransactionsForAddressResponse(BaseModel):
+    """JSON-RPC 2.0 response for the `getTransactionsForAddress` RPC method."""
+    jsonrpc: str
+    id: str | int
+    result: TransactionForAddressList

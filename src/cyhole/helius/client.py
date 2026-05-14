@@ -11,6 +11,8 @@ from ..helius.schema import (
     PostGetAssetsByAuthorityBody,
     PostSearchAssetsBody,
     PostGetTokenAccountsBody,
+    PostGetTransfersByAddressBody,
+    PostGetTransactionsForAddressBody,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -23,6 +25,8 @@ from ..helius.schema import (
     PostGetSignaturesForAssetResponse,
     PostGetNftEditionsResponse,
     PostGetTokenAccountsResponse,
+    PostGetTransfersByAddressResponse,
+    PostGetTransactionsForAddressResponse,
 )
 
 if TYPE_CHECKING:
@@ -120,6 +124,20 @@ class HeliusClient(APIClient):
         """
         return self._interaction._post_get_token_accounts(True, body)
 
+    def post_get_transfers_by_address(self, address: str, body: PostGetTransfersByAddressBody | None = None) -> PostGetTransfersByAddressResponse:
+        """
+        Call the Helius POST **[getTransfersByAddress](https://www.helius.dev/docs/rpc/gettransfersbyaddress)** RPC API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transfers_by_address`][cyhole.helius.interaction.Helius._post_get_transfers_by_address].
+        """
+        return self._interaction._post_get_transfers_by_address(True, address, body)
+
+    def post_get_transactions_for_address(self, address: str, body: PostGetTransactionsForAddressBody | None = None) -> PostGetTransactionsForAddressResponse:
+        """
+        Call the Helius POST **[getTransactionsForAddress](https://www.helius.dev/docs/rpc/gettransactionsforaddress)** RPC API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address].
+        """
+        return self._interaction._post_get_transactions_for_address(True, address, body)
+
 
 class HeliusAsyncClient(AsyncAPIClient):
     """Client for asynchronous API calls for `Helius` interaction."""
@@ -211,3 +229,17 @@ class HeliusAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Helius._post_get_token_accounts`][cyhole.helius.interaction.Helius._post_get_token_accounts].
         """
         return await self._interaction._post_get_token_accounts(False, body)
+
+    async def post_get_transfers_by_address(self, address: str, body: PostGetTransfersByAddressBody | None = None) -> PostGetTransfersByAddressResponse:
+        """
+        Call the Helius POST **[getTransfersByAddress](https://www.helius.dev/docs/rpc/gettransfersbyaddress)** RPC API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transfers_by_address`][cyhole.helius.interaction.Helius._post_get_transfers_by_address].
+        """
+        return await self._interaction._post_get_transfers_by_address(False, address, body)
+
+    async def post_get_transactions_for_address(self, address: str, body: PostGetTransactionsForAddressBody | None = None) -> PostGetTransactionsForAddressResponse:
+        """
+        Call the Helius POST **[getTransactionsForAddress](https://www.helius.dev/docs/rpc/gettransactionsforaddress)** RPC API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address].
+        """
+        return await self._interaction._post_get_transactions_for_address(False, address, body)
