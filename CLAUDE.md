@@ -5,11 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```sh
-# Install library dependencies
-pip install -r src/requirements.txt
+# Install for development (runtime + test + docs deps)
+pip install -e ".[dev]"
 
-# Install test dependencies
-pip install -r tests/requirements.txt
+# Install with test dependencies only
+pip install -e ".[test]"
+
+# Install with docs dependencies only
+pip install -e ".[docs]"
 
 # Run all tests
 pytest tests/

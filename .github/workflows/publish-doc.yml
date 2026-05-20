@@ -4,6 +4,7 @@ on:
   release:
     types: [created]
   push:
+    branches: [main]
     paths:
       - 'docs/**'
       - README.md
@@ -15,7 +16,7 @@ permissions:
 jobs:
   deploy:
     name: deploy a new version of cyhole library documentation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,18 +36,21 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('docs/requirements.txt') }}-doc
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-doc
 
       # install dependencies
       - name: install pip and dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip
-          pip install -r docs/requirements.txt
+          pip install -e ".[docs]"
 
       # setup git bot credentials
       - run: git config user.name github-actions[bot]
       - run: git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - name: verify documentation builds cleanly
+        run: mkdocs build --strict
 
       - name: deploy documentation
         run: mkdocs gh-deploy --force

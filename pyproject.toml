@@ -1,18 +1,20 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "cyhole"
-version = "{{PROJECT_VERSION}}"
+dynamic = ["version"]
 description = "cyhole, designed to help python's developers to interact to the most popular external API services in crypto and create automation processes."
 readme = "README.md"
 requires-python = ">=3.12"
+license = {text = "MIT"}
+keywords = ["crypto", "blockchain", "solana", "bitcoin", "api", "web3", "defi"]
 authors = [
-    { name = "Andrea Zanini", email= "" },
+    { name = "Andrea Zanini", email = "andrea.zanini@andromedalabs.io" },
 ]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Environment :: Web Environment",
@@ -30,10 +32,32 @@ dependencies = [
     "aiohttp>=3.9.5"
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=8.2.0",
+    "pytest-mock>=3.14.0",
+    "pytest-asyncio>=0.23.7",
+    "coverage>=7.5.3",
+    "ruff>=0.4.6"
+]
+docs = [
+    "mkdocs-material>=9.5.21",
+    "mkdocstrings-python>=1.10.0",
+    "black>=24.4.2"
+]
+dev = [
+    "cyhole[test,docs]"
+]
+
 [project.urls]
 Homepage = "https://github.com/zazza123/cyhole"
 Repository = "https://github.com/zazza123/cyhole"
 Documentation = "https://zazza123.github.io/cyhole"
+Changelog = "https://github.com/zazza123/cyhole/releases"
+
+[tool.hatch.version]
+source = "vcs"
+fallback-version = "0.0.0"
 
 [tool.pytest.ini_options]
 addopts = [

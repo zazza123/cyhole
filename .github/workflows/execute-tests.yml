@@ -17,7 +17,7 @@ on:
 jobs:
   lint:
     name: execute the lint on cyhole code and tests code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -33,14 +33,14 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt') }}-lint
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-lint
 
       # install dependencies
       - name: install pip and dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip
-          pip install -r tests/requirements.txt
+          pip install -e ".[test]"
 
       # execute lint
       - name: execute lint
@@ -48,7 +48,7 @@ jobs:
 
   test:
     name: execute the tests on the library code
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         python-version:
@@ -59,10 +59,6 @@ jobs:
       # setup test configuration
       - name: rename file
         run: mv tests/test.default.ini tests/test.ini
-
-      # update library version to install it locally
-      - name: update version in pyproject.toml
-        run: sed -i "s/{{PROJECT_VERSION}}/0.0.1/g" pyproject.toml
 
       # setup environment
       - name: setup python
@@ -76,24 +72,22 @@ jobs:
         id: cache
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('tests/requirements.txt', 'src/requirements.txt', 'pyproject.toml') }}-test
+          key: ${{ runner.os }}-py-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-test
 
       # install dependencies
       - name: install pip and dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           pip install --upgrade pip
-          pip install -r tests/requirements.txt
-          pip install -r src/requirements.txt
-          pip install -e .
+          pip install -e ".[test]"
 
       # execute tests
       - name: execute pytest coverage
-        run: coverage run -m pytest -v -s tests
+        run: coverage run -m pytest -v tests
         env:
           CONTEXT: ${{ runner.os }}-py${{ matrix.python-version }}
       - name: generate coverage report
-        run: coverage report -m
+        run: coverage report -m --fail-under=95
 
       # generate/upload coverage HTML
       - name: generate coverage html
