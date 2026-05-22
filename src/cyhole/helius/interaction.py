@@ -14,6 +14,7 @@ from ..helius.schema import (
     PostGetTokenAccountsBody,
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
+    GetTransactionsByAddressQuery,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -28,6 +29,7 @@ from ..helius.schema import (
     PostGetTokenAccountsResponse,
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
+    GetTransactionsByAddressResponse,
 )
 
 
@@ -77,7 +79,9 @@ class Helius(Interaction):
         headers: Any | None = None,
     ) -> None:
         super().__init__(headers)
+        self._api_key = api_key
         self.url_api = f"https://{network.value}.helius-rpc.com/?api-key={api_key}"
+        self.url_api_enhanced = f"https://api-{network.value}.helius-rpc.com"
         self.client = HeliusClient(self)
         self.async_client = HeliusAsyncClient(self)
 
@@ -544,3 +548,48 @@ class Helius(Interaction):
             params.append(body.model_dump(by_alias = True, exclude_none = True))
         rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransactionsForAddress", "params": params}
         return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTransactionsForAddressResponse, json = rpc_body)
+
+    # ─── getTransactionsByAddress ─────────────────────────────────────────────
+
+    @overload
+    def _get_transactions_by_address(self, sync: Literal[True], address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse: ...
+    @overload
+    def _get_transactions_by_address(self, sync: Literal[False], address: str, query: GetTransactionsByAddressQuery | None = None) -> Coroutine[None, None, GetTransactionsByAddressResponse]: ...
+    def _get_transactions_by_address(self, sync: bool, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse | Coroutine[None, None, GetTransactionsByAddressResponse]:
+        """
+        This function refers to the **getTransactionsByAddress** Enhanced Transactions API endpoint.
+
+        Returns a list of fully decoded, human-readable enhanced transactions for a given
+        Solana address. Unlike the JSON-RPC `getTransactionsForAddress`, this REST endpoint
+        provides pre-parsed `description`, `type`, `source`, native/token transfer arrays,
+        account-data balance deltas, instruction-level detail, and structured event objects
+        for swaps, NFT operations, and compressed-NFT actions — all in a single call
+        without additional parsing.
+
+        Results are ordered newest-first by default and capped at 100 per page.
+        Paginate backwards with `before_signature` or forwards with `after_signature`.
+        Filter by time, slot, transaction type, or source program using the `query` object.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            address: base58-encoded Solana account address to query (wallet, program,
+                mint, or token account).
+            query: optional query-parameter object — see
+                [`GetTransactionsByAddressQuery`][cyhole.helius.schema.GetTransactionsByAddressQuery].
+                All fields are optional. Omit entirely to fetch the most recent
+                transactions with API defaults.
+
+        Returns:
+            GetTransactionsByAddressResponse: list of enhanced transactions accessible
+                via `.root`. Each [`EnhancedTransaction`][cyhole.helius.schema.EnhancedTransaction]
+                exposes a human-readable `description`, `type`, `source`, transfer arrays,
+                account-data deltas, instructions, and event details.
+
+        Raises:
+            HeliusException: if the API returns an error status.
+        """
+        url = f"{self.url_api_enhanced}/v0/addresses/{address}/transactions"
+        params: dict = {"api-key": self._api_key}
+        if query is not None:
+            params.update(query.model_dump(by_alias = True, exclude_none = True))
+        return self.api_return_model(sync, RequestType.GET.value, url, GetTransactionsByAddressResponse, params = params)

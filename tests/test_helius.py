@@ -12,6 +12,7 @@ from cyhole.helius.schema import (
     PostGetTokenAccountsBody,
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
+    GetTransactionsByAddressQuery,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -26,6 +27,7 @@ from cyhole.helius.schema import (
     PostGetTokenAccountsResponse,
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
+    GetTransactionsByAddressResponse,
 )
 from .config import load_config, MockerManager
 
@@ -586,3 +588,41 @@ class TestHelius:
             response = await client.post_get_transactions_for_address(TEST_TRANSFER_ADDRESS, body)
         assert isinstance(response, PostGetTransactionsForAddressResponse)
         assert len(response.result.data) > 0
+
+    # ─── getTransactionsByAddress ─────────────────────────────────────────────
+
+    def test_get_transactions_by_address_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransactionsByAddress" — synchronous logic.
+
+        Mock Response File: getTransactionsByAddress_default.json
+        """
+        mock_file_name = "getTransactionsByAddress_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTransactionsByAddressResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.helius.client.get_transactions_by_address(TEST_TRANSFER_ADDRESS)
+        assert isinstance(response, GetTransactionsByAddressResponse)
+        assert len(response.root) > 0
+
+        if config.mock_file_overwrite and not config.helius.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_transactions_by_address_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransactionsByAddress" — asynchronous logic.
+
+        Mock Response File: getTransactionsByAddress_default.json
+        """
+        mock_file_name = "getTransactionsByAddress_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetTransactionsByAddressResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        query = GetTransactionsByAddressQuery(limit = 10)
+        async with self.helius.async_client as client:
+            response = await client.get_transactions_by_address(TEST_TRANSFER_ADDRESS, query)
+        assert isinstance(response, GetTransactionsByAddressResponse)
+        assert len(response.root) > 0

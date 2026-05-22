@@ -13,6 +13,7 @@ from ..helius.schema import (
     PostGetTokenAccountsBody,
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
+    GetTransactionsByAddressQuery,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -27,6 +28,7 @@ from ..helius.schema import (
     PostGetTokenAccountsResponse,
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
+    GetTransactionsByAddressResponse,
 )
 
 if TYPE_CHECKING:
@@ -138,6 +140,13 @@ class HeliusClient(APIClient):
         """
         return self._interaction._post_get_transactions_for_address(True, address, body)
 
+    def get_transactions_by_address(self, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse:
+        """
+        Call the Helius GET **[getTransactionsByAddress](https://www.helius.dev/docs/api-reference/enhanced-transactions/gettransactionsbyaddress)** Enhanced Transactions API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._get_transactions_by_address`][cyhole.helius.interaction.Helius._get_transactions_by_address].
+        """
+        return self._interaction._get_transactions_by_address(True, address, query)
+
 
 class HeliusAsyncClient(AsyncAPIClient):
     """Client for asynchronous API calls for `Helius` interaction."""
@@ -243,3 +252,10 @@ class HeliusAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Helius._post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address].
         """
         return await self._interaction._post_get_transactions_for_address(False, address, body)
+
+    async def get_transactions_by_address(self, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse:
+        """
+        Call the Helius GET **[getTransactionsByAddress](https://www.helius.dev/docs/api-reference/enhanced-transactions/gettransactionsbyaddress)** Enhanced Transactions API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._get_transactions_by_address`][cyhole.helius.interaction.Helius._get_transactions_by_address].
+        """
+        return await self._interaction._get_transactions_by_address(False, address, query)
