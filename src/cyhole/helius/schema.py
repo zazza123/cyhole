@@ -1279,7 +1279,7 @@ class EnhancedTransactionEvents(BaseModel):
     distribute_compression_rewards: dict | None = Field(
         default = None, alias = "distributeCompressionRewards"
     )
-    set_authority: dict | None = Field(default = None, alias = "setAuthority")
+    set_authority: list[dict] | dict | None = Field(default = None, alias = "setAuthority")
 
 
 class EnhancedTransaction(BaseModel):
