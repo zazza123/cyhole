@@ -163,6 +163,57 @@ async def test_async_client_api_post() -> None:
         assert response.status_code == 200
         assert response.content.decode() is not None
 
+def test_async_client_clean_params_drops_none_and_coerces_bool() -> None:
+    """
+        Unit Test for `AsyncAPIClient._clean_params`.
+
+        `aiohttp`'s URL builder rejects raw `bool` query values with
+        "Invalid variable type: value should be str, int or float, got True
+        of type <class 'bool'>". The cleaner must coerce booleans to the
+        lowercase `"true"` / `"false"` strings that REST servers expect, and
+        must keep dropping `None`-valued keys.
+    """
+    interaction = Interaction()
+    async_client = AsyncAPIClient(interaction)
+
+    cleaned = async_client._clean_params({
+        "drop_me": None,
+        "keep_me": "ok",
+        "keep_int": 42,
+        "keep_float": 1.5,
+        "flag_true": True,
+        "flag_false": False,
+    })
+
+    assert "drop_me" not in cleaned
+    assert cleaned["keep_me"] == "ok"
+    assert cleaned["keep_int"] == 42
+    assert cleaned["keep_float"] == 1.5
+    assert cleaned["flag_true"] == "true"
+    assert cleaned["flag_false"] == "false"
+
+
+@pytest.mark.asyncio
+async def test_async_client_api_get_with_bool_param() -> None:
+    """
+        Integration Test: `AsyncAPIClient.api` with a `bool` query param
+        no longer raises in `aiohttp`'s URL builder and reaches the server
+        as a lowercase string.
+    """
+    interaction = Interaction()
+    params = {
+        "name": "cyhole",
+        "verbose": True,
+    }
+    async with AsyncAPIClient(interaction) as client:
+        response = await client.api(type = RequestType.GET.value, url = URL_TEST_GET, params = params)
+    assert response.status_code == 200
+    # httpbin echoes the query string back; the bool came through as "true".
+    body = response.json()
+    assert body["args"]["verbose"] == "true"
+    assert body["args"]["name"] == "cyhole"
+
+
 def test_param_unknown() -> None:
     """
         Unit Test for `ParamUnknownError` exception.
