@@ -1,0 +1,3 @@
+# Exceptions
+
+::: cyhole.gecko.exception

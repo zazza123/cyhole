@@ -1,0 +1,17 @@
+{
+    "data": {
+        "id": "3eefe14d-b1c8-4728-b2a6-dbe8fd3ce915",
+        "type": "simple_token_price",
+        "attributes": {
+            "token_prices": {
+                "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": "1.00012067056216",
+                "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2": "2116.86810594866"
+            },
+            "market_cap_usd": null,
+            "h24_volume_usd": null,
+            "h24_price_change_percentage": null,
+            "total_reserve_in_usd": null,
+            "last_trade_timestamp": null
+        }
+    }
+}

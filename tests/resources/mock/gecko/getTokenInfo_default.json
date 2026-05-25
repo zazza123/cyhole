@@ -1,0 +1,52 @@
+{
+    "data": {
+        "id": "eth_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "type": "token",
+        "attributes": {
+            "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "name": "Wrapped Ether",
+            "symbol": "WETH",
+            "decimals": 18,
+            "image_url": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332",
+            "image": {
+                "thumb": "https://coin-images.coingecko.com/coins/images/2518/thumb/weth.png?1696503332",
+                "small": "https://coin-images.coingecko.com/coins/images/2518/small/weth.png?1696503332",
+                "large": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332"
+            },
+            "coingecko_coin_id": "weth",
+            "websites": [
+                "https://ethereum.org/en/wrapped-eth"
+            ],
+            "discord_url": null,
+            "farcaster_url": null,
+            "zora_url": null,
+            "telegram_handle": null,
+            "twitter_handle": null,
+            "description": "What is WETH (Wrapped ETH)?\nWETH is the tokenized/packaged form of ETH that you use to pay for items when you interact with Ethereum dApps. WETH follows the ERC-20 token standards, enabling it to achieve interoperability with other ERC-20 tokens.&nbsp;\n\nThis offers more utility to holders as they can use it across networks and dApps. You can stake, yield farm, lend, and provide liquidity to various liquidity pools with WETH.&nbsp;\n\nAlso, unlike ETH, which doesn’t conform to its own ERC-20 standard and thus has lower interoperability as it can’t be used on other chains besides Ethereum, WETH can be used on cheaper and high throughput alternatives like Binance, Polygon, Solana, and Cardano.\n\nThe price of WETH will always be the same as ETH because it maintains a 1:1 wrapping ratio.\n\nHow to Wrap ETH?\nCustodians wrap and unwrap ETH. To wrap ETH, you send ETH to a custodian. This can be a multi-sig wallet, a Decentralized Autonomous Organization (DAO), or a smart contract. After connecting your web3 wallet to a DeFi exchange, you enter the amount of ETH you wish to wrap and click the swap function. Once the transaction is confirmed, you will receive WETH tokens equivalent to the ETH that you’ve swapped.\n\nOn a centralized exchange, the exchange burns the deposited ETH and mints a wrapped form for you. And when you want to unwrap it, the exchange will burn the wrapped version and mint the ETH on your behalf.\n\nWhat’s Next for WETH?\nAccording to the developers, hopefully there will be no future for WETH. According to the website, steps are being taken to update ETH to make it compliant with its own ERC-20 standards.&nbsp;",
+            "gt_score": 92.66055045871559,
+            "gt_score_details": {
+                "pool": 87.5,
+                "transaction": 100.0,
+                "creation": 100.0,
+                "info": 100.0,
+                "holders": 100.0
+            },
+            "gt_verified": true,
+            "categories": [],
+            "gt_category_ids": [],
+            "holders": {
+                "count": 3591665,
+                "distribution_percentage": {
+                    "top_10": "58.0652",
+                    "11_30": "11.7225",
+                    "31_50": "4.5705",
+                    "rest": "25.6418"
+                },
+                "last_updated": "2026-05-25T12:20:22Z"
+            },
+            "mint_authority": null,
+            "freeze_authority": null,
+            "is_honeypot": false
+        }
+    }
+}

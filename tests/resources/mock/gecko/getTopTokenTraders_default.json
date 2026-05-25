@@ -1,0 +1,46 @@
+{
+    "data": {
+        "id": "weth-top-traders",
+        "type": "top_token_traders",
+        "attributes": {
+            "traders": [
+                {
+                    "address": "0x111111111111111111111111111111111111aBcD",
+                    "name": null,
+                    "label": "Smart Money",
+                    "type": "wallet",
+                    "realized_pnl_usd": "1234567.89",
+                    "unrealized_pnl_usd": "234567.89",
+                    "token_balance": "100.000000000000000000",
+                    "average_buy_price_usd": "1800.40",
+                    "average_sell_price_usd": "2410.78",
+                    "total_buy_count": 42,
+                    "total_sell_count": 31,
+                    "total_buy_token_amount": "320.000000000000000000",
+                    "total_sell_token_amount": "220.000000000000000000",
+                    "total_buy_usd": "576128.00",
+                    "total_sell_usd": "530371.60",
+                    "explorer_url": "https://etherscan.io/address/0x111111111111111111111111111111111111aBcD"
+                },
+                {
+                    "address": "0x222222222222222222222222222222222222EFab",
+                    "name": "Whale-002",
+                    "label": null,
+                    "type": "wallet",
+                    "realized_pnl_usd": "987654.32",
+                    "unrealized_pnl_usd": null,
+                    "token_balance": null,
+                    "average_buy_price_usd": "1620.10",
+                    "average_sell_price_usd": "2105.55",
+                    "total_buy_count": 18,
+                    "total_sell_count": 18,
+                    "total_buy_token_amount": "150.000000000000000000",
+                    "total_sell_token_amount": "150.000000000000000000",
+                    "total_buy_usd": "243015.00",
+                    "total_sell_usd": "315832.50",
+                    "explorer_url": "https://etherscan.io/address/0x222222222222222222222222222222222222EFab"
+                }
+            ]
+        }
+    }
+}

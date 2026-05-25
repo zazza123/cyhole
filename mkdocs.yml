@@ -97,6 +97,13 @@ nav:
       - Parameters: interactions/helius/param.md
       - Schema: interactions/helius/schema.md
       - Exceptions: interactions/helius/exception.md
+    - Gecko:
+      - interactions/gecko/index.md
+      - Interaction: interactions/gecko/interaction.md
+      - Client: interactions/gecko/client.md
+      - Parameters: interactions/gecko/param.md
+      - Schema: interactions/gecko/schema.md
+      - Exceptions: interactions/gecko/exception.md
     - DexScreener:
       - interactions/dex_screener/index.md
       - Interaction: interactions/dex_screener/interaction.md
