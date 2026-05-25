@@ -36,7 +36,7 @@ Tests require `tests/test.ini` (not committed). Copy `tests/test.default.ini` an
 
 ## Architecture
 
-**cyhole** wraps crypto APIs (Birdeye, Jupiter, SolanaFM, Solscan) as *Interactions*. Each Interaction exposes both sync and async clients.
+**cyhole** wraps crypto APIs (Birdeye, Jupiter, Solscan) as *Interactions*. Each Interaction exposes both sync and async clients.
 
 ### Core layer (`src/cyhole/core/`)
 

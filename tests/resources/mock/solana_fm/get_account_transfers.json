@@ -1,9 +1,0 @@
-{
-    "status": "success",
-    "message": "Retrieved transfers for 0 transactions",
-    "results": [],
-    "pagination": {
-        "currentPage": 1,
-        "totalPages": 1
-    }
-}
