@@ -1,0 +1,62 @@
+{
+    "data": [
+        {
+            "id": "eth_0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "type": "token",
+            "attributes": {
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "image_url": "https://assets.coingecko.com/coins/images/6319/usdc.png",
+                "coingecko_coin_id": "usd-coin",
+                "websites": ["https://www.circle.com/en/usdc"],
+                "discord_url": null,
+                "farcaster_url": null,
+                "zora_url": null,
+                "telegram_handle": null,
+                "twitter_handle": "circle",
+                "description": "USD Coin is a fully collateralised US dollar stablecoin.",
+                "gt_score": 92.5,
+                "metadata_updated_at": "2026-05-25T11:55:00Z"
+            },
+            "relationships": {
+                "network": {
+                    "data": {
+                        "id": "eth",
+                        "type": "network"
+                    }
+                }
+            }
+        },
+        {
+            "id": "eth_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "type": "token",
+            "attributes": {
+                "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "name": "Wrapped Ether",
+                "symbol": "WETH",
+                "decimals": 18,
+                "image_url": "https://assets.coingecko.com/coins/images/2518/weth.png",
+                "coingecko_coin_id": "weth",
+                "websites": ["https://weth.io"],
+                "discord_url": null,
+                "farcaster_url": null,
+                "zora_url": null,
+                "telegram_handle": null,
+                "twitter_handle": null,
+                "description": "Wrapped Ether is an ERC-20-compliant version of Ether.",
+                "gt_score": 95.0,
+                "metadata_updated_at": "2026-05-25T11:42:00Z"
+            },
+            "relationships": {
+                "network": {
+                    "data": {
+                        "id": "eth",
+                        "type": "network"
+                    }
+                }
+            }
+        }
+    ]
+}

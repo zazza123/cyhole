@@ -1,0 +1,43 @@
+{
+    "data": {
+        "id": "weth-top-holders",
+        "type": "top_token_holders",
+        "attributes": {
+            "last_updated_at": "2026-05-25T12:00:00Z",
+            "holders": [
+                {
+                    "rank": 1,
+                    "address": "0x2fEb1512183545f48f6b9C5b4EbfCaF49CfCa6F3",
+                    "label": "Wrapped Ether Vault",
+                    "amount": "1234567.890000000000000000",
+                    "percentage": "12.45",
+                    "value": "3125000000.00",
+                    "average_buy_price_usd": "1820.50",
+                    "total_buy_count": 542,
+                    "total_sell_count": 123,
+                    "unrealized_pnl_usd": "877654321.00",
+                    "unrealized_pnl_percentage": "39.04",
+                    "realized_pnl_usd": "12345678.00",
+                    "realized_pnl_percentage": "5.50",
+                    "explorer_url": "https://etherscan.io/address/0x2fEb1512183545f48f6b9C5b4EbfCaF49CfCa6F3"
+                },
+                {
+                    "rank": 2,
+                    "address": "0xBe8E3e3618f7474F8cB1d074A26afFef007E98FB",
+                    "label": null,
+                    "amount": "987654.321000000000000000",
+                    "percentage": "9.96",
+                    "value": "2500000000.00",
+                    "average_buy_price_usd": "1950.10",
+                    "total_buy_count": 321,
+                    "total_sell_count": 87,
+                    "unrealized_pnl_usd": "565432100.00",
+                    "unrealized_pnl_percentage": "29.18",
+                    "realized_pnl_usd": "8765432.00",
+                    "realized_pnl_percentage": "4.50",
+                    "explorer_url": "https://etherscan.io/address/0xBe8E3e3618f7474F8cB1d074A26afFef007E98FB"
+                }
+            ]
+        }
+    }
+}

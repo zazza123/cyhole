@@ -1,0 +1,71 @@
+{
+    "data": [
+        {
+            "id": "eth_0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "type": "token",
+            "attributes": {
+                "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "name": "Wrapped Ether",
+                "symbol": "WETH",
+                "decimals": 18,
+                "image_url": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332",
+                "coingecko_coin_id": "weth",
+                "total_supply": "2261738375838517920965593.0",
+                "normalized_total_supply": "2261738.37583852",
+                "price_usd": "2116.8684142886",
+                "fdv_usd": "4784909446.30437",
+                "total_reserve_in_usd": "1023142859.3793833634999687898298871038",
+                "volume_usd": {
+                    "h24": "268192404.299471"
+                },
+                "market_cap_usd": "4787815537.42098",
+                "last_trade_timestamp": null,
+                "launchpad_details": null
+            },
+            "relationships": {
+                "top_pools": {
+                    "data": [
+                        {
+                            "id": "eth_0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+                            "type": "pool"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "id": "eth_0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "type": "token",
+            "attributes": {
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "image_url": "https://coin-images.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+                "coingecko_coin_id": "usd-coin",
+                "total_supply": "52602566538189291.0",
+                "normalized_total_supply": "52602566538.1893",
+                "price_usd": "1.0002493634",
+                "fdv_usd": "52615629807.7767",
+                "total_reserve_in_usd": "557030624.8194409055677817365649654",
+                "volume_usd": {
+                    "h24": "581733711.82542"
+                },
+                "market_cap_usd": "76387270350.9779",
+                "last_trade_timestamp": null,
+                "launchpad_details": null
+            },
+            "relationships": {
+                "top_pools": {
+                    "data": [
+                        {
+                            "id": "eth_0x395f91b34aa34a477ce3bc6505639a821b286a62b1a164fc1887fa3a5ef713a5",
+                            "type": "pool"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "included": null
+}

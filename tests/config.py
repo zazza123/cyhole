@@ -84,6 +84,17 @@ class HeliusConfiguration(BaseModel):
     api_key: str | None = None
     """API key required for all Helius DAS API endpoints."""
 
+class GeckoConfiguration(BaseModel):
+    """
+        Model in charge to manage the Gecko APIs.
+    """
+    mock_response: bool = True
+    """Flag to enable/disable the mock responses."""
+    mock_folder: str = "gecko"
+    """Folder where the mock responses are stored."""
+    api_key: str | None = None
+    """Optional CoinGecko Pro API key for the on-chain endpoints."""
+
 
 class TestConfiguration(BaseModel):
     """
@@ -110,6 +121,8 @@ class TestConfiguration(BaseModel):
     """Solscan configuration."""
     helius: HeliusConfiguration = HeliusConfiguration()
     """Helius configuration."""
+    gecko: GeckoConfiguration = GeckoConfiguration()
+    """Gecko configuration."""
 
 def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguration:
     """
@@ -173,6 +186,11 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     test_config.helius.mock_response = config.getboolean("helius", "mock_response", fallback = test_config.helius.mock_response)
     test_config.helius.mock_folder = config.get("helius", "mock_folder", fallback = test_config.helius.mock_folder)
     test_config.helius.api_key = config.get("helius", "api_key", fallback = test_config.helius.api_key)
+
+    # gecko
+    test_config.gecko.mock_response = config.getboolean("gecko", "mock_response", fallback = test_config.gecko.mock_response)
+    test_config.gecko.mock_folder = config.get("gecko", "mock_folder", fallback = test_config.gecko.mock_folder)
+    test_config.gecko.api_key = config.get("gecko", "api_key", fallback = test_config.gecko.api_key)
 
     return test_config
 
