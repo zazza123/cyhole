@@ -1,11 +1,33 @@
-from pydantic import BaseModel, Field, RootModel
+from pydantic import BaseModel, ConfigDict, Field, RootModel
+
+
+# ---------------------------------------------------------------------------
+# Base model
+# ---------------------------------------------------------------------------
+
+class _DexScreenerBase(BaseModel):
+    """Base for every DexScreener schema model.
+
+    ``populate_by_name = True`` lets callers construct or validate models
+    using either the Python field name (snake_case) or the API alias
+    (camelCase). ``serialize_by_alias = True`` makes ``model_dump()``
+    emit the alias (camelCase) form, so the dumped dict has the same
+    shape as the upstream JSON payload — consumers can read the same
+    keys they would read from a raw HTTP response.
+
+    The local ``_DexScreenerBase`` keeps the scope of this configuration
+    explicit to the DexScreener schema package; whether to extend it
+    project-wide is tracked as a separate discussion.
+    """
+
+    model_config = ConfigDict(populate_by_name = True, serialize_by_alias = True)
 
 
 # ---------------------------------------------------------------------------
 # Shared sub-schemas
 # ---------------------------------------------------------------------------
 
-class DexScreenerTokenProfileLink(BaseModel):
+class DexScreenerTokenProfileLink(_DexScreenerBase):
     """A single link entry attached to a token profile."""
 
     type: str | None = None
@@ -13,7 +35,7 @@ class DexScreenerTokenProfileLink(BaseModel):
     url: str
 
 
-class DexScreenerTokenProfile(BaseModel):
+class DexScreenerTokenProfile(_DexScreenerBase):
     """Token profile metadata returned by the token-profiles endpoints."""
 
     url: str
@@ -25,7 +47,7 @@ class DexScreenerTokenProfile(BaseModel):
     links: list[DexScreenerTokenProfileLink] | None = None
 
 
-class DexScreenerCommunityTakeover(BaseModel):
+class DexScreenerCommunityTakeover(_DexScreenerBase):
     """Community takeover record, extending token profile with a claim date."""
 
     url: str
@@ -38,7 +60,7 @@ class DexScreenerCommunityTakeover(BaseModel):
     claim_date: str = Field(alias = "claimDate")
 
 
-class DexScreenerAd(BaseModel):
+class DexScreenerAd(_DexScreenerBase):
     """Advertisement record from the ads endpoint."""
 
     url: str
@@ -50,7 +72,7 @@ class DexScreenerAd(BaseModel):
     impressions: float | None = None
 
 
-class DexScreenerTokenBoost(BaseModel):
+class DexScreenerTokenBoost(_DexScreenerBase):
     """Token boost record from the token-boosts endpoints."""
 
     url: str
@@ -64,7 +86,7 @@ class DexScreenerTokenBoost(BaseModel):
     links: list[DexScreenerTokenProfileLink] | None = None
 
 
-class DexScreenerOrder(BaseModel):
+class DexScreenerOrder(_DexScreenerBase):
     """Paid order record for a token."""
 
     type: str
@@ -72,7 +94,7 @@ class DexScreenerOrder(BaseModel):
     payment_timestamp: float = Field(alias = "paymentTimestamp")
 
 
-class DexScreenerBaseToken(BaseModel):
+class DexScreenerBaseToken(_DexScreenerBase):
     """Base token in a trading pair."""
 
     address: str
@@ -80,7 +102,7 @@ class DexScreenerBaseToken(BaseModel):
     symbol: str
 
 
-class DexScreenerQuoteToken(BaseModel):
+class DexScreenerQuoteToken(_DexScreenerBase):
     """Quote token in a trading pair (fields may be absent for some pairs)."""
 
     address: str | None = None
@@ -88,14 +110,14 @@ class DexScreenerQuoteToken(BaseModel):
     symbol: str | None = None
 
 
-class DexScreenerPairTxns(BaseModel):
+class DexScreenerPairTxns(_DexScreenerBase):
     """Buy/sell transaction counts for a time window."""
 
     buys: int
     sells: int
 
 
-class DexScreenerPairLiquidity(BaseModel):
+class DexScreenerPairLiquidity(_DexScreenerBase):
     """Liquidity values for a trading pair."""
 
     usd: float | None = None
@@ -103,20 +125,25 @@ class DexScreenerPairLiquidity(BaseModel):
     quote: float
 
 
-class DexScreenerPairWebsite(BaseModel):
+class DexScreenerPairWebsite(_DexScreenerBase):
     """Website URL associated with a pair's token."""
 
     url: str
 
 
-class DexScreenerPairSocial(BaseModel):
-    """Social media handle associated with a pair's token."""
+class DexScreenerPairSocial(_DexScreenerBase):
+    """Social media link associated with a pair's token.
 
-    platform: str
-    handle: str
+    The DexScreener API returns each social entry as ``{"type", "url"}``,
+    where ``type`` identifies the platform (e.g. ``"twitter"``,
+    ``"telegram"``, ``"discord"``) and ``url`` is the full social link.
+    """
+
+    type: str
+    url: str
 
 
-class DexScreenerPairInfo(BaseModel):
+class DexScreenerPairInfo(_DexScreenerBase):
     """Extended info (image, websites, socials) attached to a pair."""
 
     image_url: str | None = Field(default = None, alias = "imageUrl")
@@ -124,13 +151,13 @@ class DexScreenerPairInfo(BaseModel):
     socials: list[DexScreenerPairSocial] | None = None
 
 
-class DexScreenerPairBoosts(BaseModel):
+class DexScreenerPairBoosts(_DexScreenerBase):
     """Active boost count for a pair."""
 
     active: int
 
 
-class DexScreenerPair(BaseModel):
+class DexScreenerPair(_DexScreenerBase):
     """
     Full trading pair object returned by multiple DEX endpoints.
 
@@ -201,14 +228,14 @@ class GetTokenPairsResponse(RootModel[list[DexScreenerPair]]):
     pass
 
 
-class GetPairsResponse(BaseModel):
+class GetPairsResponse(_DexScreenerBase):
     """Response for GET /latest/dex/pairs/{chainId}/{pairId}."""
 
     schema_version: str = Field(alias = "schemaVersion")
     pairs: list[DexScreenerPair] | None = None
 
 
-class GetSearchResponse(BaseModel):
+class GetSearchResponse(_DexScreenerBase):
     """Response for GET /latest/dex/search."""
 
     schema_version: str = Field(alias = "schemaVersion")

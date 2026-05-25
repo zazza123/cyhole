@@ -51,7 +51,7 @@
                     {"url": "https://jup.ag"}
                 ],
                 "socials": [
-                    {"platform": "twitter", "handle": "JupiterExchange"}
+                    {"type": "twitter", "url": "https://twitter.com/JupiterExchange"}
                 ]
             },
             "boosts": {

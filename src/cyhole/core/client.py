@@ -207,14 +207,30 @@ class AsyncAPIClient(APIClientInterface):
 
     def _clean_params(self, params: dict[str, Any]) -> dict[str, Any]:
         """
-            The `aiohttp` requires to remove the keys with `None` value. 
-            This function takes as input the original `params` and returns a new 
-            object removed from `None`keys.
+            Normalise the query-params dict for `aiohttp`.
 
-            arameters:
+            Two transformations are applied:
+
+            1. Drop entries whose value is `None` — `aiohttp` would otherwise
+               raise `TypeError: ... should be str, int or float, got None`.
+            2. Coerce `bool` values to the lowercase strings `"true"` / `"false"`.
+               `aiohttp`'s URL builder rejects raw `bool` values
+               (`Invalid variable type: value should be str, int or float, got True
+               of type <class 'bool'>`), and REST servers conventionally accept
+               the lowercase string form.
+
+            Parameters:
                 params: original params.
 
             Return:
-                new params removed from the keys with `None`valiues.
+                new params with `None`s removed and `bool`s coerced.
         """
-        return {key: value for key, value in params.items() if value is not None}
+        cleaned: dict[str, Any] = {}
+        for key, value in params.items():
+            if value is None:
+                continue
+            if isinstance(value, bool):
+                cleaned[key] = "true" if value else "false"
+                continue
+            cleaned[key] = value
+        return cleaned
