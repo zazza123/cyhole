@@ -110,10 +110,15 @@ class DexScreenerPairWebsite(BaseModel):
 
 
 class DexScreenerPairSocial(BaseModel):
-    """Social media handle associated with a pair's token."""
+    """Social media link associated with a pair's token.
 
-    platform: str
-    handle: str
+    The DexScreener API returns each social entry as ``{"type", "url"}``,
+    where ``type`` identifies the platform (e.g. ``"twitter"``,
+    ``"telegram"``, ``"discord"``) and ``url`` is the full social link.
+    """
+
+    type: str
+    url: str
 
 
 class DexScreenerPairInfo(BaseModel):

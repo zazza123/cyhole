@@ -34,7 +34,17 @@
         "fdv": null,
         "marketCap": null,
         "pairCreatedAt": null,
-        "info": null,
+        "info": {
+            "imageUrl": "https://example.com/sol.png",
+            "websites": [
+                {"url": "https://solana.com"}
+            ],
+            "socials": [
+                {"type": "twitter", "url": "https://twitter.com/solana"},
+                {"type": "telegram", "url": "https://t.me/solana"},
+                {"type": "discord", "url": "https://discord.gg/solana"}
+            ]
+        },
         "boosts": null
     }
 ]
