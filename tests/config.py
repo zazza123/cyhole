@@ -20,17 +20,6 @@ class SolscanConfiguration(BaseModel):
     api_v2_key: str | None = None
     """API key to access the Solscan V2 APIs."""
 
-class SolanaFMConfiguration(BaseModel):
-    """
-        Model in charge to manage the SolanaFM APIs.
-    """
-    mock_response: bool = True
-    """Flag to enable/disable the mock responses."""
-    mock_folder: str = "solana_fm"
-    """Folder where the mock responses are stored."""
-    api_key: str | None = None
-    """API key to access the SolanaFM APIs."""
-
 class JupiterConfiguration(BaseModel):
     """
         Model in charge to manage the Jupiter APIs.
@@ -115,8 +104,6 @@ class TestConfiguration(BaseModel):
     """Rugcheck configuration."""
     jupiter: JupiterConfiguration = JupiterConfiguration()
     """Jupiter configuration."""
-    solana_fm: SolanaFMConfiguration = SolanaFMConfiguration()
-    """SolanaFM configuration."""
     solscan: SolscanConfiguration = SolscanConfiguration()
     """Solscan configuration."""
     helius: HeliusConfiguration = HeliusConfiguration()
@@ -170,11 +157,6 @@ def load_config(path: str = "tests", file: str = "test.ini") -> TestConfiguratio
     # jupiter
     test_config.jupiter.mock_response = config.getboolean("jupiter", "mock_response", fallback = test_config.jupiter.mock_response)
     test_config.jupiter.mock_folder = config.get("jupiter", "mock_folder", fallback = test_config.jupiter.mock_folder)
-
-    # solana_fm
-    test_config.solana_fm.mock_response = config.getboolean("solana_fm", "mock_response", fallback = test_config.solana_fm.mock_response)
-    test_config.solana_fm.mock_folder = config.get("solana_fm", "mock_folder", fallback = test_config.solana_fm.mock_folder)
-    test_config.solana_fm.api_key = config.get("solana_fm", "api_key", fallback = test_config.solana_fm.api_key)
 
     # solscan
     test_config.solscan.mock_response = config.getboolean("solscan", "mock_response", fallback = test_config.solscan.mock_response)
