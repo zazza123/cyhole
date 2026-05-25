@@ -141,3 +141,4 @@ The documentation follows the library's structure by providing all the technical
 | getTransfersByAddress | `POST` | [`post_get_transfers_by_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transfers_by_address) | `0.3.0` | - |
 | getTransactionsForAddress | `POST` | [`post_get_transactions_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions_for_address) | `0.3.0` | - |
 | getTransactionsByAddress | `GET` | [`get_transactions_by_address`](../helius/interaction.md#cyhole.helius.Helius._get_transactions_by_address) | `0.3.1` | - |
+| getTransactions | `POST` | [`post_get_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions) | `0.3.1` | - |

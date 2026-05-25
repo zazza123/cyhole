@@ -29,6 +29,7 @@ from ..helius.schema import (
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
     GetTransactionsByAddressResponse,
+    PostGetTransactionsResponse,
 )
 
 if TYPE_CHECKING:
@@ -147,6 +148,13 @@ class HeliusClient(APIClient):
         """
         return self._interaction._get_transactions_by_address(True, address, query)
 
+    def post_get_transactions(self, signatures: list[str], commitment: str | None = None) -> PostGetTransactionsResponse:
+        """
+        Call the Helius POST **[getTransactions](https://www.helius.dev/docs/api-reference/enhanced-transactions/gettransactions)** Enhanced Transactions API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transactions`][cyhole.helius.interaction.Helius._post_get_transactions].
+        """
+        return self._interaction._post_get_transactions(True, signatures, commitment)
+
 
 class HeliusAsyncClient(AsyncAPIClient):
     """Client for asynchronous API calls for `Helius` interaction."""
@@ -259,3 +267,10 @@ class HeliusAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Helius._get_transactions_by_address`][cyhole.helius.interaction.Helius._get_transactions_by_address].
         """
         return await self._interaction._get_transactions_by_address(False, address, query)
+
+    async def post_get_transactions(self, signatures: list[str], commitment: str | None = None) -> PostGetTransactionsResponse:
+        """
+        Call the Helius POST **[getTransactions](https://www.helius.dev/docs/api-reference/enhanced-transactions/gettransactions)** Enhanced Transactions API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transactions`][cyhole.helius.interaction.Helius._post_get_transactions].
+        """
+        return await self._interaction._post_get_transactions(False, signatures, commitment)

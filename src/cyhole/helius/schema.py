@@ -1349,3 +1349,13 @@ class GetTransactionsByAddressResponse(RootModel[list[EnhancedTransaction]]):
     Wraps a list of [`EnhancedTransaction`][cyhole.helius.schema.EnhancedTransaction] objects.
     Access the transactions via `.root`.
     """
+
+
+class PostGetTransactionsResponse(RootModel[list[EnhancedTransaction]]):
+    """
+    Response for the `getTransactions` Enhanced Transactions REST endpoint.
+
+    Wraps a list of [`EnhancedTransaction`][cyhole.helius.schema.EnhancedTransaction]
+    objects, one per signature submitted in the request body, preserving input order.
+    Access the transactions via `.root`.
+    """

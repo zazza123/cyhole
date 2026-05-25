@@ -30,6 +30,7 @@ from ..helius.schema import (
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
     GetTransactionsByAddressResponse,
+    PostGetTransactionsResponse,
 )
 
 
@@ -593,3 +594,51 @@ class Helius(Interaction):
         if query is not None:
             params.update(query.model_dump(by_alias = True, exclude_none = True))
         return self.api_return_model(sync, RequestType.GET.value, url, GetTransactionsByAddressResponse, params = params)
+
+    # ─── getTransactions ──────────────────────────────────────────────────────
+
+    @overload
+    def _post_get_transactions(self, sync: Literal[True], signatures: list[str], commitment: str | None = None) -> PostGetTransactionsResponse: ...
+    @overload
+    def _post_get_transactions(self, sync: Literal[False], signatures: list[str], commitment: str | None = None) -> Coroutine[None, None, PostGetTransactionsResponse]: ...
+    def _post_get_transactions(self, sync: bool, signatures: list[str], commitment: str | None = None) -> PostGetTransactionsResponse | Coroutine[None, None, PostGetTransactionsResponse]:
+        """
+        This function refers to the **getTransactions** Enhanced Transactions API endpoint.
+
+        Parses up to 100 raw Solana transaction signatures into fully decoded,
+        human-readable enhanced transactions in a single call. Each returned item
+        exposes a parsed `description`, classified `type` and `source`, native and
+        token transfer arrays, per-account balance deltas, top-level instructions
+        with their CPI inner instructions, and structured event objects for swaps,
+        NFT operations, and compressed-NFT actions — saving the caller from having
+        to decode the raw transaction blob manually. Use this endpoint when you
+        already know the signatures of interest (e.g. from a webhook, an indexer,
+        or a previous `getTransactionsByAddress` call) and want enriched data for
+        each one.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            signatures: list of base58-encoded transaction signatures to decode.
+                Capped at 100 items per request by the API.
+            commitment: optional block-finality level — `"finalized"` (API default)
+                or `"confirmed"`. `"processed"` is not supported. Pass `None` to
+                use the API default. See
+                [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]
+                for the corresponding `.value` strings.
+
+        Returns:
+            PostGetTransactionsResponse: list of enhanced transactions accessible
+                via `.root`, preserving the order of `signatures`. Each
+                [`EnhancedTransaction`][cyhole.helius.schema.EnhancedTransaction]
+                exposes a human-readable `description`, `type`, `source`, transfer
+                arrays, account-data deltas, instructions, and event details.
+
+        Raises:
+            HeliusException: if the API returns an error status.
+        """
+        url = f"{self.url_api_enhanced}/v0/transactions"
+        params: dict = {"api-key": self._api_key}
+        if commitment is not None:
+            params["commitment"] = commitment
+        body = {"transactions": signatures}
+        return self.api_return_model(sync, RequestType.POST.value, url, PostGetTransactionsResponse, params = params, json = body)
