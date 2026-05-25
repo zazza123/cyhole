@@ -361,6 +361,17 @@ class TestDexScreener:
         assert first_social.type == "twitter"
         assert first_social.url == "https://twitter.com/solana"
 
+        # Regression: model_dump() emits the API shape (camelCase) so
+        # downstream consumers read the same keys they would read from
+        # the raw HTTP JSON. The dump must not return snake_case keys.
+        dumped = response.model_dump()
+        assert isinstance(dumped, list)
+        first = dumped[0]
+        assert "chainId" in first and "chain_id" not in first
+        assert "pairAddress" in first and "pair_address" not in first
+        assert "priceUsd" in first and "price_usd" not in first
+        assert "priceNative" in first and "price_native" not in first
+
         if config.mock_file_overwrite and not config.dex_screener.mock_response:
             self.mocker.store_mock_model(mock_file_name, response)
 
