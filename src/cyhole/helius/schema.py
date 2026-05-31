@@ -1266,7 +1266,8 @@ class EnhancedTransactionEvents(BaseModel):
             is not an NFT event.
         swap: DEX swap event details. `None` when the transaction is not a swap.
         compressed: Compressed NFT event details. `None` when the transaction is not
-            a cNFT operation.
+            a cNFT operation. Returned as a list because a single transaction can
+            affect multiple cNFTs.
         distribute_compression_rewards: compression reward distribution event data.
             Returned as a raw dict; `None` when absent.
         set_authority: set-authority event data. Returned as a raw dict; `None` when absent.
@@ -1275,7 +1276,7 @@ class EnhancedTransactionEvents(BaseModel):
 
     nft: EnhancedTransactionNFTEvent | None = None
     swap: EnhancedTransactionSwapEvent | None = None
-    compressed: EnhancedTransactionCompressedNFTEvent | None = None
+    compressed: list[EnhancedTransactionCompressedNFTEvent] | None = None
     distribute_compression_rewards: dict | None = Field(
         default = None, alias = "distributeCompressionRewards"
     )
