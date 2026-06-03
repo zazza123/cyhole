@@ -80,6 +80,7 @@ from ..birdeye.schema import (
     GetV3SearchResponse,
     GetUtilsV1CreditsResponse,
     GetV3AllTimeTradesResponse,
+    GetV3TokenMemeDetailSingleResponse,
 )
 
 class Birdeye(Interaction):
@@ -2542,3 +2543,40 @@ class Birdeye(Interaction):
         url = self.url_api_public + "v3/all-time/trades/multiple"
         params["list_address"] = ",".join(address)
         return self.api_return_model(sync, RequestType.POST.value, url, GetV3AllTimeTradesResponse, params = params)
+
+    @overload
+    def _get_v3_token_meme_detail_single(self, sync: Literal[True], address: str) -> GetV3TokenMemeDetailSingleResponse: ...
+
+    @overload
+    def _get_v3_token_meme_detail_single(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetV3TokenMemeDetailSingleResponse]: ...
+
+    def _get_v3_token_meme_detail_single(
+        self,
+        sync: bool,
+        address: str
+    ) -> GetV3TokenMemeDetailSingleResponse | Coroutine[None, None, GetV3TokenMemeDetailSingleResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint
+            **[Meme Token Detail - Single](https://docs.birdeye.so/reference/get-defi-v3-token-meme-detail-single)**
+            and returns the full detail record for a single meme token.
+
+            The response bundles standard token identity fields (address, name, symbol,
+            decimals, price, liquidity, supply, FDV, market cap, logo, extensions) with a
+            ``meme_info`` block that exposes launchpad-specific data: the origin platform,
+            creator wallet, bonding-curve pool state (reserves, supply), graduation status
+            and progress toward the funding target. This endpoint is the right call when a
+            caller needs both token fundamentals and meme-launchpad context in one request.
+
+            Parameters:
+                address: contract address of the meme token to look up.
+
+            Returns:
+                [`GetV3TokenMemeDetailSingleResponse`][cyhole.birdeye.schema.GetV3TokenMemeDetailSingleResponse]
+                containing the full token and meme-info payload.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to the endpoint.
+        """
+        url = self.url_api_public + "v3/token/meme/detail/single"
+        params = {"address": address}
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMemeDetailSingleResponse, params = params)

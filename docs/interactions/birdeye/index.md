@@ -113,5 +113,6 @@ The documentation follows the library's structure by providing all the technical
 | Wallet - Supported Networks | `GET` | [`get_wallet_supported_networks`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_wallet_supported_networks) | `0.0.1-alpha` | - |
 | Search | `GET` | [`get_v3_search`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_search) | `0.3.1` | - |
 | Utils - Credits | `GET` | [`get_utils_v1_credits`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_utils_v1_credits) | `0.3.1` | - |
-| All-Time Trades (Single / Multiple) | `GET / POST` | [`get_v3_all_time_trades`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_all_time_trades) | `0.3.2` | - |
+| All-Time Trades (Single / Multiple) | `GET / POST` | [`get_v3_all_time_trades`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_all_time_trades) | `0.3.1` | - |
+| Meme Token Detail - Single | `GET` | [`get_v3_token_meme_detail_single`](../birdeye/interaction.md#cyhole.birdeye.Birdeye._get_v3_token_meme_detail_single) | `0.3.1` | - |
 | History | `GET` | `get_history` | `0.0.1-alpha` | `0.2.0` |

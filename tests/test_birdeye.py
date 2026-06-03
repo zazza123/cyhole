@@ -53,6 +53,7 @@ from cyhole.birdeye.schema import (
     GetV3SearchResponse,
     GetUtilsV1CreditsResponse,
     GetV3AllTimeTradesResponse,
+    GetV3TokenMemeDetailSingleResponse,
 )
 from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
@@ -682,6 +683,44 @@ class TestBirdeyePublic:
             )
 
         assert isinstance(response, GetV3AllTimeTradesResponse)
+
+    def test_get_v3_token_meme_detail_single_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Meme Token Detail - Single"
+            for synchronous logic.
+
+            Mock Response File: get_v3_token_meme_detail_single.json
+        """
+        mock_file_name = "get_v3_token_meme_detail_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenMemeDetailSingleResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_token_meme_detail_single("6R3LxpHiE8RjTL7HnvKWtoQCHVA76CR1ebF9MYk61wzS")
+        assert isinstance(response, GetV3TokenMemeDetailSingleResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_token_meme_detail_single_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Meme Token Detail - Single"
+            for asynchronous logic.
+
+            Mock Response File: get_v3_token_meme_detail_single.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_token_meme_detail_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3TokenMemeDetailSingleResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_token_meme_detail_single("6R3LxpHiE8RjTL7HnvKWtoQCHVA76CR1ebF9MYk61wzS")
+
+        assert isinstance(response, GetV3TokenMemeDetailSingleResponse)
 
     def test_get_v3_token_mint_burn_txs_sync(self, mocker: MockerFixture) -> None:
         """

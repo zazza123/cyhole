@@ -70,6 +70,7 @@ from ..birdeye.schema import (
     GetV3SearchResponse,
     GetUtilsV1CreditsResponse,
     GetV3AllTimeTradesResponse,
+    GetV3TokenMemeDetailSingleResponse,
 )
 
 if TYPE_CHECKING:
@@ -471,6 +472,13 @@ class BirdeyeClient(APIClient):
         """
         return self._interaction._get_v3_all_time_trades(True, address, time_frame, ui_amount_mode)
 
+    def get_v3_token_meme_detail_single(self, address: str) -> GetV3TokenMemeDetailSingleResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Meme Token Detail - Single](https://docs.birdeye.so/reference/get-defi-v3-token-meme-detail-single)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_meme_detail_single`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meme_detail_single].
+        """
+        return self._interaction._get_v3_token_meme_detail_single(True, address)
+
 class BirdeyeAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Birdeye` interaction.
@@ -866,3 +874,10 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_v3_all_time_trades`][cyhole.birdeye.interaction.Birdeye._get_v3_all_time_trades].
         """
         return await self._interaction._get_v3_all_time_trades(False, address, time_frame, ui_amount_mode)
+
+    async def get_v3_token_meme_detail_single(self, address: str) -> GetV3TokenMemeDetailSingleResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Meme Token Detail - Single](https://docs.birdeye.so/reference/get-defi-v3-token-meme-detail-single)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_meme_detail_single`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meme_detail_single].
+        """
+        return await self._interaction._get_v3_token_meme_detail_single(False, address)
