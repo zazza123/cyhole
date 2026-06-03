@@ -6,7 +6,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from cyhole.birdeye import Birdeye
-from cyhole.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame, BirdeyeChain
+from cyhole.birdeye.param import BirdeyeAddressType, BirdeyeTimeFrame, BirdeyeChain, BirdeyeAllTimeTradesTimeFrame
 from cyhole.birdeye.schema import (
     GetTokenListResponse,
     GetV3TokenListQuery,
@@ -52,6 +52,7 @@ from cyhole.birdeye.schema import (
     GetV3SearchQuery,
     GetV3SearchResponse,
     GetUtilsV1CreditsResponse,
+    GetV3AllTimeTradesResponse,
 )
 from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
@@ -599,6 +600,88 @@ class TestBirdeyePublic:
             ])
 
         assert isinstance(response, GetV3TokenExitLiquidityMultipleResponse)
+
+    def test_get_v3_all_time_trades_single_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "All-Time Trades" with a single token address (synchronous logic).
+
+            Mock Response File: get_v3_all_time_trades_single.json
+        """
+        mock_file_name = "get_v3_all_time_trades_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3AllTimeTradesResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_all_time_trades(WSOL.address, BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value)
+        assert isinstance(response, GetV3AllTimeTradesResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_all_time_trades_single_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "All-Time Trades" with a single token address (asynchronous logic).
+
+            Mock Response File: get_v3_all_time_trades_single.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_all_time_trades_single"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3AllTimeTradesResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_all_time_trades(WSOL.address, BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value)
+
+        assert isinstance(response, GetV3AllTimeTradesResponse)
+
+    def test_get_v3_all_time_trades_multiple_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "All-Time Trades" with a list of token addresses (synchronous logic).
+
+            Mock Response File: get_v3_all_time_trades_multiple.json
+        """
+        mock_file_name = "get_v3_all_time_trades_multiple"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3AllTimeTradesResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_all_time_trades(
+            [WSOL.address, USDC.address],
+            BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value
+        )
+        assert isinstance(response, GetV3AllTimeTradesResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_public:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_all_time_trades_multiple_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of the consolidated endpoint
+            "All-Time Trades" with a list of token addresses (asynchronous logic).
+
+            Mock Response File: get_v3_all_time_trades_multiple.json
+        """
+        time.sleep(1)
+
+        mock_file_name = "get_v3_all_time_trades_multiple"
+        if config.mock_response or config.birdeye.mock_response_public:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3AllTimeTradesResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_all_time_trades(
+                [WSOL.address, USDC.address],
+                BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value
+            )
+
+        assert isinstance(response, GetV3AllTimeTradesResponse)
 
     def test_get_v3_token_mint_burn_txs_sync(self, mocker: MockerFixture) -> None:
         """

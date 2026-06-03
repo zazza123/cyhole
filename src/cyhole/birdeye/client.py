@@ -22,6 +22,7 @@ from ..birdeye.param import (
     BirdeyeHolderChartPercentMode,
     BirdeyeTokenTrendingSortBy,
     BirdeyeTokenTrendingInterval,
+    BirdeyeAllTimeTradesTimeFrame,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -68,6 +69,7 @@ from ..birdeye.schema import (
     GetV3SearchQuery,
     GetV3SearchResponse,
     GetUtilsV1CreditsResponse,
+    GetV3AllTimeTradesResponse,
 )
 
 if TYPE_CHECKING:
@@ -456,6 +458,19 @@ class BirdeyeClient(APIClient):
         """
         return self._interaction._get_utils_v1_credits(True, time_from, time_to)
 
+    def get_v3_all_time_trades(
+        self,
+        address: str | list[str],
+        time_frame: str = BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 All-Time Trades endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-all-time-trades-single)** /
+            **[multiple](https://docs.birdeye.so/reference/post-defi-v3-all-time-trades-multiple)**) for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_all_time_trades`][cyhole.birdeye.interaction.Birdeye._get_v3_all_time_trades].
+        """
+        return self._interaction._get_v3_all_time_trades(True, address, time_frame, ui_amount_mode)
+
 class BirdeyeAsyncClient(AsyncAPIClient):
     """
         Client used for asynchronous API calls for `Birdeye` interaction.
@@ -838,3 +853,16 @@ class BirdeyeAsyncClient(AsyncAPIClient):
             All the API endpoint details are available on [`Birdeye._get_utils_v1_credits`][cyhole.birdeye.interaction.Birdeye._get_utils_v1_credits].
         """
         return await self._interaction._get_utils_v1_credits(False, time_from, time_to)
+
+    async def get_v3_all_time_trades(
+        self,
+        address: str | list[str],
+        time_frame: str = BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 All-Time Trades endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-all-time-trades-single)** /
+            **[multiple](https://docs.birdeye.so/reference/post-defi-v3-all-time-trades-multiple)**) for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_all_time_trades`][cyhole.birdeye.interaction.Birdeye._get_v3_all_time_trades].
+        """
+        return await self._interaction._get_v3_all_time_trades(False, address, time_frame, ui_amount_mode)

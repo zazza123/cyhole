@@ -44,6 +44,8 @@ from .token_stats import (
     GetV3TokenExitLiquidityResponse,
     GetV3TokenExitLiquidityMultipleData,
     GetV3TokenExitLiquidityMultipleResponse,
+    GetV3AllTimeTradesItem,
+    GetV3AllTimeTradesResponse,
 )
 from .creation_trending import (
     GetTokenCreationInfoData,
@@ -175,6 +177,8 @@ __all__ = [
     "GetV3TokenExitLiquidityResponse",
     "GetV3TokenExitLiquidityMultipleData",
     "GetV3TokenExitLiquidityMultipleResponse",
+    "GetV3AllTimeTradesItem",
+    "GetV3AllTimeTradesResponse",
     "GetTokenCreationInfoData",
     "GetTokenCreationInfoResponse",
     "GetTokenTrendingItem",

@@ -32,6 +32,7 @@ from ..birdeye.param import (
     BirdeyeSearchMode,
     BirdeyeSearchBy,
     BirdeyeSearchSortBy,
+    BirdeyeAllTimeTradesTimeFrame,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -78,6 +79,7 @@ from ..birdeye.schema import (
     GetV3SearchQuery,
     GetV3SearchResponse,
     GetUtilsV1CreditsResponse,
+    GetV3AllTimeTradesResponse,
 )
 
 class Birdeye(Interaction):
@@ -2458,3 +2460,85 @@ class Birdeye(Interaction):
             "time_to": time_to,
         }
         return self.api_return_model(sync, RequestType.GET.value, url, GetUtilsV1CreditsResponse, params = params)
+
+    @overload
+    def _get_v3_all_time_trades(
+        self,
+        sync: Literal[True],
+        address: str | list[str],
+        time_frame: str,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse: ...
+
+    @overload
+    def _get_v3_all_time_trades(
+        self,
+        sync: Literal[False],
+        address: str | list[str],
+        time_frame: str,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetV3AllTimeTradesResponse]: ...
+
+    def _get_v3_all_time_trades(
+        self,
+        sync: bool,
+        address: str | list[str],
+        time_frame: str,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse | Coroutine[None, None, GetV3AllTimeTradesResponse]:
+        """
+            This function consolidates the Birdeye v3 all-time trade statistics endpoints
+            **[All-Time Trades (Single)](https://docs.birdeye.so/reference/get-defi-v3-all-time-trades-single)**
+            and **[All-Time Trades (Multiple)](https://docs.birdeye.so/reference/post-defi-v3-all-time-trades-multiple)**
+            under a single polymorphic call.
+
+            Both variants return the same envelope: a list of
+            [`GetV3AllTimeTradesItem`][cyhole.birdeye.schema.GetV3AllTimeTradesItem] objects containing
+            cumulative trade counts and volumes (buy, sell, total in token UI units and USD) aggregated
+            over the selected `time_frame`. This is useful for computing historical trading activity
+            without having to stitch together per-window snapshots.
+
+            The method is polymorphic on the `address` argument:
+
+            - pass a single `str` address → issues a `GET /defi/v3/all-time/trades/single`.
+            - pass a `list[str]` of up to 20 addresses → issues a `POST /defi/v3/all-time/trades/multiple`.
+
+            Both return a [`GetV3AllTimeTradesResponse`][cyhole.birdeye.schema.GetV3AllTimeTradesResponse]
+            whose `data` list contains one item per requested token.
+
+            Parameters:
+                address: a single token contract address (`str`) or a list of up to 20 token contract
+                    addresses (`list[str]`).
+                time_frame: the aggregation window. Must be one of the values from
+                    [`BirdeyeAllTimeTradesTimeFrame`][cyhole.birdeye.param.BirdeyeAllTimeTradesTimeFrame].
+                    Use `BirdeyeAllTimeTradesTimeFrame.ALL_TIME` to fetch statistics spanning the
+                    token's entire trading history.
+                ui_amount_mode: controls how token amounts are expressed for scaled-UI-amount SPL
+                    tokens on Solana. Accepted values are available on
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode]. Ignored on
+                    non-Solana chains. Default behaviour: `raw`.
+
+            Returns:
+                [`GetV3AllTimeTradesResponse`][cyhole.birdeye.schema.GetV3AllTimeTradesResponse]
+                with one trade-statistics item per requested token address.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to the endpoint.
+                ParamUnknownError: if `time_frame` or `ui_amount_mode` is not an accepted value.
+        """
+        BirdeyeAllTimeTradesTimeFrame.check(time_frame)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        params: dict[str, Any] = {"time_frame": time_frame}
+        if ui_amount_mode is not None:
+            params["ui_amount_mode"] = ui_amount_mode
+
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/all-time/trades/single"
+            params["address"] = address
+            return self.api_return_model(sync, RequestType.GET.value, url, GetV3AllTimeTradesResponse, params = params)
+
+        url = self.url_api_public + "v3/all-time/trades/multiple"
+        params["list_address"] = ",".join(address)
+        return self.api_return_model(sync, RequestType.POST.value, url, GetV3AllTimeTradesResponse, params = params)

@@ -1258,3 +1258,53 @@ class GetV3TokenExitLiquidityMultipleResponse(BaseModel):
     """
     data: GetV3TokenExitLiquidityMultipleData
     success: bool
+
+
+# classes used on GET "All-Time Trades (Single)" and POST "All-Time Trades (Multiple)" endpoints
+class GetV3AllTimeTradesItem(BaseModel):
+    """
+        Aggregate trade statistics for a single token over the requested time frame,
+        as returned by the Birdeye v3 All-Time Trades endpoints.
+
+        Attributes:
+            address: contract address of the token on the selected chain; `None` when the
+                address is used as the key of the enclosing dict in the multiple response.
+            total_volume: cumulative traded volume in token UI units over the time frame;
+                `None` if not available.
+            total_volume_usd: cumulative traded volume expressed in USD over the time frame;
+                `None` if not available.
+            volume_buy: buy-side volume in token UI units over the time frame;
+                `None` if not available.
+            volume_buy_usd: buy-side volume in USD over the time frame; `None` if not available.
+            volume_sell: sell-side volume in token UI units over the time frame;
+                `None` if not available.
+            volume_sell_usd: sell-side volume in USD over the time frame; `None` if not available.
+            total_trade: total number of trades (buys + sells) over the time frame;
+                `None` if not available.
+            buy: number of buy-side trades over the time frame; `None` if not available.
+            sell: number of sell-side trades over the time frame; `None` if not available.
+    """
+    address: str | None = None
+    total_volume: float | None = None
+    total_volume_usd: float | None = None
+    volume_buy: float | None = None
+    volume_buy_usd: float | None = None
+    volume_sell: float | None = None
+    volume_sell_usd: float | None = None
+    total_trade: int | None = None
+    buy: int | None = None
+    sell: int | None = None
+
+class GetV3AllTimeTradesResponse(BaseModel):
+    """
+        Model used to represent both the **All-Time Trades (Single)** and
+        **All-Time Trades (Multiple)** endpoints from the Birdeye v3 API.
+        Both variants return the same envelope: a list of per-token trade-statistics
+        items for the selected time frame.
+
+        Attributes:
+            data: list of trade-statistics items; one entry per requested token address.
+            success: `True` when the API call completed without errors.
+    """
+    data: list[GetV3AllTimeTradesItem]
+    success: bool

@@ -70,6 +70,8 @@ class BirdeyeUIAmountMode(CyholeParam):
     """Return raw on-chain token amounts (no UI scaling applied)."""
     SCALED = "scaled"
     """Return UI-scaled token amounts (default Birdeye behaviour)."""
+    BOTH = "both"
+    """Return both raw and UI-scaled amounts. Supported on endpoints that accept this mode."""
 
 class BirdeyeTimeFrame(CyholeParam):
     """
@@ -461,3 +463,45 @@ class BirdeyeSearchSortBy(CyholeParam):
     """Sort by USD traded volume during the trailing 24h window (default behaviour)."""
     VOLUME_24H_CHANGE_PERCENT = "volume_24h_change_percent"
     """Sort by percent change of USD volume vs the previous 24h window."""
+
+class BirdeyeAllTimeTradesTimeFrame(CyholeParam):
+    """
+        Enum class to get the supported time-frame intervals for the Birdeye
+        v3 All-Time Trades endpoints (single and multiple).
+
+        Each value selects the cumulative window over which trade statistics are
+        aggregated. Use `ALL_TIME` to retrieve statistics spanning the token's
+        entire trading history.
+    """
+    MIN1 = "1m"
+    """Trailing 1 minute."""
+    MIN5 = "5m"
+    """Trailing 5 minutes."""
+    MIN30 = "30m"
+    """Trailing 30 minutes."""
+    H1 = "1h"
+    """Trailing 1 hour."""
+    H2 = "2h"
+    """Trailing 2 hours."""
+    H4 = "4h"
+    """Trailing 4 hours."""
+    H8 = "8h"
+    """Trailing 8 hours."""
+    H24 = "24h"
+    """Trailing 24 hours."""
+    D3 = "3d"
+    """Trailing 3 days."""
+    D7 = "7d"
+    """Trailing 7 days."""
+    D14 = "14d"
+    """Trailing 14 days."""
+    D30 = "30d"
+    """Trailing 30 days."""
+    D90 = "90d"
+    """Trailing 90 days."""
+    D180 = "180d"
+    """Trailing 180 days."""
+    Y1 = "1y"
+    """Trailing 1 year."""
+    ALL_TIME = "alltime"
+    """Full token trading history since inception."""
