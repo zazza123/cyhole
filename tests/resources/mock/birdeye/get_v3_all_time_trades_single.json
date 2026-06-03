@@ -1,0 +1,17 @@
+{
+    "data": [
+        {
+            "address": "So11111111111111111111111111111111111111112",
+            "total_volume": 1234567890.12,
+            "total_volume_usd": 2345678901.23,
+            "volume_buy": 678901234.56,
+            "volume_buy_usd": 1234567890.12,
+            "volume_sell": 555666655.56,
+            "volume_sell_usd": 1111111011.11,
+            "total_trade": 9876543,
+            "buy": 5432100,
+            "sell": 4444443
+        }
+    ],
+    "success": true
+}

@@ -22,6 +22,7 @@ from ..birdeye.param import (
     BirdeyeHolderChartPercentMode,
     BirdeyeTokenTrendingSortBy,
     BirdeyeTokenTrendingInterval,
+    BirdeyeAllTimeTradesTimeFrame,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -64,7 +65,14 @@ from ..birdeye.schema import (
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
     GetOHLCVBaseQuoteResponse,
-    GetWalletSupportedNetworksResponse
+    GetWalletSupportedNetworksResponse,
+    GetV3SearchQuery,
+    GetV3SearchResponse,
+    GetUtilsV1CreditsResponse,
+    GetV3AllTimeTradesResponse,
+    GetV3TokenMemeDetailSingleResponse,
+    GetV3TokenMemeListQuery,
+    GetV3TokenMemeListResponse,
 )
 
 if TYPE_CHECKING:
@@ -434,10 +442,51 @@ class BirdeyeClient(APIClient):
 
     def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for synchronous logic. 
+            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for synchronous logic.
             All the API endopint details are available on [`Birdeye._get_wallet_supported_networks`][cyhole.birdeye.interaction.Birdeye._get_wallet_supported_networks].
         """
         return self._interaction._get_wallet_supported_networks(True)
+
+    def get_v3_search(self, query: GetV3SearchQuery | None = None) -> GetV3SearchResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Search](https://docs.birdeye.so/reference/get-defi-v3-search)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_search`][cyhole.birdeye.interaction.Birdeye._get_v3_search].
+        """
+        return self._interaction._get_v3_search(True, query)
+
+    def get_utils_v1_credits(self, time_from: int | None = None, time_to: int | None = None) -> GetUtilsV1CreditsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Utils - Credits](https://docs.birdeye.so/reference/get-utils-v1-credits)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_utils_v1_credits`][cyhole.birdeye.interaction.Birdeye._get_utils_v1_credits].
+        """
+        return self._interaction._get_utils_v1_credits(True, time_from, time_to)
+
+    def get_v3_all_time_trades(
+        self,
+        address: str | list[str],
+        time_frame: str = BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 All-Time Trades endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-all-time-trades-single)** /
+            **[multiple](https://docs.birdeye.so/reference/post-defi-v3-all-time-trades-multiple)**) for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_all_time_trades`][cyhole.birdeye.interaction.Birdeye._get_v3_all_time_trades].
+        """
+        return self._interaction._get_v3_all_time_trades(True, address, time_frame, ui_amount_mode)
+
+    def get_v3_token_meme_detail_single(self, address: str) -> GetV3TokenMemeDetailSingleResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Meme Token Detail - Single](https://docs.birdeye.so/reference/get-defi-v3-token-meme-detail-single)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_meme_detail_single`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meme_detail_single].
+        """
+        return self._interaction._get_v3_token_meme_detail_single(True, address)
+
+    def get_v3_token_meme_list(self, query: GetV3TokenMemeListQuery | None = None) -> GetV3TokenMemeListResponse:
+        """
+            Call the Birdeye's GET **[Meme Token - List](https://docs.birdeye.so/reference/get-defi-v3-token-meme-list)** API endpoint for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_meme_list`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meme_list].
+        """
+        return self._interaction._get_v3_token_meme_list(True, query)
 
 class BirdeyeAsyncClient(AsyncAPIClient):
     """
@@ -803,7 +852,48 @@ class BirdeyeAsyncClient(AsyncAPIClient):
 
     async def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for asynchronous logic. 
+            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for asynchronous logic.
             All the API endopint details are available on [`Birdeye._get_wallet_supported_networks`][cyhole.birdeye.interaction.Birdeye._get_wallet_supported_networks].
         """
         return await self._interaction._get_wallet_supported_networks(False)
+
+    async def get_v3_search(self, query: GetV3SearchQuery | None = None) -> GetV3SearchResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Search](https://docs.birdeye.so/reference/get-defi-v3-search)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_search`][cyhole.birdeye.interaction.Birdeye._get_v3_search].
+        """
+        return await self._interaction._get_v3_search(False, query)
+
+    async def get_utils_v1_credits(self, time_from: int | None = None, time_to: int | None = None) -> GetUtilsV1CreditsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Utils - Credits](https://docs.birdeye.so/reference/get-utils-v1-credits)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_utils_v1_credits`][cyhole.birdeye.interaction.Birdeye._get_utils_v1_credits].
+        """
+        return await self._interaction._get_utils_v1_credits(False, time_from, time_to)
+
+    async def get_v3_all_time_trades(
+        self,
+        address: str | list[str],
+        time_frame: str = BirdeyeAllTimeTradesTimeFrame.ALL_TIME.value,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse:
+        """
+            Call the Birdeye's **PRIVATE** v3 All-Time Trades endpoints (**[single](https://docs.birdeye.so/reference/get-defi-v3-all-time-trades-single)** /
+            **[multiple](https://docs.birdeye.so/reference/post-defi-v3-all-time-trades-multiple)**) for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_all_time_trades`][cyhole.birdeye.interaction.Birdeye._get_v3_all_time_trades].
+        """
+        return await self._interaction._get_v3_all_time_trades(False, address, time_frame, ui_amount_mode)
+
+    async def get_v3_token_meme_detail_single(self, address: str) -> GetV3TokenMemeDetailSingleResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Meme Token Detail - Single](https://docs.birdeye.so/reference/get-defi-v3-token-meme-detail-single)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_meme_detail_single`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meme_detail_single].
+        """
+        return await self._interaction._get_v3_token_meme_detail_single(False, address)
+
+    async def get_v3_token_meme_list(self, query: GetV3TokenMemeListQuery | None = None) -> GetV3TokenMemeListResponse:
+        """
+            Call the Birdeye's GET **[Meme Token - List](https://docs.birdeye.so/reference/get-defi-v3-token-meme-list)** API endpoint for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_token_meme_list`][cyhole.birdeye.interaction.Birdeye._get_v3_token_meme_list].
+        """
+        return await self._interaction._get_v3_token_meme_list(False, query)

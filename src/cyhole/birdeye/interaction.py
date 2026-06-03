@@ -27,7 +27,12 @@ from ..birdeye.param import (
     BirdeyeHolderChartMode,
     BirdeyeHolderChartPercentMode,
     BirdeyeTokenTrendingSortBy,
-    BirdeyeTokenTrendingInterval
+    BirdeyeTokenTrendingInterval,
+    BirdeyeSearchTarget,
+    BirdeyeSearchMode,
+    BirdeyeSearchBy,
+    BirdeyeSearchSortBy,
+    BirdeyeAllTimeTradesTimeFrame,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -70,7 +75,14 @@ from ..birdeye.schema import (
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
     GetOHLCVBaseQuoteResponse,
-    GetWalletSupportedNetworksResponse
+    GetWalletSupportedNetworksResponse,
+    GetV3SearchQuery,
+    GetV3SearchResponse,
+    GetUtilsV1CreditsResponse,
+    GetV3AllTimeTradesResponse,
+    GetV3TokenMemeDetailSingleResponse,
+    GetV3TokenMemeListQuery,
+    GetV3TokenMemeListResponse,
 )
 
 class Birdeye(Interaction):
@@ -139,6 +151,7 @@ class Birdeye(Interaction):
         self.url_api_private_wallet = "https://public-api.birdeye.so/v1/wallet"
         self.url_api_token_v1 = "https://public-api.birdeye.so/token/v1/"
         self.url_api_holder_v1 = "https://public-api.birdeye.so/holder/v1/"
+        self.url_api_utils_v1 = "https://public-api.birdeye.so/utils/v1/"
         return
 
     @overload
@@ -2345,3 +2358,270 @@ class Birdeye(Interaction):
 
         # execute request
         return self.api_return_model(sync, RequestType.GET.value, url, GetWalletSupportedNetworksResponse)
+
+    @overload
+    def _get_v3_search(self, sync: Literal[True], query: GetV3SearchQuery | None = None) -> GetV3SearchResponse: ...
+
+    @overload
+    def _get_v3_search(self, sync: Literal[False], query: GetV3SearchQuery | None = None) -> Coroutine[None, None, GetV3SearchResponse]: ...
+
+    def _get_v3_search(
+        self,
+        sync: bool,
+        query: GetV3SearchQuery | None = None
+    ) -> GetV3SearchResponse | Coroutine[None, None, GetV3SearchResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Search](https://docs.birdeye.so/reference/get-defi-v3-search)** and is used
+            to search for tokens and/or markets across one or all of Birdeye's supported chains.
+            Callers can narrow results by keyword, entity type, matching mode, chain, and a range of
+            sort metrics; the response groups matches into type buckets (`"token"` and `"market"`)
+            each containing a ranked list of matching items. Useful for token-discovery UIs, autocomplete
+            search boxes, and cross-chain asset lookups.
+
+            !!! info
+                The `verify_token` filter is Solana-only. The `markets` filter restricts results to
+                specific DEX sources (e.g. Raydium, Orca). Page size is capped at 20 items per call.
+
+            Parameters:
+                query: optional [`GetV3SearchQuery`][cyhole.birdeye.schema.GetV3SearchQuery] instance
+                    holding the search keyword, target type, matching mode, chain, sort options and
+                    pagination settings. When `None` (or omitted) the call uses Birdeye's defaults —
+                    all entity types, exact symbol matching, sorted by 24h USD volume descending.
+
+            Returns:
+                search results grouped by entity type, decoded as
+                [`GetV3SearchResponse`][cyhole.birdeye.schema.GetV3SearchResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameters belonging to the value list is not aligned to it.
+        """
+        if query is None:
+            query = GetV3SearchQuery()
+
+        # validate optional enum fields
+        if query.target is not None:
+            BirdeyeSearchTarget.check(query.target)
+        if query.search_mode is not None:
+            BirdeyeSearchMode.check(query.search_mode)
+        if query.search_by is not None:
+            BirdeyeSearchBy.check(query.search_by)
+        if query.sort_by is not None:
+            BirdeyeSearchSortBy.check(query.sort_by)
+        if query.sort_type is not None:
+            BirdeyeOrder.check(query.sort_type)
+        if query.ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(query.ui_amount_mode)
+
+        # build params — exclude None and coerce bool to lowercase string
+        params = {}
+        for key, value in query.model_dump().items():
+            if value is None:
+                continue
+            if isinstance(value, bool):
+                params[key] = "true" if value else "false"
+            else:
+                params[key] = value
+
+        url = self.url_api_private + "v3/search"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3SearchResponse, params = params)
+
+    @overload
+    def _get_utils_v1_credits(self, sync: Literal[True], time_from: int | None = None, time_to: int | None = None) -> GetUtilsV1CreditsResponse: ...
+
+    @overload
+    def _get_utils_v1_credits(self, sync: Literal[False], time_from: int | None = None, time_to: int | None = None) -> Coroutine[None, None, GetUtilsV1CreditsResponse]: ...
+
+    def _get_utils_v1_credits(
+        self,
+        sync: bool,
+        time_from: int | None = None,
+        time_to: int | None = None
+    ) -> GetUtilsV1CreditsResponse | Coroutine[None, None, GetUtilsV1CreditsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Utils - Credits](https://docs.birdeye.so/reference/get-utils-v1-credits)** and is used
+            to retrieve the API credit usage for the current account over a given time range.
+            Useful for monitoring consumption and detecting when the account is approaching its
+            credit limit.
+
+            Parameters:
+                time_from: start of the time range as a unix timestamp in seconds; `None` to
+                    let the server choose the default start.
+                time_to: end of the time range as a unix timestamp in seconds; `None` to
+                    let the server choose the default end (typically the current time).
+
+            Returns:
+                credit usage statistics decoded as
+                [`GetUtilsV1CreditsResponse`][cyhole.birdeye.schema.GetUtilsV1CreditsResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_utils_v1 + "credits"
+        params = {
+            "time_from": time_from,
+            "time_to": time_to,
+        }
+        return self.api_return_model(sync, RequestType.GET.value, url, GetUtilsV1CreditsResponse, params = params)
+
+    @overload
+    def _get_v3_all_time_trades(
+        self,
+        sync: Literal[True],
+        address: str | list[str],
+        time_frame: str,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse: ...
+
+    @overload
+    def _get_v3_all_time_trades(
+        self,
+        sync: Literal[False],
+        address: str | list[str],
+        time_frame: str,
+        ui_amount_mode: str | None = None
+    ) -> Coroutine[None, None, GetV3AllTimeTradesResponse]: ...
+
+    def _get_v3_all_time_trades(
+        self,
+        sync: bool,
+        address: str | list[str],
+        time_frame: str,
+        ui_amount_mode: str | None = None
+    ) -> GetV3AllTimeTradesResponse | Coroutine[None, None, GetV3AllTimeTradesResponse]:
+        """
+            This function consolidates the Birdeye v3 all-time trade statistics endpoints
+            **[All-Time Trades (Single)](https://docs.birdeye.so/reference/get-defi-v3-all-time-trades-single)**
+            and **[All-Time Trades (Multiple)](https://docs.birdeye.so/reference/post-defi-v3-all-time-trades-multiple)**
+            under a single polymorphic call.
+
+            Both variants return the same envelope: a list of
+            [`GetV3AllTimeTradesItem`][cyhole.birdeye.schema.GetV3AllTimeTradesItem] objects containing
+            cumulative trade counts and volumes (buy, sell, total in token UI units and USD) aggregated
+            over the selected `time_frame`. This is useful for computing historical trading activity
+            without having to stitch together per-window snapshots.
+
+            The method is polymorphic on the `address` argument:
+
+            - pass a single `str` address → issues a `GET /defi/v3/all-time/trades/single`.
+            - pass a `list[str]` of up to 20 addresses → issues a `POST /defi/v3/all-time/trades/multiple`.
+
+            Both return a [`GetV3AllTimeTradesResponse`][cyhole.birdeye.schema.GetV3AllTimeTradesResponse]
+            whose `data` list contains one item per requested token.
+
+            Parameters:
+                address: a single token contract address (`str`) or a list of up to 20 token contract
+                    addresses (`list[str]`).
+                time_frame: the aggregation window. Must be one of the values from
+                    [`BirdeyeAllTimeTradesTimeFrame`][cyhole.birdeye.param.BirdeyeAllTimeTradesTimeFrame].
+                    Use `BirdeyeAllTimeTradesTimeFrame.ALL_TIME` to fetch statistics spanning the
+                    token's entire trading history.
+                ui_amount_mode: controls how token amounts are expressed for scaled-UI-amount SPL
+                    tokens on Solana. Accepted values are available on
+                    [`BirdeyeUIAmountMode`][cyhole.birdeye.param.BirdeyeUIAmountMode]. Ignored on
+                    non-Solana chains. Default behaviour: `raw`.
+
+            Returns:
+                [`GetV3AllTimeTradesResponse`][cyhole.birdeye.schema.GetV3AllTimeTradesResponse]
+                with one trade-statistics item per requested token address.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to the endpoint.
+                ParamUnknownError: if `time_frame` or `ui_amount_mode` is not an accepted value.
+        """
+        BirdeyeAllTimeTradesTimeFrame.check(time_frame)
+        if ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(ui_amount_mode)
+
+        params: dict[str, Any] = {"time_frame": time_frame}
+        if ui_amount_mode is not None:
+            params["ui_amount_mode"] = ui_amount_mode
+
+        if isinstance(address, str):
+            url = self.url_api_public + "v3/all-time/trades/single"
+            params["address"] = address
+            return self.api_return_model(sync, RequestType.GET.value, url, GetV3AllTimeTradesResponse, params = params)
+
+        url = self.url_api_public + "v3/all-time/trades/multiple"
+        params["list_address"] = ",".join(address)
+        return self.api_return_model(sync, RequestType.POST.value, url, GetV3AllTimeTradesResponse, params = params)
+
+    @overload
+    def _get_v3_token_meme_detail_single(self, sync: Literal[True], address: str) -> GetV3TokenMemeDetailSingleResponse: ...
+
+    @overload
+    def _get_v3_token_meme_detail_single(self, sync: Literal[False], address: str) -> Coroutine[None, None, GetV3TokenMemeDetailSingleResponse]: ...
+
+    def _get_v3_token_meme_detail_single(
+        self,
+        sync: bool,
+        address: str
+    ) -> GetV3TokenMemeDetailSingleResponse | Coroutine[None, None, GetV3TokenMemeDetailSingleResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint
+            **[Meme Token Detail - Single](https://docs.birdeye.so/reference/get-defi-v3-token-meme-detail-single)**
+            and returns the full detail record for a single meme token.
+
+            The response bundles standard token identity fields (address, name, symbol,
+            decimals, price, liquidity, supply, FDV, market cap, logo, extensions) with a
+            ``meme_info`` block that exposes launchpad-specific data: the origin platform,
+            creator wallet, bonding-curve pool state (reserves, supply), graduation status
+            and progress toward the funding target. This endpoint is the right call when a
+            caller needs both token fundamentals and meme-launchpad context in one request.
+
+            Parameters:
+                address: contract address of the meme token to look up.
+
+            Returns:
+                [`GetV3TokenMemeDetailSingleResponse`][cyhole.birdeye.schema.GetV3TokenMemeDetailSingleResponse]
+                containing the full token and meme-info payload.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to the endpoint.
+        """
+        url = self.url_api_public + "v3/token/meme/detail/single"
+        params = {"address": address}
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMemeDetailSingleResponse, params = params)
+
+    @overload
+    def _get_v3_token_meme_list(self, sync: Literal[True], query: GetV3TokenMemeListQuery | None) -> GetV3TokenMemeListResponse: ...
+
+    @overload
+    def _get_v3_token_meme_list(self, sync: Literal[False], query: GetV3TokenMemeListQuery | None) -> Coroutine[None, None, GetV3TokenMemeListResponse]: ...
+
+    def _get_v3_token_meme_list(
+        self,
+        sync: bool,
+        query: GetV3TokenMemeListQuery | None
+    ) -> GetV3TokenMemeListResponse | Coroutine[None, None, GetV3TokenMemeListResponse]:
+        """
+            This function refers to the **PUBLIC** API endpoint
+            **[Meme Token - List](https://docs.birdeye.so/reference/get-defi-v3-token-meme-list)**
+            and returns a paginated list of meme tokens from one or more launchpad platforms.
+
+            Each item in the response bundles token identity (address, name, symbol, logo),
+            market metrics (price, liquidity, market cap, FDV, volume and trade counts across
+            ten time windows), and a ``meme_info`` block covering the token's launchpad origin,
+            bonding-curve pool state, progress toward the funding target, creator, and graduation
+            status. Use this endpoint to screen meme tokens by momentum, liquidity, holder count,
+            or graduation progress in one call.
+
+            Parameters:
+                sync: if `True` run synchronously, else return a coroutine.
+                query: optional query parameters controlling sorting, filtering, and pagination;
+                    pass `None` to use the API defaults (``sort_by=progress_percent``,
+                    ``sort_type=desc``, ``source=all``, ``offset=0``, ``limit=100``).
+                    Use a [`GetV3TokenMemeListQuery`][cyhole.birdeye.schema.GetV3TokenMemeListQuery]
+                    instance to customise the request.
+
+            Returns:
+                [`GetV3TokenMemeListResponse`][cyhole.birdeye.schema.GetV3TokenMemeListResponse]
+                containing a paginated list of meme token records together with a ``has_next``
+                flag indicating whether additional pages are available.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to the endpoint.
+        """
+        params = query.model_dump(exclude_none = True) if query else {}
+        url = self.url_api_public + "v3/token/meme/list"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMemeListResponse, params = params)
