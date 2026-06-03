@@ -48,7 +48,10 @@ from cyhole.birdeye.schema import (
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
     GetOHLCVBaseQuoteResponse,
-    GetWalletSupportedNetworksResponse
+    GetWalletSupportedNetworksResponse,
+    GetV3SearchQuery,
+    GetV3SearchResponse,
+    GetUtilsV1CreditsResponse,
 )
 from cyhole.birdeye.exception import BirdeyeAuthorisationError, BirdeyeTimeRangeError
 from cyhole.core.exception import MissingAPIKeyError
@@ -1949,3 +1952,77 @@ class TestBirdeyePrivate:
 
         # actual test
         assert isinstance(response, GetWalletSupportedNetworksResponse)
+
+    def test_get_v3_search_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Search"
+            for synchronous logic.
+
+            Mock Response File: get_v3_search.json
+        """
+        mock_file_name = "get_v3_search"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3SearchResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_v3_search(GetV3SearchQuery(keyword = "SOL", limit = 1))
+
+        assert isinstance(response, GetV3SearchResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_v3_search_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Search"
+            for asynchronous logic.
+
+            Mock Response File: get_v3_search.json
+        """
+        mock_file_name = "get_v3_search"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetV3SearchResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_v3_search(GetV3SearchQuery(keyword = "SOL", limit = 1))
+
+        assert isinstance(response, GetV3SearchResponse)
+
+    def test_get_utils_v1_credits_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Utils - Credits"
+            for synchronous logic.
+
+            Mock Response File: get_utils_v1_credits.json
+        """
+        mock_file_name = "get_utils_v1_credits"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUtilsV1CreditsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.birdeye.client.get_utils_v1_credits()
+
+        assert isinstance(response, GetUtilsV1CreditsResponse)
+
+        if config.mock_file_overwrite and not config.birdeye.mock_response_private:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_utils_v1_credits_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check the response schema of endpoint "Utils - Credits"
+            for asynchronous logic.
+
+            Mock Response File: get_utils_v1_credits.json
+        """
+        mock_file_name = "get_utils_v1_credits"
+        if config.mock_response or config.birdeye.mock_response_private:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetUtilsV1CreditsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.birdeye.async_client as client:
+            response = await client.get_utils_v1_credits()
+
+        assert isinstance(response, GetUtilsV1CreditsResponse)

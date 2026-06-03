@@ -64,7 +64,10 @@ from ..birdeye.schema import (
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
     GetOHLCVBaseQuoteResponse,
-    GetWalletSupportedNetworksResponse
+    GetWalletSupportedNetworksResponse,
+    GetV3SearchQuery,
+    GetV3SearchResponse,
+    GetUtilsV1CreditsResponse,
 )
 
 if TYPE_CHECKING:
@@ -434,10 +437,24 @@ class BirdeyeClient(APIClient):
 
     def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for synchronous logic. 
+            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for synchronous logic.
             All the API endopint details are available on [`Birdeye._get_wallet_supported_networks`][cyhole.birdeye.interaction.Birdeye._get_wallet_supported_networks].
         """
         return self._interaction._get_wallet_supported_networks(True)
+
+    def get_v3_search(self, query: GetV3SearchQuery | None = None) -> GetV3SearchResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Search](https://docs.birdeye.so/reference/get-defi-v3-search)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_search`][cyhole.birdeye.interaction.Birdeye._get_v3_search].
+        """
+        return self._interaction._get_v3_search(True, query)
+
+    def get_utils_v1_credits(self, time_from: int | None = None, time_to: int | None = None) -> GetUtilsV1CreditsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Utils - Credits](https://docs.birdeye.so/reference/get-utils-v1-credits)** for synchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_utils_v1_credits`][cyhole.birdeye.interaction.Birdeye._get_utils_v1_credits].
+        """
+        return self._interaction._get_utils_v1_credits(True, time_from, time_to)
 
 class BirdeyeAsyncClient(AsyncAPIClient):
     """
@@ -803,7 +820,21 @@ class BirdeyeAsyncClient(AsyncAPIClient):
 
     async def get_wallet_supported_networks(self) -> GetWalletSupportedNetworksResponse:
         """
-            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for asynchronous logic. 
+            Call the Birdeye's **PRIVATE** API endpoint **[Wallet - Supported Networks](https://docs.birdeye.so/reference/get_v1-wallet-list-supported-chain)** for asynchronous logic.
             All the API endopint details are available on [`Birdeye._get_wallet_supported_networks`][cyhole.birdeye.interaction.Birdeye._get_wallet_supported_networks].
         """
         return await self._interaction._get_wallet_supported_networks(False)
+
+    async def get_v3_search(self, query: GetV3SearchQuery | None = None) -> GetV3SearchResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Search](https://docs.birdeye.so/reference/get-defi-v3-search)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_v3_search`][cyhole.birdeye.interaction.Birdeye._get_v3_search].
+        """
+        return await self._interaction._get_v3_search(False, query)
+
+    async def get_utils_v1_credits(self, time_from: int | None = None, time_to: int | None = None) -> GetUtilsV1CreditsResponse:
+        """
+            Call the Birdeye's **PRIVATE** API endpoint **[Utils - Credits](https://docs.birdeye.so/reference/get-utils-v1-credits)** for asynchronous logic.
+            All the API endpoint details are available on [`Birdeye._get_utils_v1_credits`][cyhole.birdeye.interaction.Birdeye._get_utils_v1_credits].
+        """
+        return await self._interaction._get_utils_v1_credits(False, time_from, time_to)

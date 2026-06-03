@@ -27,7 +27,11 @@ from ..birdeye.param import (
     BirdeyeHolderChartMode,
     BirdeyeHolderChartPercentMode,
     BirdeyeTokenTrendingSortBy,
-    BirdeyeTokenTrendingInterval
+    BirdeyeTokenTrendingInterval,
+    BirdeyeSearchTarget,
+    BirdeyeSearchMode,
+    BirdeyeSearchBy,
+    BirdeyeSearchSortBy,
 )
 from ..birdeye.schema import (
     GetTokenListResponse,
@@ -70,7 +74,10 @@ from ..birdeye.schema import (
     GetTradesPairResponse,
     GetOHLCVTokenPairResponse,
     GetOHLCVBaseQuoteResponse,
-    GetWalletSupportedNetworksResponse
+    GetWalletSupportedNetworksResponse,
+    GetV3SearchQuery,
+    GetV3SearchResponse,
+    GetUtilsV1CreditsResponse,
 )
 
 class Birdeye(Interaction):
@@ -139,6 +146,7 @@ class Birdeye(Interaction):
         self.url_api_private_wallet = "https://public-api.birdeye.so/v1/wallet"
         self.url_api_token_v1 = "https://public-api.birdeye.so/token/v1/"
         self.url_api_holder_v1 = "https://public-api.birdeye.so/holder/v1/"
+        self.url_api_utils_v1 = "https://public-api.birdeye.so/utils/v1/"
         return
 
     @overload
@@ -2345,3 +2353,108 @@ class Birdeye(Interaction):
 
         # execute request
         return self.api_return_model(sync, RequestType.GET.value, url, GetWalletSupportedNetworksResponse)
+
+    @overload
+    def _get_v3_search(self, sync: Literal[True], query: GetV3SearchQuery | None = None) -> GetV3SearchResponse: ...
+
+    @overload
+    def _get_v3_search(self, sync: Literal[False], query: GetV3SearchQuery | None = None) -> Coroutine[None, None, GetV3SearchResponse]: ...
+
+    def _get_v3_search(
+        self,
+        sync: bool,
+        query: GetV3SearchQuery | None = None
+    ) -> GetV3SearchResponse | Coroutine[None, None, GetV3SearchResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Search](https://docs.birdeye.so/reference/get-defi-v3-search)** and is used
+            to search for tokens and/or markets across one or all of Birdeye's supported chains.
+            Callers can narrow results by keyword, entity type, matching mode, chain, and a range of
+            sort metrics; the response groups matches into type buckets (`"token"` and `"market"`)
+            each containing a ranked list of matching items. Useful for token-discovery UIs, autocomplete
+            search boxes, and cross-chain asset lookups.
+
+            !!! info
+                The `verify_token` filter is Solana-only. The `markets` filter restricts results to
+                specific DEX sources (e.g. Raydium, Orca). Page size is capped at 20 items per call.
+
+            Parameters:
+                query: optional [`GetV3SearchQuery`][cyhole.birdeye.schema.GetV3SearchQuery] instance
+                    holding the search keyword, target type, matching mode, chain, sort options and
+                    pagination settings. When `None` (or omitted) the call uses Birdeye's defaults —
+                    all entity types, exact symbol matching, sorted by 24h USD volume descending.
+
+            Returns:
+                search results grouped by entity type, decoded as
+                [`GetV3SearchResponse`][cyhole.birdeye.schema.GetV3SearchResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+                ParamUnknownError: if one of the input parameters belonging to the value list is not aligned to it.
+        """
+        if query is None:
+            query = GetV3SearchQuery()
+
+        # validate optional enum fields
+        if query.target is not None:
+            BirdeyeSearchTarget.check(query.target)
+        if query.search_mode is not None:
+            BirdeyeSearchMode.check(query.search_mode)
+        if query.search_by is not None:
+            BirdeyeSearchBy.check(query.search_by)
+        if query.sort_by is not None:
+            BirdeyeSearchSortBy.check(query.sort_by)
+        if query.sort_type is not None:
+            BirdeyeOrder.check(query.sort_type)
+        if query.ui_amount_mode is not None:
+            BirdeyeUIAmountMode.check(query.ui_amount_mode)
+
+        # build params — exclude None and coerce bool to lowercase string
+        params = {}
+        for key, value in query.model_dump().items():
+            if value is None:
+                continue
+            if isinstance(value, bool):
+                params[key] = "true" if value else "false"
+            else:
+                params[key] = value
+
+        url = self.url_api_private + "v3/search"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3SearchResponse, params = params)
+
+    @overload
+    def _get_utils_v1_credits(self, sync: Literal[True], time_from: int | None = None, time_to: int | None = None) -> GetUtilsV1CreditsResponse: ...
+
+    @overload
+    def _get_utils_v1_credits(self, sync: Literal[False], time_from: int | None = None, time_to: int | None = None) -> Coroutine[None, None, GetUtilsV1CreditsResponse]: ...
+
+    def _get_utils_v1_credits(
+        self,
+        sync: bool,
+        time_from: int | None = None,
+        time_to: int | None = None
+    ) -> GetUtilsV1CreditsResponse | Coroutine[None, None, GetUtilsV1CreditsResponse]:
+        """
+            This function refers to the **PRIVATE** API endpoint **[Utils - Credits](https://docs.birdeye.so/reference/get-utils-v1-credits)** and is used
+            to retrieve the API credit usage for the current account over a given time range.
+            Useful for monitoring consumption and detecting when the account is approaching its
+            credit limit.
+
+            Parameters:
+                time_from: start of the time range as a unix timestamp in seconds; `None` to
+                    let the server choose the default start.
+                time_to: end of the time range as a unix timestamp in seconds; `None` to
+                    let the server choose the default end (typically the current time).
+
+            Returns:
+                credit usage statistics decoded as
+                [`GetUtilsV1CreditsResponse`][cyhole.birdeye.schema.GetUtilsV1CreditsResponse].
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to related endpoint.
+        """
+        url = self.url_api_utils_v1 + "credits"
+        params = {
+            "time_from": time_from,
+            "time_to": time_to,
+        }
+        return self.api_return_model(sync, RequestType.GET.value, url, GetUtilsV1CreditsResponse, params = params)
