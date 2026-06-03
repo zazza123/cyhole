@@ -81,6 +81,8 @@ from ..birdeye.schema import (
     GetUtilsV1CreditsResponse,
     GetV3AllTimeTradesResponse,
     GetV3TokenMemeDetailSingleResponse,
+    GetV3TokenMemeListQuery,
+    GetV3TokenMemeListResponse,
 )
 
 class Birdeye(Interaction):
@@ -2580,3 +2582,46 @@ class Birdeye(Interaction):
         url = self.url_api_public + "v3/token/meme/detail/single"
         params = {"address": address}
         return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMemeDetailSingleResponse, params = params)
+
+    @overload
+    def _get_v3_token_meme_list(self, sync: Literal[True], query: GetV3TokenMemeListQuery | None) -> GetV3TokenMemeListResponse: ...
+
+    @overload
+    def _get_v3_token_meme_list(self, sync: Literal[False], query: GetV3TokenMemeListQuery | None) -> Coroutine[None, None, GetV3TokenMemeListResponse]: ...
+
+    def _get_v3_token_meme_list(
+        self,
+        sync: bool,
+        query: GetV3TokenMemeListQuery | None
+    ) -> GetV3TokenMemeListResponse | Coroutine[None, None, GetV3TokenMemeListResponse]:
+        """
+            This function refers to the **PUBLIC** API endpoint
+            **[Meme Token - List](https://docs.birdeye.so/reference/get-defi-v3-token-meme-list)**
+            and returns a paginated list of meme tokens from one or more launchpad platforms.
+
+            Each item in the response bundles token identity (address, name, symbol, logo),
+            market metrics (price, liquidity, market cap, FDV, volume and trade counts across
+            ten time windows), and a ``meme_info`` block covering the token's launchpad origin,
+            bonding-curve pool state, progress toward the funding target, creator, and graduation
+            status. Use this endpoint to screen meme tokens by momentum, liquidity, holder count,
+            or graduation progress in one call.
+
+            Parameters:
+                sync: if `True` run synchronously, else return a coroutine.
+                query: optional query parameters controlling sorting, filtering, and pagination;
+                    pass `None` to use the API defaults (``sort_by=progress_percent``,
+                    ``sort_type=desc``, ``source=all``, ``offset=0``, ``limit=100``).
+                    Use a [`GetV3TokenMemeListQuery`][cyhole.birdeye.schema.GetV3TokenMemeListQuery]
+                    instance to customise the request.
+
+            Returns:
+                [`GetV3TokenMemeListResponse`][cyhole.birdeye.schema.GetV3TokenMemeListResponse]
+                containing a paginated list of meme token records together with a ``has_next``
+                flag indicating whether additional pages are available.
+
+            Raises:
+                BirdeyeAuthorisationError: if the API key provided does not give access to the endpoint.
+        """
+        params = query.model_dump(exclude_none = True) if query else {}
+        url = self.url_api_public + "v3/token/meme/list"
+        return self.api_return_model(sync, RequestType.GET.value, url, GetV3TokenMemeListResponse, params = params)
