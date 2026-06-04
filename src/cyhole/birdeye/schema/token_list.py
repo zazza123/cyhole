@@ -562,8 +562,8 @@ class GetV2TokensNewListingItem(BaseModel):
 
         Attributes:
             address: contract address of the freshly listed token on the selected chain.
-            symbol: ticker symbol of the token.
-            name: human-readable name of the token.
+            symbol: ticker symbol of the token; `None` if Birdeye has not resolved it yet.
+            name: human-readable name of the token; `None` if Birdeye has not resolved it yet.
             decimals: number of decimal places used by the token.
             source: name of the venue (DEX/aggregator) Birdeye picked up the listing from.
             liquidity_added_at: ISO-8601 timestamp of the listing event (alias `liquidityAddedAt`).
@@ -571,8 +571,8 @@ class GetV2TokensNewListingItem(BaseModel):
             liquidity: total liquidity of the token at listing time, expressed in USD.
     """
     address: str
-    symbol: str
-    name: str
+    symbol: str | None = None
+    name: str | None = None
     decimals: int
     source: str
     liquidity_added_at: str = Field(alias = "liquidityAddedAt")
