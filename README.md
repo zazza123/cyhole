@@ -1,3 +1,5 @@
+
+
 <p align="center">
   <a href="https://zazza123.github.io/cyhole">
     <img src="https://raw.githubusercontent.com/zazza123/cyhole/main/docs/config/images/logo.png" alt="cyhole" height="150px" class="readme">
@@ -35,6 +37,8 @@ The installation is performed via `pip` by running:
 ```sh
 pip install cyhole
 ```
+
+Requires Python 3.12+.
 
 ## Interactions
 
