@@ -14,6 +14,7 @@ from ..helius.schema import (
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
     GetTransactionsByAddressQuery,
+    PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -30,6 +31,8 @@ from ..helius.schema import (
     PostGetTransactionsForAddressResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
+    PostParsedEventsTransactionsResponse,
+    PostParsedEventsTransactionHistoryResponse,
 )
 
 if TYPE_CHECKING:
@@ -155,6 +158,20 @@ class HeliusClient(APIClient):
         """
         return self._interaction._post_get_transactions(True, signatures, commitment)
 
+    def post_parsed_events_transactions(self, signatures: list[str], commitment: str | None = None, include_raw_transaction: bool | None = None) -> PostParsedEventsTransactionsResponse:
+        """
+        Call the Helius POST **[transactions](https://www.helius.dev/docs/parsed-events/quickstart)** Parsed Events API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_parsed_events_transactions`][cyhole.helius.interaction.Helius._post_parsed_events_transactions].
+        """
+        return self._interaction._post_parsed_events_transactions(True, signatures, commitment, include_raw_transaction)
+
+    def post_parsed_events_transaction_history(self, body: PostParsedEventsTransactionHistoryBody) -> PostParsedEventsTransactionHistoryResponse:
+        """
+        Call the Helius POST **[transaction-history](https://www.helius.dev/docs/parsed-events/quickstart)** Parsed Events API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_parsed_events_transaction_history`][cyhole.helius.interaction.Helius._post_parsed_events_transaction_history].
+        """
+        return self._interaction._post_parsed_events_transaction_history(True, body)
+
 
 class HeliusAsyncClient(AsyncAPIClient):
     """Client for asynchronous API calls for `Helius` interaction."""
@@ -274,3 +291,17 @@ class HeliusAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Helius._post_get_transactions`][cyhole.helius.interaction.Helius._post_get_transactions].
         """
         return await self._interaction._post_get_transactions(False, signatures, commitment)
+
+    async def post_parsed_events_transactions(self, signatures: list[str], commitment: str | None = None, include_raw_transaction: bool | None = None) -> PostParsedEventsTransactionsResponse:
+        """
+        Call the Helius POST **[transactions](https://www.helius.dev/docs/parsed-events/quickstart)** Parsed Events API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_parsed_events_transactions`][cyhole.helius.interaction.Helius._post_parsed_events_transactions].
+        """
+        return await self._interaction._post_parsed_events_transactions(False, signatures, commitment, include_raw_transaction)
+
+    async def post_parsed_events_transaction_history(self, body: PostParsedEventsTransactionHistoryBody) -> PostParsedEventsTransactionHistoryResponse:
+        """
+        Call the Helius POST **[transaction-history](https://www.helius.dev/docs/parsed-events/quickstart)** Parsed Events API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_parsed_events_transaction_history`][cyhole.helius.interaction.Helius._post_parsed_events_transaction_history].
+        """
+        return await self._interaction._post_parsed_events_transaction_history(False, body)

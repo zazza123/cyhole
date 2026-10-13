@@ -82,6 +82,53 @@ response = helius.client.post_get_assets_by_group(body)
 print(f"Collection size: {response.result.total}")
 ```
 
+### Read the Parsed History of an Address
+
+Fetch what an address did, already decoded: SOL and token movements, a summary of each
+transaction, and every instruction with its program and instruction name. The Parsed Events API
+is the successor of the Enhanced Transactions API (`getTransactionsByAddress`), available on every
+plan at a tenth of the credits.
+
+```python
+import asyncio
+from cyhole.helius import Helius
+from cyhole.helius.param import HeliusParserStatus
+from cyhole.helius.schema import PostParsedEventsTransactionHistoryBody
+
+helius = Helius(api_key="your-api-key")
+
+async def main():
+    body = PostParsedEventsTransactionHistoryBody(address="YourWalletAddressHere", limit=25)
+    async with helius.async_client as client:
+        response = await client.post_parsed_events_transaction_history(body)
+
+    for result in response.data:
+        if result.parser_status != HeliusParserStatus.OK.value:
+            print(result.signature, "not parsed:", result.parser_error.code)
+            continue
+        tx = result.parsed
+        print(result.signature, tx.summary.type if tx.summary else "unclassified")
+        for transfer in tx.native_transfers:
+            print("  ", transfer.from_user_account, "->", transfer.to_user_account, transfer.amount / 1e9, "SOL")
+        for transfer in tx.token_transfers:
+            # amounts are raw integers: scale them by the mint's decimals
+            print("  ", transfer.mint, transfer.raw_token_amount / 10 ** transfer.decimals)
+
+    # pass the cursor back to read the next page; it is None at the end of the history
+    print("next page:", response.pagination_token)
+
+asyncio.run(main())
+```
+
+To find the instruction that created a pool, look at the decoded names instead of guessing from
+the accounts:
+
+```python
+for instruction in tx.instructions:
+    if instruction.inner_instruction_index is None and instruction.instruction_name == "create_pool":
+        print(instruction.program_name, instruction.raw_accounts[0])
+```
+
 ## Content
 
 The documentation follows the library's structure by providing all the technical details required to use it.
@@ -142,3 +189,5 @@ The documentation follows the library's structure by providing all the technical
 | getTransactionsForAddress | `POST` | [`post_get_transactions_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions_for_address) | `0.3.0` | - |
 | getTransactionsByAddress | `GET` | [`get_transactions_by_address`](../helius/interaction.md#cyhole.helius.Helius._get_transactions_by_address) | `0.3.1` | - |
 | getTransactions | `POST` | [`post_get_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions) | `0.3.1` | - |
+| parsedEventsTransactions | `POST` | [`post_parsed_events_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_parsed_events_transactions) | `0.4.1` | - |
+| parsedEventsTransactionHistory | `POST` | [`post_parsed_events_transaction_history`](../helius/interaction.md#cyhole.helius.Helius._post_parsed_events_transaction_history) | `0.4.1` | - |
