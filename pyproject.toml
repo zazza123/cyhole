@@ -72,3 +72,10 @@ context = '${CONTEXT}'
 omit = [
     "tests/config.py"
 ]
+
+[tool.ruff.lint]
+# The rule set ruff applied by default when this lint job was set up. Stated
+# here because ruff's defaults have since grown (import sorting, bugbear,
+# pyupgrade, ...) and an unpinned ruff would otherwise start failing CI on
+# code nobody touched.
+select = ["E4", "E7", "E9", "F"]
