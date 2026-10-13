@@ -114,7 +114,7 @@ class HeliusTransactionDetails(CyholeParam):
     SIGNATURES = "signatures"
     """Return only signature-level info — faster, default mode (limit up to 1,000)."""
     FULL = "full"
-    """Return the complete transaction payload — eliminates the need for follow-up `getTransaction` calls (limit must be `<= 100`)."""
+    """Return the complete transaction payload — eliminates the need for follow-up `getTransaction` calls (limit up to 1,000; billed per 100 transactions returned)."""
 
 
 class HeliusTransactionStatus(CyholeParam):

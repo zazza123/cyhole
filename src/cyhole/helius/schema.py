@@ -749,12 +749,13 @@ class PostGetTransactionsForAddressBody(BaseModel):
         transaction_details: level of detail returned for each transaction. Accepts the
             values of [`HeliusTransactionDetails`][cyhole.helius.param.HeliusTransactionDetails]
             (`"signatures"`, `"full"`). API default: `"signatures"`. Use `"full"` to obtain
-            the complete transaction payload in a single call (`limit` must be `<= 100`).
+            the complete transaction payload in a single call; full mode is billed per
+            100 transactions returned, so a large `limit` costs proportionally more.
         sort_order: result ordering. Accepts the values of
             [`HeliusSortOrder`][cyhole.helius.param.HeliusSortOrder] (`"desc"`, `"asc"`).
             API default: `"desc"` (newest first).
-        limit: maximum number of transactions returned. Up to `1000` in `"signatures"`
-            mode and up to `100` in `"full"` mode. API default: `1000`.
+        limit: maximum number of transactions returned. Up to `1000` in both
+            `"signatures"` and `"full"` mode. API default: `1000`.
         pagination_token: cursor from the previous response — pass the value received
             in `result.pagination_token` (format `"slot:position"`) to fetch the next page.
         commitment: data commitment level. Accepts the values of

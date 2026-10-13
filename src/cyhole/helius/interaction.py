@@ -517,11 +517,13 @@ class Helius(Interaction):
         activity on token accounts owned by the queried wallet via
         `filters.token_accounts`.
 
-        The endpoint is a Helius-exclusive feature (not part of standard Solana RPC),
-        requires a Developer plan or higher, costs 50 credits per request and
-        returns up to 100 full transactions or 1,000 signatures per page. The
-        `token_accounts` filter does not see transactions prior to December 2022;
-        devnet retention is limited to 2 weeks while mainnet retention is unlimited.
+        The endpoint is a Helius-exclusive feature (not part of standard Solana RPC)
+        and returns up to 1,000 rows per page in either detail mode. It is billed on
+        what a successful response returns: 10 credits flat in signatures mode, and
+        10 credits per 100 full transactions (rounded up, 10-credit minimum) in full
+        mode; failed responses are free. The `token_accounts` filter does not see
+        transactions prior to December 2022; devnet retention is limited to 2 weeks
+        while mainnet retention is unlimited.
 
         Parameters:
             sync: if `True` run synchronously, else return a coroutine.
