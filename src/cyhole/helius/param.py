@@ -114,7 +114,7 @@ class HeliusTransactionDetails(CyholeParam):
     SIGNATURES = "signatures"
     """Return only signature-level info — faster, default mode (limit up to 1,000)."""
     FULL = "full"
-    """Return the complete transaction payload — eliminates the need for follow-up `getTransaction` calls (limit must be `<= 100`)."""
+    """Return the complete transaction payload — eliminates the need for follow-up `getTransaction` calls (limit up to 1,000; billed per 100 transactions returned)."""
 
 
 class HeliusTransactionStatus(CyholeParam):
@@ -165,3 +165,46 @@ class HeliusEncoding(CyholeParam):
     """Base64 encoding of the raw transaction bytes."""
     BASE58 = "base58"
     """Base58 encoding of the raw transaction bytes."""
+
+
+class HeliusParserStatus(CyholeParam):
+    """
+    Per-item parsing outcome returned by the Parsed Events API.
+
+    Compare against the `parser_status` attribute of a
+    [`ParsedEventsTransactionResult`][cyhole.helius.schema.ParsedEventsTransactionResult]
+    to tell the items that carry a `parsed` payload from the ones that carry a `parser_error`.
+    """
+    OK = "OK"
+    """The transaction was found and parsed — `parsed` is populated."""
+    ERROR = "ERROR"
+    """The item could not be parsed (e.g. invalid or unknown signature) — `parser_error` is populated."""
+
+
+class HeliusParsedEventsSummaryType(CyholeParam):
+    """
+    Summary types assigned by the Parsed Events API to a transaction or to a single instruction.
+
+    Compare against the `type` attribute of a
+    [`ParsedEventsSummary`][cyhole.helius.schema.ParsedEventsSummary].
+
+    The set is **not closed**: Helius documents the first six values as the "current" ones and
+    keeps adding parsers, and the API already returns values outside the documented list
+    (`token_mint` was observed on mainnet). Treat an unknown string as a valid, newer type
+    rather than as an error — which is why the schema types the field as a plain `str`.
+    """
+    SWAP = "swap"
+    """A token swap; `parsed_data` carries the venue, the direction and the amounts."""
+    TRANSFER = "transfer"
+    """A native SOL or SPL token transfer."""
+    ADD_LIQUIDITY = "add_liquidity"
+    """Liquidity deposited into a pool."""
+    REMOVE_LIQUIDITY = "remove_liquidity"
+    """Liquidity withdrawn from a pool."""
+    CREATE_ACCOUNT = "create_account"
+    """A System Program account creation."""
+    CREATE_TOKEN_ACCOUNT = "create_token_account"
+    """An SPL token account creation."""
+    TOKEN_MINT = "token_mint"
+    """A token mint operation. Observed on mainnet, not listed in the Helius documentation."""
+

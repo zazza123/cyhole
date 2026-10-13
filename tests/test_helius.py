@@ -3,6 +3,7 @@ from pathlib import Path
 from pytest_mock import MockerFixture
 
 from cyhole.helius import Helius
+from cyhole.helius.param import HeliusCommitment, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
 from cyhole.helius.schema import (
     PostGetAssetsByOwnerBody,
     PostGetAssetsByGroupBody,
@@ -13,6 +14,8 @@ from cyhole.helius.schema import (
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
     GetTransactionsByAddressQuery,
+    PostParsedEventsRange,
+    PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -29,6 +32,8 @@ from cyhole.helius.schema import (
     PostGetTransactionsForAddressResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
+    PostParsedEventsTransactionsResponse,
+    PostParsedEventsTransactionHistoryResponse,
 )
 from .config import load_config, MockerManager
 
@@ -47,6 +52,16 @@ TEST_MASTER_MINT = "MASTER11111111111111111111111111111111111111"
 TEST_TOKEN_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 TEST_TRANSFER_ADDRESS = "86xCnPeV69n6t3DnyGvkKobf9FdN2H9oiVDdaMpo2MMY"
 TEST_TRANSACTION_SIGNATURE = "5j7s6fJ2HMoqMhiMWBgFMDWHkKnMJpBzPvKxjMwWqkibMr5PAtPQWViHJEgjSGj3CeAnj8Vp7rR9Z5Z8Z5Z8Z5"
+# Parsed Events: a plain SOL transfer, a Pump.fun AMM swap, and a string that is not a
+# valid signature (the Enhanced Transactions placeholder above), in this order.
+TEST_PARSED_EVENTS_TRANSFER_SIGNATURE = "3UbfkqQtk9v3dht5YmK3n5j3F2WDPG3mToZX4nwNd327dHGgm7vXuyUzyf7VnQjSwcU8xZF5X2r3DprkxRCBprWx"
+TEST_PARSED_EVENTS_SWAP_SIGNATURE = "3F4vmiSZcPtafg5QhPkuBF6XRzbxQkYcn2Td8hRZL8gXMKjDwvA6p1CS7aAZrUsNX2UrK5C7RpJTrPGYcm6QgyE9"
+TEST_PARSED_EVENTS_SIGNATURES = [
+    TEST_PARSED_EVENTS_TRANSFER_SIGNATURE,
+    TEST_PARSED_EVENTS_SWAP_SIGNATURE,
+    TEST_TRANSACTION_SIGNATURE,
+]
+TEST_PARSED_EVENTS_ADDRESS = "8zxkmeqHrpmqyzCSGxLNWZ4W7ZgjwHuo4HV11ALceNAg"
 
 
 class TestHelius:
@@ -665,3 +680,212 @@ class TestHelius:
             response = await client.post_get_transactions([TEST_TRANSACTION_SIGNATURE])
         assert isinstance(response, PostGetTransactionsResponse)
         assert len(response.root) > 0
+
+    # ─── parsedEventsTransactions ─────────────────────────────────────────────
+
+    def test_post_parsed_events_transactions_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "parsedEventsTransactions" — synchronous logic.
+
+        Mock Response File: postParsedEventsTransactions_default.json
+        """
+        mock_file_name = "postParsedEventsTransactions_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostParsedEventsTransactionsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.helius.client.post_parsed_events_transactions(
+            TEST_PARSED_EVENTS_SIGNATURES,
+            commitment = HeliusCommitment.FINALIZED.value,
+        )
+        assert isinstance(response, PostParsedEventsTransactionsResponse)
+
+        # one result per signature, in input order
+        assert [result.signature for result in response.root] == TEST_PARSED_EVENTS_SIGNATURES
+        transfer, swap, invalid = response.root
+
+        # a plain transfer: parsed, with its SOL movement and a transfer summary
+        assert transfer.parser_status == HeliusParserStatus.OK.value
+        assert transfer.parser_error is None
+        assert transfer.parsed is not None
+        assert transfer.parsed.transaction_status == "OK"
+        assert transfer.parsed.fee_payer is not None
+        assert len(transfer.parsed.native_transfers) > 0
+        assert transfer.parsed.native_transfers[0].amount > 0
+        assert transfer.parsed.summary is not None
+        assert transfer.parsed.summary.type == HeliusParsedEventsSummaryType.TRANSFER.value
+
+        # a swap: structured data behind the summary, raw token amounts, and a flat
+        # instruction list holding both top-level and inner instructions
+        assert swap.parsed is not None
+        assert swap.parsed.summary is not None
+        assert swap.parsed.summary.type == HeliusParsedEventsSummaryType.SWAP.value
+        assert swap.parsed.summary.parsed_data is not None
+        assert {"protocol", "in_amount", "actual_out_amount", "input_mint", "output_mint"} <= set(swap.parsed.summary.parsed_data)
+        assert len(swap.parsed.token_transfers) > 0
+        assert all(isinstance(token_transfer.raw_token_amount, int) for token_transfer in swap.parsed.token_transfers)
+        assert any(instruction.inner_instruction_index is None for instruction in swap.parsed.instructions)
+        assert any(instruction.inner_instruction_index is not None for instruction in swap.parsed.instructions)
+        assert any(instruction.instruction_name is not None for instruction in swap.parsed.instructions)
+        assert any(instruction.decoded is not None and instruction.decoded.accounts for instruction in swap.parsed.instructions)
+
+        # an item that cannot be parsed does not fail the request
+        assert invalid.parser_status == HeliusParserStatus.ERROR.value
+        assert invalid.parsed is None
+        assert invalid.parser_error is not None
+        assert invalid.parser_error.code != ""
+
+        if config.mock_file_overwrite and not config.helius.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_parsed_events_transactions_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "parsedEventsTransactions" — asynchronous logic.
+
+        Mock Response File: postParsedEventsTransactions_default.json
+        """
+        mock_file_name = "postParsedEventsTransactions_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostParsedEventsTransactionsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.helius.async_client as client:
+            response = await client.post_parsed_events_transactions(TEST_PARSED_EVENTS_SIGNATURES)
+        assert isinstance(response, PostParsedEventsTransactionsResponse)
+        assert [result.signature for result in response.root] == TEST_PARSED_EVENTS_SIGNATURES
+        assert response.root[0].parsed is not None
+        assert response.root[-1].parser_status == HeliusParserStatus.ERROR.value
+
+    def test_post_parsed_events_transactions_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "parsedEventsTransactions" — request sent to the API.
+
+        Checks the URL, the API key and the JSON body, with and without the optional inputs.
+
+        Mock Response File: postParsedEventsTransactions_default.json
+        """
+        mock_response = self.mocker.load_mock_response("postParsedEventsTransactions_default", PostParsedEventsTransactionsResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.helius.client.post_parsed_events_transactions(TEST_PARSED_EVENTS_SIGNATURES)
+        args, kwargs = api.call_args
+        assert args[0] == "POST"
+        assert args[1] == "https://mainnet.helius-rpc.com/v1/parsed-events/transactions"
+        assert set(kwargs["params"]) == {"api-key"}
+        assert kwargs["json"] == {"transactions": TEST_PARSED_EVENTS_SIGNATURES}
+
+        self.helius.client.post_parsed_events_transactions(
+            TEST_PARSED_EVENTS_SIGNATURES,
+            commitment = HeliusCommitment.FINALIZED.value,
+            include_raw_transaction = True,
+        )
+        _, kwargs = api.call_args
+        assert kwargs["json"] == {
+            "transactions": TEST_PARSED_EVENTS_SIGNATURES,
+            "commitment": "finalized",
+            "includeRawTransaction": True,
+        }
+
+    # ─── parsedEventsTransactionHistory ───────────────────────────────────────
+
+    def test_post_parsed_events_transaction_history_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "parsedEventsTransactionHistory" — synchronous logic.
+
+        Mock Response File: postParsedEventsTransactionHistory_default.json
+        """
+        mock_file_name = "postParsedEventsTransactionHistory_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostParsedEventsTransactionHistoryResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        body = PostParsedEventsTransactionHistoryBody(
+            address = TEST_PARSED_EVENTS_ADDRESS,
+            limit = 3,
+            sort_order = HeliusSortOrder.ASC.value,
+            commitment = HeliusCommitment.FINALIZED.value,
+        )
+        response = self.helius.client.post_parsed_events_transaction_history(body)
+        assert isinstance(response, PostParsedEventsTransactionHistoryResponse)
+        assert 0 < len(response.data) <= 3
+        assert response.pagination_token is not None
+
+        for result in response.data:
+            assert result.parser_status == HeliusParserStatus.OK.value
+            assert result.parsed is not None
+            assert result.parsed.slot > 0
+            assert result.parsed.block_time is not None
+
+        # oldest first, as requested
+        block_times = [result.parsed.block_time for result in response.data if result.parsed is not None]
+        assert block_times == sorted(block_times)
+
+        if config.mock_file_overwrite and not config.helius.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_parsed_events_transaction_history_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "parsedEventsTransactionHistory" — asynchronous logic.
+
+        Mock Response File: postParsedEventsTransactionHistory_default.json
+        """
+        mock_file_name = "postParsedEventsTransactionHistory_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostParsedEventsTransactionHistoryResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        body = PostParsedEventsTransactionHistoryBody(address = TEST_PARSED_EVENTS_ADDRESS, limit = 3, sort_order = HeliusSortOrder.ASC.value)
+        async with self.helius.async_client as client:
+            response = await client.post_parsed_events_transaction_history(body)
+        assert isinstance(response, PostParsedEventsTransactionHistoryResponse)
+        assert len(response.data) > 0
+        assert response.data[0].parsed is not None
+
+    def test_post_parsed_events_transaction_history_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "parsedEventsTransactionHistory" — request sent to the API.
+
+        Checks the URL, the API key and that the body is sent with the API's camelCase
+        names, leaving out every field that was not set.
+
+        Mock Response File: postParsedEventsTransactionHistory_default.json
+        """
+        mock_response = self.mocker.load_mock_response("postParsedEventsTransactionHistory_default", PostParsedEventsTransactionHistoryResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.helius.client.post_parsed_events_transaction_history(PostParsedEventsTransactionHistoryBody(address = TEST_PARSED_EVENTS_ADDRESS))
+        args, kwargs = api.call_args
+        assert args[0] == "POST"
+        assert args[1] == "https://mainnet.helius-rpc.com/v1/parsed-events/transaction-history"
+        assert set(kwargs["params"]) == {"api-key"}
+        assert kwargs["json"] == {"address": TEST_PARSED_EVENTS_ADDRESS}
+
+        body = PostParsedEventsTransactionHistoryBody(
+            address = TEST_PARSED_EVENTS_ADDRESS,
+            limit = 50,
+            before_signature = TEST_PARSED_EVENTS_SWAP_SIGNATURE,
+            after_signature = TEST_PARSED_EVENTS_TRANSFER_SIGNATURE,
+            pagination_token = "402752376:841",
+            sort_order = HeliusSortOrder.DESC.value,
+            commitment = HeliusCommitment.CONFIRMED.value,
+            include_raw_transaction = False,
+            slot = PostParsedEventsRange(gte = 402752376),
+            time = PostParsedEventsRange(gt = 1_700_000_000, lte = 1_800_000_000),
+        )
+        self.helius.client.post_parsed_events_transaction_history(body)
+        _, kwargs = api.call_args
+        assert kwargs["json"] == {
+            "address": TEST_PARSED_EVENTS_ADDRESS,
+            "limit": 50,
+            "beforeSignature": TEST_PARSED_EVENTS_SWAP_SIGNATURE,
+            "afterSignature": TEST_PARSED_EVENTS_TRANSFER_SIGNATURE,
+            "paginationToken": "402752376:841",
+            "sortOrder": "desc",
+            "commitment": "confirmed",
+            "includeRawTransaction": False,
+            "slot": {"gte": 402752376},
+            "time": {"gt": 1_700_000_000, "lte": 1_800_000_000},
+        }
+

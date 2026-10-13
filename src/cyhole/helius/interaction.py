@@ -15,6 +15,7 @@ from ..helius.schema import (
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
     GetTransactionsByAddressQuery,
+    PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
     PostGetAssetBatchResponse,
     PostGetAssetProofResponse,
@@ -31,6 +32,8 @@ from ..helius.schema import (
     PostGetTransactionsForAddressResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
+    PostParsedEventsTransactionsResponse,
+    PostParsedEventsTransactionHistoryResponse,
 )
 
 
@@ -83,6 +86,7 @@ class Helius(Interaction):
         self._api_key = api_key
         self.url_api = f"https://{network.value}.helius-rpc.com/?api-key={api_key}"
         self.url_api_enhanced = f"https://api-{network.value}.helius-rpc.com"
+        self.url_api_parsed_events = f"https://{network.value}.helius-rpc.com/v1/parsed-events"
         self.client = HeliusClient(self)
         self.async_client = HeliusAsyncClient(self)
 
@@ -513,11 +517,13 @@ class Helius(Interaction):
         activity on token accounts owned by the queried wallet via
         `filters.token_accounts`.
 
-        The endpoint is a Helius-exclusive feature (not part of standard Solana RPC),
-        requires a Developer plan or higher, costs 50 credits per request and
-        returns up to 100 full transactions or 1,000 signatures per page. The
-        `token_accounts` filter does not see transactions prior to December 2022;
-        devnet retention is limited to 2 weeks while mainnet retention is unlimited.
+        The endpoint is a Helius-exclusive feature (not part of standard Solana RPC)
+        and returns up to 1,000 rows per page in either detail mode. It is billed on
+        what a successful response returns: 10 credits flat in signatures mode, and
+        10 credits per 100 full transactions (rounded up, 10-credit minimum) in full
+        mode; failed responses are free. The `token_accounts` filter does not see
+        transactions prior to December 2022; devnet retention is limited to 2 weeks
+        while mainnet retention is unlimited.
 
         Parameters:
             sync: if `True` run synchronously, else return a coroutine.
@@ -642,3 +648,116 @@ class Helius(Interaction):
             params["commitment"] = commitment
         body = {"transactions": signatures}
         return self.api_return_model(sync, RequestType.POST.value, url, PostGetTransactionsResponse, params = params, json = body)
+
+    # ─── parsedEventsTransactions ─────────────────────────────────────────────
+
+    @overload
+    def _post_parsed_events_transactions(self, sync: Literal[True], signatures: list[str], commitment: str | None = None, include_raw_transaction: bool | None = None) -> PostParsedEventsTransactionsResponse: ...
+    @overload
+    def _post_parsed_events_transactions(self, sync: Literal[False], signatures: list[str], commitment: str | None = None, include_raw_transaction: bool | None = None) -> Coroutine[None, None, PostParsedEventsTransactionsResponse]: ...
+    def _post_parsed_events_transactions(self, sync: bool, signatures: list[str], commitment: str | None = None, include_raw_transaction: bool | None = None) -> PostParsedEventsTransactionsResponse | Coroutine[None, None, PostParsedEventsTransactionsResponse]:
+        """
+        This function refers to the **transactions** Parsed Events API endpoint.
+
+        Parses up to 100 Solana transaction signatures into structured records in a
+        single call: native SOL and SPL token movements, a human-readable summary
+        (swap, transfer, liquidity change, ...), and every top-level and inner
+        instruction decoded against a catalogue of program IDLs, with named
+        instructions and accounts. Use it when the signatures of interest are already
+        known and enriched data is needed for each one.
+
+        Parsed Events is the successor of the Enhanced Transactions API
+        (`getTransactions`), which Helius keeps in maintenance mode. It is available
+        on every plan, Free included, and costs 10 credits per request against the
+        100 of its predecessor. A signature that cannot be parsed does **not** fail
+        the request: its item comes back with `parser_status = "ERROR"` and a
+        `parser_error`, so always check the status before reading `parsed`.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            signatures: list of base58-encoded transaction signatures to parse.
+                Capped at 100 items per request by the API.
+            commitment: optional block-finality level — `"confirmed"` (API default)
+                or `"finalized"`. `"processed"` is not supported. Pass `None` to use
+                the API default. See
+                [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]
+                for the corresponding `.value` strings.
+            include_raw_transaction: when `True`, each result also carries the original
+                Solana transaction payload in `raw_transaction`. Pass `None` to use the
+                API default (`False`).
+
+        Returns:
+            PostParsedEventsTransactionsResponse: list of results accessible via `.root`,
+                one per submitted signature and in the same order. Each
+                [`ParsedEventsTransactionResult`][cyhole.helius.schema.ParsedEventsTransactionResult]
+                exposes the `signature`, a `parser_status`
+                ([`HeliusParserStatus`][cyhole.helius.param.HeliusParserStatus]) and either
+                the `parsed` transaction or a `parser_error`.
+
+        Raises:
+            HeliusException: if the API returns an error status.
+        """
+        url = f"{self.url_api_parsed_events}/transactions"
+        params: dict = {"api-key": self._api_key}
+        body: dict = {"transactions": signatures}
+        if commitment is not None:
+            body["commitment"] = commitment
+        if include_raw_transaction is not None:
+            body["includeRawTransaction"] = include_raw_transaction
+        return self.api_return_model(sync, RequestType.POST.value, url, PostParsedEventsTransactionsResponse, params = params, json = body)
+
+    # ─── parsedEventsTransactionHistory ───────────────────────────────────────
+
+    @overload
+    def _post_parsed_events_transaction_history(self, sync: Literal[True], body: PostParsedEventsTransactionHistoryBody) -> PostParsedEventsTransactionHistoryResponse: ...
+    @overload
+    def _post_parsed_events_transaction_history(self, sync: Literal[False], body: PostParsedEventsTransactionHistoryBody) -> Coroutine[None, None, PostParsedEventsTransactionHistoryResponse]: ...
+    def _post_parsed_events_transaction_history(self, sync: bool, body: PostParsedEventsTransactionHistoryBody) -> PostParsedEventsTransactionHistoryResponse | Coroutine[None, None, PostParsedEventsTransactionHistoryResponse]:
+        """
+        This function refers to the **transaction-history** Parsed Events API endpoint.
+
+        Returns the parsed transaction history of any Solana address — wallet, program,
+        mint, pool or token account — up to 100 transactions per page. Every item
+        carries the same structured record returned by the Parsed Events
+        **transactions** endpoint: native SOL and SPL token movements, a
+        human-readable summary, and all top-level and inner instructions decoded with
+        named programs, instructions and accounts. It answers "what did this address
+        do?" without a separate signature lookup followed by a parsing call.
+
+        Parsed Events is the successor of the Enhanced Transactions API
+        (`getTransactionsByAddress`), which Helius keeps in maintenance mode. It is
+        available on every plan, Free included, and costs 10 credits per request
+        against the 100 of its predecessor. Two differences matter when migrating:
+        there is no server-side filter on transaction type or source (filter on
+        `summary` client-side), and token amounts are raw integers to be scaled by
+        `decimals`.
+
+        Results are ordered newest-first by default. Page through the history by
+        passing the `pagination_token` of a response in the next request body; the
+        token is `None` once the end of the available history is reached.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            body: request body — see
+                [`PostParsedEventsTransactionHistoryBody`][cyhole.helius.schema.PostParsedEventsTransactionHistoryBody].
+                Only `address` is required. Use it to set the page size, the sort order
+                ([`HeliusSortOrder`][cyhole.helius.param.HeliusSortOrder]), the commitment
+                ([`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]), signature
+                cursors, and slot or block-time intervals
+                ([`PostParsedEventsRange`][cyhole.helius.schema.PostParsedEventsRange]).
+
+        Returns:
+            PostParsedEventsTransactionHistoryResponse: page of results accessible via
+                `.data`, plus the next-page cursor in `.pagination_token` (`None` when there
+                are no more pages). Each
+                [`ParsedEventsTransactionResult`][cyhole.helius.schema.ParsedEventsTransactionResult]
+                exposes the `signature`, a `parser_status` and either the `parsed`
+                transaction or a `parser_error`.
+
+        Raises:
+            HeliusException: if the API returns an error status.
+        """
+        url = f"{self.url_api_parsed_events}/transaction-history"
+        params: dict = {"api-key": self._api_key}
+        return self.api_return_model(sync, RequestType.POST.value, url, PostParsedEventsTransactionHistoryResponse, params = params, json = body.model_dump(by_alias = True, exclude_none = True))
+
