@@ -228,3 +228,105 @@ class TokenFullInfoAttributes(BaseModel):
     mint_authority: str | None = None
     freeze_authority: str | None = None
     is_honeypot: bool | str | None = None
+
+
+class PoolAttributes(BaseModel):
+    """
+    Attributes block of a pool resource, shared by every endpoint that returns pools in its JSON:API
+    `data` array (New Pools by Network, New Pools, Multiple Pools Data, Search Pools).
+
+    Prices, valuations and reserves are returned by the API as decimal strings to preserve precision;
+    convert them client-side (e.g. with `decimal.Decimal`) when doing arithmetic.
+
+    Attributes:
+        base_token_price_usd: USD price of the pool's base token (decimal string).
+        base_token_price_native_currency: base-token price expressed in the network native currency (e.g. SOL on Solana).
+        quote_token_price_usd: USD price of the pool's quote token (decimal string).
+        quote_token_price_native_currency: quote-token price expressed in the network native currency.
+        base_token_price_quote_token: price of one base token expressed in quote tokens.
+        quote_token_price_base_token: price of one quote token expressed in base tokens.
+        address: pool contract address.
+        name: human-readable pool name (e.g. `"TOAD / SOL"`).
+        pool_created_at: ISO-8601 timestamp of the pool creation.
+        fdv_usd: fully-diluted valuation of the base token in USD; `None` when not computable.
+        market_cap_usd: market cap of the base token in USD; `None` when circulating-supply data is
+            unavailable (common for freshly launched tokens).
+        price_change_percentage: % change of the base-token price per time window (decimal strings).
+        transactions: buy/sell counts and distinct buyers/sellers per time window.
+        volume_usd: USD traded volume per time window (decimal strings).
+        reserve_in_usd: total liquidity locked in the pool, in USD (decimal string).
+    """
+    base_token_price_usd: str | None = None
+    base_token_price_native_currency: str | None = None
+    quote_token_price_usd: str | None = None
+    quote_token_price_native_currency: str | None = None
+    base_token_price_quote_token: str | None = None
+    quote_token_price_base_token: str | None = None
+    address: str | None = None
+    name: str | None = None
+    pool_created_at: str | None = None
+    fdv_usd: str | None = None
+    market_cap_usd: str | None = None
+    price_change_percentage: TimeBucketedStr | None = None
+    transactions: TransactionsTimeBuckets | None = None
+    volume_usd: TimeBucketedStr | None = None
+    reserve_in_usd: str | None = None
+
+
+class PoolRelationships(BaseModel):
+    """
+    Relationships block of a pool resource, pointing to the entities the pool is linked to. When the
+    request sets the matching `include` value, the full resources are expanded in the response's
+    `included` array and can be joined on `id`.
+
+    Attributes:
+        base_token: pointer to the base token resource.
+        quote_token: pointer to the quote token resource.
+        network: pointer to the network resource; populated only by cross-network endpoints (Search
+            Pools, New Pools), `None` on network-scoped endpoints.
+        dex: pointer to the DEX resource hosting the pool.
+    """
+    base_token: RelationshipData | None = None
+    quote_token: RelationshipData | None = None
+    network: RelationshipData | None = None
+    dex: RelationshipData | None = None
+
+
+class IncludedResourceAttributes(BaseModel):
+    """
+    Attributes block of a resource embedded in a pool response's `included` array. The array mixes
+    token, DEX and network resources; fields not relevant to a given resource type are `None`.
+
+    Attributes:
+        address: token contract address; `None` for DEX and network resources.
+        name: human-readable name of the token, DEX or network.
+        symbol: token ticker symbol; `None` for DEX and network resources.
+        decimals: token decimals; `None` for DEX and network resources.
+        image_url: token image URL; `None` for DEX and network resources, or when no image is set.
+        coingecko_coin_id: CoinGecko coin id mapped to the token; `None` for DEX and network resources
+            or for unmapped tokens.
+        coingecko_asset_platform_id: CoinGecko asset platform id of a network resource; `None` for
+            token and DEX resources or for unmapped networks.
+    """
+    address: str | None = None
+    name: str | None = None
+    symbol: str | None = None
+    decimals: int | None = None
+    image_url: str | None = None
+    coingecko_coin_id: str | None = None
+    coingecko_asset_platform_id: str | None = None
+
+
+class IncludedResource(BaseModel):
+    """
+    Single resource embedded in a pool response's `included` array, typed `"token"`, `"dex"` or
+    `"network"`. Join it to a pool through the `id` found in the pool's `relationships` block.
+
+    Attributes:
+        id: resource identifier (e.g. `"solana_<mint>"` for tokens, `"pump-fun"` for DEXes, `"solana"` for networks).
+        type: JSON:API resource type (`"token"`, `"dex"` or `"network"`).
+        attributes: resource attributes.
+    """
+    id: str
+    type: str
+    attributes: IncludedResourceAttributes

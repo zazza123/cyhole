@@ -1,7 +1,11 @@
 """Gecko response schemas, grouped by API domain."""
 
 from .common import (
+    IncludedResource,
+    IncludedResourceAttributes,
     LinksResponse,
+    PoolAttributes,
+    PoolRelationships,
     RelationshipData,
     RelationshipList,
     ResourceRef,
@@ -103,7 +107,11 @@ from .search import (
 
 __all__ = [
     # common
+    "IncludedResource",
+    "IncludedResourceAttributes",
     "LinksResponse",
+    "PoolAttributes",
+    "PoolRelationships",
     "RelationshipData",
     "RelationshipList",
     "ResourceRef",
