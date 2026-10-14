@@ -14,6 +14,8 @@ from ..helius.schema import (
     PostGetTokenAccountsBody,
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
+    PostGetSignaturesForAddressBody,
+    PostGetTransactionBody,
     GetTransactionsByAddressQuery,
     PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
@@ -30,6 +32,8 @@ from ..helius.schema import (
     PostGetTokenAccountsResponse,
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
+    PostGetSignaturesForAddressResponse,
+    PostGetTransactionResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -555,6 +559,105 @@ class Helius(Interaction):
             params.append(body.model_dump(by_alias = True, exclude_none = True))
         rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransactionsForAddress", "params": params}
         return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTransactionsForAddressResponse, json = rpc_body)
+
+    # ─── getSignaturesForAddress ──────────────────────────────────────────────
+
+    @overload
+    def _post_get_signatures_for_address(self, sync: Literal[True], address: str, body: PostGetSignaturesForAddressBody | None = None) -> PostGetSignaturesForAddressResponse: ...
+    @overload
+    def _post_get_signatures_for_address(self, sync: Literal[False], address: str, body: PostGetSignaturesForAddressBody | None = None) -> Coroutine[None, None, PostGetSignaturesForAddressResponse]: ...
+    def _post_get_signatures_for_address(self, sync: bool, address: str, body: PostGetSignaturesForAddressBody | None = None) -> PostGetSignaturesForAddressResponse | Coroutine[None, None, PostGetSignaturesForAddressResponse]:
+        """
+        This function refers to the **getSignaturesForAddress** standard Solana RPC method,
+        served by the Helius RPC endpoint.
+
+        Returns the signatures of the confirmed transactions that referenced an address,
+        **newest first**, with their slot, block time, error and memo but without the
+        transaction payload. It is the cheapest way to list an address's history and to
+        detect new activity; fetch the payload of a signature with
+        [`_post_get_transaction`][cyhole.helius.interaction.Helius._post_get_transaction].
+
+        It is a standard (archival) RPC call billed **1 credit** per request and available
+        on every plan, Free included. Up to 1,000 signatures per call; page back in time
+        by passing the last signature received as `before`. `until` stops the search
+        **before** the given signature, which is not returned. When the full payloads are
+        needed in a single call, or the history must be read oldest first, use the
+        Helius-exclusive
+        [`_post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address]
+        instead.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            address: base58-encoded account address to query (wallet, program, mint,
+                pool, or token account).
+            body: optional configuration object — see
+                [`PostGetSignaturesForAddressBody`][cyhole.helius.schema.PostGetSignaturesForAddressBody].
+                All fields are optional. Use it to set the page size (`limit`, 1–1000),
+                the `before` / `until` signature bounds, the commitment
+                ([`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]) and
+                `min_context_slot`. Omit it to get the latest 1,000 signatures.
+
+        Returns:
+            PostGetSignaturesForAddressResponse: signature list wrapped in a JSON-RPC 2.0
+                envelope. Access the rows via `response.result`, ordered newest first;
+                each [`SignatureForAddressItem`][cyhole.helius.schema.SignatureForAddressItem]
+                carries the signature, slot, block time, error and memo.
+        """
+        params: list = [address]
+        if body is not None:
+            params.append(body.model_dump(by_alias = True, exclude_none = True))
+        rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getSignaturesForAddress", "params": params}
+        return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetSignaturesForAddressResponse, json = rpc_body)
+
+    # ─── getTransaction ───────────────────────────────────────────────────────
+
+    @overload
+    def _post_get_transaction(self, sync: Literal[True], signature: str, body: PostGetTransactionBody | None = None) -> PostGetTransactionResponse: ...
+    @overload
+    def _post_get_transaction(self, sync: Literal[False], signature: str, body: PostGetTransactionBody | None = None) -> Coroutine[None, None, PostGetTransactionResponse]: ...
+    def _post_get_transaction(self, sync: bool, signature: str, body: PostGetTransactionBody | None = None) -> PostGetTransactionResponse | Coroutine[None, None, PostGetTransactionResponse]:
+        """
+        This function refers to the **getTransaction** standard Solana RPC method, served
+        by the Helius RPC endpoint.
+
+        Returns the details of one confirmed transaction: the transaction itself (account
+        keys, instructions, signatures) and its status metadata (error, fee, SOL and token
+        balances before and after, inner instructions, log messages, compute units). It is
+        the usual follow-up to
+        [`_post_get_signatures_for_address`][cyhole.helius.interaction.Helius._post_get_signatures_for_address]
+        when a signature has to be inspected.
+
+        It is a standard (archival) RPC call billed **1 credit** per request and available
+        on every plan, Free included. Set `max_supported_transaction_version = 0` in the
+        body to read versioned (v0) transactions: without it the RPC answers with an error
+        for them. To read many transactions of the same address in one call, the
+        Helius-exclusive
+        [`_post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address]
+        in `"full"` mode returns the same payloads in pages of up to 1,000.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            signature: base58-encoded transaction signature (the first signature of the
+                transaction).
+            body: optional configuration object — see
+                [`PostGetTransactionBody`][cyhole.helius.schema.PostGetTransactionBody].
+                All fields are optional. Use it to choose the encoding (`"json"` or
+                `"jsonParsed"` from [`HeliusEncoding`][cyhole.helius.param.HeliusEncoding]),
+                the commitment ([`HeliusCommitment`][cyhole.helius.param.HeliusCommitment])
+                and `max_supported_transaction_version`.
+
+        Returns:
+            PostGetTransactionResponse: the transaction wrapped in a JSON-RPC 2.0 envelope.
+                Access it via `response.result`, a
+                [`TransactionWithMeta`][cyhole.helius.schema.TransactionWithMeta], or
+                `None` when the signature is not found or not yet confirmed at the
+                requested commitment.
+        """
+        params: list = [signature]
+        if body is not None:
+            params.append(body.model_dump(by_alias = True, exclude_none = True))
+        rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransaction", "params": params}
+        return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTransactionResponse, json = rpc_body)
 
     # ─── getTransactionsByAddress ─────────────────────────────────────────────
 

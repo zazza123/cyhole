@@ -129,6 +129,43 @@ for instruction in tx.instructions:
         print(instruction.program_name, instruction.raw_accounts[0])
 ```
 
+### List the Signatures of an Address and Read One Transaction
+
+The standard Solana RPC methods `getSignaturesForAddress` and `getTransaction` cost 1 credit each
+on every plan. Signatures come back newest first; pass the last one as `before` to read further
+back in time.
+
+```python
+from cyhole.helius import Helius
+from cyhole.helius.param import HeliusEncoding
+from cyhole.helius.schema import PostGetSignaturesForAddressBody, PostGetTransactionBody
+
+helius = Helius(api_key="your-api-key")
+
+signatures = helius.client.post_get_signatures_for_address(
+    "YourWalletAddressHere",
+    PostGetSignaturesForAddressBody(limit=100),
+).result
+for item in signatures:
+    print(item.slot, item.signature, "failed" if item.err else "ok")
+
+# older page: everything before the last signature received
+older = helius.client.post_get_signatures_for_address(
+    "YourWalletAddressHere",
+    PostGetSignaturesForAddressBody(limit=100, before=signatures[-1].signature),
+).result
+
+# max_supported_transaction_version=0 is needed to read versioned (v0) transactions
+tx = helius.client.post_get_transaction(
+    signatures[0].signature,
+    PostGetTransactionBody(encoding=HeliusEncoding.JSON_PARSED.value, max_supported_transaction_version=0),
+).result
+if tx is None:
+    print("transaction not found")
+else:
+    print(tx.slot, tx.meta.fee, tx.meta.log_messages)
+```
+
 ## Content
 
 The documentation follows the library's structure by providing all the technical details required to use it.
@@ -187,6 +224,8 @@ The documentation follows the library's structure by providing all the technical
 | getTokenAccounts | `POST` | [`post_get_token_accounts`](../helius/interaction.md#cyhole.helius.Helius._post_get_token_accounts) | `0.3.0` | - |
 | getTransfersByAddress | `POST` | [`post_get_transfers_by_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transfers_by_address) | `0.3.0` | - |
 | getTransactionsForAddress | `POST` | [`post_get_transactions_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions_for_address) | `0.3.0` | - |
+| getSignaturesForAddress | `POST` | [`post_get_signatures_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_signatures_for_address) | `0.4.1` | - |
+| getTransaction | `POST` | [`post_get_transaction`](../helius/interaction.md#cyhole.helius.Helius._post_get_transaction) | `0.4.1` | - |
 | getTransactionsByAddress | `GET` | [`get_transactions_by_address`](../helius/interaction.md#cyhole.helius.Helius._get_transactions_by_address) | `0.3.1` | - |
 | getTransactions | `POST` | [`post_get_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions) | `0.3.1` | - |
 | parsedEventsTransactions | `POST` | [`post_parsed_events_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_parsed_events_transactions) | `0.4.1` | - |

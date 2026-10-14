@@ -65,6 +65,13 @@ from .rpc import (
     TransactionForAddressItem,
     TransactionForAddressList,
     PostGetTransactionsForAddressResponse,
+    PostGetSignaturesForAddressBody,
+    SignatureForAddressItem,
+    PostGetSignaturesForAddressResponse,
+    PostGetTransactionBody,
+    TransactionMeta,
+    TransactionWithMeta,
+    PostGetTransactionResponse,
 )
 from .enhanced import (
     GetTransactionsByAddressQuery,
@@ -168,6 +175,13 @@ __all__ = [
     "TransactionForAddressItem",
     "TransactionForAddressList",
     "PostGetTransactionsForAddressResponse",
+    "PostGetSignaturesForAddressBody",
+    "SignatureForAddressItem",
+    "PostGetSignaturesForAddressResponse",
+    "PostGetTransactionBody",
+    "TransactionMeta",
+    "TransactionWithMeta",
+    "PostGetTransactionResponse",
     # enhanced
     "GetTransactionsByAddressQuery",
     "EnhancedTransactionNativeTransfer",

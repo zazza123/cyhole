@@ -1,4 +1,6 @@
-"""Schemas for the Helius RPC transaction-history endpoint getTransactionsForAddress."""
+"""Schemas for the Helius RPC methods: getTransactionsForAddress, getSignaturesForAddress and getTransaction."""
+
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -98,8 +100,8 @@ class TransactionForAddressItem(BaseModel):
     Attributes:
         slot: slot containing the block with this transaction. Always present.
         transaction_index: zero-based index of the transaction within its block.
-            Always present; unique to `getTransactionsForAddress` (not exposed by
-            `getSignaturesForAddress` / `getTransaction`).
+            Always present. Helius also returns it from `getSignaturesForAddress` and
+            `getTransaction`, where it is not part of the standard Solana response.
         block_time: estimated production time as a Unix timestamp (seconds).
             `None` when the block time cannot be determined.
         signature: base58-encoded transaction signature. Populated only in `"signatures"` mode.
@@ -151,3 +153,231 @@ class PostGetTransactionsForAddressResponse(BaseModel):
     jsonrpc: str
     id: str | int
     result: TransactionForAddressList
+
+
+# ─── getSignaturesForAddress schemas ───────────────────────────────────────────
+
+class PostGetSignaturesForAddressBody(BaseModel):
+    """
+    Request body (the `config` object) for the standard Solana `getSignaturesForAddress`
+    RPC method.
+
+    The queried `address` is passed as the first positional parameter of the JSON-RPC
+    call and is therefore handled separately by the
+    [`Helius._post_get_signatures_for_address`][cyhole.helius.interaction.Helius._post_get_signatures_for_address]
+    method; every field of this body model is optional.
+
+    Results are always returned newest first; walk further back in time by passing the
+    last signature of a page as `before` on the next call.
+
+    Attributes:
+        limit: maximum number of signatures returned, between `1` and `1000`.
+            API default: `1000`.
+        before: base58-encoded transaction signature to start searching backwards from
+            (exclusive). `None` starts from the most recent confirmed transaction.
+        until: base58-encoded transaction signature to stop at (exclusive): the search
+            stops **before** reaching it, so the signature itself is not returned.
+            `None` searches until `limit` is reached or the history ends.
+        commitment: data commitment level. Accepts the values of
+            [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment] (`"finalized"`,
+            `"confirmed"`). API default: `"finalized"` (`"processed"` is **not** supported).
+        min_context_slot: minimum slot at which the request may be evaluated.
+            `None` means no constraint.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    limit: int | None = Field(default = None, ge = 1, le = 1000)
+    before: str | None = None
+    until: str | None = None
+    commitment: str | None = None
+    min_context_slot: int | None = Field(default = None, alias = "minContextSlot")
+
+
+class SignatureForAddressItem(BaseModel):
+    """
+    A single signature record returned by `getSignaturesForAddress`.
+
+    It identifies one transaction that referenced the queried address, without its
+    payload; fetch the full transaction with `getTransaction` when needed.
+
+    Attributes:
+        signature: base58-encoded transaction signature.
+        slot: slot containing the block with this transaction.
+        err: transaction error, or `None` if the transaction succeeded. Its shape follows
+            Solana's `TransactionError`: a string (e.g. `"AccountInUse"`) or an object
+            (e.g. `{"InstructionError": [0, {"Custom": 1}]}`).
+        memo: memo attached to the transaction, or `None` if no memo is present.
+        block_time: estimated production time as a Unix timestamp (seconds).
+            `None` when the block time is not available.
+        confirmation_status: cluster confirmation status of the transaction
+            (`"processed"`, `"confirmed"`, `"finalized"`). `None` when the node does
+            not report it.
+        transaction_index: zero-based index of the transaction within its block.
+            Returned by Helius on top of the standard Solana fields; `None` when the
+            node does not report it.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    signature: str
+    slot: int
+    err: Any | None = None
+    memo: str | None = None
+    block_time: int | None = Field(default = None, alias = "blockTime")
+    confirmation_status: str | None = Field(default = None, alias = "confirmationStatus")
+    transaction_index: int | None = Field(default = None, alias = "transactionIndex")
+
+
+class PostGetSignaturesForAddressResponse(BaseModel):
+    """
+    JSON-RPC 2.0 response for the `getSignaturesForAddress` RPC method.
+
+    Attributes:
+        jsonrpc: JSON-RPC protocol version (`"2.0"`).
+        id: identifier of the request this response answers.
+        result: signatures of the transactions that referenced the address, newest
+            first. Empty when the address has no transactions in the requested range.
+    """
+    jsonrpc: str
+    id: str | int
+    result: list[SignatureForAddressItem]
+
+
+# ─── getTransaction schemas ────────────────────────────────────────────────────
+
+class PostGetTransactionBody(BaseModel):
+    """
+    Request body (the `config` object) for the standard Solana `getTransaction` RPC method.
+
+    The `signature` is passed as the first positional parameter of the JSON-RPC call and
+    is therefore handled separately by the
+    [`Helius._post_get_transaction`][cyhole.helius.interaction.Helius._post_get_transaction]
+    method; every field of this body model is optional.
+
+    Attributes:
+        encoding: encoding of the returned `transaction`. Accepts `"json"` or
+            `"jsonParsed"` from [`HeliusEncoding`][cyhole.helius.param.HeliusEncoding].
+            API default: `"json"`. `"jsonParsed"` decodes the instructions of known
+            programs (System, SPL Token, ...). The binary encodings (`"base58"`,
+            `"base64"`) return the transaction as a `[data, encoding]` array, which
+            [`TransactionWithMeta`][cyhole.helius.schema.TransactionWithMeta] does not
+            model: do not use them with this method.
+        commitment: data commitment level. Accepts the values of
+            [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment] (`"finalized"`,
+            `"confirmed"`). API default: `"finalized"` (`"processed"` is **not** supported).
+        max_supported_transaction_version: highest transaction version to return. Set it
+            to `0` to receive both legacy and versioned (v0) transactions. When `None`,
+            only legacy transactions are returned and requesting a versioned one makes
+            the RPC answer with an error instead of a result.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    encoding: str | None = None
+    commitment: str | None = None
+    max_supported_transaction_version: int | None = Field(default = None, alias = "maxSupportedTransactionVersion")
+
+
+class TransactionMeta(BaseModel):
+    """
+    Status metadata of a confirmed transaction returned by `getTransaction`
+    (Solana's `meta` object).
+
+    Balances are expressed in lamports (1 SOL = 10^9 lamports) and listed in the same
+    order as the transaction's account keys. Fields not modelled here are ignored.
+
+    Attributes:
+        err: transaction error, or `None` if the transaction succeeded. Its shape follows
+            Solana's `TransactionError`: a string or an object such as
+            `{"InstructionError": [0, {"Custom": 1}]}`.
+        status: legacy status object (`{"Ok": null}` or `{"Err": ...}`), deprecated by
+            Solana in favour of `err`. `None` when not reported.
+        fee: fee charged for the transaction, in lamports.
+        pre_balances: account balances before the transaction was processed, in lamports.
+        post_balances: account balances after the transaction was processed, in lamports.
+        pre_token_balances: SPL token balances before the transaction, one object per
+            token account touched (`accountIndex`, `mint`, `owner`, `programId`,
+            `uiTokenAmount`). `None` when balance recording was disabled.
+        post_token_balances: SPL token balances after the transaction, same shape as
+            `pre_token_balances`. `None` when balance recording was disabled.
+        inner_instructions: instructions invoked by the transaction's programs (CPIs),
+            grouped by the index of the top-level instruction that issued them. `None`
+            when inner-instruction recording was disabled.
+        log_messages: program log lines emitted during execution. `None` when log
+            recording was disabled.
+        rewards: rewards credited in this transaction (`pubkey`, `lamports`,
+            `postBalance`, `rewardType`, `commission`). `None` when not reported.
+        loaded_addresses: accounts loaded from address lookup tables by a versioned
+            transaction, as `{"writable": [...], "readonly": [...]}`. `None` for
+            transactions that predate the field.
+        return_data: data returned by the last program that called `set_return_data`,
+            as `{"programId": ..., "data": [base64, "base64"]}`. `None` when no program
+            returned data.
+        compute_units_consumed: compute units consumed by the transaction. `None` for
+            transactions that predate the field.
+        cost_units: cost units the scheduler charged to the block for the transaction.
+            `None` when not reported.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    err: Any | None = None
+    status: dict[str, Any] | None = None
+    fee: int
+    pre_balances: list[int] = Field(alias = "preBalances")
+    post_balances: list[int] = Field(alias = "postBalances")
+    pre_token_balances: list[dict[str, Any]] | None = Field(default = None, alias = "preTokenBalances")
+    post_token_balances: list[dict[str, Any]] | None = Field(default = None, alias = "postTokenBalances")
+    inner_instructions: list[dict[str, Any]] | None = Field(default = None, alias = "innerInstructions")
+    log_messages: list[str] | None = Field(default = None, alias = "logMessages")
+    rewards: list[dict[str, Any]] | None = None
+    loaded_addresses: dict[str, Any] | None = Field(default = None, alias = "loadedAddresses")
+    return_data: dict[str, Any] | None = Field(default = None, alias = "returnData")
+    compute_units_consumed: int | None = Field(default = None, alias = "computeUnitsConsumed")
+    cost_units: int | None = Field(default = None, alias = "costUnits")
+
+
+class TransactionWithMeta(BaseModel):
+    """
+    A confirmed transaction returned by `getTransaction`, with its status metadata.
+
+    Attributes:
+        slot: slot this transaction was processed in.
+        block_time: estimated production time as a Unix timestamp (seconds).
+            `None` when the block time is not available.
+        version: transaction version: `"legacy"` for legacy transactions, `0` for
+            versioned (v0) transactions. `None` when `max_supported_transaction_version`
+            was not set in the request.
+        transaction_index: zero-based index of the transaction within its block.
+            Returned by Helius on top of the standard Solana fields; `None` when the
+            node does not report it.
+        transaction: the transaction itself (`signatures` and `message`, with account
+            keys, recent blockhash and instructions). Kept as a plain dictionary because
+            its shape depends on the requested `encoding`: with `"jsonParsed"` the
+            account keys are objects and known instructions carry a `parsed` field.
+        meta: transaction status metadata — see
+            [`TransactionMeta`][cyhole.helius.schema.TransactionMeta]. `None` when the
+            node did not record it.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    slot: int
+    block_time: int | None = Field(default = None, alias = "blockTime")
+    version: int | str | None = None
+    transaction_index: int | None = Field(default = None, alias = "transactionIndex")
+    transaction: dict[str, Any]
+    meta: TransactionMeta | None = None
+
+
+class PostGetTransactionResponse(BaseModel):
+    """
+    JSON-RPC 2.0 response for the `getTransaction` RPC method.
+
+    Attributes:
+        jsonrpc: JSON-RPC protocol version (`"2.0"`).
+        id: identifier of the request this response answers.
+        result: the confirmed transaction, or `None` when the signature is not found
+            (unknown signature, or a transaction not yet confirmed at the requested
+            commitment). The field is required: a JSON-RPC error answer, which carries
+            no `result`, fails validation instead of reading as "not found".
+    """
+    jsonrpc: str
+    id: str | int
+    result: TransactionWithMeta | None
