@@ -91,6 +91,32 @@ for pool in response.data[:5]:
     print(pool.attributes.name, pool.attributes.address)
 ```
 
+### Watch Newly Created Pools
+
+Poll the latest pools launched on a network and refresh the ones worth following in a single call. The free API caches
+these responses for about 60 seconds, and `new_pools` also lists pump.fun bonding curves, so filter by DEX and reserve
+client-side.
+
+```python
+from cyhole.gecko import Gecko
+
+gecko = Gecko()
+response = gecko.client.get_network_new_pools("solana", include = "base_token,quote_token,dex")
+
+addresses = [
+    pool.attributes.address
+    for pool in response.data
+    if pool.relationships and pool.relationships.dex
+    and pool.relationships.dex.data.id != "pump-fun"
+    and float(pool.attributes.reserve_in_usd or 0) > 10_000
+]
+
+if addresses:
+    pools = gecko.client.get_pools_multi("solana", addresses[:30], include_volume_breakdown = True)
+    for pool in pools.data:
+        print(pool.attributes.name, pool.attributes.reserve_in_usd, pool.attributes.buy_volume_usd)
+```
+
 ## Content
 
 The documentation follows the library's structure by providing all the technical details required to use it.
@@ -140,6 +166,9 @@ The documentation follows the library's structure by providing all the technical
 | Pool OHLCV | `GET` | [`get_pool_ohlcv`](../gecko/interaction.md#cyhole.gecko.Gecko._get_pool_ohlcv) | `0.3.1` | - |
 | Pool Tokens Info | `GET` | [`get_pool_token_info`](../gecko/interaction.md#cyhole.gecko.Gecko._get_pool_token_info) | `0.3.1` | - |
 | Pool Trades | `GET` | [`get_pool_trades`](../gecko/interaction.md#cyhole.gecko.Gecko._get_pool_trades) | `0.3.1` | - |
+| New Pools by Network | `GET` | [`get_network_new_pools`](../gecko/interaction.md#cyhole.gecko.Gecko._get_network_new_pools) | `0.4.1` | - |
+| New Pools | `GET` | [`get_new_pools`](../gecko/interaction.md#cyhole.gecko.Gecko._get_new_pools) | `0.4.1` | - |
+| Multiple Pools Data | `GET` | [`get_pools_multi`](../gecko/interaction.md#cyhole.gecko.Gecko._get_pools_multi) | `0.4.1` | - |
 | Token Data (single + multiple) | `GET` | [`get_token_data`](../gecko/interaction.md#cyhole.gecko.Gecko._get_token_data) | `0.3.1` | - |
 | Token Info | `GET` | [`get_token_info`](../gecko/interaction.md#cyhole.gecko.Gecko._get_token_info) | `0.3.1` | - |
 | Recently Updated Tokens | `GET` | [`get_recently_updated_tokens`](../gecko/interaction.md#cyhole.gecko.Gecko._get_recently_updated_tokens) | `0.3.1` | - |

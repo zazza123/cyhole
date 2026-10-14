@@ -1,0 +1,384 @@
+{
+    "data": [
+        {
+            "id": "solana_GKzFauhpZuqRPnMS1yK3LeWkAW4UgmYbESfSxeo71UTL",
+            "type": "pool",
+            "attributes": {
+                "base_token_price_usd": "0.0000031582255665655070723673791387456572900430759735046252039362352",
+                "base_token_price_native_currency": "0.0000000316814689512128",
+                "quote_token_price_usd": "115.179767828881054107909788550955830342620242477950247122168",
+                "quote_token_price_native_currency": "1.10091765097218",
+                "base_token_price_quote_token": "0.00000002877732855",
+                "quote_token_price_base_token": "34749577.195032",
+                "address": "GKzFauhpZuqRPnMS1yK3LeWkAW4UgmYbESfSxeo71UTL",
+                "name": "TOAD / PSOL",
+                "pool_name": "TOAD / PSOL",
+                "pool_fee_percentage": null,
+                "pool_created_at": "2026-10-14T19:20:42Z",
+                "fdv_usd": "3302.987681",
+                "market_cap_usd": null,
+                "price_change_percentage": {
+                    "m5": "5.065",
+                    "m15": "5.065",
+                    "m30": "5.065",
+                    "h1": "5.065",
+                    "h6": "5.065",
+                    "h24": "5.065"
+                },
+                "transactions": {
+                    "m5": {
+                        "buys": 6,
+                        "sells": 2,
+                        "buyers": 6,
+                        "sellers": 2
+                    },
+                    "m15": {
+                        "buys": 6,
+                        "sells": 2,
+                        "buyers": 6,
+                        "sellers": 2
+                    },
+                    "m30": {
+                        "buys": 6,
+                        "sells": 2,
+                        "buyers": 6,
+                        "sellers": 2
+                    },
+                    "h1": {
+                        "buys": 6,
+                        "sells": 2,
+                        "buyers": 6,
+                        "sellers": 2
+                    },
+                    "h6": {
+                        "buys": 6,
+                        "sells": 2,
+                        "buyers": 6,
+                        "sellers": 2
+                    },
+                    "h24": {
+                        "buys": 6,
+                        "sells": 2,
+                        "buyers": 6,
+                        "sellers": 2
+                    }
+                },
+                "volume_usd": {
+                    "m5": "692.9259482011",
+                    "m15": "692.9259482011",
+                    "m30": "692.9259482011",
+                    "h1": "692.9259482011",
+                    "h6": "692.9259482011",
+                    "h24": "692.9259482011"
+                },
+                "reserve_in_usd": "3303.8148",
+                "locked_liquidity_percentage": null,
+                "launchpad_details": {
+                    "graduation_percentage": 1.13,
+                    "completed": false,
+                    "completed_at": null,
+                    "migrated_destination_pool_address": null
+                }
+            },
+            "relationships": {
+                "base_token": {
+                    "data": {
+                        "id": "solana_7JK9UV4BNDaZcijTSS3zXY8mK3iYPYB92v44pAGmqXzd",
+                        "type": "token"
+                    }
+                },
+                "quote_token": {
+                    "data": {
+                        "id": "solana_pSo1f9nQXWgXibFtKf7NWYxb5enAM4qfP6UJSiXRQfL",
+                        "type": "token"
+                    }
+                },
+                "dex": {
+                    "data": {
+                        "id": "stonkfun",
+                        "type": "dex"
+                    }
+                }
+            }
+        },
+        {
+            "id": "solana_CMBcQWsRuodcP5TjfV1vYc2jKJUM3McxbpBgZRkNkm8Y",
+            "type": "pool",
+            "attributes": {
+                "base_token_price_usd": "0.00000529010205572409893542917445134940630191975460465090022396233455",
+                "base_token_price_native_currency": "0.000000160822751768776",
+                "quote_token_price_usd": "104.569849913816451746492430247465974500725027455",
+                "quote_token_price_native_currency": "1.0",
+                "base_token_price_quote_token": "0.0000001608227518",
+                "quote_token_price_base_token": "6218025.67734792",
+                "address": "CMBcQWsRuodcP5TjfV1vYc2jKJUM3McxbpBgZRkNkm8Y",
+                "name": "VAMP / SOL",
+                "pool_name": "VAMP / SOL",
+                "pool_fee_percentage": null,
+                "pool_created_at": "2026-10-14T19:20:40Z",
+                "fdv_usd": "15824.12348",
+                "market_cap_usd": null,
+                "price_change_percentage": {
+                    "m5": "169.714",
+                    "m15": "169.714",
+                    "m30": "169.714",
+                    "h1": "169.714",
+                    "h6": "169.714",
+                    "h24": "169.714"
+                },
+                "transactions": {
+                    "m5": {
+                        "buys": 271,
+                        "sells": 241,
+                        "buyers": 224,
+                        "sellers": 104
+                    },
+                    "m15": {
+                        "buys": 271,
+                        "sells": 241,
+                        "buyers": 224,
+                        "sellers": 104
+                    },
+                    "m30": {
+                        "buys": 271,
+                        "sells": 241,
+                        "buyers": 224,
+                        "sellers": 104
+                    },
+                    "h1": {
+                        "buys": 271,
+                        "sells": 241,
+                        "buyers": 224,
+                        "sellers": 104
+                    },
+                    "h6": {
+                        "buys": 271,
+                        "sells": 241,
+                        "buyers": 224,
+                        "sellers": 104
+                    },
+                    "h24": {
+                        "buys": 271,
+                        "sells": 241,
+                        "buyers": 224,
+                        "sellers": 104
+                    }
+                },
+                "volume_usd": {
+                    "m5": "23366.0819926149",
+                    "m15": "23366.0819926149",
+                    "m30": "23366.0819926149",
+                    "h1": "23366.0819926149",
+                    "h6": "23366.0819926149",
+                    "h24": "23366.0819926149"
+                },
+                "reserve_in_usd": "7783.7617",
+                "locked_liquidity_percentage": null,
+                "launchpad_details": {
+                    "graduation_percentage": 79.0,
+                    "completed": false,
+                    "completed_at": null,
+                    "migrated_destination_pool_address": null
+                }
+            },
+            "relationships": {
+                "base_token": {
+                    "data": {
+                        "id": "solana_Dern8QFwLrx8uKpkdbMVGwWDupSTCpfonk8GDHLrpump",
+                        "type": "token"
+                    }
+                },
+                "quote_token": {
+                    "data": {
+                        "id": "solana_So11111111111111111111111111111111111111112",
+                        "type": "token"
+                    }
+                },
+                "dex": {
+                    "data": {
+                        "id": "pump-fun",
+                        "type": "dex"
+                    }
+                }
+            }
+        },
+        {
+            "id": "solana_EiEaXboo2b59AMu69VLgeLZYFYTq3iuKJNoBKhySeZjK",
+            "type": "pool",
+            "attributes": {
+                "base_token_price_usd": "0.0000362965538728676865894485684548127523379726055150611575271825017",
+                "base_token_price_native_currency": "0.000000355802670974606",
+                "quote_token_price_usd": "104.569854984535379996956857728783265722302575213",
+                "quote_token_price_native_currency": "1.0",
+                "base_token_price_quote_token": "0.000000355802671",
+                "quote_token_price_base_token": "2810546.63603515",
+                "address": "EiEaXboo2b59AMu69VLgeLZYFYTq3iuKJNoBKhySeZjK",
+                "name": "TOAD / SOL",
+                "pool_name": "TOAD / SOL",
+                "pool_fee_percentage": null,
+                "pool_created_at": "2026-10-14T19:20:39Z",
+                "fdv_usd": "37012.66856",
+                "market_cap_usd": null,
+                "price_change_percentage": {
+                    "m5": "-11.438",
+                    "m15": "-11.438",
+                    "m30": "-11.438",
+                    "h1": "-11.438",
+                    "h6": "-11.438",
+                    "h24": "-11.438"
+                },
+                "transactions": {
+                    "m5": {
+                        "buys": 124,
+                        "sells": 120,
+                        "buyers": 73,
+                        "sellers": 75
+                    },
+                    "m15": {
+                        "buys": 124,
+                        "sells": 120,
+                        "buyers": 73,
+                        "sellers": 75
+                    },
+                    "m30": {
+                        "buys": 124,
+                        "sells": 120,
+                        "buyers": 73,
+                        "sellers": 75
+                    },
+                    "h1": {
+                        "buys": 124,
+                        "sells": 120,
+                        "buyers": 73,
+                        "sellers": 75
+                    },
+                    "h6": {
+                        "buys": 124,
+                        "sells": 120,
+                        "buyers": 73,
+                        "sellers": 75
+                    },
+                    "h24": {
+                        "buys": 124,
+                        "sells": 120,
+                        "buyers": 73,
+                        "sellers": 75
+                    }
+                },
+                "volume_usd": {
+                    "m5": "1287.9626222997",
+                    "m15": "1287.9626222997",
+                    "m30": "1287.9626222997",
+                    "h1": "1287.9626222997",
+                    "h6": "1287.9626222997",
+                    "h24": "1287.9626222997"
+                },
+                "reserve_in_usd": "2402.4865",
+                "locked_liquidity_percentage": null
+            },
+            "relationships": {
+                "base_token": {
+                    "data": {
+                        "id": "solana_6TPaPqWd15BzUSPaenA7BM599mhFRWmzT6uvig3VNW5j",
+                        "type": "token"
+                    }
+                },
+                "quote_token": {
+                    "data": {
+                        "id": "solana_So11111111111111111111111111111111111111112",
+                        "type": "token"
+                    }
+                },
+                "dex": {
+                    "data": {
+                        "id": "meteora-damm-v2",
+                        "type": "dex"
+                    }
+                }
+            }
+        }
+    ],
+    "included": [
+        {
+            "id": "solana_7JK9UV4BNDaZcijTSS3zXY8mK3iYPYB92v44pAGmqXzd",
+            "type": "token",
+            "attributes": {
+                "address": "7JK9UV4BNDaZcijTSS3zXY8mK3iYPYB92v44pAGmqXzd",
+                "name": "Colonel Toad",
+                "symbol": "TOAD",
+                "decimals": 6,
+                "image_url": "https://assets.geckoterminal.com/duv3lvdav2x0k2fqiizvlfnk1mwy",
+                "coingecko_coin_id": null
+            }
+        },
+        {
+            "id": "solana_pSo1f9nQXWgXibFtKf7NWYxb5enAM4qfP6UJSiXRQfL",
+            "type": "token",
+            "attributes": {
+                "address": "pSo1f9nQXWgXibFtKf7NWYxb5enAM4qfP6UJSiXRQfL",
+                "name": "Phantom Staked SOL",
+                "symbol": "PSOL",
+                "decimals": 9,
+                "image_url": "https://coin-images.coingecko.com/coins/images/55849/large/PSOL.png?1747410026",
+                "coingecko_coin_id": "phantom-staked-sol"
+            }
+        },
+        {
+            "id": "stonkfun",
+            "type": "dex",
+            "attributes": {
+                "name": "StonkFun"
+            }
+        },
+        {
+            "id": "solana_Dern8QFwLrx8uKpkdbMVGwWDupSTCpfonk8GDHLrpump",
+            "type": "token",
+            "attributes": {
+                "address": "Dern8QFwLrx8uKpkdbMVGwWDupSTCpfonk8GDHLrpump",
+                "name": "VolumeAbsorptionMemePredator",
+                "symbol": "VAMP",
+                "decimals": 6,
+                "image_url": "https://assets.geckoterminal.com/o3fm6su5tz0zhb23jbmqfjlwyaxl",
+                "coingecko_coin_id": null
+            }
+        },
+        {
+            "id": "solana_So11111111111111111111111111111111111111112",
+            "type": "token",
+            "attributes": {
+                "address": "So11111111111111111111111111111111111111112",
+                "name": "Wrapped SOL",
+                "symbol": "SOL",
+                "decimals": 9,
+                "image_url": "https://coin-images.coingecko.com/coins/images/21629/large/solana.jpg?1696520989",
+                "coingecko_coin_id": "wrapped-solana"
+            }
+        },
+        {
+            "id": "pump-fun",
+            "type": "dex",
+            "attributes": {
+                "name": "Pump.fun"
+            }
+        },
+        {
+            "id": "solana_6TPaPqWd15BzUSPaenA7BM599mhFRWmzT6uvig3VNW5j",
+            "type": "token",
+            "attributes": {
+                "address": "6TPaPqWd15BzUSPaenA7BM599mhFRWmzT6uvig3VNW5j",
+                "name": "Colonel Toad",
+                "symbol": "TOAD",
+                "decimals": 6,
+                "image_url": null,
+                "coingecko_coin_id": null
+            }
+        },
+        {
+            "id": "meteora-damm-v2",
+            "type": "dex",
+            "attributes": {
+                "name": "Meteora DAMM V2"
+            }
+        }
+    ]
+}

@@ -3,6 +3,7 @@ from typing import Any, Coroutine, Literal, overload
 from ..core.param import RequestType
 from ..core.interaction import Interaction
 from ..gecko.client import GeckoClient, GeckoAsyncClient
+from ..gecko.exception import GeckoAddressCountError
 from ..gecko.schema import (
     GetNetworksResponse,
     GetDexesResponse,
@@ -12,6 +13,9 @@ from ..gecko.schema import (
     GetTokenOHLCVResponse,
     GetPoolTokenInfoResponse,
     GetPoolTradesResponse,
+    GetNetworkNewPoolsResponse,
+    GetNewPoolsResponse,
+    GetPoolsMultiResponse,
     GetTokenTradesResponse,
     GetTokenDataResponse,
     GetTokenDataMultipleResponse,
@@ -265,6 +269,148 @@ class Gecko(Interaction):
         if token is not None:
             params["token"] = token
         return self.api_return_model(sync, RequestType.GET.value, url, GetPoolTradesResponse, params = params)
+
+    # -----------------------------------------------------------------------
+    # New Pools by Network
+    # -----------------------------------------------------------------------
+
+    @overload
+    def _get_network_new_pools(self, sync: Literal[True], network: str, include: str | None = None, page: int | None = None) -> GetNetworkNewPoolsResponse: ...
+    @overload
+    def _get_network_new_pools(self, sync: Literal[False], network: str, include: str | None = None, page: int | None = None) -> Coroutine[None, None, GetNetworkNewPoolsResponse]: ...
+
+    def _get_network_new_pools(self, sync: bool, network: str, include: str | None = None, page: int | None = None) -> GetNetworkNewPoolsResponse | Coroutine[None, None, GetNetworkNewPoolsResponse]:
+        """
+        This function refers to the **New Pools by Network** API endpoint.
+
+        Returns the most recently created pools on one network, newest first, with their prices,
+        FDV / market cap, liquidity, volume and buy/sell activity per time window. Useful to watch
+        token launches as they happen. Results come 20 pools per page, up to 10 pages (the latest
+        200 pools). Available on the free keyless tier (10 calls/min), where the data is cached for
+        about 60 seconds, so calling more often does not return fresher pools.
+
+        The list includes launchpad bonding curves (e.g. pump.fun pools, DEX id `"pump-fun"`) next
+        to regular AMM pools, many with only a few thousand USD of reserve. Filter them client-side
+        on `relationships.dex` and `attributes.reserve_in_usd` when only tradable AMM pools matter.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            network: network identifier (e.g. `"solana"`, `"eth"`); from [`get_networks`][cyhole.gecko.Gecko._get_networks].
+            include: comma-separated list of relationships to expand in the JSON:API `included`
+                array; values from [`GeckoPoolInclude`][cyhole.gecko.param.GeckoPoolInclude]
+                (`"base_token"`, `"quote_token"`, `"dex"`). When `None`, only the relationship ids
+                are returned.
+            page: 1-based page number, from `1` to `10`; defaults to `1` server-side.
+
+        Returns:
+            GetNetworkNewPoolsResponse: up to 20 pools, newest first, with the optional embedded
+                token / DEX resources.
+
+        Raises:
+            GeckoException: if the API returns an error.
+        """
+        url = self.url_api + f"networks/{network}/new_pools"
+        params: dict[str, Any] = {}
+        if include is not None:
+            params["include"] = include
+        if page is not None:
+            params["page"] = page
+        return self.api_return_model(sync, RequestType.GET.value, url, GetNetworkNewPoolsResponse, params = params)
+
+    # -----------------------------------------------------------------------
+    # New Pools (all networks)
+    # -----------------------------------------------------------------------
+
+    @overload
+    def _get_new_pools(self, sync: Literal[True], include: str | None = None, page: int | None = None) -> GetNewPoolsResponse: ...
+    @overload
+    def _get_new_pools(self, sync: Literal[False], include: str | None = None, page: int | None = None) -> Coroutine[None, None, GetNewPoolsResponse]: ...
+
+    def _get_new_pools(self, sync: bool, include: str | None = None, page: int | None = None) -> GetNewPoolsResponse | Coroutine[None, None, GetNewPoolsResponse]:
+        """
+        This function refers to the **New Pools** API endpoint.
+
+        Returns the most recently created pools across every network GeckoTerminal indexes, newest
+        first, with the same statistics as [`get_network_new_pools`][cyhole.gecko.Gecko._get_network_new_pools]
+        plus a `network` relationship on each pool. Results come 20 pools per page, up to 10 pages.
+        Available on the free keyless tier (10 calls/min), where the data is cached for about 60
+        seconds.
+
+        The list includes launchpad bonding curves (e.g. pump.fun pools, DEX id `"pump-fun"`) next
+        to regular AMM pools; filter them client-side on `relationships.dex` and
+        `attributes.reserve_in_usd` when only tradable AMM pools matter.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            include: comma-separated list of relationships to expand in the JSON:API `included`
+                array; values from [`GeckoNewPoolsInclude`][cyhole.gecko.param.GeckoNewPoolsInclude]
+                (`"base_token"`, `"quote_token"`, `"dex"`, `"network"`). When `None`, only the
+                relationship ids are returned.
+            page: 1-based page number, from `1` to `10`; defaults to `1` server-side.
+
+        Returns:
+            GetNewPoolsResponse: up to 20 pools, newest first, with the optional embedded token /
+                DEX / network resources.
+
+        Raises:
+            GeckoException: if the API returns an error.
+        """
+        url = self.url_api + "networks/new_pools"
+        params: dict[str, Any] = {}
+        if include is not None:
+            params["include"] = include
+        if page is not None:
+            params["page"] = page
+        return self.api_return_model(sync, RequestType.GET.value, url, GetNewPoolsResponse, params = params)
+
+    # -----------------------------------------------------------------------
+    # Multiple Pools Data
+    # -----------------------------------------------------------------------
+
+    @overload
+    def _get_pools_multi(self, sync: Literal[True], network: str, addresses: list[str], include: str | None = None, include_volume_breakdown: bool | None = None) -> GetPoolsMultiResponse: ...
+    @overload
+    def _get_pools_multi(self, sync: Literal[False], network: str, addresses: list[str], include: str | None = None, include_volume_breakdown: bool | None = None) -> Coroutine[None, None, GetPoolsMultiResponse]: ...
+
+    def _get_pools_multi(self, sync: bool, network: str, addresses: list[str], include: str | None = None, include_volume_breakdown: bool | None = None) -> GetPoolsMultiResponse | Coroutine[None, None, GetPoolsMultiResponse]:
+        """
+        This function refers to the **Multiple Pools Data** API endpoint.
+
+        Returns the current statistics of up to 30 pools of one network in a single request:
+        prices, FDV / market cap, liquidity, volume and buy/sell activity per time window, plus the
+        pool fee, locked-liquidity share and, for launchpad pools, the bonding-curve progress. Useful
+        to refresh many known pools at the cost of one call. Available on the free keyless tier
+        (10 calls/min), where the data is cached for about 60 seconds.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            network: network identifier (e.g. `"solana"`, `"eth"`); from [`get_networks`][cyhole.gecko.Gecko._get_networks].
+            addresses: pool contract addresses, from 1 to 30; joined with commas in the request path.
+            include: comma-separated list of relationships to expand in the JSON:API `included`
+                array; values from [`GeckoPoolInclude`][cyhole.gecko.param.GeckoPoolInclude]
+                (`"base_token"`, `"quote_token"`, `"dex"`). When `None`, only the relationship ids
+                are returned.
+            include_volume_breakdown: when `True`, every pool also carries its buy, sell and net-buy
+                USD volume per time window. Defaults to `False` server-side.
+
+        Returns:
+            GetPoolsMultiResponse: statistics of the requested pools with the optional embedded
+                token / DEX resources.
+
+        Raises:
+            GeckoAddressCountError: if `addresses` is empty or holds more than 30 addresses.
+            GeckoException: if the API returns an error.
+        """
+        if not 1 <= len(addresses) <= 30:
+            raise GeckoAddressCountError(f"'addresses' must hold between 1 and 30 pool addresses, got {len(addresses)}.")
+
+        url = self.url_api + f"networks/{network}/pools/multi/{','.join(addresses)}"
+        params: dict[str, Any] = {}
+        if include is not None:
+            params["include"] = include
+        if include_volume_breakdown is not None:
+            params["include_volume_breakdown"] = include_volume_breakdown
+        return self.api_return_model(sync, RequestType.GET.value, url, GetPoolsMultiResponse, params = params)
 
     # -----------------------------------------------------------------------
     # Token Data (single + multiple, consolidated)

@@ -60,3 +60,24 @@ class GeckoSearchInclude(CyholeParam):
     BASE_TOKEN = "base_token"
     QUOTE_TOKEN = "quote_token"
     DEX = "dex"
+
+
+class GeckoPoolInclude(CyholeParam):
+    """
+    `include` query values accepted by the network-scoped pool endpoints (New Pools by Network,
+    Multiple Pools Data); pass any combination as a comma-separated string.
+    """
+    BASE_TOKEN = "base_token"
+    QUOTE_TOKEN = "quote_token"
+    DEX = "dex"
+
+
+class GeckoNewPoolsInclude(CyholeParam):
+    """
+    `include` query values accepted by the cross-network New Pools endpoint; pass any combination as a
+    comma-separated string. Adds `network` to the values of [`GeckoPoolInclude`][cyhole.gecko.param.GeckoPoolInclude].
+    """
+    BASE_TOKEN = "base_token"
+    QUOTE_TOKEN = "quote_token"
+    DEX = "dex"
+    NETWORK = "network"
