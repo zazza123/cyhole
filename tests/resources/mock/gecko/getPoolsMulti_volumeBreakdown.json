@@ -1,0 +1,129 @@
+{
+    "data": [
+        {
+            "id": "solana_GKzFauhpZuqRPnMS1yK3LeWkAW4UgmYbESfSxeo71UTL",
+            "type": "pool",
+            "attributes": {
+                "base_token_price_usd": "0.00000322642667323434896502462684356467238227206229758725923924745718",
+                "base_token_price_native_currency": "0.0000000315806391623051",
+                "quote_token_price_usd": "114.96875988400039030819520019249911142992562170801085078178812",
+                "quote_token_price_native_currency": "1.10069886932202",
+                "base_token_price_quote_token": "0.00000002869144327",
+                "quote_token_price_base_token": "34853596.9669614",
+                "address": "GKzFauhpZuqRPnMS1yK3LeWkAW4UgmYbESfSxeo71UTL",
+                "name": "TOAD / PSOL",
+                "pool_name": "TOAD / PSOL",
+                "pool_fee_percentage": null,
+                "pool_created_at": "2026-10-14T19:20:42Z",
+                "fdv_usd": "3301.313892",
+                "market_cap_usd": null,
+                "price_change_percentage": {
+                    "m5": "5.012",
+                    "m15": "5.012",
+                    "m30": "5.012",
+                    "h1": "5.012",
+                    "h6": "5.012",
+                    "h24": "5.012"
+                },
+                "transactions": {
+                    "m5": {
+                        "buys": 8,
+                        "sells": 4,
+                        "buyers": 7,
+                        "sellers": 4
+                    },
+                    "m15": {
+                        "buys": 8,
+                        "sells": 4,
+                        "buyers": 7,
+                        "sellers": 4
+                    },
+                    "m30": {
+                        "buys": 8,
+                        "sells": 4,
+                        "buyers": 7,
+                        "sellers": 4
+                    },
+                    "h1": {
+                        "buys": 8,
+                        "sells": 4,
+                        "buyers": 7,
+                        "sellers": 4
+                    },
+                    "h6": {
+                        "buys": 8,
+                        "sells": 4,
+                        "buyers": 7,
+                        "sellers": 4
+                    },
+                    "h24": {
+                        "buys": 8,
+                        "sells": 4,
+                        "buyers": 7,
+                        "sellers": 4
+                    }
+                },
+                "volume_usd": {
+                    "m5": "887.9994916859",
+                    "m15": "887.9994916859",
+                    "m30": "887.9994916859",
+                    "h1": "887.9994916859",
+                    "h6": "887.9994916859",
+                    "h24": "887.9994916859"
+                },
+                "net_buy_volume_usd": {
+                    "m5": "203.3064883975",
+                    "m15": "203.3064883975",
+                    "m30": "203.3064883975",
+                    "h1": "203.3064883975",
+                    "h6": "203.3064883975",
+                    "h24": "203.3064883975"
+                },
+                "buy_volume_usd": {
+                    "m5": "545.6529900417",
+                    "m15": "545.6529900417",
+                    "m30": "545.6529900417",
+                    "h1": "545.6529900417",
+                    "h6": "545.6529900417",
+                    "h24": "545.6529900417"
+                },
+                "sell_volume_usd": {
+                    "m5": "342.3465016442",
+                    "m15": "342.3465016442",
+                    "m30": "342.3465016442",
+                    "h1": "342.3465016442",
+                    "h6": "342.3465016442",
+                    "h24": "342.3465016442"
+                },
+                "reserve_in_usd": "3152.4573",
+                "locked_liquidity_percentage": null,
+                "launchpad_details": {
+                    "graduation_percentage": 2.02,
+                    "completed": false,
+                    "completed_at": null,
+                    "migrated_destination_pool_address": null
+                }
+            },
+            "relationships": {
+                "base_token": {
+                    "data": {
+                        "id": "solana_7JK9UV4BNDaZcijTSS3zXY8mK3iYPYB92v44pAGmqXzd",
+                        "type": "token"
+                    }
+                },
+                "quote_token": {
+                    "data": {
+                        "id": "solana_pSo1f9nQXWgXibFtKf7NWYxb5enAM4qfP6UJSiXRQfL",
+                        "type": "token"
+                    }
+                },
+                "dex": {
+                    "data": {
+                        "id": "stonkfun",
+                        "type": "dex"
+                    }
+                }
+            }
+        }
+    ]
+}

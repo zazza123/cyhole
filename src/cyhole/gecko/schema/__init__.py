@@ -96,6 +96,14 @@ from .simple_price import (
     SimpleTokenPriceAttributes,
     SimpleTokenPriceData,
 )
+from .pools import (
+    GetNetworkNewPoolsResponse,
+    GetNewPoolsResponse,
+    GetPoolsMultiResponse,
+    PoolData,
+    PoolMultiAttributes,
+    PoolMultiData,
+)
 from .search import (
     GetSearchPoolsResponse,
     SearchIncluded,
@@ -191,6 +199,13 @@ __all__ = [
     "GetSimpleTokenPriceResponse",
     "SimpleTokenPriceAttributes",
     "SimpleTokenPriceData",
+    # pools
+    "GetNetworkNewPoolsResponse",
+    "GetNewPoolsResponse",
+    "GetPoolsMultiResponse",
+    "PoolData",
+    "PoolMultiAttributes",
+    "PoolMultiData",
     # search
     "GetSearchPoolsResponse",
     "SearchIncluded",

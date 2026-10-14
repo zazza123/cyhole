@@ -20,7 +20,12 @@ from cyhole.gecko.schema import (
     GetTopTokenTradersResponse,
     GetSimpleTokenPriceResponse,
     GetSearchPoolsResponse,
+    GetNetworkNewPoolsResponse,
+    GetNewPoolsResponse,
+    GetPoolsMultiResponse,
 )
+from cyhole.gecko.exception import GeckoAddressCountError
+from cyhole.gecko.param import GeckoNewPoolsInclude, GeckoPoolInclude
 
 from .config import load_config, MockerManager
 
@@ -35,6 +40,15 @@ TEST_NETWORK = "eth"
 TEST_POOL_ADDRESS = "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"  # USDC/WETH Uniswap V3 pool
 TEST_TOKEN_ADDRESS = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"  # WETH
 TEST_TOKEN_ADDRESS_2 = "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"  # USDC
+
+# Solana pools used by the New Pools / Multiple Pools Data tests (the mocks were captured on Solana).
+TEST_POOLS_NETWORK = "solana"
+TEST_POOLS_ADDRESSES = [
+    "GKzFauhpZuqRPnMS1yK3LeWkAW4UgmYbESfSxeo71UTL",  # TOAD / PSOL on StonkFun
+    "CMBcQWsRuodcP5TjfV1vYc2jKJUM3McxbpBgZRkNkm8Y",  # pump.fun bonding curve
+    "EiEaXboo2b59AMu69VLgeLZYFYTq3iuKJNoBKhySeZjK",  # Meteora DAMM v2
+]
+TEST_POOLS_INCLUDE = ",".join([GeckoPoolInclude.BASE_TOKEN.value, GeckoPoolInclude.QUOTE_TOKEN.value, GeckoPoolInclude.DEX.value])
 
 
 class TestGecko:
@@ -634,3 +648,248 @@ class TestGecko:
         async with self.gecko.async_client as client:
             response = await client.get_search_pools("USDC")
         assert isinstance(response, GetSearchPoolsResponse)
+
+    # -------------------------------------------------------------------
+    # New Pools by Network
+    # -------------------------------------------------------------------
+
+    def test_get_network_new_pools_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "New Pools by Network" — synchronous logic.
+
+        Mock Response File: getNetworkNewPools_default.json
+        """
+        mock_file_name = "getNetworkNewPools_default"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNetworkNewPoolsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.gecko.client.get_network_new_pools(TEST_POOLS_NETWORK, include = TEST_POOLS_INCLUDE)
+        assert isinstance(response, GetNetworkNewPoolsResponse)
+        assert 0 < len(response.data) <= 20
+        assert response.included is not None
+
+        if config.mock_file_overwrite and not config.gecko.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_network_new_pools_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "New Pools by Network" — asynchronous logic.
+
+        Mock Response File: getNetworkNewPools_default.json
+        """
+        mock_file_name = "getNetworkNewPools_default"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNetworkNewPoolsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.gecko.async_client as client:
+            response = await client.get_network_new_pools(TEST_POOLS_NETWORK, include = TEST_POOLS_INCLUDE)
+        assert isinstance(response, GetNetworkNewPoolsResponse)
+        assert 0 < len(response.data) <= 20
+
+    def test_get_network_new_pools_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "New Pools by Network" — request sent to the API.
+
+        Checks the URL and the query parameters, with and without the optional `include` and `page`.
+
+        Mock Response File: getNetworkNewPools_default.json
+        """
+        mock_response = self.mocker.load_mock_response("getNetworkNewPools_default", GetNetworkNewPoolsResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.gecko.client.get_network_new_pools(TEST_POOLS_NETWORK)
+        args, kwargs = api.call_args
+        assert args[0] == "GET"
+        assert args[1] == self.gecko.url_api + f"networks/{TEST_POOLS_NETWORK}/new_pools"
+        assert kwargs["params"] == {}
+
+        self.gecko.client.get_network_new_pools(TEST_POOLS_NETWORK, include = TEST_POOLS_INCLUDE, page = 3)
+        _, kwargs = api.call_args
+        assert kwargs["params"] == {"include": "base_token,quote_token,dex", "page": 3}
+
+    # -------------------------------------------------------------------
+    # New Pools (all networks)
+    # -------------------------------------------------------------------
+
+    def test_get_new_pools_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "New Pools" — synchronous logic.
+
+        Mock Response File: getNewPools_default.json
+        """
+        mock_file_name = "getNewPools_default"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNewPoolsResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.gecko.client.get_new_pools()
+        assert isinstance(response, GetNewPoolsResponse)
+        assert 0 < len(response.data) <= 20
+        assert all(pool.relationships is not None and pool.relationships.network is not None for pool in response.data)
+
+        if config.mock_file_overwrite and not config.gecko.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_new_pools_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "New Pools" — asynchronous logic.
+
+        Mock Response File: getNewPools_default.json
+        """
+        mock_file_name = "getNewPools_default"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetNewPoolsResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.gecko.async_client as client:
+            response = await client.get_new_pools()
+        assert isinstance(response, GetNewPoolsResponse)
+        assert 0 < len(response.data) <= 20
+
+    def test_get_new_pools_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "New Pools" — request sent to the API.
+
+        Checks the URL and the query parameters, with and without the optional `include` and `page`.
+
+        Mock Response File: getNewPools_default.json
+        """
+        mock_response = self.mocker.load_mock_response("getNewPools_default", GetNewPoolsResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.gecko.client.get_new_pools()
+        args, kwargs = api.call_args
+        assert args[0] == "GET"
+        assert args[1] == self.gecko.url_api + "networks/new_pools"
+        assert kwargs["params"] == {}
+
+        include = ",".join([GeckoNewPoolsInclude.DEX.value, GeckoNewPoolsInclude.NETWORK.value])
+        self.gecko.client.get_new_pools(include = include, page = 10)
+        _, kwargs = api.call_args
+        assert kwargs["params"] == {"include": "dex,network", "page": 10}
+
+    # -------------------------------------------------------------------
+    # Multiple Pools Data
+    # -------------------------------------------------------------------
+
+    def test_get_pools_multi_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "Multiple Pools Data" — synchronous logic.
+
+        Mock Response File: getPoolsMulti_default.json
+        """
+        mock_file_name = "getPoolsMulti_default"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPoolsMultiResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.gecko.client.get_pools_multi(TEST_POOLS_NETWORK, TEST_POOLS_ADDRESSES, include = TEST_POOLS_INCLUDE)
+        assert isinstance(response, GetPoolsMultiResponse)
+        assert {pool.attributes.address for pool in response.data} <= set(TEST_POOLS_ADDRESSES)
+        assert response.included is not None
+
+        if config.mock_file_overwrite and not config.gecko.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_pools_multi_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "Multiple Pools Data" — asynchronous logic.
+
+        Mock Response File: getPoolsMulti_default.json
+        """
+        mock_file_name = "getPoolsMulti_default"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPoolsMultiResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.gecko.async_client as client:
+            response = await client.get_pools_multi(TEST_POOLS_NETWORK, TEST_POOLS_ADDRESSES, include = TEST_POOLS_INCLUDE)
+        assert isinstance(response, GetPoolsMultiResponse)
+
+    def test_get_pools_multi_volume_breakdown_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "Multiple Pools Data" with `include_volume_breakdown=True` — synchronous logic.
+
+        Mock Response File: getPoolsMulti_volumeBreakdown.json
+        """
+        mock_file_name = "getPoolsMulti_volumeBreakdown"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPoolsMultiResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.gecko.client.get_pools_multi(TEST_POOLS_NETWORK, TEST_POOLS_ADDRESSES[:1], include_volume_breakdown = True)
+        assert isinstance(response, GetPoolsMultiResponse)
+        for pool in response.data:
+            assert pool.attributes.buy_volume_usd is not None
+            assert pool.attributes.sell_volume_usd is not None
+
+        if config.mock_file_overwrite and not config.gecko.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_get_pools_multi_volume_breakdown_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "Multiple Pools Data" with `include_volume_breakdown=True` — asynchronous logic.
+
+        Mock Response File: getPoolsMulti_volumeBreakdown.json
+        """
+        mock_file_name = "getPoolsMulti_volumeBreakdown"
+        if config.mock_response or config.gecko.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, GetPoolsMultiResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        async with self.gecko.async_client as client:
+            response = await client.get_pools_multi(TEST_POOLS_NETWORK, TEST_POOLS_ADDRESSES[:1], include_volume_breakdown = True)
+        assert isinstance(response, GetPoolsMultiResponse)
+        for pool in response.data:
+            assert pool.attributes.net_buy_volume_usd is not None
+
+    def test_get_pools_multi_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "Multiple Pools Data" — request sent to the API.
+
+        Checks that the addresses are joined with commas in the path and the optional query parameters.
+
+        Mock Response File: getPoolsMulti_default.json
+        """
+        mock_response = self.mocker.load_mock_response("getPoolsMulti_default", GetPoolsMultiResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.gecko.client.get_pools_multi(TEST_POOLS_NETWORK, TEST_POOLS_ADDRESSES)
+        args, kwargs = api.call_args
+        assert args[0] == "GET"
+        assert args[1] == self.gecko.url_api + f"networks/{TEST_POOLS_NETWORK}/pools/multi/{','.join(TEST_POOLS_ADDRESSES)}"
+        assert kwargs["params"] == {}
+
+        self.gecko.client.get_pools_multi(TEST_POOLS_NETWORK, TEST_POOLS_ADDRESSES, include = TEST_POOLS_INCLUDE, include_volume_breakdown = True)
+        _, kwargs = api.call_args
+        assert kwargs["params"] == {"include": "base_token,quote_token,dex", "include_volume_breakdown": True}
+
+    @pytest.mark.parametrize("count", [0, 31])
+    def test_get_pools_multi_address_count_sync(self, mocker: MockerFixture, count: int) -> None:
+        """
+        Unit Test used to check that "Multiple Pools Data" rejects an empty list or more than 30
+        addresses before any request is sent — synchronous logic.
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api")
+        with pytest.raises(GeckoAddressCountError):
+            self.gecko.client.get_pools_multi(TEST_POOLS_NETWORK, [TEST_POOLS_ADDRESSES[0]] * count)
+        api.assert_not_called()
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("count", [0, 31])
+    async def test_get_pools_multi_address_count_async(self, mocker: MockerFixture, count: int) -> None:
+        """
+        Unit Test used to check that "Multiple Pools Data" rejects an empty list or more than 30
+        addresses before any request is sent — asynchronous logic.
+        """
+        api = mocker.patch("cyhole.core.client.AsyncAPIClient.api")
+        with pytest.raises(GeckoAddressCountError):
+            async with self.gecko.async_client as client:
+                await client.get_pools_multi(TEST_POOLS_NETWORK, [TEST_POOLS_ADDRESSES[0]] * count)
+        api.assert_not_called()

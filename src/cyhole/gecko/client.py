@@ -11,6 +11,9 @@ from ..gecko.schema import (
     GetTokenOHLCVResponse,
     GetPoolTokenInfoResponse,
     GetPoolTradesResponse,
+    GetNetworkNewPoolsResponse,
+    GetNewPoolsResponse,
+    GetPoolsMultiResponse,
     GetTokenTradesResponse,
     GetTokenDataResponse,
     GetTokenDataMultipleResponse,
@@ -69,6 +72,27 @@ class GeckoClient(APIClient):
         All the API endpoint details are available on [`Gecko._get_pool_trades`][cyhole.gecko.interaction.Gecko._get_pool_trades].
         """
         return self._interaction._get_pool_trades(True, network, pool_address, trade_volume_in_usd_greater_than, token)
+
+    def get_network_new_pools(self, network: str, include: str | None = None, page: int | None = None) -> GetNetworkNewPoolsResponse:
+        """
+        Call the Gecko's GET **[New Pools by Network](https://www.geckoterminal.com/dex-api)** API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Gecko._get_network_new_pools`][cyhole.gecko.interaction.Gecko._get_network_new_pools].
+        """
+        return self._interaction._get_network_new_pools(True, network, include, page)
+
+    def get_new_pools(self, include: str | None = None, page: int | None = None) -> GetNewPoolsResponse:
+        """
+        Call the Gecko's GET **[New Pools](https://www.geckoterminal.com/dex-api)** API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Gecko._get_new_pools`][cyhole.gecko.interaction.Gecko._get_new_pools].
+        """
+        return self._interaction._get_new_pools(True, include, page)
+
+    def get_pools_multi(self, network: str, addresses: list[str], include: str | None = None, include_volume_breakdown: bool | None = None) -> GetPoolsMultiResponse:
+        """
+        Call the Gecko's GET **[Multiple Pools Data](https://www.geckoterminal.com/dex-api)** API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Gecko._get_pools_multi`][cyhole.gecko.interaction.Gecko._get_pools_multi].
+        """
+        return self._interaction._get_pools_multi(True, network, addresses, include, include_volume_breakdown)
 
     @overload
     def get_token_data(self, network: str, address: str, include: str | None = None, include_composition: bool | None = None, include_inactive_source: bool | None = None) -> GetTokenDataResponse: ...
@@ -187,6 +211,27 @@ class GeckoAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Gecko._get_pool_trades`][cyhole.gecko.interaction.Gecko._get_pool_trades].
         """
         return await self._interaction._get_pool_trades(False, network, pool_address, trade_volume_in_usd_greater_than, token)
+
+    async def get_network_new_pools(self, network: str, include: str | None = None, page: int | None = None) -> GetNetworkNewPoolsResponse:
+        """
+        Call the Gecko's GET **[New Pools by Network](https://www.geckoterminal.com/dex-api)** API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Gecko._get_network_new_pools`][cyhole.gecko.interaction.Gecko._get_network_new_pools].
+        """
+        return await self._interaction._get_network_new_pools(False, network, include, page)
+
+    async def get_new_pools(self, include: str | None = None, page: int | None = None) -> GetNewPoolsResponse:
+        """
+        Call the Gecko's GET **[New Pools](https://www.geckoterminal.com/dex-api)** API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Gecko._get_new_pools`][cyhole.gecko.interaction.Gecko._get_new_pools].
+        """
+        return await self._interaction._get_new_pools(False, include, page)
+
+    async def get_pools_multi(self, network: str, addresses: list[str], include: str | None = None, include_volume_breakdown: bool | None = None) -> GetPoolsMultiResponse:
+        """
+        Call the Gecko's GET **[Multiple Pools Data](https://www.geckoterminal.com/dex-api)** API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Gecko._get_pools_multi`][cyhole.gecko.interaction.Gecko._get_pools_multi].
+        """
+        return await self._interaction._get_pools_multi(False, network, addresses, include, include_volume_breakdown)
 
     @overload
     async def get_token_data(self, network: str, address: str, include: str | None = None, include_composition: bool | None = None, include_inactive_source: bool | None = None) -> GetTokenDataResponse: ...
