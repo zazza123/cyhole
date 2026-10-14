@@ -77,9 +77,12 @@ class HeliusSolMode(CyholeParam):
 
 class HeliusCommitment(CyholeParam):
     """
-    Commitment level for the `getTransfersByAddress` RPC endpoint.
+    Commitment level for the `getTransfersByAddress`, `getSignaturesForAddress` and
+    `getTransaction` RPC endpoints.
 
-    Pass the `.value` to [`PostGetTransfersByAddressBody`][cyhole.helius.schema.PostGetTransfersByAddressBody]
+    Pass the `.value` to [`PostGetTransfersByAddressBody`][cyhole.helius.schema.PostGetTransfersByAddressBody],
+    [`PostGetSignaturesForAddressBody`][cyhole.helius.schema.PostGetSignaturesForAddressBody]
+    or [`PostGetTransactionBody`][cyhole.helius.schema.PostGetTransactionBody]
     as the `commitment` parameter.
     """
     FINALIZED = "finalized"
@@ -152,10 +155,13 @@ class HeliusTokenAccountFilter(CyholeParam):
 class HeliusEncoding(CyholeParam):
     """
     Encoding format for the transaction payload, used by the
-    `getTransactionsForAddress` RPC endpoint when `transaction_details = "full"`.
+    `getTransactionsForAddress` RPC endpoint when `transaction_details = "full"`
+    and by the `getTransaction` RPC endpoint.
 
     Pass the `.value` to [`PostGetTransactionsForAddressBody`][cyhole.helius.schema.PostGetTransactionsForAddressBody]
-    as the `encoding` parameter.
+    or [`PostGetTransactionBody`][cyhole.helius.schema.PostGetTransactionBody]
+    as the `encoding` parameter. `getTransaction` supports only `JSON` and `JSON_PARSED`
+    in `cyhole`: its response model expects the transaction as a JSON object.
     """
     JSON = "json"
     """Default JSON encoding (raw account keys and instruction data)."""

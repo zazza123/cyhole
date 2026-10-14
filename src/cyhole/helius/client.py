@@ -13,6 +13,8 @@ from ..helius.schema import (
     PostGetTokenAccountsBody,
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
+    PostGetSignaturesForAddressBody,
+    PostGetTransactionBody,
     GetTransactionsByAddressQuery,
     PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
@@ -29,6 +31,8 @@ from ..helius.schema import (
     PostGetTokenAccountsResponse,
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
+    PostGetSignaturesForAddressResponse,
+    PostGetTransactionResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -143,6 +147,20 @@ class HeliusClient(APIClient):
         All the API endpoint details are available on [`Helius._post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address].
         """
         return self._interaction._post_get_transactions_for_address(True, address, body)
+
+    def post_get_signatures_for_address(self, address: str, body: PostGetSignaturesForAddressBody | None = None) -> PostGetSignaturesForAddressResponse:
+        """
+        Call the Helius POST **[getSignaturesForAddress](https://www.helius.dev/docs/api-reference/rpc/http/getsignaturesforaddress)** RPC API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_signatures_for_address`][cyhole.helius.interaction.Helius._post_get_signatures_for_address].
+        """
+        return self._interaction._post_get_signatures_for_address(True, address, body)
+
+    def post_get_transaction(self, signature: str, body: PostGetTransactionBody | None = None) -> PostGetTransactionResponse:
+        """
+        Call the Helius POST **[getTransaction](https://www.helius.dev/docs/api-reference/rpc/http/gettransaction)** RPC API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transaction`][cyhole.helius.interaction.Helius._post_get_transaction].
+        """
+        return self._interaction._post_get_transaction(True, signature, body)
 
     def get_transactions_by_address(self, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse:
         """
@@ -277,6 +295,20 @@ class HeliusAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Helius._post_get_transactions_for_address`][cyhole.helius.interaction.Helius._post_get_transactions_for_address].
         """
         return await self._interaction._post_get_transactions_for_address(False, address, body)
+
+    async def post_get_signatures_for_address(self, address: str, body: PostGetSignaturesForAddressBody | None = None) -> PostGetSignaturesForAddressResponse:
+        """
+        Call the Helius POST **[getSignaturesForAddress](https://www.helius.dev/docs/api-reference/rpc/http/getsignaturesforaddress)** RPC API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_signatures_for_address`][cyhole.helius.interaction.Helius._post_get_signatures_for_address].
+        """
+        return await self._interaction._post_get_signatures_for_address(False, address, body)
+
+    async def post_get_transaction(self, signature: str, body: PostGetTransactionBody | None = None) -> PostGetTransactionResponse:
+        """
+        Call the Helius POST **[getTransaction](https://www.helius.dev/docs/api-reference/rpc/http/gettransaction)** RPC API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_transaction`][cyhole.helius.interaction.Helius._post_get_transaction].
+        """
+        return await self._interaction._post_get_transaction(False, signature, body)
 
     async def get_transactions_by_address(self, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse:
         """

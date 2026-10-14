@@ -1,9 +1,11 @@
 import pytest
 from pathlib import Path
+from pydantic import ValidationError
+from requests import Response
 from pytest_mock import MockerFixture
 
 from cyhole.helius import Helius
-from cyhole.helius.param import HeliusCommitment, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
+from cyhole.helius.param import HeliusCommitment, HeliusEncoding, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
 from cyhole.helius.schema import (
     PostGetAssetsByOwnerBody,
     PostGetAssetsByGroupBody,
@@ -13,6 +15,8 @@ from cyhole.helius.schema import (
     PostGetTokenAccountsBody,
     PostGetTransfersByAddressBody,
     PostGetTransactionsForAddressBody,
+    PostGetSignaturesForAddressBody,
+    PostGetTransactionBody,
     GetTransactionsByAddressQuery,
     PostParsedEventsRange,
     PostParsedEventsTransactionHistoryBody,
@@ -30,6 +34,8 @@ from cyhole.helius.schema import (
     PostGetTokenAccountsResponse,
     PostGetTransfersByAddressResponse,
     PostGetTransactionsForAddressResponse,
+    PostGetSignaturesForAddressResponse,
+    PostGetTransactionResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -62,6 +68,13 @@ TEST_PARSED_EVENTS_SIGNATURES = [
     TEST_TRANSACTION_SIGNATURE,
 ]
 TEST_PARSED_EVENTS_ADDRESS = "8zxkmeqHrpmqyzCSGxLNWZ4W7ZgjwHuo4HV11ALceNAg"
+# Standard Solana RPC (getSignaturesForAddress / getTransaction): the fee payer of the
+# mainnet transaction captured in the mocks, that transaction, and two older signatures
+# of the same address used as `before` / `until` bounds.
+TEST_SIGNATURES_ADDRESS = "CHryNxUfvY8yTWDdCjspz24zmkgYoKbi5MQGL42H4yme"
+TEST_RPC_TRANSACTION_SIGNATURE = "4AtQkCrszud6jZ3PpL7hVGd6DRaXvNWGHqYsiFBbeZxTv614yaef7xZTSoALEZ7jJDopseMuitMifDC7UnBZ5YJp"
+TEST_SIGNATURES_BEFORE = "2pago8JTbTpaJj9PWkj66sUsbNXdmmHyxAiUFwfnHi24PZNESJL8YgSvjPExxrs2Mfn1vbdyLT56byghYpSetyXw"
+TEST_SIGNATURES_UNTIL = "343wGRyiZtzX4tsSXKCe1BUZ1WtxBPDD7ifyjrCSp4a7hJdfpiB2bEM6TL7nRoXS7xawfjEi4XbGJGpePL5qYV5T"
 
 
 class TestHelius:
@@ -605,6 +618,190 @@ class TestHelius:
             response = await client.post_get_transactions_for_address(TEST_TRANSFER_ADDRESS, body)
         assert isinstance(response, PostGetTransactionsForAddressResponse)
         assert len(response.result.data) > 0
+
+    # ─── getSignaturesForAddress ──────────────────────────────────────────────
+
+    def test_post_get_signatures_for_address_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getSignaturesForAddress" — synchronous logic.
+
+        Mock Response File: postGetSignaturesForAddress_default.json
+        """
+        mock_file_name = "postGetSignaturesForAddress_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostGetSignaturesForAddressResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.helius.client.post_get_signatures_for_address(TEST_SIGNATURES_ADDRESS)
+        assert isinstance(response, PostGetSignaturesForAddressResponse)
+        assert len(response.result) > 0
+        slots = [item.slot for item in response.result]
+        assert slots == sorted(slots, reverse = True)
+
+        if config.mock_file_overwrite and not config.helius.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_get_signatures_for_address_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getSignaturesForAddress" — asynchronous logic.
+
+        Mock Response File: postGetSignaturesForAddress_default.json
+        """
+        mock_file_name = "postGetSignaturesForAddress_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostGetSignaturesForAddressResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        body = PostGetSignaturesForAddressBody(limit = 5)
+        async with self.helius.async_client as client:
+            response = await client.post_get_signatures_for_address(TEST_SIGNATURES_ADDRESS, body)
+        assert isinstance(response, PostGetSignaturesForAddressResponse)
+        assert 0 < len(response.result) <= 5
+
+    def test_post_get_signatures_for_address_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getSignaturesForAddress" — request sent to the API.
+
+        Checks the URL and the JSON-RPC body, with and without the optional config object,
+        and that the config is sent with the API's camelCase names.
+
+        Mock Response File: postGetSignaturesForAddress_default.json
+        """
+        mock_response = self.mocker.load_mock_response("postGetSignaturesForAddress_default", PostGetSignaturesForAddressResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.helius.client.post_get_signatures_for_address(TEST_SIGNATURES_ADDRESS)
+        args, kwargs = api.call_args
+        assert args[0] == "POST"
+        assert args[1] == self.helius.url_api
+        assert kwargs["json"] == {"jsonrpc": "2.0", "id": "cyhole", "method": "getSignaturesForAddress", "params": [TEST_SIGNATURES_ADDRESS]}
+
+        body = PostGetSignaturesForAddressBody(
+            limit = 100,
+            before = TEST_SIGNATURES_BEFORE,
+            until = TEST_SIGNATURES_UNTIL,
+            commitment = HeliusCommitment.CONFIRMED.value,
+            min_context_slot = 456000000,
+        )
+        self.helius.client.post_get_signatures_for_address(TEST_SIGNATURES_ADDRESS, body)
+        _, kwargs = api.call_args
+        assert kwargs["json"]["params"] == [
+            TEST_SIGNATURES_ADDRESS,
+            {
+                "limit": 100,
+                "before": TEST_SIGNATURES_BEFORE,
+                "until": TEST_SIGNATURES_UNTIL,
+                "commitment": "confirmed",
+                "minContextSlot": 456000000,
+            },
+        ]
+
+    def test_post_get_signatures_for_address_body_limit(self) -> None:
+        """
+        Unit Test for endpoint "getSignaturesForAddress" — `limit` bounds of the body.
+
+        The API accepts between 1 and 1,000 signatures per call.
+        """
+        with pytest.raises(ValidationError):
+            PostGetSignaturesForAddressBody(limit = 0)
+        with pytest.raises(ValidationError):
+            PostGetSignaturesForAddressBody(limit = 1001)
+        assert PostGetSignaturesForAddressBody(limit = 1000).limit == 1000
+
+    # ─── getTransaction ───────────────────────────────────────────────────────
+
+    def test_post_get_transaction_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransaction" — synchronous logic.
+
+        Mock Response File: postGetTransaction_default.json
+        """
+        mock_file_name = "postGetTransaction_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostGetTransactionResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        body = PostGetTransactionBody(encoding = HeliusEncoding.JSON.value, max_supported_transaction_version = 0)
+        response = self.helius.client.post_get_transaction(TEST_RPC_TRANSACTION_SIGNATURE, body)
+        assert isinstance(response, PostGetTransactionResponse)
+        assert response.result is not None
+        assert response.result.transaction["signatures"][0] == TEST_RPC_TRANSACTION_SIGNATURE
+        assert response.result.meta is not None
+        assert len(response.result.meta.pre_balances) == len(response.result.meta.post_balances)
+
+        if config.mock_file_overwrite and not config.helius.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_get_transaction_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransaction" — asynchronous logic.
+
+        Mock Response File: postGetTransaction_default.json
+        """
+        mock_file_name = "postGetTransaction_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostGetTransactionResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        body = PostGetTransactionBody(encoding = HeliusEncoding.JSON.value, max_supported_transaction_version = 0)
+        async with self.helius.async_client as client:
+            response = await client.post_get_transaction(TEST_RPC_TRANSACTION_SIGNATURE, body)
+        assert isinstance(response, PostGetTransactionResponse)
+        assert response.result is not None
+        assert response.result.meta is not None
+        assert response.result.meta.fee > 0
+
+    def test_post_get_transaction_not_found(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransaction" — signature not found.
+
+        The API answers with `result: null`, which must be read as `None`. The mock file is
+        served as is: `MockerManager.load_mock_response` drops `None` fields, and `result` is
+        required so that a JSON-RPC error answer cannot pass for "not found".
+
+        Mock Response File: postGetTransaction_not_found.json
+        """
+        mock_response = Response()
+        mock_response._content = (mock_path / "postGetTransaction_not_found.json").read_bytes()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+        mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.helius.client.post_get_transaction(TEST_TRANSACTION_SIGNATURE)
+        assert isinstance(response, PostGetTransactionResponse)
+        assert response.result is None
+
+    def test_post_get_transaction_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransaction" — request sent to the API.
+
+        Checks the URL and the JSON-RPC body, with and without the optional config object,
+        and that the config is sent with the API's camelCase names.
+
+        Mock Response File: postGetTransaction_default.json
+        """
+        mock_response = self.mocker.load_mock_response("postGetTransaction_default", PostGetTransactionResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.helius.client.post_get_transaction(TEST_RPC_TRANSACTION_SIGNATURE)
+        args, kwargs = api.call_args
+        assert args[0] == "POST"
+        assert args[1] == self.helius.url_api
+        assert kwargs["json"] == {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransaction", "params": [TEST_RPC_TRANSACTION_SIGNATURE]}
+
+        body = PostGetTransactionBody(
+            encoding = HeliusEncoding.JSON_PARSED.value,
+            commitment = HeliusCommitment.CONFIRMED.value,
+            max_supported_transaction_version = 0,
+        )
+        self.helius.client.post_get_transaction(TEST_RPC_TRANSACTION_SIGNATURE, body)
+        _, kwargs = api.call_args
+        assert kwargs["json"]["params"] == [
+            TEST_RPC_TRANSACTION_SIGNATURE,
+            {"encoding": "jsonParsed", "commitment": "confirmed", "maxSupportedTransactionVersion": 0},
+        ]
 
     # ─── getTransactionsByAddress ─────────────────────────────────────────────
 
