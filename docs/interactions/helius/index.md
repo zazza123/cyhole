@@ -166,6 +166,38 @@ else:
     print(tx.slot, tx.meta.fee, tx.meta.log_messages)
 ```
 
+### Read Accounts, One or a Hundred at a Time
+
+The standard Solana RPC methods `getAccountInfo` and `getMultipleAccounts` cost 1 credit each on
+every plan, so reading up to 100 accounts in one call costs the same as reading one. Both go
+through `post_get_account_info`: one address reads one account, a list reads them all at the
+same slot. A missing account comes back as `None`, in its position for a list. Set the
+encoding: the API default (`base58`) fails on accounts larger than 129 bytes.
+
+```python
+from cyhole.helius import Helius
+from cyhole.helius.param import HeliusAccountEncoding
+from cyhole.helius.schema import PostGetAccountInfoBody
+
+helius = Helius(api_key="your-api-key")
+
+# a token account, decoded by the node
+vault = helius.client.post_get_account_info(
+    "TokenAccountAddressHere",
+    PostGetAccountInfoBody(encoding=HeliusAccountEncoding.JSON_PARSED.value),
+).result.value
+if vault is not None:
+    print(vault.data["parsed"]["info"]["tokenAmount"]["uiAmount"])
+
+# a batch of accounts, all read at the same slot
+accounts = helius.client.post_get_account_info(
+    ["PoolAddressHere", "VaultAddressHere"],
+    PostGetAccountInfoBody(encoding=HeliusAccountEncoding.BASE64.value),
+).result
+for account in accounts.value:
+    print(accounts.context.slot, None if account is None else account.lamports)
+```
+
 ## Content
 
 The documentation follows the library's structure by providing all the technical details required to use it.
@@ -226,6 +258,7 @@ The documentation follows the library's structure by providing all the technical
 | getTransactionsForAddress | `POST` | [`post_get_transactions_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions_for_address) | `0.3.0` | - |
 | getSignaturesForAddress | `POST` | [`post_get_signatures_for_address`](../helius/interaction.md#cyhole.helius.Helius._post_get_signatures_for_address) | `0.4.1` | - |
 | getTransaction | `POST` | [`post_get_transaction`](../helius/interaction.md#cyhole.helius.Helius._post_get_transaction) | `0.4.1` | - |
+| getAccountInfo / getMultipleAccounts | `POST` | [`post_get_account_info`](../helius/interaction.md#cyhole.helius.Helius._post_get_account_info) | `0.4.1` | - |
 | getTransactionsByAddress | `GET` | [`get_transactions_by_address`](../helius/interaction.md#cyhole.helius.Helius._get_transactions_by_address) | `0.3.1` | - |
 | getTransactions | `POST` | [`post_get_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions) | `0.3.1` | - |
 | parsedEventsTransactions | `POST` | [`post_parsed_events_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_parsed_events_transactions) | `0.4.1` | - |
