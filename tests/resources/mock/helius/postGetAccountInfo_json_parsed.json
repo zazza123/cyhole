@@ -1,0 +1,42 @@
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "context": {
+            "slot": 458089433,
+            "apiVersion": "4.3.0-alpha.2"
+        },
+        "value": {
+            "lamports": 1488914,
+            "data": {
+                "program": "spl-token",
+                "parsed": {
+                    "info": {
+                        "isNative": true,
+                        "mint": "So11111111111111111111111111111111111111112",
+                        "owner": "HLnpSz9h2S4hiLQ43rnSD9XkcUThA7B8hQMKmDaiTLcC",
+                        "rentExemptReserve": {
+                            "amount": "1488440",
+                            "decimals": 9,
+                            "uiAmount": 0.00148844,
+                            "uiAmountString": "0.00148844"
+                        },
+                        "state": "initialized",
+                        "tokenAmount": {
+                            "amount": "474",
+                            "decimals": 9,
+                            "uiAmount": 4.74e-07,
+                            "uiAmountString": "0.000000474"
+                        }
+                    },
+                    "type": "account"
+                },
+                "space": 165
+            },
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "executable": false,
+            "rentEpoch": 18446744073709551615,
+            "space": 165
+        }
+    },
+    "id": "cyhole"
+}

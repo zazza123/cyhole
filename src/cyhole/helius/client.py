@@ -15,6 +15,7 @@ from ..helius.schema import (
     PostGetTransactionsForAddressBody,
     PostGetSignaturesForAddressBody,
     PostGetTransactionBody,
+    PostGetAccountInfoBody,
     GetTransactionsByAddressQuery,
     PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
@@ -33,6 +34,7 @@ from ..helius.schema import (
     PostGetTransactionsForAddressResponse,
     PostGetSignaturesForAddressResponse,
     PostGetTransactionResponse,
+    PostGetAccountInfoResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -161,6 +163,13 @@ class HeliusClient(APIClient):
         All the API endpoint details are available on [`Helius._post_get_transaction`][cyhole.helius.interaction.Helius._post_get_transaction].
         """
         return self._interaction._post_get_transaction(True, signature, body)
+
+    def post_get_account_info(self, address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse:
+        """
+        Call the Helius POST **[getAccountInfo](https://www.helius.dev/docs/api-reference/rpc/http/getaccountinfo)** RPC API endpoint for synchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_account_info`][cyhole.helius.interaction.Helius._post_get_account_info].
+        """
+        return self._interaction._post_get_account_info(True, address, body)
 
     def get_transactions_by_address(self, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse:
         """
@@ -309,6 +318,13 @@ class HeliusAsyncClient(AsyncAPIClient):
         All the API endpoint details are available on [`Helius._post_get_transaction`][cyhole.helius.interaction.Helius._post_get_transaction].
         """
         return await self._interaction._post_get_transaction(False, signature, body)
+
+    async def post_get_account_info(self, address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse:
+        """
+        Call the Helius POST **[getAccountInfo](https://www.helius.dev/docs/api-reference/rpc/http/getaccountinfo)** RPC API endpoint for asynchronous logic.
+        All the API endpoint details are available on [`Helius._post_get_account_info`][cyhole.helius.interaction.Helius._post_get_account_info].
+        """
+        return await self._interaction._post_get_account_info(False, address, body)
 
     async def get_transactions_by_address(self, address: str, query: GetTransactionsByAddressQuery | None = None) -> GetTransactionsByAddressResponse:
         """

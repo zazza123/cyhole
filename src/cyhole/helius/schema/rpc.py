@@ -1,4 +1,4 @@
-"""Schemas for the Helius RPC methods: getTransactionsForAddress, getSignaturesForAddress and getTransaction."""
+"""Schemas for the Helius RPC methods: getTransactionsForAddress, getSignaturesForAddress, getTransaction, getAccountInfo and getMultipleAccounts."""
 
 from typing import Any
 
@@ -381,3 +381,120 @@ class PostGetTransactionResponse(BaseModel):
     jsonrpc: str
     id: str | int
     result: TransactionWithMeta | None
+
+
+# ─── getAccountInfo / getMultipleAccounts schemas ──────────────────────────────
+
+class AccountDataSlice(BaseModel):
+    """
+    Part of the account data to return, for the `getAccountInfo` and
+    `getMultipleAccounts` RPC methods. Only available with the binary encodings.
+
+    Attributes:
+        offset: byte offset where the returned data starts.
+        length: number of bytes to return.
+    """
+    offset: int = Field(ge = 0)
+    length: int = Field(ge = 0)
+
+
+class PostGetAccountInfoBody(BaseModel):
+    """
+    Request body (the `config` object) for the standard Solana `getAccountInfo` and
+    `getMultipleAccounts` RPC methods.
+
+    The address (or the list of addresses) is passed as the first positional parameter
+    of the JSON-RPC call and is therefore handled separately by the
+    [`Helius._post_get_account_info`][cyhole.helius.interaction.Helius._post_get_account_info]
+    method; every field of this body model is optional.
+
+    Attributes:
+        encoding: encoding of the returned account `data`. Accepts the values of
+            [`HeliusAccountEncoding`][cyhole.helius.param.HeliusAccountEncoding]
+            (`"base58"`, `"base64"`, `"base64+zstd"`, `"jsonParsed"`). API default:
+            `"base58"`, which fails on accounts larger than 129 bytes: set it explicitly.
+        commitment: data commitment level. Accepts the values of
+            [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]. API default:
+            `"finalized"`.
+        data_slice: return only part of the data — see
+            [`AccountDataSlice`][cyhole.helius.schema.AccountDataSlice]. `None` returns
+            the whole data. Only available with the binary encodings.
+        min_context_slot: minimum slot the request can be evaluated at. `None` if not used.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    encoding: str | None = None
+    commitment: str | None = None
+    data_slice: AccountDataSlice | None = Field(default = None, alias = "dataSlice")
+    min_context_slot: int | None = Field(default = None, alias = "minContextSlot")
+
+
+class RpcResponseContext(BaseModel):
+    """
+    Context of a standard Solana RPC answer: the slot the answer was read at.
+
+    Attributes:
+        slot: slot at which the node evaluated the request.
+        api_version: version of the node software. `None` when the node does not report it.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    slot: int
+    api_version: str | None = Field(default = None, alias = "apiVersion")
+
+
+class AccountInfo(BaseModel):
+    """
+    State of one Solana account, as returned by `getAccountInfo` and `getMultipleAccounts`.
+
+    Attributes:
+        lamports: balance of the account in lamports (1 SOL = 10^9 lamports).
+        owner: base58-encoded address of the program that owns the account.
+        data: the account data. A `[data, encoding]` pair for the binary encodings
+            (`"base58"`, `"base64"`, `"base64+zstd"`); a JSON object with `program`,
+            `parsed` and `space` for `"jsonParsed"` when the node can decode the account,
+            otherwise the base64 pair; a plain string for legacy binary answers.
+        executable: whether the account holds a program.
+        rent_epoch: epoch at which the account next owes rent. Rent-exempt accounts
+            report the u64 maximum (`18446744073709551615`).
+        space: size of the account data in bytes. `None` when the node does not report it.
+    """
+    model_config = ConfigDict(populate_by_name = True)
+
+    lamports: int
+    owner: str
+    data: list[str] | dict[str, Any] | str
+    executable: bool
+    rent_epoch: int = Field(alias = "rentEpoch")
+    space: int | None = None
+
+
+class AccountInfoResult(BaseModel):
+    """
+    Result of the `getAccountInfo` RPC method.
+
+    Attributes:
+        context: slot the answer was read at — see
+            [`RpcResponseContext`][cyhole.helius.schema.RpcResponseContext].
+        value: the account — see [`AccountInfo`][cyhole.helius.schema.AccountInfo] — or
+            `None` when the account does not exist (never funded, or closed).
+    """
+    context: RpcResponseContext
+    value: AccountInfo | None
+
+
+class PostGetAccountInfoResponse(BaseModel):
+    """
+    JSON-RPC 2.0 response for the `getAccountInfo` RPC method.
+
+    Attributes:
+        jsonrpc: JSON-RPC protocol version (`"2.0"`).
+        id: identifier of the request this response answers.
+        result: context and account — see
+            [`AccountInfoResult`][cyhole.helius.schema.AccountInfoResult]. The field is
+            required: a JSON-RPC error answer, which carries no `result`, fails validation
+            instead of reading as a missing account.
+    """
+    jsonrpc: str
+    id: str | int
+    result: AccountInfoResult

@@ -1,0 +1,11 @@
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "context": {
+            "slot": 458089433,
+            "apiVersion": "4.3.0-alpha.2"
+        },
+        "value": null
+    },
+    "id": "cyhole"
+}

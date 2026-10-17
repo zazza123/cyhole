@@ -72,6 +72,12 @@ from .rpc import (
     TransactionMeta,
     TransactionWithMeta,
     PostGetTransactionResponse,
+    AccountDataSlice,
+    PostGetAccountInfoBody,
+    RpcResponseContext,
+    AccountInfo,
+    AccountInfoResult,
+    PostGetAccountInfoResponse,
 )
 from .enhanced import (
     GetTransactionsByAddressQuery,
@@ -182,6 +188,12 @@ __all__ = [
     "TransactionMeta",
     "TransactionWithMeta",
     "PostGetTransactionResponse",
+    "AccountDataSlice",
+    "PostGetAccountInfoBody",
+    "RpcResponseContext",
+    "AccountInfo",
+    "AccountInfoResult",
+    "PostGetAccountInfoResponse",
     # enhanced
     "GetTransactionsByAddressQuery",
     "EnhancedTransactionNativeTransfer",
