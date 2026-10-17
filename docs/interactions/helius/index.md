@@ -172,7 +172,8 @@ The standard Solana RPC methods `getAccountInfo` and `getMultipleAccounts` cost 
 every plan, so reading up to 100 accounts in one call costs the same as reading one. Both go
 through `post_get_account_info`: one address reads one account, a list reads them all at the
 same slot. A missing account comes back as `None`, in its position for a list. Set the
-encoding: the API default (`base58`) fails on accounts larger than 129 bytes.
+encoding: without it `getAccountInfo` answers in base58, which fails on accounts larger than
+128 bytes, while `getMultipleAccounts` answers in base64.
 
 ```python
 from cyhole.helius import Helius

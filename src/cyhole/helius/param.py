@@ -77,8 +77,8 @@ class HeliusSolMode(CyholeParam):
 
 class HeliusCommitment(CyholeParam):
     """
-    Commitment level for the `getTransfersByAddress`, `getSignaturesForAddress` and
-    `getTransaction` RPC endpoints.
+    Commitment level for the `getTransfersByAddress`, `getSignaturesForAddress`,
+    `getTransaction`, `getAccountInfo` and `getMultipleAccounts` RPC endpoints.
 
     Pass the `.value` to [`PostGetTransfersByAddressBody`][cyhole.helius.schema.PostGetTransfersByAddressBody],
     [`PostGetSignaturesForAddressBody`][cyhole.helius.schema.PostGetSignaturesForAddressBody],

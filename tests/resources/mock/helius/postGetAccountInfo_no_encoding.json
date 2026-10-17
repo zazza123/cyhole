@@ -1,0 +1,18 @@
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "context": {
+            "slot": 458095830,
+            "apiVersion": "4.3.0-alpha.2"
+        },
+        "value": {
+            "lamports": 4525650848,
+            "data": "",
+            "owner": "11111111111111111111111111111111",
+            "executable": false,
+            "rentEpoch": 18446744073709551615,
+            "space": 0
+        }
+    },
+    "id": "cyhole"
+}

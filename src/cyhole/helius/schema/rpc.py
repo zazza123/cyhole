@@ -411,8 +411,10 @@ class PostGetAccountInfoBody(BaseModel):
     Attributes:
         encoding: encoding of the returned account `data`. Accepts the values of
             [`HeliusAccountEncoding`][cyhole.helius.param.HeliusAccountEncoding]
-            (`"base58"`, `"base64"`, `"base64+zstd"`, `"jsonParsed"`). API default:
-            `"base58"`, which fails on accounts larger than 129 bytes: set it explicitly.
+            (`"base58"`, `"base64"`, `"base64+zstd"`, `"jsonParsed"`). Set it explicitly.
+            When `None`, `getAccountInfo` answers in legacy base58 (the data as a plain
+            string, and a JSON-RPC error for accounts larger than 128 bytes), while
+            `getMultipleAccounts` answers in base64.
         commitment: data commitment level. Accepts the values of
             [`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]. API default:
             `"finalized"`.
@@ -450,10 +452,11 @@ class AccountInfo(BaseModel):
     Attributes:
         lamports: balance of the account in lamports (1 SOL = 10^9 lamports).
         owner: base58-encoded address of the program that owns the account.
-        data: the account data. A `[data, encoding]` pair for the binary encodings
+        data: the account data. A `[data, encoding]` pair when an encoding is requested
             (`"base58"`, `"base64"`, `"base64+zstd"`); a JSON object with `program`,
             `parsed` and `space` for `"jsonParsed"` when the node can decode the account,
-            otherwise the base64 pair; a plain string for legacy binary answers.
+            otherwise the base64 pair. A plain base58 string when `getAccountInfo` is
+            called without an encoding.
         executable: whether the account holds a program.
         rent_epoch: epoch at which the account next owes rent. Rent-exempt accounts
             report the u64 maximum (`18446744073709551615`).

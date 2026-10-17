@@ -689,9 +689,11 @@ class Helius(Interaction):
 
         Both are standard RPC calls billed **1 credit** per request and available on every
         plan, Free included, so a list of up to **100** addresses costs the same as one.
-        Set the `encoding` in the body: the API default (`"base58"`) fails on accounts
-        larger than 129 bytes. A missing account (never funded, or closed) is not an
-        error: its value is `None`, in its position for a list.
+        Set the `encoding` in the body. Without it, `getAccountInfo` answers in base58: the
+        data comes back as a plain string, and an account larger than 128 bytes gets a
+        JSON-RPC error instead of a result. `getMultipleAccounts` defaults to base64. A
+        missing account (never funded, or closed) is not an error: its value is `None`,
+        in its position for a list.
 
         Parameters:
             sync: if `True` run synchronously, else return a coroutine.
@@ -713,11 +715,15 @@ class Helius(Interaction):
 
         Raises:
             HeliusAccountCountError: the list is empty or holds more than 100 addresses.
+            TypeError: `address` is neither a `str` nor a `list`; only a list keeps the
+                answer in the request's order.
         """
         response_model: type[PostGetAccountInfoResponse] | type[PostGetMultipleAccountsResponse]
         if isinstance(address, str):
             method, response_model = "getAccountInfo", PostGetAccountInfoResponse
         else:
+            if not isinstance(address, list):
+                raise TypeError(f"address must be a str or a list of str, got {type(address).__name__}")
             if not 1 <= len(address) <= 100:
                 raise HeliusAccountCountError(f"getMultipleAccounts reads 1 to 100 accounts, got {len(address)}")
             method, response_model = "getMultipleAccounts", PostGetMultipleAccountsResponse
