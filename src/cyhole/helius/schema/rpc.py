@@ -498,3 +498,36 @@ class PostGetAccountInfoResponse(BaseModel):
     jsonrpc: str
     id: str | int
     result: AccountInfoResult
+
+
+class MultipleAccountsResult(BaseModel):
+    """
+    Result of the `getMultipleAccounts` RPC method.
+
+    Attributes:
+        context: slot the answer was read at — see
+            [`RpcResponseContext`][cyhole.helius.schema.RpcResponseContext]. All the
+            accounts are read at this same slot.
+        value: one entry per requested address, in the request's order: the account — see
+            [`AccountInfo`][cyhole.helius.schema.AccountInfo] — or `None` when that
+            account does not exist (never funded, or closed).
+    """
+    context: RpcResponseContext
+    value: list[AccountInfo | None]
+
+
+class PostGetMultipleAccountsResponse(BaseModel):
+    """
+    JSON-RPC 2.0 response for the `getMultipleAccounts` RPC method.
+
+    Attributes:
+        jsonrpc: JSON-RPC protocol version (`"2.0"`).
+        id: identifier of the request this response answers.
+        result: context and accounts — see
+            [`MultipleAccountsResult`][cyhole.helius.schema.MultipleAccountsResult]. The
+            field is required: a JSON-RPC error answer, which carries no `result`, fails
+            validation.
+    """
+    jsonrpc: str
+    id: str | int
+    result: MultipleAccountsResult

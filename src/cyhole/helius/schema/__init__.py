@@ -78,6 +78,8 @@ from .rpc import (
     AccountInfo,
     AccountInfoResult,
     PostGetAccountInfoResponse,
+    MultipleAccountsResult,
+    PostGetMultipleAccountsResponse,
 )
 from .enhanced import (
     GetTransactionsByAddressQuery,
@@ -194,6 +196,8 @@ __all__ = [
     "AccountInfo",
     "AccountInfoResult",
     "PostGetAccountInfoResponse",
+    "MultipleAccountsResult",
+    "PostGetMultipleAccountsResponse",
     # enhanced
     "GetTransactionsByAddressQuery",
     "EnhancedTransactionNativeTransfer",

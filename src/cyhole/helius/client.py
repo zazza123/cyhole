@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, overload
 
 from ..core.client import APIClient, AsyncAPIClient
 from ..helius.schema import (
@@ -35,6 +35,7 @@ from ..helius.schema import (
     PostGetSignaturesForAddressResponse,
     PostGetTransactionResponse,
     PostGetAccountInfoResponse,
+    PostGetMultipleAccountsResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -164,9 +165,15 @@ class HeliusClient(APIClient):
         """
         return self._interaction._post_get_transaction(True, signature, body)
 
-    def post_get_account_info(self, address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse:
+    @overload
+    def post_get_account_info(self, address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse: ...
+
+    @overload
+    def post_get_account_info(self, address: list[str], body: PostGetAccountInfoBody | None = None) -> PostGetMultipleAccountsResponse: ...
+
+    def post_get_account_info(self, address: str | list[str], body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse | PostGetMultipleAccountsResponse:
         """
-        Call the Helius POST **[getAccountInfo](https://www.helius.dev/docs/api-reference/rpc/http/getaccountinfo)** RPC API endpoint for synchronous logic.
+        Call the Helius POST **[getAccountInfo](https://www.helius.dev/docs/api-reference/rpc/http/getaccountinfo)** / **[getMultipleAccounts](https://www.helius.dev/docs/api-reference/rpc/http/getmultipleaccounts)** RPC API endpoints for synchronous logic.
         All the API endpoint details are available on [`Helius._post_get_account_info`][cyhole.helius.interaction.Helius._post_get_account_info].
         """
         return self._interaction._post_get_account_info(True, address, body)
@@ -319,9 +326,15 @@ class HeliusAsyncClient(AsyncAPIClient):
         """
         return await self._interaction._post_get_transaction(False, signature, body)
 
-    async def post_get_account_info(self, address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse:
+    @overload
+    async def post_get_account_info(self, address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse: ...
+
+    @overload
+    async def post_get_account_info(self, address: list[str], body: PostGetAccountInfoBody | None = None) -> PostGetMultipleAccountsResponse: ...
+
+    async def post_get_account_info(self, address: str | list[str], body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse | PostGetMultipleAccountsResponse:
         """
-        Call the Helius POST **[getAccountInfo](https://www.helius.dev/docs/api-reference/rpc/http/getaccountinfo)** RPC API endpoint for asynchronous logic.
+        Call the Helius POST **[getAccountInfo](https://www.helius.dev/docs/api-reference/rpc/http/getaccountinfo)** / **[getMultipleAccounts](https://www.helius.dev/docs/api-reference/rpc/http/getmultipleaccounts)** RPC API endpoints for asynchronous logic.
         All the API endpoint details are available on [`Helius._post_get_account_info`][cyhole.helius.interaction.Helius._post_get_account_info].
         """
         return await self._interaction._post_get_account_info(False, address, body)

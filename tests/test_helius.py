@@ -5,6 +5,7 @@ from requests import Response
 from pytest_mock import MockerFixture
 
 from cyhole.helius import Helius
+from cyhole.helius.exception import HeliusAccountCountError
 from cyhole.helius.param import HeliusAccountEncoding, HeliusCommitment, HeliusEncoding, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
 from cyhole.helius.schema import (
     PostGetAssetsByOwnerBody,
@@ -39,6 +40,7 @@ from cyhole.helius.schema import (
     PostGetSignaturesForAddressResponse,
     PostGetTransactionResponse,
     PostGetAccountInfoResponse,
+    PostGetMultipleAccountsResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -901,6 +903,67 @@ class TestHelius:
         self.helius.client.post_get_account_info(TEST_ACCOUNT_ADDRESS, body)
         _, kwargs = api.call_args
         assert kwargs["json"]["params"] == [TEST_ACCOUNT_ADDRESS, {"encoding": "base64", "commitment": "confirmed"}]
+
+    # ─── getMultipleAccounts ──────────────────────────────────────────────────
+
+    def _multiple_accounts_mock(self) -> Response:
+        """
+        The `getMultipleAccounts` mock served as is: its third account is `null`, and
+        `MockerManager.load_mock_response` would drop it.
+        """
+        mock_response = Response()
+        mock_response._content = (mock_path / "postGetMultipleAccounts_default.json").read_bytes()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+        return mock_response
+
+    def test_post_get_multiple_accounts_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — synchronous logic.
+
+        A pool, its WSOL vault and a missing account: the missing one is `None`, in place.
+
+        Mock Response File: postGetMultipleAccounts_default.json
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = self._multiple_accounts_mock())
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.BASE64.value)
+        response = self.helius.client.post_get_account_info([TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS, TEST_ACCOUNT_MISSING], body)
+        assert isinstance(response, PostGetMultipleAccountsResponse)
+        assert len(response.result.value) == 3
+        assert response.result.value[0] is not None and response.result.value[1] is not None
+        assert response.result.value[2] is None
+        _, kwargs = api.call_args
+        assert kwargs["json"] == {
+            "jsonrpc": "2.0", "id": "cyhole", "method": "getMultipleAccounts",
+            "params": [[TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS, TEST_ACCOUNT_MISSING], {"encoding": "base64"}],
+        }
+
+    @pytest.mark.asyncio
+    async def test_post_get_multiple_accounts_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — asynchronous logic.
+
+        Mock Response File: postGetMultipleAccounts_default.json
+        """
+        mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = self._multiple_accounts_mock())
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.BASE64.value)
+        async with self.helius.async_client as client:
+            response = await client.post_get_account_info([TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS, TEST_ACCOUNT_MISSING], body)
+        assert isinstance(response, PostGetMultipleAccountsResponse)
+        assert [account is None for account in response.result.value] == [False, False, True]
+
+    @pytest.mark.parametrize("addresses", [[], [TEST_ACCOUNT_ADDRESS] * 101])
+    def test_post_get_account_info_rejects_bad_address_count(self, mocker: MockerFixture, addresses: list[str]) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — an empty list or more than 100
+        addresses is refused before any request.
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api")
+        with pytest.raises(HeliusAccountCountError):
+            self.helius.client.post_get_account_info(addresses)
+        api.assert_not_called()
 
     # ─── getTransactionsByAddress ─────────────────────────────────────────────
 
