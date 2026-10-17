@@ -5,7 +5,8 @@ from requests import Response
 from pytest_mock import MockerFixture
 
 from cyhole.helius import Helius
-from cyhole.helius.param import HeliusCommitment, HeliusEncoding, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
+from cyhole.helius.exception import HeliusAccountCountError
+from cyhole.helius.param import HeliusAccountEncoding, HeliusCommitment, HeliusEncoding, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
 from cyhole.helius.schema import (
     PostGetAssetsByOwnerBody,
     PostGetAssetsByGroupBody,
@@ -17,6 +18,8 @@ from cyhole.helius.schema import (
     PostGetTransactionsForAddressBody,
     PostGetSignaturesForAddressBody,
     PostGetTransactionBody,
+    PostGetAccountInfoBody,
+    AccountDataSlice,
     GetTransactionsByAddressQuery,
     PostParsedEventsRange,
     PostParsedEventsTransactionHistoryBody,
@@ -36,6 +39,8 @@ from cyhole.helius.schema import (
     PostGetTransactionsForAddressResponse,
     PostGetSignaturesForAddressResponse,
     PostGetTransactionResponse,
+    PostGetAccountInfoResponse,
+    PostGetMultipleAccountsResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -75,6 +80,14 @@ TEST_SIGNATURES_ADDRESS = "CHryNxUfvY8yTWDdCjspz24zmkgYoKbi5MQGL42H4yme"
 TEST_RPC_TRANSACTION_SIGNATURE = "4AtQkCrszud6jZ3PpL7hVGd6DRaXvNWGHqYsiFBbeZxTv614yaef7xZTSoALEZ7jJDopseMuitMifDC7UnBZ5YJp"
 TEST_SIGNATURES_BEFORE = "2pago8JTbTpaJj9PWkj66sUsbNXdmmHyxAiUFwfnHi24PZNESJL8YgSvjPExxrs2Mfn1vbdyLT56byghYpSetyXw"
 TEST_SIGNATURES_UNTIL = "343wGRyiZtzX4tsSXKCe1BUZ1WtxBPDD7ifyjrCSp4a7hJdfpiB2bEM6TL7nRoXS7xawfjEi4XbGJGpePL5qYV5T"
+# Standard Solana RPC (getAccountInfo / getMultipleAccounts): the WSOL vault of a Meteora
+# DAMM v2 pool, that pool, and a never-funded address, as captured in the mocks.
+TEST_ACCOUNT_ADDRESS = "7V9ARybm8rqtcvRKBECNFM7KcQG2MjpMNM6fQRDpHHwU"
+TEST_POOL_ADDRESS = "7meYct58Wx9ojhwG8UqyR5jwDF1xctniuTgGSvvaiKD5"
+TEST_ACCOUNT_MISSING = "5vDymKjPUAG2aswC6SGMuhKJ8bHyVTFJ5LHm96SGhXtv"
+# A plain system wallet (no data), read without an encoding.
+TEST_ACCOUNT_WALLET = "6iuhuVyE7PMTLraNud7FH64byeNgdxJm1NfJNVPd1dyS"
+WSOL_MINT = "So11111111111111111111111111111111111111112"
 
 
 class TestHelius:
@@ -802,6 +815,227 @@ class TestHelius:
             TEST_RPC_TRANSACTION_SIGNATURE,
             {"encoding": "jsonParsed", "commitment": "confirmed", "maxSupportedTransactionVersion": 0},
         ]
+
+    # ─── getAccountInfo ───────────────────────────────────────────────────────
+
+    def test_post_get_account_info_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — synchronous logic, base64 encoding.
+
+        Mock Response File: postGetAccountInfo_default.json
+        """
+        mock_file_name = "postGetAccountInfo_default"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostGetAccountInfoResponse)
+            mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.BASE64.value)
+        response = self.helius.client.post_get_account_info(TEST_ACCOUNT_ADDRESS, body)
+        assert isinstance(response, PostGetAccountInfoResponse)
+        assert response.result.value is not None
+        assert response.result.value.data[1] == "base64"
+        assert response.result.context.slot > 0
+
+        if config.mock_file_overwrite and not config.helius.mock_response:
+            self.mocker.store_mock_model(mock_file_name, response)
+
+    @pytest.mark.asyncio
+    async def test_post_get_account_info_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — asynchronous logic, jsonParsed encoding.
+
+        Mock Response File: postGetAccountInfo_json_parsed.json
+        """
+        mock_file_name = "postGetAccountInfo_json_parsed"
+        if config.mock_response or config.helius.mock_response:
+            mock_response = self.mocker.load_mock_response(mock_file_name, PostGetAccountInfoResponse)
+            mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = mock_response)
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.JSON_PARSED.value)
+        async with self.helius.async_client as client:
+            response = await client.post_get_account_info(TEST_ACCOUNT_ADDRESS, body)
+        assert isinstance(response, PostGetAccountInfoResponse)
+        assert response.result.value is not None
+        assert isinstance(response.result.value.data, dict)
+        assert response.result.value.data["parsed"]["info"]["mint"] == WSOL_MINT
+
+    def test_post_get_account_info_not_found_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — account not found.
+
+        The API answers with `value: null`, which must be read as `None`. The mock file is
+        served as is: `MockerManager.load_mock_response` drops `None` fields.
+
+        Mock Response File: postGetAccountInfo_not_found.json
+        """
+        mock_response = Response()
+        mock_response._content = (mock_path / "postGetAccountInfo_not_found.json").read_bytes()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+        mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        response = self.helius.client.post_get_account_info(TEST_ACCOUNT_MISSING)
+        assert isinstance(response, PostGetAccountInfoResponse)
+        assert response.result.value is None
+
+    def test_post_get_account_info_body_serialises(self) -> None:
+        """
+        Unit Test for the "getAccountInfo" config object: camelCase names and the data slice.
+        """
+        body = PostGetAccountInfoBody(encoding = "base64", data_slice = AccountDataSlice(offset = 64, length = 8))
+        assert body.model_dump(by_alias = True, exclude_none = True) == {
+            "encoding": "base64", "dataSlice": {"offset": 64, "length": 8}}
+
+    def test_post_get_account_info_request(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — request sent to the API.
+
+        Mock Response File: postGetAccountInfo_default.json
+        """
+        mock_response = self.mocker.load_mock_response("postGetAccountInfo_default", PostGetAccountInfoResponse)
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = mock_response)
+
+        self.helius.client.post_get_account_info(TEST_ACCOUNT_ADDRESS)
+        args, kwargs = api.call_args
+        assert args[0] == "POST"
+        assert args[1] == self.helius.url_api
+        assert kwargs["json"] == {"jsonrpc": "2.0", "id": "cyhole", "method": "getAccountInfo", "params": [TEST_ACCOUNT_ADDRESS]}
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.BASE64.value, commitment = HeliusCommitment.CONFIRMED.value)
+        self.helius.client.post_get_account_info(TEST_ACCOUNT_ADDRESS, body)
+        _, kwargs = api.call_args
+        assert kwargs["json"]["params"] == [TEST_ACCOUNT_ADDRESS, {"encoding": "base64", "commitment": "confirmed"}]
+
+    def _raw_mock(self, file_name: str) -> Response:
+        """A mock file served as is, bypassing `MockerManager`, which drops `None` fields."""
+        mock_response = Response()
+        mock_response._content = (mock_path / f"{file_name}.json").read_bytes()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+        return mock_response
+
+    def test_post_get_account_info_without_encoding(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — no encoding in the request.
+
+        The API default is base58, returned as a plain string, not as a `[data, encoding]`
+        pair.
+
+        Mock Response File: postGetAccountInfo_no_encoding.json
+        """
+        mocker.patch("cyhole.core.client.APIClient.api", return_value = self._raw_mock("postGetAccountInfo_no_encoding"))
+
+        response = self.helius.client.post_get_account_info(TEST_ACCOUNT_WALLET)
+        assert response.result.value is not None
+        assert response.result.value.data == ""
+
+    def test_post_get_account_info_error_answer(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — JSON-RPC error answer.
+
+        Without an encoding the API answers an account larger than 128 bytes with an
+        error and no `result`: it must fail validation, not read as a missing account.
+
+        Mock Response File: postGetAccountInfo_error.json
+        """
+        mocker.patch("cyhole.core.client.APIClient.api", return_value = self._raw_mock("postGetAccountInfo_error"))
+
+        with pytest.raises(ValidationError):
+            self.helius.client.post_get_account_info(TEST_POOL_ADDRESS)
+
+    # ─── getMultipleAccounts ──────────────────────────────────────────────────
+
+    def _multiple_accounts_mock(self) -> Response:
+        """
+        The `getMultipleAccounts` mock served as is: its third account is `null`, and
+        `MockerManager.load_mock_response` would drop it.
+        """
+        mock_response = Response()
+        mock_response._content = (mock_path / "postGetMultipleAccounts_default.json").read_bytes()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+        return mock_response
+
+    def test_post_get_multiple_accounts_sync(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — synchronous logic.
+
+        A pool, its WSOL vault and a missing account: the missing one is `None`, in place.
+
+        Mock Response File: postGetMultipleAccounts_default.json
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = self._multiple_accounts_mock())
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.BASE64.value)
+        response = self.helius.client.post_get_account_info([TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS, TEST_ACCOUNT_MISSING], body)
+        assert isinstance(response, PostGetMultipleAccountsResponse)
+        assert len(response.result.value) == 3
+        assert response.result.value[0] is not None and response.result.value[1] is not None
+        assert response.result.value[2] is None
+        _, kwargs = api.call_args
+        assert kwargs["json"] == {
+            "jsonrpc": "2.0", "id": "cyhole", "method": "getMultipleAccounts",
+            "params": [[TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS, TEST_ACCOUNT_MISSING], {"encoding": "base64"}],
+        }
+
+    @pytest.mark.asyncio
+    async def test_post_get_multiple_accounts_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — asynchronous logic.
+
+        Mock Response File: postGetMultipleAccounts_default.json
+        """
+        mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = self._multiple_accounts_mock())
+
+        body = PostGetAccountInfoBody(encoding = HeliusAccountEncoding.BASE64.value)
+        async with self.helius.async_client as client:
+            response = await client.post_get_account_info([TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS, TEST_ACCOUNT_MISSING], body)
+        assert isinstance(response, PostGetMultipleAccountsResponse)
+        assert [account is None for account in response.result.value] == [False, False, True]
+
+    @pytest.mark.parametrize("addresses", [[], [TEST_ACCOUNT_ADDRESS] * 101])
+    def test_post_get_account_info_rejects_bad_address_count(self, mocker: MockerFixture, addresses: list[str]) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — an empty list or more than 100
+        addresses is refused before any request.
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api")
+        with pytest.raises(HeliusAccountCountError):
+            self.helius.client.post_get_account_info(addresses)
+        api.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_post_get_account_info_rejects_bad_address_count_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — asynchronous logic refuses more
+        than 100 addresses before any request.
+        """
+        api = mocker.patch("cyhole.core.client.AsyncAPIClient.api")
+        with pytest.raises(HeliusAccountCountError):
+            async with self.helius.async_client as client:
+                await client.post_get_account_info([TEST_ACCOUNT_ADDRESS] * 101)
+        api.assert_not_called()
+
+    def test_post_get_account_info_accepts_one_hundred_addresses(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — 100 addresses, the most one call reads,
+        are sent in one request.
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api", return_value = self._multiple_accounts_mock())
+        self.helius.client.post_get_account_info([TEST_ACCOUNT_ADDRESS] * 100)
+        _, kwargs = api.call_args
+        assert kwargs["json"]["method"] == "getMultipleAccounts"
+        assert len(kwargs["json"]["params"][0]) == 100
+
+    def test_post_get_account_info_rejects_other_collections(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getMultipleAccounts" — only a list keeps the answer in the
+        request's order, so a set is refused before any request.
+        """
+        api = mocker.patch("cyhole.core.client.APIClient.api")
+        with pytest.raises(TypeError):
+            self.helius.client.post_get_account_info({TEST_POOL_ADDRESS, TEST_ACCOUNT_ADDRESS})  # type: ignore[call-overload]
+        api.assert_not_called()
 
     # ─── getTransactionsByAddress ─────────────────────────────────────────────
 

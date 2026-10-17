@@ -4,6 +4,7 @@ from ..core.param import RequestType
 from ..core.interaction import Interaction
 from ..helius.client import HeliusClient, HeliusAsyncClient
 from ..helius.param import HeliusNetwork
+from ..helius.exception import HeliusAccountCountError
 from ..helius.schema import (
     PostGetAssetOptions,
     PostGetAssetsByOwnerBody,
@@ -16,6 +17,7 @@ from ..helius.schema import (
     PostGetTransactionsForAddressBody,
     PostGetSignaturesForAddressBody,
     PostGetTransactionBody,
+    PostGetAccountInfoBody,
     GetTransactionsByAddressQuery,
     PostParsedEventsTransactionHistoryBody,
     PostGetAssetResponse,
@@ -34,6 +36,8 @@ from ..helius.schema import (
     PostGetTransactionsForAddressResponse,
     PostGetSignaturesForAddressResponse,
     PostGetTransactionResponse,
+    PostGetAccountInfoResponse,
+    PostGetMultipleAccountsResponse,
     GetTransactionsByAddressResponse,
     PostGetTransactionsResponse,
     PostParsedEventsTransactionsResponse,
@@ -658,6 +662,76 @@ class Helius(Interaction):
             params.append(body.model_dump(by_alias = True, exclude_none = True))
         rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": "getTransaction", "params": params}
         return self.api_return_model(sync, RequestType.POST.value, self.url_api, PostGetTransactionResponse, json = rpc_body)
+
+    # ─── getAccountInfo / getMultipleAccounts ─────────────────────────────────
+
+    @overload
+    def _post_get_account_info(self, sync: Literal[True], address: str, body: PostGetAccountInfoBody | None = None) -> PostGetAccountInfoResponse: ...
+    @overload
+    def _post_get_account_info(self, sync: Literal[True], address: list[str], body: PostGetAccountInfoBody | None = None) -> PostGetMultipleAccountsResponse: ...
+    @overload
+    def _post_get_account_info(self, sync: Literal[False], address: str, body: PostGetAccountInfoBody | None = None) -> Coroutine[None, None, PostGetAccountInfoResponse]: ...
+    @overload
+    def _post_get_account_info(self, sync: Literal[False], address: list[str], body: PostGetAccountInfoBody | None = None) -> Coroutine[None, None, PostGetMultipleAccountsResponse]: ...
+    def _post_get_account_info(
+        self, sync: bool, address: str | list[str], body: PostGetAccountInfoBody | None = None
+    ) -> PostGetAccountInfoResponse | PostGetMultipleAccountsResponse | Coroutine[None, None, PostGetAccountInfoResponse] | Coroutine[None, None, PostGetMultipleAccountsResponse]:
+        """
+        This function refers to the **getAccountInfo** and **getMultipleAccounts**
+        standard Solana RPC methods, served by the Helius RPC endpoint: one address calls
+        `getAccountInfo`, a list of addresses calls `getMultipleAccounts`.
+
+        Returns the current state of the accounts: balance in lamports, the program that
+        owns each one and its data, read at the slot reported in the answer's context. It
+        is the way to read token account balances or program accounts (liquidity pool
+        states, for example) without fetching transactions. With a list, every account
+        is read at the same slot.
+
+        Both are standard RPC calls billed **1 credit** per request and available on every
+        plan, Free included, so a list of up to **100** addresses costs the same as one.
+        Set the `encoding` in the body. Without it, `getAccountInfo` answers in base58: the
+        data comes back as a plain string, and an account larger than 128 bytes gets a
+        JSON-RPC error instead of a result. `getMultipleAccounts` defaults to base64. A
+        missing account (never funded, or closed) is not an error: its value is `None`,
+        in its position for a list.
+
+        Parameters:
+            sync: if `True` run synchronously, else return a coroutine.
+            address: base58-encoded address of the account to read, or a list of 1 to 100
+                addresses to read in one call.
+            body: optional configuration object — see
+                [`PostGetAccountInfoBody`][cyhole.helius.schema.PostGetAccountInfoBody].
+                All fields are optional. Use it to choose the encoding
+                ([`HeliusAccountEncoding`][cyhole.helius.param.HeliusAccountEncoding]),
+                the commitment ([`HeliusCommitment`][cyhole.helius.param.HeliusCommitment]),
+                a `data_slice` and `min_context_slot`.
+
+        Returns:
+            PostGetAccountInfoResponse | PostGetMultipleAccountsResponse: for one address,
+                the account wrapped in a JSON-RPC 2.0 envelope: `response.result.value` is
+                an [`AccountInfo`][cyhole.helius.schema.AccountInfo] or `None`. For a list,
+                `response.result.value` is a list in the request's order, with `None` for
+                each missing account. `response.result.context.slot` is the slot read at.
+
+        Raises:
+            HeliusAccountCountError: the list is empty or holds more than 100 addresses.
+            TypeError: `address` is neither a `str` nor a `list`; only a list keeps the
+                answer in the request's order.
+        """
+        response_model: type[PostGetAccountInfoResponse] | type[PostGetMultipleAccountsResponse]
+        if isinstance(address, str):
+            method, response_model = "getAccountInfo", PostGetAccountInfoResponse
+        else:
+            if not isinstance(address, list):
+                raise TypeError(f"address must be a str or a list of str, got {type(address).__name__}")
+            if not 1 <= len(address) <= 100:
+                raise HeliusAccountCountError(f"getMultipleAccounts reads 1 to 100 accounts, got {len(address)}")
+            method, response_model = "getMultipleAccounts", PostGetMultipleAccountsResponse
+        params: list = [address]
+        if body is not None:
+            params.append(body.model_dump(by_alias = True, exclude_none = True))
+        rpc_body = {"jsonrpc": "2.0", "id": "cyhole", "method": method, "params": params}
+        return self.api_return_model(sync, RequestType.POST.value, self.url_api, response_model, json = rpc_body)
 
     # ─── getTransactionsByAddress ─────────────────────────────────────────────
 

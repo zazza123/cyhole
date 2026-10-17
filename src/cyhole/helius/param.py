@@ -77,12 +77,13 @@ class HeliusSolMode(CyholeParam):
 
 class HeliusCommitment(CyholeParam):
     """
-    Commitment level for the `getTransfersByAddress`, `getSignaturesForAddress` and
-    `getTransaction` RPC endpoints.
+    Commitment level for the `getTransfersByAddress`, `getSignaturesForAddress`,
+    `getTransaction`, `getAccountInfo` and `getMultipleAccounts` RPC endpoints.
 
     Pass the `.value` to [`PostGetTransfersByAddressBody`][cyhole.helius.schema.PostGetTransfersByAddressBody],
-    [`PostGetSignaturesForAddressBody`][cyhole.helius.schema.PostGetSignaturesForAddressBody]
-    or [`PostGetTransactionBody`][cyhole.helius.schema.PostGetTransactionBody]
+    [`PostGetSignaturesForAddressBody`][cyhole.helius.schema.PostGetSignaturesForAddressBody],
+    [`PostGetTransactionBody`][cyhole.helius.schema.PostGetTransactionBody]
+    or [`PostGetAccountInfoBody`][cyhole.helius.schema.PostGetAccountInfoBody]
     as the `commitment` parameter.
     """
     FINALIZED = "finalized"
@@ -171,6 +172,27 @@ class HeliusEncoding(CyholeParam):
     """Base64 encoding of the raw transaction bytes."""
     BASE58 = "base58"
     """Base58 encoding of the raw transaction bytes."""
+
+
+class HeliusAccountEncoding(CyholeParam):
+    """
+    Encoding format for the account data returned by the `getAccountInfo` and
+    `getMultipleAccounts` RPC endpoints.
+
+    Pass the `.value` to [`PostGetAccountInfoBody`][cyhole.helius.schema.PostGetAccountInfoBody]
+    as the `encoding` parameter. The binary encodings return the data as a
+    `[data, encoding]` pair; `JSON_PARSED` returns a JSON object for the programs the
+    node can decode (SPL Token accounts, for example) and falls back to base64 for the
+    others.
+    """
+    BASE58 = "base58"
+    """Base58 encoding of the raw account data (slow; limited to small accounts)."""
+    BASE64 = "base64"
+    """Base64 encoding of the raw account data. The usual choice for program accounts."""
+    BASE64_ZSTD = "base64+zstd"
+    """Base64 encoding of the zstd-compressed account data."""
+    JSON_PARSED = "jsonParsed"
+    """JSON object decoded by the node for known programs (SPL Token, Stake, ...)."""
 
 
 class HeliusParserStatus(CyholeParam):

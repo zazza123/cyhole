@@ -1,0 +1,8 @@
+{
+    "jsonrpc": "2.0",
+    "error": {
+        "code": -32602,
+        "message": "Encoded binary (base 58) data should be less than 128 bytes, please use Base64 encoding."
+    },
+    "id": "cyhole"
+}

@@ -1,0 +1,21 @@
+{
+    "jsonrpc": "2.0",
+    "result": {
+        "context": {
+            "slot": 458089432,
+            "apiVersion": "4.3.0-alpha.2"
+        },
+        "value": {
+            "lamports": 1488914,
+            "data": [
+                "BpuIV/6rgYT7aH9jRhjANdrEOdwa6ztVmKDwAAAAAAHyzNU1rKXxc2rIIt0Hc+TZL72KWbKUA1AClakBHHOp5doBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAA4thYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                "base64"
+            ],
+            "owner": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+            "executable": false,
+            "rentEpoch": 18446744073709551615,
+            "space": 165
+        }
+    },
+    "id": "cyhole"
+}
