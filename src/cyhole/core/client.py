@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import abc
 import requests
 from typing import Any, Coroutine, TYPE_CHECKING
@@ -16,6 +17,35 @@ from ..core.exception import (
 
 if TYPE_CHECKING:
     from ..core.interaction import Interaction
+
+# query parameters that carry a credential; their values never leave the client
+_SECRET_PARAM = re.compile(r"(?i)\b(api-key|api_key|apikey|x-api-key|key|token|access_token)=([^&\s'\"]+)")
+
+def redact(text: str) -> str:
+    """
+        Mask the values of credential query parameters (`api-key`, `apikey`,
+        `token`, ...) found in `text`, so that URLs and error messages can be
+        logged without exposing API keys.
+
+        Parameters:
+            text: any text, typically a URL or an exception message.
+
+        Return:
+            the same text with every credential value replaced by `***`.
+    """
+    return _SECRET_PARAM.sub(r"\1=***", text)
+
+def _raise_for_status(response: requests.Response) -> None:
+    """
+        Raise `requests.HTTPError` for an error status, as `raise_for_status` does,
+        after masking the credentials in the URLs the error carries.
+    """
+    if response.status_code >= 400:
+        if response.url:
+            response.url = redact(response.url)
+        if response.request is not None and response.request.url:
+            response.request.url = redact(response.request.url)
+    response.raise_for_status()
 
 class APIClientInterface(metaclass = abc.ABCMeta):
     """
@@ -82,18 +112,25 @@ class APIClient(APIClientInterface):
         # execute request
         match type:
             case RequestType.GET.value:
-                response = requests.get(url, *args, **kwargs)
+                request = requests.get
             case RequestType.POST.value:
-                response = requests.post(url, *args, **kwargs)
+                request = requests.post
             case _:
                 raise RequestTypeNotSupported(f"Request '{type}' not supported.")
+
+        # a connection error quotes the URL: raise it again without the credentials
+        # and without chaining the original, which would print them anyway
+        try:
+            response = request(url, *args, **kwargs)
+        except requests.RequestException as error:
+            raise error.__class__(redact(str(error))) from None
 
         # check response
         match response.status_code:
             case 401:
                 raise AuthorizationAPIKeyError("Check API Key")
             case _:
-                response.raise_for_status()
+                _raise_for_status(response)
                 return response
 
 class AsyncAPIClient(APIClientInterface):
@@ -181,7 +218,7 @@ class AsyncAPIClient(APIClientInterface):
             case 401:
                 raise AuthorizationAPIKeyError("Check API Key")
             case _:
-                response.raise_for_status()
+                _raise_for_status(response)
                 return response
 
     async def _to_requests_response(self, response: aiohttp.ClientResponse) -> requests.Response:

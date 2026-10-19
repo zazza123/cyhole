@@ -1,8 +1,9 @@
 import pytest
+import requests
 
 from cyhole.core.token.solana import SOL
 from cyhole.core.interaction import Interaction
-from cyhole.core.client import APIClient, AsyncAPIClient
+from cyhole.core.client import APIClient, AsyncAPIClient, redact
 from cyhole.core.param import CyholeParam, RequestType
 from cyhole.core.exception import RequestTypeNotSupported, ParamUnknownError, AsyncClientAPISessionNotAvailable
 
@@ -229,3 +230,69 @@ def test_token_to_decimals() -> None:
         Unit Test for `CyholeToken.to_decimals` function.
     """
     assert SOL.to_decimals(1_011_000_000) == 1.011
+SECRET = "00000000-1111-2222-3333-444444444444"
+URL_WITH_KEY = f"https://mainnet.helius-rpc.com/?api-key={SECRET}"
+
+def _error_response(status_code: int = 522) -> requests.Response:
+    response = requests.Response()
+    response.status_code = status_code
+    response.reason = "Origin Connection Time-out"
+    response.url = URL_WITH_KEY
+    return response
+
+def test_redact_masks_key_params() -> None:
+    """
+        Unit Test for `redact`: the values of key-like query parameters are masked,
+        the others are kept.
+    """
+    text = f"url: https://x.io/v1/e?api-key={SECRET}&limit=10&apikey=a1&token=b2&key=c3&api_key=d4"
+    assert redact(text) == "url: https://x.io/v1/e?api-key=***&limit=10&apikey=***&token=***&key=***&api_key=***"
+
+def test_sync_client_api_http_error_hides_the_api_key(mocker) -> None:
+    """
+        Unit Test for `APIClient.api`: an HTTP error raised for a URL that carries an
+        API key must not expose the key, neither in the message nor in the response.
+    """
+    mocker.patch("cyhole.core.client.requests.post", return_value = _error_response())
+    with pytest.raises(requests.HTTPError) as error:
+        client.api(type = RequestType.POST.value, url = URL_WITH_KEY, json = {})
+    assert SECRET not in str(error.value)
+    assert "api-key=***" in str(error.value)
+    assert SECRET not in error.value.response.url
+
+def test_sync_client_api_connection_error_hides_the_api_key(mocker) -> None:
+    """
+        Unit Test for `APIClient.api`: a connection error whose message carries the
+        request URL is raised again without the key and without the original chained.
+    """
+    message = f"HTTPSConnectionPool(host='mainnet.helius-rpc.com', port=443): Max retries exceeded with url: /?api-key={SECRET}"
+    mocker.patch("cyhole.core.client.requests.post", side_effect = requests.ConnectionError(message))
+    with pytest.raises(requests.ConnectionError) as error:
+        client.api(type = RequestType.POST.value, url = URL_WITH_KEY, json = {})
+    assert SECRET not in str(error.value)
+    assert error.value.__cause__ is None and error.value.__suppress_context__
+
+class _FakeContext:
+    async def __aenter__(self) -> "_FakeContext":
+        return self
+    async def __aexit__(self, *args) -> None:
+        return None
+
+class _FakeSession:
+    def post(self, *args, **kwargs) -> _FakeContext:
+        return _FakeContext()
+
+@pytest.mark.asyncio
+async def test_async_client_api_http_error_hides_the_api_key(mocker) -> None:
+    """
+        Unit Test for `AsyncAPIClient.api`: an HTTP error raised for a URL that carries
+        an API key must not expose the key, neither in the message nor in the response.
+    """
+    async_client = AsyncAPIClient(interaction)
+    async_client._session = _FakeSession()
+    mocker.patch.object(async_client, "_to_requests_response", return_value = _error_response())
+    with pytest.raises(requests.HTTPError) as error:
+        await async_client.api(type = RequestType.POST.value, url = URL_WITH_KEY, json = {})
+    assert SECRET not in str(error.value)
+    assert "api-key=***" in str(error.value)
+    assert SECRET not in error.value.response.url
