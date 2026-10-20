@@ -237,8 +237,9 @@ class AsyncAPIClient(APIClientInterface):
         _response.headers = requests.structures.CaseInsensitiveDict(response.headers)
         _response.status_code = response.status
         _response.reason = response.reason if response.reason else "Not Found"
-        _response.encoding = response.get_encoding()
+        # read first: without a charset aiohttp guesses the encoding from the body
         _response._content = await response.read()
+        _response.encoding = response.get_encoding()
 
         return _response
 
