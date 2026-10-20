@@ -1,10 +1,10 @@
-from typing import Any, Coroutine, overload, Literal
+from typing import Any, Coroutine, Type, overload, Literal
 
 from ..core.param import RequestType
-from ..core.interaction import Interaction
+from ..core.interaction import Interaction, ResponseModel
 from ..helius.client import HeliusClient, HeliusAsyncClient
 from ..helius.param import HeliusNetwork
-from ..helius.exception import HeliusAccountCountError
+from ..helius.exception import HeliusAccountCountError, HeliusRPCError
 from ..helius.schema import (
     PostGetAssetOptions,
     PostGetAssetsByOwnerBody,
@@ -97,6 +97,22 @@ class Helius(Interaction):
         self.url_api_parsed_events = f"https://{network.value}.helius-rpc.com/v1/parsed-events"
         self.client = HeliusClient(self)
         self.async_client = HeliusAsyncClient(self)
+
+    def validate_response(self, response_model: Type[ResponseModel], content: Any) -> ResponseModel:
+        """
+        Parse a Helius answer, raising `HeliusRPCError` first when it is a JSON-RPC error.
+
+        A JSON-RPC error comes with HTTP 200 and an `error` object in place of `result`.
+        Only a JSON-RPC envelope (it has `jsonrpc`) is checked, so the enhanced and parsed
+        events APIs are parsed as before.
+
+        Raises:
+            HeliusRPCError: the answer carries a JSON-RPC `error`.
+        """
+        if isinstance(content, dict) and "jsonrpc" in content and isinstance(content.get("error"), dict):
+            error = content["error"]
+            raise HeliusRPCError(error.get("code"), error.get("message"), error.get("data"))
+        return super().validate_response(response_model, content)
 
     # ─── getAsset ─────────────────────────────────────────────────────────────
 
@@ -557,6 +573,9 @@ class Helius(Interaction):
                 [`TransactionForAddressItem`][cyhole.helius.schema.TransactionForAddressItem]
                 exposes signature-mode or full-mode fields depending on the
                 `transaction_details` parameter.
+
+        Raises:
+            HeliusRPCError: the RPC answered with a JSON-RPC `error` instead of a `result`.
         """
         params: list = [address]
         if body is not None:
@@ -606,6 +625,9 @@ class Helius(Interaction):
                 envelope. Access the rows via `response.result`, ordered newest first;
                 each [`SignatureForAddressItem`][cyhole.helius.schema.SignatureForAddressItem]
                 carries the signature, slot, block time, error and memo.
+
+        Raises:
+            HeliusRPCError: the RPC answered with a JSON-RPC `error` instead of a `result`.
         """
         params: list = [address]
         if body is not None:
@@ -656,6 +678,9 @@ class Helius(Interaction):
                 [`TransactionWithMeta`][cyhole.helius.schema.TransactionWithMeta], or
                 `None` when the signature is not found or not yet confirmed at the
                 requested commitment.
+
+        Raises:
+            HeliusRPCError: the RPC answered with a JSON-RPC `error` instead of a `result`.
         """
         params: list = [signature]
         if body is not None:
@@ -715,6 +740,7 @@ class Helius(Interaction):
 
         Raises:
             HeliusAccountCountError: the list is empty or holds more than 100 addresses.
+            HeliusRPCError: the RPC answered with a JSON-RPC `error` instead of a `result`.
             TypeError: `address` is neither a `str` nor a `list`; only a list keeps the
                 answer in the request's order.
         """

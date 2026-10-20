@@ -1,3 +1,4 @@
+import json
 import pytest
 from pathlib import Path
 from pydantic import ValidationError
@@ -5,7 +6,7 @@ from requests import Response
 from pytest_mock import MockerFixture
 
 from cyhole.helius import Helius
-from cyhole.helius.exception import HeliusAccountCountError
+from cyhole.helius.exception import HeliusAccountCountError, HeliusException, HeliusRPCError
 from cyhole.helius.param import HeliusAccountEncoding, HeliusCommitment, HeliusEncoding, HeliusParsedEventsSummaryType, HeliusParserStatus, HeliusSortOrder
 from cyhole.helius.schema import (
     PostGetAssetsByOwnerBody,
@@ -786,6 +787,73 @@ class TestHelius:
         assert isinstance(response, PostGetTransactionResponse)
         assert response.result is None
 
+    def _rpc_error_mock(self, code: int = -32015, message: str = "Transaction version (0) is not supported", data: object = None) -> Response:
+        """
+        A JSON-RPC error answer: HTTP 200 and an `error` object in place of `result`.
+        """
+        error: dict = {"code": code, "message": message}
+        if data is not None:
+            error["data"] = data
+        mock_response = Response()
+        mock_response._content = json.dumps({"jsonrpc": "2.0", "id": "cyhole", "error": error}).encode()
+        mock_response.status_code = 200
+        mock_response.encoding = "utf-8"
+        return mock_response
+
+    def test_post_get_transaction_rpc_error(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransaction" — a JSON-RPC error answer raises
+        `HeliusRPCError` with its code, message and data, not a `ValidationError`.
+        """
+        mocker.patch("cyhole.core.client.APIClient.api", return_value = self._rpc_error_mock(data = {"slot": 1}))
+
+        with pytest.raises(HeliusRPCError) as error:
+            self.helius.client.post_get_transaction(TEST_RPC_TRANSACTION_SIGNATURE)
+        assert isinstance(error.value, HeliusException)
+        assert error.value.code == -32015
+        assert error.value.message == "Transaction version (0) is not supported"
+        assert error.value.data == {"slot": 1}
+        assert "-32015" in str(error.value)
+
+    @pytest.mark.asyncio
+    async def test_post_get_transaction_rpc_error_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getTransaction" — asynchronous logic raises
+        `HeliusRPCError` on a JSON-RPC error answer.
+        """
+        mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = self._rpc_error_mock())
+
+        with pytest.raises(HeliusRPCError) as error:
+            async with self.helius.async_client as client:
+                await client.post_get_transaction(TEST_RPC_TRANSACTION_SIGNATURE)
+        assert error.value.code == -32015
+        assert error.value.message == "Transaction version (0) is not supported"
+        assert error.value.data is None
+
+    def test_post_get_account_info_rpc_error(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — the JSON-RPC error check is shared by
+        the standard RPC methods.
+        """
+        mocker.patch("cyhole.core.client.APIClient.api", return_value = self._rpc_error_mock(code = -32602, message = "Invalid param"))
+
+        with pytest.raises(HeliusRPCError) as error:
+            self.helius.client.post_get_account_info(TEST_ACCOUNT_ADDRESS)
+        assert error.value.code == -32602
+        assert error.value.message == "Invalid param"
+
+    @pytest.mark.asyncio
+    async def test_post_get_account_info_rpc_error_async(self, mocker: MockerFixture) -> None:
+        """
+        Unit Test for endpoint "getAccountInfo" — asynchronous logic raises
+        `HeliusRPCError` on a JSON-RPC error answer.
+        """
+        mocker.patch("cyhole.core.client.AsyncAPIClient.api", return_value = self._rpc_error_mock(code = -32602, message = "Invalid param"))
+
+        with pytest.raises(HeliusRPCError):
+            async with self.helius.async_client as client:
+                await client.post_get_account_info(TEST_ACCOUNT_ADDRESS)
+
     def test_post_get_transaction_request(self, mocker: MockerFixture) -> None:
         """
         Unit Test for endpoint "getTransaction" — request sent to the API.
@@ -934,13 +1002,13 @@ class TestHelius:
         Unit Test for endpoint "getAccountInfo" — JSON-RPC error answer.
 
         Without an encoding the API answers an account larger than 128 bytes with an
-        error and no `result`: it must fail validation, not read as a missing account.
+        error and no `result`: it must raise `HeliusRPCError`, not read as a missing account.
 
         Mock Response File: postGetAccountInfo_error.json
         """
         mocker.patch("cyhole.core.client.APIClient.api", return_value = self._raw_mock("postGetAccountInfo_error"))
 
-        with pytest.raises(ValidationError):
+        with pytest.raises(HeliusRPCError):
             self.helius.client.post_get_account_info(TEST_POOL_ADDRESS)
 
     # ─── getMultipleAccounts ──────────────────────────────────────────────────
