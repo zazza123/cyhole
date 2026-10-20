@@ -1,3 +1,4 @@
+import json
 import pytest
 from pathlib import Path
 
@@ -29,12 +30,14 @@ from cyhole.jupiter.schema import (
     GetRecurringOrdersResponse,
     PostRecurringCancelOrderResponse
 )
-from cyhole.jupiter.param import JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType
+from cyhole.jupiter.param import JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType, JupiterRouter
 from cyhole.core.token.solana import WSOL, JUP, USDC
 from cyhole.core.token.ethereum import WETH
 
 # load test config
 from .config import load_config, MockerManager
+
+_SWAP_ORDER_MOCK = Path(__file__).parent / "resources" / "mock" / "jupiter" / "get_swap_order_default.json"
 config = load_config()
 
 # create resources folder
@@ -236,6 +239,34 @@ class TestJupiter:
             response = await client.get_swap_order(params)
 
         assert isinstance(response, GetSwapOrderResponse)
+
+    def test_get_swap_order_metis_router(self) -> None:
+        """
+            Unit Test used to check that a "Swap - Order" answer routed by Metis,
+            as the keyless tier routes a fresh memecoin, is read.
+
+            Mock Response File: get_swap_order_default.json
+        """
+        answer = json.loads(_SWAP_ORDER_MOCK.read_text())
+        answer["router"] = "metis"
+
+        response = GetSwapOrderResponse.model_validate(answer)
+
+        assert response.router == JupiterRouter.METIS
+
+    def test_get_swap_order_unknown_router(self) -> None:
+        """
+            Unit Test used to check that a router this version does not know yet
+            does not make the whole "Swap - Order" answer unreadable.
+
+            Mock Response File: get_swap_order_default.json
+        """
+        answer = json.loads(_SWAP_ORDER_MOCK.read_text())
+        answer["router"] = "some-new-router"
+
+        response = GetSwapOrderResponse.model_validate(answer)
+
+        assert response.router == "some-new-router"
 
     def test_post_swap_execute_sync(self, mocker: MockerFixture) -> None:
         """

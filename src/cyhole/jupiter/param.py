@@ -188,4 +188,6 @@ class JupiterRouter(CyholeParam):
     """DFlow router."""
     OKX = "okx"
     """OKX router."""
+    METIS = "metis"
+    """Metis router, Jupiter's own aggregator: the one routing fresh memecoin pools."""
 
