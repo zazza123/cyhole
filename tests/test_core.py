@@ -296,3 +296,25 @@ async def test_async_client_api_http_error_hides_the_api_key(mocker) -> None:
     assert SECRET not in str(error.value)
     assert "api-key=***" in str(error.value)
     assert SECRET not in error.value.response.url
+
+@pytest.mark.asyncio
+async def test_async_client_api_reads_a_body_without_charset() -> None:
+    """
+        Unit Test for `AsyncAPIClient.api`: an answer whose content type is not JSON and
+        names no charset (an HTML error page from a proxy) raises the HTTP error of its
+        status, not aiohttp's "Cannot compute fallback encoding of a not yet read body".
+    """
+    from aiohttp import web
+    from aiohttp.test_utils import TestServer
+
+    async def bad_gateway(request: web.Request) -> web.Response:
+        return web.Response(status = 522, body = b"<html>origin timed out</html>", headers = {"Content-Type": "text/html"})
+
+    app = web.Application()
+    app.router.add_get("/", bad_gateway)
+    async with TestServer(app) as server:
+        async with AsyncAPIClient(interaction) as async_client:
+            with pytest.raises(requests.HTTPError) as error:
+                await async_client.api(type = RequestType.GET.value, url = str(server.make_url("/")))
+    assert error.value.response.status_code == 522
+    assert error.value.response.content == b"<html>origin timed out</html>"
