@@ -30,6 +30,22 @@ class Interaction:
 
         return
 
+    def validate_response(self, response_model: Type[ResponseModel], content: Any) -> ResponseModel:
+        """
+            This function parses the JSON content of an API answer into `response_model`. 
+            It is the single place where `api_return_model` validates an answer, so an 
+            integration can override it to check the content first (e.g. to raise its own 
+            exception for an error answer that comes with a successful HTTP status).
+
+            Parameters:
+                response_model: the `pydantic.BaseModel` model used to parse the response.
+                content: the decoded JSON content of the response.
+
+            Returns:
+                The content parsed into `response_model`.
+        """
+        return response_model.model_validate(content)
+
     def api_return_model(self, sync: bool, type: str, url: str, response_model: Type[ResponseModel], *args: tuple, **kwargs: Any) -> ResponseModel | Coroutine[None, None, ResponseModel]:
         """
             This function is used to execute a request to the API by forwarding the call to the 
@@ -54,9 +70,9 @@ class Interaction:
         """
         if sync:
             content_raw = self.client.api(type, url, *args, **kwargs)
-            return response_model.model_validate(content_raw.json())
+            return self.validate_response(response_model, content_raw.json())
         else:
             async def async_request():
                 content_raw = await self.async_client.api(type, url, *args, **kwargs)
-                return response_model.model_validate(content_raw.json())
+                return self.validate_response(response_model, content_raw.json())
             return async_request()
