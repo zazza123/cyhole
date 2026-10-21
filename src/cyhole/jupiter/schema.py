@@ -327,8 +327,8 @@ class GetSwapOrderResponse(BaseModel):
     rent_fee_payer: str | None = Field(default = None, alias = "rentFeePayer")
     """Account paying the rent fee. None when taker pays."""
 
-    router: JupiterRouter | None = None
-    """Router that won the quote competition."""
+    router: JupiterRouter | str | None = Field(default = None, union_mode = "left_to_right")
+    """Router that won the quote competition. A router not listed in `JupiterRouter` is kept as its name, so a new one does not make the answer unreadable."""
 
     transaction: str | None = None
     """Base64-encoded assembled transaction. None when taker is not provided."""

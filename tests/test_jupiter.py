@@ -1,3 +1,4 @@
+import json
 import pytest
 from pathlib import Path
 
@@ -29,12 +30,14 @@ from cyhole.jupiter.schema import (
     GetRecurringOrdersResponse,
     PostRecurringCancelOrderResponse
 )
-from cyhole.jupiter.param import JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType
+from cyhole.jupiter.param import JupiterTokenTagType, JupiterTokenInterval, JupiterTokenCategory, JupiterOrderStatus, JupiterRecurringType, JupiterRouter
 from cyhole.core.token.solana import WSOL, JUP, USDC
 from cyhole.core.token.ethereum import WETH
 
 # load test config
 from .config import load_config, MockerManager
+
+_SWAP_ORDER_MOCK = Path(__file__).parent / "resources" / "mock" / "jupiter" / "get_swap_order_default.json"
 config = load_config()
 
 # create resources folder
@@ -236,6 +239,34 @@ class TestJupiter:
             response = await client.get_swap_order(params)
 
         assert isinstance(response, GetSwapOrderResponse)
+
+    def test_get_swap_order_metis_router(self) -> None:
+        """
+            Unit Test used to check that a "Swap - Order" answer routed by Metis,
+            as the keyless tier routes a fresh memecoin, is read.
+
+            Mock Response File: get_swap_order_default.json
+        """
+        answer = json.loads(_SWAP_ORDER_MOCK.read_text())
+        answer["router"] = "metis"
+
+        response = GetSwapOrderResponse.model_validate(answer)
+
+        assert response.router == JupiterRouter.METIS
+
+    def test_get_swap_order_unknown_router(self) -> None:
+        """
+            Unit Test used to check that a router this version does not know yet
+            does not make the whole "Swap - Order" answer unreadable.
+
+            Mock Response File: get_swap_order_default.json
+        """
+        answer = json.loads(_SWAP_ORDER_MOCK.read_text())
+        answer["router"] = "some-new-router"
+
+        response = GetSwapOrderResponse.model_validate(answer)
+
+        assert response.router == "some-new-router"
 
     def test_post_swap_execute_sync(self, mocker: MockerFixture) -> None:
         """
@@ -1243,3 +1274,50 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostTokenVerifyExecuteResponse)
+
+def _http_error(status: int, body: bytes) -> "HTTPError":
+    from requests import HTTPError, Response
+
+    response = Response()
+    response.status_code = status
+    response._content = body
+    return HTTPError(f"{status} error", response = response)
+
+
+def test_raise_maps_429_to_rate_limit_error() -> None:
+    """
+        Unit Test used to check that a 429 from Jupiter is told apart from the other
+        errors, with its status, whatever its body says.
+    """
+    from cyhole.jupiter.exception import JupiterRateLimitError
+
+    error = Jupiter()._raise(_http_error(429, b'{"message": "Too Many Requests"}'))
+
+    assert isinstance(error, JupiterRateLimitError)
+    assert error.status_code == 429
+
+
+def test_raise_keeps_the_status_of_a_known_error_code() -> None:
+    """
+        Unit Test used to check that a mapped Jupiter error code keeps the HTTP status.
+    """
+    from cyhole.jupiter.exception import JupiterNoRouteFoundError
+
+    body = b'{"errorCode": "COULD_NOT_FIND_ANY_ROUTE", "error": "no route"}'
+    error = Jupiter()._raise(_http_error(400, body))
+
+    assert isinstance(error, JupiterNoRouteFoundError)
+    assert error.status_code == 400
+
+
+def test_raise_keeps_the_status_of_an_unreadable_body() -> None:
+    """
+        Unit Test used to check that an error whose body is not Jupiter's error schema
+        (as "Failed to get quotes") keeps its HTTP status.
+    """
+    from cyhole.jupiter.exception import JupiterException
+
+    error = Jupiter()._raise(_http_error(503, b'{"requestId": "x", "error": "Failed to get quotes"}'))
+
+    assert type(error) is JupiterException
+    assert error.status_code == 503
