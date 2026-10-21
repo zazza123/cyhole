@@ -39,7 +39,8 @@ from ..jupiter.exception import (
     JupiterApiTierError,
     JupiterNoRouteFoundError,
     JupiterComputeAmountThresholdError,
-    JupiterInvalidRequest
+    JupiterInvalidRequest,
+    JupiterRateLimitError
 )
 from ..jupiter.param import (
     JupiterApiTier,
@@ -160,14 +161,14 @@ class Jupiter(Interaction):
             try:
                 content_raw = self.client.api(type, url, *args, **kwargs)
             except HTTPError as e:
-                raise self._raise(e)
+                raise self._raise(e) from e
             return response_model(**content_raw.json())
         else:
             async def async_request():
                 try:
                     content_raw = await self.async_client.api(type, url, *args, **kwargs)
                 except HTTPError as e:
-                    raise self._raise(e)
+                    raise self._raise(e) from e
                 return response_model(**content_raw.json())
             return async_request()
 
@@ -547,7 +548,7 @@ class Jupiter(Interaction):
                     json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
                 )
             except HTTPError as e:
-                raise self._raise(e)
+                raise self._raise(e) from e
             return PostTokenVerifyExecuteResponse(**content_raw.json())
         else:
             async def async_request():
@@ -559,7 +560,7 @@ class Jupiter(Interaction):
                         json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
                     )
                 except HTTPError as e:
-                    raise self._raise(e)
+                    raise self._raise(e) from e
                 return PostTokenVerifyExecuteResponse(**content_raw.json())
             return async_request()
 
@@ -611,7 +612,7 @@ class Jupiter(Interaction):
                     json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
                 )
             except HTTPError as e:
-                raise self._raise(e)
+                raise self._raise(e) from e
             return PostRecurringCreateOrderResponse(**content_raw.json())
         else:
             async def async_request():
@@ -623,7 +624,7 @@ class Jupiter(Interaction):
                         json = body.model_dump(by_alias = True, exclude_defaults = True, exclude_none = True)
                     )
                 except HTTPError as e:
-                    raise self._raise(e)
+                    raise self._raise(e) from e
                 return PostRecurringCreateOrderResponse(**content_raw.json())
             return async_request()
 
@@ -699,14 +700,14 @@ class Jupiter(Interaction):
             try:
                 content_raw = self.client.api(RequestType.GET.value, url, params = params)
             except HTTPError as e:
-                raise self._raise(e)
+                raise self._raise(e) from e
             return GetRecurringOrdersResponse(**content_raw.json())
         else:
             async def async_request():
                 try:
                     content_raw = await self.async_client.api(RequestType.GET.value, url, params = params)
                 except HTTPError as e:
-                    raise self._raise(e)
+                    raise self._raise(e) from e
                 return GetRecurringOrdersResponse(**content_raw.json())
             return async_request()
 
@@ -745,14 +746,14 @@ class Jupiter(Interaction):
             try:
                 content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
             except HTTPError as e:
-                raise self._raise(e)
+                raise self._raise(e) from e
             return PostRecurringCancelOrderResponse(**content_raw.json())
         else:
             async def async_request():
                 try:
                     content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
                 except HTTPError as e:
-                    raise self._raise(e)
+                    raise self._raise(e) from e
                 return PostRecurringCancelOrderResponse(**content_raw.json())
             return async_request()
 
@@ -795,14 +796,14 @@ class Jupiter(Interaction):
             try:
                 content_raw = self.client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
             except HTTPError as e:
-                raise self._raise(e)
+                raise self._raise(e) from e
             return PostRecurringExecuteResponse(**content_raw.json())
         else:
             async def async_request():
                 try:
                     content_raw = await self.async_client.api(type = RequestType.POST.value, url = url, headers = headers, json = body)
                 except HTTPError as e:
-                    raise self._raise(e)
+                    raise self._raise(e) from e
                 return PostRecurringExecuteResponse(**content_raw.json())
             return async_request()
 
@@ -815,23 +816,33 @@ class Jupiter(Interaction):
             Parameters:
                 exception: the HTTP error returned from Jupiter API.
 
+            Every exception returned carries the HTTP status in `status_code`.
+
             Raises:
+                JupiterRateLimitError: for HTTP status 429, whatever the body.
                 JupiterNoRouteFoundError: for error code `COULD_NOT_FIND_ANY_ROUTE` 
                     during the creation of a quote.
                 JupiterInvalidRequest: for error code `INVALID_REQUEST`.
                 JupiterException: general exception raised when an unknown 
                     error code is found or a different error is found.
         """
-        try:
-            error = JupiterHTTPError(**exception.response.json())
-            match error.code:
-                case "COULD_NOT_FIND_ANY_ROUTE":
-                    return JupiterNoRouteFoundError(error.msg)
-                case "CANNOT_COMPUTE_OTHER_AMOUNT_THRESHOLD":
-                    return JupiterComputeAmountThresholdError(error.msg)
-                case "INVALID_REQUEST":
-                    return JupiterInvalidRequest(error.msg)
-                case _:
-                    return JupiterException(error.model_dump_json())
-        except Exception:
-            return JupiterException(exception.response.content.decode())
+        status = getattr(exception.response, "status_code", None)
+        jupiter_exception: JupiterException
+        if status == 429:
+            jupiter_exception = JupiterRateLimitError(exception.response.content.decode())
+        else:
+            try:
+                error = JupiterHTTPError(**exception.response.json())
+                match error.code:
+                    case "COULD_NOT_FIND_ANY_ROUTE":
+                        jupiter_exception = JupiterNoRouteFoundError(error.msg)
+                    case "CANNOT_COMPUTE_OTHER_AMOUNT_THRESHOLD":
+                        jupiter_exception = JupiterComputeAmountThresholdError(error.msg)
+                    case "INVALID_REQUEST":
+                        jupiter_exception = JupiterInvalidRequest(error.msg)
+                    case _:
+                        jupiter_exception = JupiterException(error.model_dump_json())
+            except Exception:
+                jupiter_exception = JupiterException(exception.response.content.decode())
+        jupiter_exception.status_code = status
+        return jupiter_exception

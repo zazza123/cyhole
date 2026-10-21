@@ -1274,3 +1274,50 @@ class TestJupiter:
 
         # actual test
         assert isinstance(response, PostTokenVerifyExecuteResponse)
+
+def _http_error(status: int, body: bytes) -> "HTTPError":
+    from requests import HTTPError, Response
+
+    response = Response()
+    response.status_code = status
+    response._content = body
+    return HTTPError(f"{status} error", response = response)
+
+
+def test_raise_maps_429_to_rate_limit_error() -> None:
+    """
+        Unit Test used to check that a 429 from Jupiter is told apart from the other
+        errors, with its status, whatever its body says.
+    """
+    from cyhole.jupiter.exception import JupiterRateLimitError
+
+    error = Jupiter()._raise(_http_error(429, b'{"message": "Too Many Requests"}'))
+
+    assert isinstance(error, JupiterRateLimitError)
+    assert error.status_code == 429
+
+
+def test_raise_keeps_the_status_of_a_known_error_code() -> None:
+    """
+        Unit Test used to check that a mapped Jupiter error code keeps the HTTP status.
+    """
+    from cyhole.jupiter.exception import JupiterNoRouteFoundError
+
+    body = b'{"errorCode": "COULD_NOT_FIND_ANY_ROUTE", "error": "no route"}'
+    error = Jupiter()._raise(_http_error(400, body))
+
+    assert isinstance(error, JupiterNoRouteFoundError)
+    assert error.status_code == 400
+
+
+def test_raise_keeps_the_status_of_an_unreadable_body() -> None:
+    """
+        Unit Test used to check that an error whose body is not Jupiter's error schema
+        (as "Failed to get quotes") keeps its HTTP status.
+    """
+    from cyhole.jupiter.exception import JupiterException
+
+    error = Jupiter()._raise(_http_error(503, b'{"requestId": "x", "error": "Failed to get quotes"}'))
+
+    assert type(error) is JupiterException
+    assert error.status_code == 503
