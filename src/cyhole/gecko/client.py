@@ -1,7 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Any, overload
 
+from requests import HTTPError, Response
+
 from ..core.client import APIClient, AsyncAPIClient
+from ..gecko.exception import GeckoRateLimitError
 from ..gecko.schema import (
     GetNetworksResponse,
     GetDexesResponse,
@@ -37,6 +40,31 @@ class GeckoClient(APIClient):
     def __init__(self, interaction: Gecko, headers: Any | None = None) -> None:
         super().__init__(interaction, headers)
         self._interaction: Gecko = self._interaction
+
+    def api(self, type: str, url: str, *args: Any, **kwargs: Any) -> Response:
+        """
+            Execute a request as `APIClient.api` does,
+            telling a rate limit apart from the other HTTP errors.
+
+            Parameters:
+                type: request's type ([`RequestType`][cyhole.core.param.RequestType]).
+                url: the API endpoint.
+                args: positional arguments forwarded to the request.
+                kwargs: named arguments forwarded to the request (`params`, `headers`, ...).
+
+            Returns:
+                The answer, as a `requests.Response`.
+
+            Raises:
+                GeckoRateLimitError: if GeckoTerminal answers 429.
+                requests.HTTPError: for any other error status.
+        """
+        try:
+            return super().api(type, url, *args, **kwargs)
+        except HTTPError as error:
+            if getattr(error.response, "status_code", None) == 429:
+                raise GeckoRateLimitError.from_http_error(error) from error
+            raise
 
     def get_networks(self, page: int | None = None) -> GetNetworksResponse:
         """
@@ -176,6 +204,31 @@ class GeckoAsyncClient(AsyncAPIClient):
     def __init__(self, interaction: Gecko, headers: Any | None = None) -> None:
         super().__init__(interaction, headers)
         self._interaction: Gecko = self._interaction
+
+    async def api(self, type: str, url: str, *args: Any, **kwargs: Any) -> Response:
+        """
+            Execute a request as `AsyncAPIClient.api` does,
+            telling a rate limit apart from the other HTTP errors.
+
+            Parameters:
+                type: request's type ([`RequestType`][cyhole.core.param.RequestType]).
+                url: the API endpoint.
+                args: positional arguments forwarded to the request.
+                kwargs: named arguments forwarded to the request (`params`, `headers`, ...).
+
+            Returns:
+                The answer, as a `requests.Response`.
+
+            Raises:
+                GeckoRateLimitError: if GeckoTerminal answers 429.
+                requests.HTTPError: for any other error status.
+        """
+        try:
+            return await super().api(type, url, *args, **kwargs)
+        except HTTPError as error:
+            if getattr(error.response, "status_code", None) == 429:
+                raise GeckoRateLimitError.from_http_error(error) from error
+            raise
 
     async def get_networks(self, page: int | None = None) -> GetNetworksResponse:
         """

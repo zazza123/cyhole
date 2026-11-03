@@ -36,8 +36,10 @@ class Gecko(Interaction):
 
     GeckoTerminal exposes on-chain DEX market data across 250+ networks. The public base URL is
     [`https://api.geckoterminal.com/api/v2`](https://api.geckoterminal.com/api/v2) and works without
-    an API key on a 10 calls/min free tier. Paying CoinGecko users can pass an `api_key` to route
-    requests through the higher-rate `pro-api.coingecko.com/api/v3/onchain` mirror.
+    an API key on a free tier that, measured, lets each client address through about 5 successful
+    calls per rolling minute; a 429 raises [`GeckoRateLimitError`][cyhole.gecko.exception.GeckoRateLimitError].
+    Paying CoinGecko users can pass an `api_key` to route requests through the higher-rate
+    `pro-api.coingecko.com/api/v3/onchain` mirror.
 
     Parameters:
         api_key: optional CoinGecko Pro API key. When provided, requests are sent to the
@@ -117,6 +119,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + "networks"
         params: dict[str, Any] = {}
@@ -151,6 +154,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/dexes"
         params: dict[str, Any] = {}
@@ -192,6 +196,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/pools/{pool_address}/ohlcv/{timeframe}"
         params = query.model_dump(exclude_none = True) if query is not None else {}
@@ -225,6 +230,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/pools/{pool_address}/info"
         return self.api_return_model(sync, RequestType.GET.value, url, GetPoolTokenInfoResponse)
@@ -261,6 +267,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/pools/{pool_address}/trades"
         params: dict[str, Any] = {}
@@ -308,6 +315,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/new_pools"
         params: dict[str, Any] = {}
@@ -354,6 +362,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + "networks/new_pools"
         params: dict[str, Any] = {}
@@ -400,6 +409,7 @@ class Gecko(Interaction):
         Raises:
             GeckoAddressCountError: if `addresses` is empty or holds more than 30 addresses.
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         if not 1 <= len(addresses) <= 30:
             raise GeckoAddressCountError(f"'addresses' must hold between 1 and 30 pool addresses, got {len(addresses)}.")
@@ -463,6 +473,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         if isinstance(address, str):
             url = self.url_api + f"networks/{network}/tokens/{address}"
@@ -508,6 +519,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/tokens/{address}/info"
         return self.api_return_model(sync, RequestType.GET.value, url, GetTokenInfoResponse)
@@ -541,6 +553,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + "tokens/info_recently_updated"
         params: dict[str, Any] = {}
@@ -590,6 +603,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/tokens/{token_address}/ohlcv/{timeframe}"
         params = query.model_dump(exclude_none = True) if query is not None else {}
@@ -629,6 +643,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/tokens/{token_address}/trades"
         params: dict[str, Any] = {}
@@ -672,6 +687,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/tokens/{token_address}/holders_chart"
         params: dict[str, Any] = {}
@@ -716,6 +732,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/tokens/{address}/top_holders"
         params: dict[str, Any] = {}
@@ -765,6 +782,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + f"networks/{network}/tokens/{token_address}/top_traders"
         params: dict[str, Any] = {}
@@ -807,6 +825,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         addresses = address if isinstance(address, str) else ",".join(address)
         url = self.url_api + f"simple/networks/{network}/token_price/{addresses}"
@@ -845,6 +864,7 @@ class Gecko(Interaction):
 
         Raises:
             GeckoException: if the API returns an error.
+            GeckoRateLimitError: if the API answers 429; it carries the time to wait.
         """
         url = self.url_api + "search/pools"
         params: dict[str, Any] = {"query": query}

@@ -11,6 +11,19 @@ class CyholeException(Exception):
     def __str__(self):
         return self.description
 
+class CyholeRateLimitError(CyholeException):
+    """
+        The API answered 429: the client's rate limit was hit.
+
+        Every interaction that tells a rate limit apart raises a subclass of it, so a
+        caller can handle a rate limit the same way whatever the API.
+
+        Attributes:
+            retry_after: seconds to wait before calling again, when the interaction
+                knows how long the API refuses; `None` otherwise.
+    """
+    retry_after: float | None = None
+
 class RequestTypeNotSupported(CyholeException):
     pass
 
