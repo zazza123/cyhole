@@ -46,8 +46,18 @@ class GeckoClient(APIClient):
             Execute a request as `APIClient.api` does,
             telling a rate limit apart from the other HTTP errors.
 
+            Parameters:
+                type: request's type ([`RequestType`][cyhole.core.param.RequestType]).
+                url: the API endpoint.
+                args: positional arguments forwarded to the request.
+                kwargs: named arguments forwarded to the request (`params`, `headers`, ...).
+
+            Returns:
+                The answer, as a `requests.Response`.
+
             Raises:
                 GeckoRateLimitError: if GeckoTerminal answers 429.
+                requests.HTTPError: for any other error status.
         """
         try:
             return super().api(type, url, *args, **kwargs)
@@ -200,8 +210,18 @@ class GeckoAsyncClient(AsyncAPIClient):
             Execute a request as `AsyncAPIClient.api` does,
             telling a rate limit apart from the other HTTP errors.
 
+            Parameters:
+                type: request's type ([`RequestType`][cyhole.core.param.RequestType]).
+                url: the API endpoint.
+                args: positional arguments forwarded to the request.
+                kwargs: named arguments forwarded to the request (`params`, `headers`, ...).
+
+            Returns:
+                The answer, as a `requests.Response`.
+
             Raises:
                 GeckoRateLimitError: if GeckoTerminal answers 429.
+                requests.HTTPError: for any other error status.
         """
         try:
             return await super().api(type, url, *args, **kwargs)

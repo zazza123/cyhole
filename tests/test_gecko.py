@@ -1,5 +1,8 @@
+import pickle
+
 import pytest
 from pathlib import Path
+from requests import HTTPError, Response
 from pytest_mock import MockerFixture
 
 from cyhole.gecko import Gecko
@@ -901,9 +904,7 @@ GECKO_429_BODY = (
 )
 
 
-def _http_error(status: int, body: bytes, retry_after: str | None = None) -> "HTTPError":
-    from requests import HTTPError, Response
-
+def _http_error(status: int, body: bytes, retry_after: str | None = None) -> HTTPError:
     response = Response()
     response.status_code = status
     response._content = body
@@ -912,81 +913,120 @@ def _http_error(status: int, body: bytes, retry_after: str | None = None) -> "HT
     return HTTPError(f"{status} error", response = response)
 
 
-def test_a_429_raises_gecko_rate_limit_error_sync(mocker: MockerFixture) -> None:
+class TestGeckoRateLimit:
     """
-        Unit Test used to check that a 429 from GeckoTerminal raises `GeckoRateLimitError`
-        on a synchronous call, with its status and the answer it came from.
+        Class grouping the tests of how a GeckoTerminal 429 is raised.
     """
-    from requests import HTTPError
-    from cyhole.gecko.exception import GeckoRateLimitError
 
-    mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "0"))
+    def test_a_429_raises_gecko_rate_limit_error_sync(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check that a 429 from GeckoTerminal raises `GeckoRateLimitError`
+            on a synchronous call, with its status and the answer it came from.
+        """
+        from cyhole.core.exception import CyholeRateLimitError
+        from cyhole.gecko.exception import GeckoRateLimitError
 
-    with pytest.raises(GeckoRateLimitError) as raised:
-        Gecko().client.get_networks()
+        mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "0"))
 
-    assert raised.value.status_code == 429
-    assert raised.value.response is not None and raised.value.response.status_code == 429
-    # callers that catch the HTTP error keep working
-    assert isinstance(raised.value, HTTPError)
+        with pytest.raises(GeckoRateLimitError) as raised:
+            Gecko().client.get_networks()
 
+        assert raised.value.status_code == 429
+        assert raised.value.response is not None and raised.value.response.status_code == 429
+        # callers that catch the HTTP error, or any cyhole rate limit, keep working
+        assert isinstance(raised.value, HTTPError)
+        assert isinstance(raised.value, CyholeRateLimitError)
 
-@pytest.mark.asyncio
-async def test_a_429_raises_gecko_rate_limit_error_async(mocker: MockerFixture) -> None:
-    """
-        Unit Test used to check that a 429 from GeckoTerminal raises `GeckoRateLimitError`
-        on an asynchronous call.
-    """
-    from cyhole.gecko.exception import GeckoRateLimitError
+    @pytest.mark.asyncio
+    async def test_a_429_raises_gecko_rate_limit_error_async(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check that a 429 from GeckoTerminal raises `GeckoRateLimitError`
+            on an asynchronous call.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError
 
-    mocker.patch("cyhole.core.client.AsyncAPIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "0"))
+        mocker.patch("cyhole.core.client.AsyncAPIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "0"))
 
-    with pytest.raises(GeckoRateLimitError) as raised:
-        async with Gecko().async_client as client:
-            await client.get_networks()
+        with pytest.raises(GeckoRateLimitError) as raised:
+            async with Gecko().async_client as client:
+                await client.get_networks()
 
-    assert raised.value.status_code == 429
+        assert raised.value.status_code == 429
 
+    def test_a_429_with_retry_after_zero_waits_the_public_window(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check that the public API's `Retry-After: 0` is not taken at its word:
+            a blocked client is let through again only once its last minute of calls has passed.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError, GECKO_PUBLIC_RATE_WINDOW_S
 
-def test_a_429_with_retry_after_zero_waits_the_public_window(mocker: MockerFixture) -> None:
-    """
-        Unit Test used to check that the public API's `Retry-After: 0` is not taken at its word:
-        a blocked client is let through again only once its last minute of calls has passed.
-    """
-    from cyhole.gecko.exception import GeckoRateLimitError, GECKO_PUBLIC_RATE_WINDOW_S
+        mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "0"))
 
-    mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "0"))
+        with pytest.raises(GeckoRateLimitError) as raised:
+            Gecko().client.get_networks()
 
-    with pytest.raises(GeckoRateLimitError) as raised:
-        Gecko().client.get_networks()
+        assert raised.value.retry_after == GECKO_PUBLIC_RATE_WINDOW_S == 60.0
 
-    assert raised.value.retry_after == GECKO_PUBLIC_RATE_WINDOW_S == 60.0
+    def test_a_429_with_a_positive_retry_after_keeps_it(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check that a positive `Retry-After` (as the paid mirror may send) is kept.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError
 
+        mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "12"))
 
-def test_a_429_with_a_positive_retry_after_keeps_it(mocker: MockerFixture) -> None:
-    """
-        Unit Test used to check that a positive `Retry-After` (as the paid mirror may send) is kept.
-    """
-    from cyhole.gecko.exception import GeckoRateLimitError
+        with pytest.raises(GeckoRateLimitError) as raised:
+            Gecko().client.get_networks()
 
-    mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(429, GECKO_429_BODY, "12"))
+        assert raised.value.retry_after == 12.0
 
-    with pytest.raises(GeckoRateLimitError) as raised:
-        Gecko().client.get_networks()
+    @pytest.mark.parametrize("header", ["inf", "nan", "Wed, 21 Oct 2026 07:28:00 GMT", "soon"])
+    def test_a_retry_after_that_is_no_finite_number_waits_the_public_window(self, header: str) -> None:
+        """
+            Unit Test used to check that an endless, non-numeric or HTTP-date `Retry-After`
+            falls back to the public window instead of an endless or unreadable wait.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError, GECKO_PUBLIC_RATE_WINDOW_S
 
-    assert raised.value.retry_after == 12.0
+        error = GeckoRateLimitError.from_http_error(_http_error(429, GECKO_429_BODY, header))
 
+        assert error.retry_after == GECKO_PUBLIC_RATE_WINDOW_S
 
-def test_another_http_error_is_raised_unchanged(mocker: MockerFixture) -> None:
-    """
-        Unit Test used to check that an HTTP error other than 429 is not turned into a rate limit.
-    """
-    from requests import HTTPError
-    from cyhole.gecko.exception import GeckoRateLimitError
+    def test_an_error_without_an_answer_waits_the_public_window(self) -> None:
+        """
+            Unit Test used to check that a 429 error carrying no answer still builds.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError, GECKO_PUBLIC_RATE_WINDOW_S
 
-    mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(404, b'{"errors":[]}'))
+        error = GeckoRateLimitError.from_http_error(HTTPError("429 error"))
 
-    with pytest.raises(HTTPError) as raised:
-        Gecko().client.get_networks()
+        assert error.response is None
+        assert error.retry_after == GECKO_PUBLIC_RATE_WINDOW_S
 
-    assert not isinstance(raised.value, GeckoRateLimitError)
+    def test_the_error_survives_a_pickle_round_trip(self) -> None:
+        """
+            Unit Test used to check that the error keeps its wait and answer through pickle,
+            as it does when it crosses a process boundary.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError
+
+        error = GeckoRateLimitError.from_http_error(_http_error(429, GECKO_429_BODY, "12"))
+        copy = pickle.loads(pickle.dumps(error))
+
+        assert isinstance(copy, GeckoRateLimitError)
+        assert copy.retry_after == 12.0
+        assert copy.response is not None and copy.response.status_code == 429
+        assert str(copy) == str(error) == "429 error"
+
+    def test_another_http_error_is_raised_unchanged(self, mocker: MockerFixture) -> None:
+        """
+            Unit Test used to check that an HTTP error other than 429 is not turned into a rate limit.
+        """
+        from cyhole.gecko.exception import GeckoRateLimitError
+
+        mocker.patch("cyhole.core.client.APIClient.api", side_effect = _http_error(404, b'{"errors":[]}'))
+
+        with pytest.raises(HTTPError) as raised:
+            Gecko().client.get_networks()
+
+        assert not isinstance(raised.value, GeckoRateLimitError)

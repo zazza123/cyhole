@@ -23,7 +23,8 @@ has passed, which takes up to 60 seconds; the rejected calls do not extend the b
 Every Gecko call raises [`GeckoRateLimitError`](../gecko/exception.md) on a 429. Its `retry_after` holds the seconds to
 wait: the answer's `Retry-After` when that is positive, otherwise
 [`GECKO_PUBLIC_RATE_WINDOW_S`](../gecko/exception.md) (60 s). It is also a `requests.HTTPError` carrying the answer, so
-code that catches the HTTP error keeps working. To stay under the limit, space the calls of one address at least 15
+code that catches the HTTP error keeps working, and a
+[`CyholeRateLimitError`](../../development/core/exception.md), the base every interaction's rate limit error shares. To stay under the limit, space the calls of one address at least 15
 seconds apart.
 
 ## Quick Examples

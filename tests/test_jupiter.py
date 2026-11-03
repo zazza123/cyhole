@@ -1297,6 +1297,19 @@ def test_raise_maps_429_to_rate_limit_error() -> None:
     assert error.status_code == 429
 
 
+def test_a_jupiter_rate_limit_is_a_cyhole_rate_limit() -> None:
+    """
+        Unit Test used to check that a Jupiter 429 can be handled as any cyhole rate limit,
+        with no wait to tell since Jupiter gives none.
+    """
+    from cyhole.core.exception import CyholeRateLimitError
+
+    error = Jupiter()._raise(_http_error(429, b'{"message": "Too Many Requests"}'))
+
+    assert isinstance(error, CyholeRateLimitError)
+    assert error.retry_after is None
+
+
 def test_raise_keeps_the_status_of_a_known_error_code() -> None:
     """
         Unit Test used to check that a mapped Jupiter error code keeps the HTTP status.
