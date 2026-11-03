@@ -1,5 +1,6 @@
 import json
 import pytest
+from requests import HTTPError, Response
 from pathlib import Path
 
 from pytest_mock import MockerFixture
@@ -1275,9 +1276,7 @@ class TestJupiter:
         # actual test
         assert isinstance(response, PostTokenVerifyExecuteResponse)
 
-def _http_error(status: int, body: bytes) -> "HTTPError":
-    from requests import HTTPError, Response
-
+def _http_error(status: int, body: bytes) -> HTTPError:
     response = Response()
     response.status_code = status
     response._content = body
