@@ -4,13 +4,27 @@ Gecko ([https://www.geckoterminal.com/dex-api](https://www.geckoterminal.com/dex
 service operated by CoinGecko. The v2 API exposes networks, DEXes, pools, tokens, OHLCV candles, trades, holder and
 trader analytics across 250+ chains.
 
-No API key is required to call the public `api.geckoterminal.com/api/v2` base URL on its 30 calls/minute free tier.
+No API key is required to call the public `api.geckoterminal.com/api/v2` base URL on its free tier (see
+[Rate Limit](#rate-limit) below for what that tier really allows).
 Paying CoinGecko users can pass an `api_key` to the [`Gecko`](../gecko/interaction.md) constructor so requests are routed
 through the higher-rate `pro-api.coingecko.com/api/v3/onchain` mirror; this also unlocks the **Token OHLCV**,
 **Token Trades**, **Token Holders Chart**, **Top Token Holders** and **Top Token Traders** endpoints, which return
 `401 Unauthorized` on the free tier.
 
 The API connector is the [`Gecko`](../gecko/interaction.md) class imported from `cyhole.gecko`.
+
+## Rate Limit
+
+The public tier is documented at 30, and in places 10, calls per minute. Measured on 3 November 2026, it lets each client
+address through about **5 successful calls per rolling minute**, whatever the endpoint. A client over the limit is
+answered `429` with `Retry-After: 0` on every endpoint, cached ones included, until its last minute of successful calls
+has passed, which takes up to 60 seconds; the rejected calls do not extend the block.
+
+Every Gecko call raises [`GeckoRateLimitError`](../gecko/exception.md) on a 429. Its `retry_after` holds the seconds to
+wait: the answer's `Retry-After` when that is positive, otherwise
+[`GECKO_PUBLIC_RATE_WINDOW_S`](../gecko/exception.md) (60 s). It is also a `requests.HTTPError` carrying the answer, so
+code that catches the HTTP error keeps working. To stay under the limit, space the calls of one address at least 15
+seconds apart.
 
 ## Quick Examples
 

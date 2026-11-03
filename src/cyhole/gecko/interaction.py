@@ -36,8 +36,10 @@ class Gecko(Interaction):
 
     GeckoTerminal exposes on-chain DEX market data across 250+ networks. The public base URL is
     [`https://api.geckoterminal.com/api/v2`](https://api.geckoterminal.com/api/v2) and works without
-    an API key on a 10 calls/min free tier. Paying CoinGecko users can pass an `api_key` to route
-    requests through the higher-rate `pro-api.coingecko.com/api/v3/onchain` mirror.
+    an API key on a free tier that, measured, lets each client address through about 5 successful
+    calls per rolling minute; a 429 raises [`GeckoRateLimitError`][cyhole.gecko.exception.GeckoRateLimitError].
+    Paying CoinGecko users can pass an `api_key` to route requests through the higher-rate
+    `pro-api.coingecko.com/api/v3/onchain` mirror.
 
     Parameters:
         api_key: optional CoinGecko Pro API key. When provided, requests are sent to the
