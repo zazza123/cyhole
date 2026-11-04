@@ -34,3 +34,25 @@ class HeliusRPCError(HeliusException):
         self.message = message
         self.data = data
         super().__init__(f"JSON-RPC error {code}: {message}")
+
+
+class HeliusWebSocketError(HeliusException):
+    """
+    The WebSocket connection could not be opened, or a request sent on it got no
+    answer within the client's `request_timeout`.
+
+    The message never contains the API key: the URL in aiohttp's errors is masked.
+    """
+    pass
+
+
+class HeliusWebSocketClosed(HeliusWebSocketError):
+    """
+    The WebSocket connection is closed: the client was closed, or the connection
+    dropped and the client does not reconnect.
+
+    Raised by a pending request when the connection drops before its answer, and
+    by the iteration of a client built with `reconnect = False` when the connection
+    drops.
+    """
+    pass

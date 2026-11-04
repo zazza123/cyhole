@@ -5,6 +5,7 @@ from ..core.interaction import Interaction, ResponseModel
 from ..helius.client import HeliusClient, HeliusAsyncClient
 from ..helius.param import HeliusNetwork
 from ..helius.exception import HeliusAccountCountError, HeliusRPCError
+from ..helius.websocket import HeliusWebSocket
 from ..helius.schema import (
     PostGetAssetOptions,
     PostGetAssetsByOwnerBody,
@@ -95,8 +96,48 @@ class Helius(Interaction):
         self.url_api = f"https://{network.value}.helius-rpc.com/?api-key={api_key}"
         self.url_api_enhanced = f"https://api-{network.value}.helius-rpc.com"
         self.url_api_parsed_events = f"https://{network.value}.helius-rpc.com/v1/parsed-events"
+        self.url_websocket = f"wss://{network.value}.helius-rpc.com/?api-key={api_key}"
         self.client = HeliusClient(self)
         self.async_client = HeliusAsyncClient(self)
+
+    def websocket(
+        self,
+        reconnect: bool = False,
+        heartbeat: float = 30.0,
+        request_timeout: float = 10.0,
+        reconnect_min_delay: float = 1.0,
+        reconnect_max_delay: float = 60.0,
+    ) -> HeliusWebSocket:
+        """
+        A client for the standard Solana WebSocket subscriptions on this network.
+
+        Subscriptions push what happens, such as every transaction that mentions an
+        address (`logsSubscribe`), where the HTTP methods have to be polled. They are
+        available on every Helius plan, the free one included. See
+        [`HeliusWebSocket`][cyhole.helius.websocket.HeliusWebSocket] for usage,
+        reconnection and billing.
+
+        Parameters:
+            reconnect: reopen a dropped connection and send the subscriptions again,
+                yielding a [`HeliusWebSocketReconnected`][cyhole.helius.schema.HeliusWebSocketReconnected]
+                marker; if `False`, a dropped connection ends the iteration with
+                [`HeliusWebSocketClosed`][cyhole.helius.exception.HeliusWebSocketClosed].
+            heartbeat: seconds between two pings; Helius expects one at least once a minute.
+            request_timeout: seconds to wait for the answer to a subscribe or unsubscribe request.
+            reconnect_min_delay: seconds before the second reconnection attempt; doubled at each failure.
+            reconnect_max_delay: the longest wait between two reconnection attempts, in seconds.
+
+        Returns:
+            HeliusWebSocket: the client, not yet connected: use it with `async with`.
+        """
+        return HeliusWebSocket(
+            self.url_websocket,
+            reconnect = reconnect,
+            heartbeat = heartbeat,
+            request_timeout = request_timeout,
+            reconnect_min_delay = reconnect_min_delay,
+            reconnect_max_delay = reconnect_max_delay,
+        )
 
     def validate_response(self, response_model: Type[ResponseModel], content: Any) -> ResponseModel:
         """

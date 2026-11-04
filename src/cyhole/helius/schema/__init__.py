@@ -120,6 +120,12 @@ from .parsed_events import (
     PostParsedEventsTransactionHistoryResponse,
 )
 
+from .websocket import (
+    LogsNotification,
+    HeliusWebSocketNotification,
+    HeliusWebSocketReconnected,
+)
+
 __all__ = [
     # common
     "HeliusComparisonFilter",
@@ -234,4 +240,8 @@ __all__ = [
     "ParsedEventsTransactionResult",
     "PostParsedEventsTransactionsResponse",
     "PostParsedEventsTransactionHistoryResponse",
+    # websocket
+    "LogsNotification",
+    "HeliusWebSocketNotification",
+    "HeliusWebSocketReconnected",
 ]

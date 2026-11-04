@@ -92,6 +92,21 @@ class HeliusCommitment(CyholeParam):
     """Include transfers from confirmed (not yet finalized) blocks."""
 
 
+class HeliusWebSocketCommitment(CyholeParam):
+    """
+    Commitment level a transaction must reach before a WebSocket subscription pushes it.
+
+    Pass it to [`HeliusWebSocket.logs_subscribe`][cyhole.helius.websocket.HeliusWebSocket.logs_subscribe].
+    A lower level is pushed sooner and may still be rolled back.
+    """
+    PROCESSED = "processed"
+    """Pushed as soon as the node processed it; it may still be dropped by a fork."""
+    CONFIRMED = "confirmed"
+    """Pushed once a supermajority of the cluster voted on its block (about 1 s later)."""
+    FINALIZED = "finalized"
+    """Pushed once its block is final (about 13 s later)."""
+
+
 class HeliusSortOrder(CyholeParam):
     """
     Result ordering for the `getTransfersByAddress` and `getTransactionsForAddress`
