@@ -122,6 +122,7 @@ from .parsed_events import (
 
 from .websocket import (
     LogsNotification,
+    HeliusWebSocketDisconnected,
     HeliusWebSocketNotification,
     HeliusWebSocketReconnected,
 )
@@ -242,6 +243,7 @@ __all__ = [
     "PostParsedEventsTransactionHistoryResponse",
     # websocket
     "LogsNotification",
+    "HeliusWebSocketDisconnected",
     "HeliusWebSocketNotification",
     "HeliusWebSocketReconnected",
 ]

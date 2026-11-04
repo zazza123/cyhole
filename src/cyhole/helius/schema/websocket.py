@@ -48,6 +48,23 @@ class HeliusWebSocketNotification(BaseModel):
     result: Any = None
 
 
+class HeliusWebSocketDisconnected(BaseModel):
+    """
+    Marker yielded when the connection drops and the client starts reconnecting.
+
+    From here until the next
+    [`HeliusWebSocketReconnected`][cyhole.helius.schema.HeliusWebSocketReconnected]
+    no notification arrives: a caller that relies on them can switch to polling
+    meanwhile. It is yielded once per outage, however many attempts the
+    reconnection takes.
+
+    Attributes:
+        close_code: the WebSocket close code of the dropped connection, `None` if it
+            ended without a close frame (a network failure, a missing pong).
+    """
+    close_code: int | None = None
+
+
 class HeliusWebSocketReconnected(BaseModel):
     """
     Marker yielded after the client reopened a dropped connection and sent its
@@ -55,15 +72,23 @@ class HeliusWebSocketReconnected(BaseModel):
 
     Notifications pushed while the connection was down are lost: the marker is
     the caller's cue to catch up by other means, for example one call of
-    `getSignaturesForAddress` per subscribed address.
+    `getSignaturesForAddress` per subscribed address. Every notification of the
+    new connection is yielded after the marker, so the gap lies between the
+    last notification before the marker and the first one after it.
 
     Attributes:
-        attempts: connection attempts it took, the successful one included.
+        attempts: connection attempts it took, the successful one included, counted
+            from the drop even when the connection dropped again while the
+            subscriptions were being sent.
         downtime_s: seconds between the drop and the moment the subscriptions were
             active again.
-        subscriptions: ids of the subscriptions sent again. A subscription the node
-            refused on reconnection is missing here and has been dropped.
+        subscriptions: ids of the subscriptions sent again and active.
+        dropped: ids of the subscriptions the node refused for good (an invalid
+            parameter, for example), which the client has forgotten. A failure that
+            may pass, such as a timeout or an internal error, does not drop a
+            subscription: the client reconnects and tries again.
     """
     attempts: int
     downtime_s: float
     subscriptions: list[int]
+    dropped: list[int] = []

@@ -4,3 +4,4 @@
     options:
         filters:
             - "^_"
+            - "websocket"

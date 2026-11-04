@@ -38,10 +38,19 @@ class HeliusRPCError(HeliusException):
 
 class HeliusWebSocketError(HeliusException):
     """
-    The WebSocket connection could not be opened, or a request sent on it got no
-    answer within the client's `request_timeout`.
+    The WebSocket client failed: the connection could not be opened, a request got
+    no answer in time, or the client stopped on an unexpected error.
 
-    The message never contains the API key: the URL in aiohttp's errors is masked.
+    The message never contains the API key: the URL in aiohttp's errors is masked,
+    and the aiohttp error is not chained to it.
+    """
+    pass
+
+
+class HeliusWebSocketTimeout(HeliusWebSocketError):
+    """
+    A subscribe or unsubscribe request got no answer within the client's
+    `request_timeout`. The connection may still be open.
     """
     pass
 

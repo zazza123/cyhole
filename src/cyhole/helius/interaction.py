@@ -119,12 +119,17 @@ class Helius(Interaction):
 
         Parameters:
             reconnect: reopen a dropped connection and send the subscriptions again,
-                yielding a [`HeliusWebSocketReconnected`][cyhole.helius.schema.HeliusWebSocketReconnected]
-                marker; if `False`, a dropped connection ends the iteration with
+                yielding a [`HeliusWebSocketDisconnected`][cyhole.helius.schema.HeliusWebSocketDisconnected]
+                marker at the drop and a
+                [`HeliusWebSocketReconnected`][cyhole.helius.schema.HeliusWebSocketReconnected]
+                one when the subscriptions are active again; if `False`, a dropped
+                connection ends the iteration with
                 [`HeliusWebSocketClosed`][cyhole.helius.exception.HeliusWebSocketClosed].
             heartbeat: seconds between two pings; Helius expects one at least once a minute.
-            request_timeout: seconds to wait for the answer to a subscribe or unsubscribe request.
-            reconnect_min_delay: seconds before the second reconnection attempt; doubled at each failure.
+            request_timeout: seconds to wait for the answer to a subscribe or unsubscribe
+                request, and for a dropped connection to come back before a request fails.
+            reconnect_min_delay: the first wait between reconnection attempts, in seconds;
+                it doubles at each attempt that fails.
             reconnect_max_delay: the longest wait between two reconnection attempts, in seconds.
 
         Returns:
