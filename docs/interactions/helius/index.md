@@ -199,6 +199,31 @@ for account in accounts.value:
     print(accounts.context.slot, None if account is None else account.lamports)
 ```
 
+### Follow an Address in Real Time
+
+Receive every transaction that mentions an address as soon as it is confirmed, without polling
+`getSignaturesForAddress`. With `reconnect = True` a dropped connection is reopened and the
+subscriptions sent again; the marker it yields is the cue to catch up on what was missed.
+
+```python
+import asyncio
+from cyhole.helius import Helius
+from cyhole.helius.schema import LogsNotification, HeliusWebSocketReconnected
+
+helius = Helius(api_key="your-api-key")
+
+async def main():
+    async with helius.websocket(reconnect=True) as ws:
+        await ws.logs_subscribe("WalletAddressHere")
+        async for message in ws:
+            if isinstance(message, LogsNotification):
+                print(message.slot, message.signature, message.err is None)
+            elif isinstance(message, HeliusWebSocketReconnected):
+                print(f"reconnected after {message.downtime_s} s: poll once to catch up")
+
+asyncio.run(main())
+```
+
 ## Content
 
 The documentation follows the library's structure by providing all the technical details required to use it.
@@ -212,6 +237,14 @@ The documentation follows the library's structure by providing all the technical
     `cyhole.helius` - Explore the [`Helius`](../helius/interaction.md) API connector and all its methods.
 
     [:octicons-arrow-right-24: Reference](../helius/interaction.md)
+
+-   :material-access-point:{ .lg .middle } __WebSocket__
+
+    ---
+
+    `cyhole.helius.websocket` - Subscribe to on-chain activity and receive it as it happens.
+
+    [:octicons-arrow-right-24: Reference](../helius/websocket.md)
 
 -   :material-list-status:{ .lg .middle } __API Parameters__
 
@@ -264,3 +297,5 @@ The documentation follows the library's structure by providing all the technical
 | getTransactions | `POST` | [`post_get_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_get_transactions) | `0.3.1` | - |
 | parsedEventsTransactions | `POST` | [`post_parsed_events_transactions`](../helius/interaction.md#cyhole.helius.Helius._post_parsed_events_transactions) | `0.4.1` | - |
 | parsedEventsTransactionHistory | `POST` | [`post_parsed_events_transaction_history`](../helius/interaction.md#cyhole.helius.Helius._post_parsed_events_transaction_history) | `0.4.1` | - |
+| logsSubscribe | `WSS` | [`logs_subscribe`](../helius/websocket.md#cyhole.helius.websocket.HeliusWebSocket.logs_subscribe) | `0.4.1` | - |
+| logsUnsubscribe | `WSS` | [`logs_unsubscribe`](../helius/websocket.md#cyhole.helius.websocket.HeliusWebSocket.logs_unsubscribe) | `0.4.1` | - |
